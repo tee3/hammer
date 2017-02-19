@@ -1,3 +1,6 @@
 \.hammer
 hamfile.user
 *.so
+
+# CMake
+/build/
