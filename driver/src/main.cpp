@@ -4,7 +4,7 @@
 #include <boost/format.hpp>
 #include <regex>
 #include <boost/bind.hpp>
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 #include <boost/thread/thread.hpp>
 #include <iostream>
 #include <iomanip>
@@ -330,8 +330,8 @@ namespace
       }
    }
 
-   typedef boost::unordered_set<const build_node*> visited_nodes_t;
-   typedef boost::unordered_set<const meta_target*> top_targets_t;
+   typedef std::unordered_set<const build_node*> visited_nodes_t;
+   typedef std::unordered_set<const meta_target*> top_targets_t;
 
    void find_top_source_project_nodes(const build_node& node,
                                       nodes_t& result,

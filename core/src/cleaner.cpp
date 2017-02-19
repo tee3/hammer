@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <hammer/core/cleaner.h>
 #include <hammer/core/basic_target.h>
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 
 namespace hammer{
 
@@ -18,7 +18,7 @@ struct cleaner::impl_t
    engine& engine_;
    const build_environment& environment_;
 
-   boost::unordered_set<build_node*> visited_nodes_;
+   std::unordered_set<build_node*> visited_nodes_;
 };
 
 void cleaner::impl_t::clean_all(result& r, build_node& n)

@@ -2,7 +2,7 @@
 #include <sstream>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 #include <boost/unordered_map.hpp>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
@@ -24,7 +24,7 @@ namespace hammer{
 namespace{
 
 struct build_queue_node_t;
-typedef boost::unordered_set<build_queue_node_t*> build_queue_nodes_t;
+typedef std::unordered_set<build_queue_node_t*> build_queue_nodes_t;
 
 struct build_queue_node_t
 {
@@ -64,7 +64,7 @@ typedef multi_index_container<build_queue_node_t*,
                              > build_queue_t;
 typedef build_queue_t::nth_index<0>::type queue_index_t;
 
-typedef boost::unordered_set<build_queue_node_t*> nodes_in_progress_t;
+typedef std::unordered_set<build_queue_node_t*> nodes_in_progress_t;
 
 struct worker_ctx_t
 {
@@ -120,7 +120,7 @@ struct builder::impl_t
    void task_completition_handler(boost::shared_ptr<worker_ctx_t> ctx);
    void task_handler(boost::shared_ptr<worker_ctx_t> ctx);
 
-   void flatter_queue(boost::unordered_set<const build_queue_node_t*>& result,
+   void flatter_queue(std::unordered_set<const build_queue_node_t*>& result,
                       const build_queue_node_t& node);
 
    const build_environment& environment_;
@@ -266,7 +266,7 @@ void builder::generate_graphviz(std::ostream& os, const nodes_t& nodes, const pr
       if (!(**i).up_to_date() || impl_->unconditional_build_)
          impl_->gather_nodes(nodes_to_build, **i, bounds);
 
-   boost::unordered_set<const build_queue_node_t*> all_build_nodes;
+   std::unordered_set<const build_queue_node_t*> all_build_nodes;
    for(nodes_to_build_t::const_iterator i = nodes_to_build.begin(), last = nodes_to_build.end(); i != last; ++i)
       impl_->flatter_queue(all_build_nodes, *i->second);
 
@@ -342,7 +342,7 @@ void builder::generate_graphviz(std::ostream& os, const nodes_t& nodes, const pr
    os << "}";
 }
 
-void builder::impl_t::flatter_queue(boost::unordered_set<const build_queue_node_t*>& result,
+void builder::impl_t::flatter_queue(std::unordered_set<const build_queue_node_t*>& result,
                                     const build_queue_node_t& node)
 {
    if (result.find(&node) != result.end())

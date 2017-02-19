@@ -5,6 +5,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
+#include <functional>
 #include <deque>
 #include "location.h"
 #include "project.h"
@@ -55,12 +56,12 @@ namespace hammer
       private:
          typedef boost::unordered_map<const location_t,
                                       boost::shared_ptr<project>,
-                                      boost::hash<location_t>,
+                                      std::hash<location_t>,
                                       location_equal_to> projects_t;
          struct project_alias_node;
          typedef boost::unordered_map<location_t,
                                       boost::shared_ptr<project_alias_node>,
-                                      boost::hash<location_t>,
+                                      std::hash<location_t>,
                                       location_equal_to>  global_project_links_t;
 
          struct project_alias_data
@@ -72,7 +73,7 @@ namespace hammer
          // map filesystem path on global alias node for a project
          typedef boost::unordered_map<location_t,
                                       project_alias_data,
-                                      boost::hash<location_t>,
+                                      std::hash<location_t>,
                                       location_equal_to> reversed_global_project_links_t;
 
          struct project_alias_node
@@ -104,7 +105,7 @@ namespace hammer
          typedef std::map<const project*,
                           boost::unordered_map<location_t /* alias */,
                                                std::string /* map to */,
-                                               boost::hash<location_t>,
+                                               std::hash<location_t>,
                                                location_equal_to> > use_project_data_t;
 
          projects_t projects_;

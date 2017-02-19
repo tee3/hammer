@@ -1,6 +1,8 @@
 #if !defined(h_27ccbe2b_3fec_44d7_ab99_5d27af6c04bb)
 #define h_27ccbe2b_3fec_44d7_ab99_5d27af6c04bb
 
+#include <functional>
+
 #include <hammer/core/location.h>
 
 namespace hammer
@@ -10,17 +12,17 @@ namespace hammer
       public:
          hashed_location(const hashed_location& l)
             : location_t(l.location()),
-              hash_(boost::hash_value(l.location().string()))
+              hash_(std::hash(l.location().string()))
          {}
 
          hashed_location(const location_t& l)
             : location_t(l),
-              hash_(boost::hash_value(l.string()))
+              hash_(std::hash(l.string()))
          {}
 
          hashed_location(const std::string& l)
             : location_t(l),
-            hash_(boost::hash_value(l))
+            hash_(std::hash(l))
          {}
 
          hashed_location() {}

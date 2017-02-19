@@ -2,7 +2,7 @@
 #define h_c13718fb_d5e6_44da_86bb_873e99b9c82a
 
 #include <boost/filesystem/path.hpp>
-#include <boost/functional/hash.hpp>
+#include <functional>
 
 namespace hammer
 {

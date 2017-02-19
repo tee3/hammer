@@ -7,7 +7,7 @@
 #include <hammer/core/engine.h>
 #include <hammer/core/feature_set.h>
 #include <hammer/core/feature.h>
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 #include <boost/bind.hpp>
 #include <algorithm>
 
@@ -17,7 +17,7 @@ const std::string warehouse::any_version = std::string();
 
 static
 void walk_over_targets(std::vector<const warehouse_target*>& result,
-                       boost::unordered_set<basic_target*>& visited,
+                       std::unordered_set<basic_target*>& visited,
                        const std::vector<basic_target*>& targets)
 {
    for(std::vector<basic_target*>::const_iterator i = targets.begin(), last = targets.end(); i != last; ++i) {
@@ -37,7 +37,7 @@ std::vector<const warehouse_target*>
 find_all_warehouse_unresolved_targets(const std::vector<basic_target*>& targets)
 {
    std::vector<const warehouse_target*> result;
-   boost::unordered_set<basic_target*> visited;
+   std::unordered_set<basic_target*> visited;
 
    walk_over_targets(result, visited, targets);
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <boost/filesystem/convenience.hpp>
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 #include <boost/unordered_map.hpp>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -47,7 +47,7 @@ struct c_scanner_context : public scanner_context
 {
    struct dir_node;
    struct file_node;
-   typedef boost::unordered_set<hashed_location> locations_t;
+   typedef std::unordered_set<hashed_location> locations_t;
    typedef std::vector<const hashed_location*> directories_t;
 
    struct included_file
@@ -110,13 +110,13 @@ struct c_scanner_context : public scanner_context
    };
 
    typedef boost::unordered_map<const hashed_location*, file_node> file_nodes_t;
-   typedef boost::unordered_set<const file_node::file_info*> visited_nodes_t;
+   typedef std::unordered_set<const file_node::file_info*> visited_nodes_t;
    typedef boost::unordered_map<const feature_set*, directories_t> features_2_dirs_t;
-   typedef boost::unordered_set<const hashed_location*> non_existen_dirs_t;
+   typedef std::unordered_set<const hashed_location*> non_existen_dirs_t;
    typedef boost::unordered_map<std::pair<const hashed_location*, const dir_node_t*>, loaded_dirs_record> loaded_dirs_t;
-   typedef boost::unordered_set<const hashed_location*> suffixes_dirs_t;
-   typedef boost::unordered_set<const hashed_location*> bad_suffixes_t;
-   typedef boost::unordered_set<const hashed_location*> public_dirs_t;
+   typedef std::unordered_set<const hashed_location*> suffixes_dirs_t;
+   typedef std::unordered_set<const hashed_location*> bad_suffixes_t;
+   typedef std::unordered_set<const hashed_location*> public_dirs_t;
    typedef boost::unordered_map<std::pair<const hashed_location*,
                                           const hashed_location*>,
                                 const hashed_location*> normalization_cache_t;
@@ -734,7 +734,7 @@ c_scanner_context::extract_includes(const hashed_location& file_dir,
 template<class Archive>
 void c_scanner_context::save(Archive& ar, const unsigned int version) const
 {
-   typedef boost::unordered_set<const hashed_location*> reduced_locations_t;
+   typedef std::unordered_set<const hashed_location*> reduced_locations_t;
    reduced_locations_t reduced_locations;
 
    for(included_files_cache_t::const_iterator i = included_files_cache_.begin(), last = included_files_cache_.end(); i != last; ++i)
