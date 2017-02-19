@@ -7,7 +7,7 @@
 #include <regex>
 #include <boost/process.hpp>
 #include <boost/guid.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <hammer/core/build_environment_impl.h>
 #include <hammer/core/fs_helpers.h>
 #include <hammer/core/main_target.h>
@@ -102,7 +102,7 @@ bool build_environment_impl::run_shell_commands(std::ostream* captured_output_st
 
       if (captured_output_stream != NULL)
       {
-         boost::thread_group tg;
+         std::thread_group tg;
 
          tg.create_thread(boost::bind(&stream_copy_thread, boost::ref(shell_action_child.get_stdout()), boost::ref(*captured_output_stream)));
          if (captured_error_stream != NULL)

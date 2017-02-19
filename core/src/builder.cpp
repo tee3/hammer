@@ -8,7 +8,7 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <boost/pool/object_pool.hpp>
 #include <boost/format.hpp>
 #include <hammer/core/builder.h>
@@ -381,7 +381,7 @@ builder::result builder::impl_t::build(nodes_t& nodes, const project* bounds)
 
    scheduler.post(boost::bind(&impl_t::task_completition_handler, this, initial_ctx));
 
-   boost::thread_group thread_pool;
+   std::thread_group thread_pool;
    if (worker_count_ > 1)
       for(unsigned i = 0; i < worker_count_ - 1; ++i)
          thread_pool.create_thread(boost::bind(&boost::asio::io_service::run, &scheduler));

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/ptr_container/ptr_unordered_map.hpp>
 #include <hammer/core/build_environment.h>
 
@@ -11,7 +11,7 @@ struct build_environment::impl_t
 
    impl_t() : should_buffer_(false) {}
 
-   boost::mutex m_;
+   std::mutex m_;
    bool should_buffer_;
    streams_t streams_;
    std::stringstream buffer_;
@@ -28,7 +28,7 @@ build_environment::~build_environment()
 
 std::ostream& build_environment::begin_use_output_stream() const
 {
-   boost::mutex::scoped_lock lk(impl_->m_);
+   std::mutex::scoped_lock lk(impl_->m_);
    if (impl_->should_buffer_)
    {
       std::ostream* s = new std::stringstream;
@@ -44,7 +44,7 @@ std::ostream& build_environment::begin_use_output_stream() const
 
 void build_environment::end_use_output_stream(std::ostream& s) const
 {
-   boost::mutex::scoped_lock lk(impl_->m_);
+   std::mutex::scoped_lock lk(impl_->m_);
    if (&s == &output_stream())
    {
       impl_->should_buffer_ = false;

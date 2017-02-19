@@ -5,7 +5,7 @@
 #include <regex>
 #include <boost/bind.hpp>
 #include <boost/unordered_set.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -82,7 +82,7 @@ namespace
 
    unsigned get_number_of_processors()
    {
-      return boost::thread::hardware_concurrency();
+      return std::thread::hardware_concurrency();
    }
 
    struct hammer_options
