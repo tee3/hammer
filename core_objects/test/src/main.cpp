@@ -5,7 +5,6 @@
 #include <boost/bind.hpp>
 #include <boost/assign/std/vector.hpp>
 
-using namespace std;
 using namespace hammer;
 using namespace hammer::parscore;
 using namespace boost::unit_test;
@@ -19,7 +18,7 @@ static void lib_rule(const identifier& id)
 BOOST_AUTO_TEST_CASE(lib_rule_test)
 {
    const identifier rule_id("lib");
-   vector<identifier> rule_arg_names;
+   std::vector<identifier> rule_arg_names;
    rule_arg_names += "id";
 
    rule_manager m;
@@ -53,7 +52,7 @@ BOOST_AUTO_TEST_CASE(exe_rule_test)
    typedef boost::function<void(const identifier&, const sources_decl&, const feature_set*)> func_type;
 
    const identifier rule_id("exe");
-   vector<identifier> rule_arg_names;
+   std::vector<identifier> rule_arg_names;
    rule_arg_names += "id", "sources", "requirements";
 
    rule_manager m;

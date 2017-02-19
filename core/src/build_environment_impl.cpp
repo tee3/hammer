@@ -14,7 +14,6 @@
 
 namespace bp = boost::process;
 namespace fs = boost::filesystem;
-using namespace std;
 
 namespace hammer{
 
@@ -54,11 +53,11 @@ bool build_environment_impl::run_shell_commands(std::ostream* captured_output_st
       {
          std::unique_ptr<ostream> f(create_output_file(full_tmp_file_name.string().c_str(), std::ios_base::out));
 
-         for(vector<string>::const_iterator i = cmds.begin(), last = cmds.end(); i != last; ++i)
+         for(std::vector<std::string>::const_iterator i = cmds.begin(), last = cmds.end(); i != last; ++i)
             *f << *i << '\n';
       }
 #else
-      for(vector<string>::const_iterator i = cmds.begin(), last = cmds.end(); i != last; ++i)
+      for(std::vector<std::string>::const_iterator i = cmds.begin(), last = cmds.end(); i != last; ++i)
          cmd_stream << *i << '\n';
 #endif
 
@@ -231,7 +230,7 @@ void build_environment_impl::copy(const location_t& full_source_path, const loca
 
 bool build_environment_impl::write_tag_file(const std::string& filename, const std::string& content) const
 {
-   ofstream f(filename.c_str(), ios_base::trunc);
+   ofstream f(filename.c_str(), std::ios_base::trunc);
    if (!f)
       return false;
 
@@ -242,15 +241,15 @@ bool build_environment_impl::write_tag_file(const std::string& filename, const s
 }
 
 std::unique_ptr<ostream>
-build_environment_impl::create_output_file(const char* filename, ios_base::openmode mode) const
+build_environment_impl::create_output_file(const char* filename, std::ios_base::openmode mode) const
 {
    location_t full_filename_path(filename);
    if (!full_filename_path.has_root_path())
       full_filename_path = current_directory() / full_filename_path;
 
    full_filename_path.normalize();
-   unique_ptr<ofstream> f(new ofstream);
-   f->exceptions(ios_base::badbit | ios_base::eofbit | ios_base::failbit);
+   std::unique_ptr<ofstream> f(new ofstream);
+   f->exceptions(std::ios_base::badbit | std::ios_base::eofbit | std::ios_base::failbit);
 #if defined(_WIN32) && !defined(__MINGW32__)
    wstring unc_path(to_wide(location_t(full_filename_path)).string<wstring>());
    f->open(unc_path.c_str(), mode);

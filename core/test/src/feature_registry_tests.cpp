@@ -5,7 +5,6 @@
 #include <hammer/core/feature_registry.h>
 
 using namespace hammer;
-using namespace std;
 
 struct feature_registry_test
 {

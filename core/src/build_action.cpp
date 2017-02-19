@@ -4,13 +4,11 @@
 #include <hammer/core/basic_target.h>
 #include <hammer/core/build_environment.h>
 
-using namespace std;
-
 namespace hammer{
 
 bool build_action::execute(const build_node& node, const build_environment& environment) const
 {
-   string tag(target_tag(node, environment));
+   std::string tag(target_tag(node, environment));
    environment.output_stream() << name() << ' ' << tag << '\n';
 
    bool execution_result = false;

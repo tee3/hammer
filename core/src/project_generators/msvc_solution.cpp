@@ -13,8 +13,6 @@
 #include <hammer/core/project_generators/msvc_project.h>
 #include <hammer/core/project_generators/msvc_solution.h>
 
-using namespace std;
-
 namespace hammer{ namespace project_generators{
 
 namespace
@@ -83,7 +81,7 @@ void impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first,
           !i->second->has_variant(*first)))
       {
 
-         auto_ptr<msvc_project> p_guard(new msvc_project(engine_, project_output_dir(*(**first).build_node()), variant_names_.front(), owner_->generate_id()));
+         std::auto_ptr<msvc_project> p_guard(new msvc_project(engine_, project_output_dir(*(**first).build_node()), variant_names_.front(), owner_->generate_id()));
          msvc_project* p = p_guard.get();
          p->add_variant((**first).build_node());
          p->generate();
@@ -207,7 +205,7 @@ void msvc_solution::write() const
         "# Visual Studio 2005\n";
 
    typedef impl_t::projects_t::const_iterator iter;
-   typedef vector<const msvc_project*> sorted_projects_t;
+   typedef std::vector<const msvc_project*> sorted_projects_t;
 
    sorted_projects_t sorted_projects;
    for(iter i = impl_->projects_.begin(), last = impl_->projects_.end(); i != last; ++i)

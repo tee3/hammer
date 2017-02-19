@@ -29,7 +29,6 @@
 #include <hammer/core/c_scanner.h>
 #include <hammer/core/scaner_context.h>
 
-using namespace std;
 using namespace boost::posix_time;
 namespace fs = boost::filesystem;
 
@@ -168,7 +167,7 @@ struct c_scanner_context : public scanner_context
    const directories_t& get_include_dirs(const feature_set& properties);
    // location + was insertion flag
    // this function load file nodes when unknown directory encountered
-   pair<const hashed_location*, bool> get_cached_location(const hashed_location& v) const;
+   std::pair<const hashed_location*, bool> get_cached_location(const hashed_location& v) const;
    const hashed_location& add_and_normalize(const hashed_location& p1, const hashed_location& p2) const;
 
    void try_load_cache();
@@ -274,7 +273,7 @@ void c_scanner_context::load_directory(const hashed_location& dir) const
 
 bool c_scanner_context::load_directory(const hashed_location& dir, dir_node_t& cur_dir_node, suffix_node* cur_suffix_node) const
 {
-   loaded_dirs_t::const_iterator i = loaded_dirs_.find(make_pair(&dir, &cur_dir_node));
+   loaded_dirs_t::const_iterator i = loaded_dirs_.find(std::make_pair(&dir, &cur_dir_node));
    if (i != loaded_dirs_.end())
    {
       // if directory was loaded but into different cur_node we should copy underlaying nodes to this cur_dir_node
@@ -315,13 +314,13 @@ bool c_scanner_context::load_directory(const hashed_location& dir, dir_node_t& c
          fs::file_status st = i->status();
          if (is_directory(st))
          {
-            auto_ptr<dir_node_t> new_dir_node(new dir_node_t);
+            std::auto_ptr<dir_node_t> new_dir_node(new dir_node_t);
             dir_node_t* new_cur_dir_node = new_dir_node.get();
             const hashed_location* element = get_cached_location(i->path().filename()).first;
             const hashed_location* full_dir_path = get_cached_location(dir.location().parent_path() / i->path().filename() / ".").first;
             new_dir_node->full_dir_path_ = full_dir_path;
-            cur_dir_node.nodes_.insert(make_pair(element, boost::ref(*new_dir_node)));
-            ldr.directory_content_.insert(make_pair(element, boost::ref(*new_dir_node)));
+            cur_dir_node.nodes_.insert(std::make_pair(element, boost::ref(*new_dir_node)));
+            ldr.directory_content_.insert(std::make_pair(element, boost::ref(*new_dir_node)));
             all_dir_nodes_.push_back(new_dir_node);
 
             if (cur_suffix_node != NULL)
@@ -354,7 +353,7 @@ bool c_scanner_context::load_directory(const hashed_location& dir, dir_node_t& c
          }
       }
 
-      loaded_dirs_.insert(make_pair(make_pair(&dir, &cur_dir_node), ldr));
+      loaded_dirs_.insert(std::make_pair(std::make_pair(&dir, &cur_dir_node), ldr));
       cur_dir_node.loaded_ = true;
       return true;
    }
@@ -392,7 +391,7 @@ void c_scanner_context::add_new_suffix_to_tree(location_t::const_iterator first,
    suffix_nodes_t::iterator i = s_node.nodes_.find(element);
    if (i == s_node.nodes_.end())
    {
-      auto_ptr<suffix_node> new_node(new suffix_node);
+      std::auto_ptr<suffix_node> new_node(new suffix_node);
       new_node->path_element_ = element;
       i = s_node.nodes_.insert(element, new_node).first;
    }
@@ -424,7 +423,7 @@ void c_scanner_context::load_directories_with_suffix(const hashed_location& suff
 {
    if (bad_suffix)
    {
-      typedef vector<const hashed_location*> dirs_t;
+      typedef std::vector<const hashed_location*> dirs_t;
       dirs_t dirs(public_dirs_.begin(), public_dirs_.end());
       for(dirs_t::const_iterator i = dirs.begin(), last = dirs.end(); i != last; ++i)
          load_directory(add_and_normalize(**i, suffix), public_dirs_tree_, &suffixes_tree_);
@@ -441,7 +440,7 @@ void c_scanner_context::load_directories_with_suffix(const hashed_location& suff
 void c_scanner_context::load_directory_using_suffixes(const hashed_location& dir) const
 {
    // walk over bad suffixes
-   typedef vector<const hashed_location*> suffixes_t;
+   typedef std::vector<const hashed_location*> suffixes_t;
    suffixes_t suffixes(bad_suffixes_.begin(), bad_suffixes_.end());
    for(suffixes_t::const_iterator i = suffixes.begin(), last = suffixes.end(); i != last; ++i)
       load_directory(add_and_normalize(dir, **i), public_dirs_tree_, &suffixes_tree_);
@@ -500,12 +499,12 @@ ptime c_scanner_context::calculate_timestamp_for_known_file(const hashed_locatio
 
       if (i->file_->file_infos_.size() == 1)
       {
-         const string& dir = i->file_->file_infos_.begin()->first->location().string();
-         const string& included_dir = i->path_part_->location().string();
+         const std::string& dir = i->file_->file_infos_.begin()->first->location().string();
+         const std::string& included_dir = i->path_part_->location().string();
          if (dir.size() > included_dir.size())
             if (std::equal(included_dir.rbegin(), included_dir.rend(), dir.rbegin()))
             {
-               string s = dir.substr(0, dir.size() - included_dir.size());
+               std::string s = dir.substr(0, dir.size() - included_dir.size());
                // add trailing dot
                if (s.size() > 1 && *s.rbegin() == '/')
                   s += '.';
@@ -572,7 +571,7 @@ ptime c_scanner_context::calculate_timestamp(const hashed_location& file_dir,
             new_variant.include_dirs_ = &include_dirs;
 
             new_variant.timestamp_ = calculate_timestamp_for_known_file(file_dir, fi->second, include_dirs, visited_nodes);
-            fi->second.variants_.insert(make_pair(&include_dirs, new_variant));
+            fi->second.variants_.insert(std::make_pair(&include_dirs, new_variant));
             return new_variant.timestamp_;
          }
       }
@@ -583,18 +582,18 @@ ptime c_scanner_context::calculate_timestamp(const hashed_location& file_dir,
       return neg_infin;
 }
 
-pair<const hashed_location*, bool> c_scanner_context::get_cached_location(const hashed_location& v) const
+std::pair<const hashed_location*, bool> c_scanner_context::get_cached_location(const hashed_location& v) const
 {
    locations_t::const_iterator i = locations_.find(v);
    if (i != locations_.end())
-      return make_pair(&*i, false);
+      return std::make_pair(&*i, false);
    else
-      return make_pair(&*locations_.insert(v).first, true);
+      return std::make_pair(&*locations_.insert(v).first, true);
 }
 
 const hashed_location& c_scanner_context::add_and_normalize(const hashed_location& p1, const hashed_location& p2) const
 {
-   normalization_cache_t::const_iterator i = normalization_cache_.find(make_pair(&p1, &p2));
+   normalization_cache_t::const_iterator i = normalization_cache_.find(std::make_pair(&p1, &p2));
    if (i != normalization_cache_.end())
       return *i->second;
    else
@@ -602,7 +601,7 @@ const hashed_location& c_scanner_context::add_and_normalize(const hashed_locatio
       location_t l = p1.location() / p2.location();
       l.normalize();
       const hashed_location* hl = get_cached_location(l).first;
-      normalization_cache_.insert(make_pair(make_pair(&p1, &p2), hl));
+      normalization_cache_.insert(std::make_pair(std::make_pair(&p1, &p2), hl));
       return *hl;
    }
 }
@@ -629,13 +628,13 @@ c_scanner_context::get_include_dirs(const feature_set& properties)
       {
          location_t l = (**i).get_path_data().target_->location() / (**i).value() / ".";
          l.normalize();
-         pair<const hashed_location*, bool> r = get_cached_location(l);
+         std::pair<const hashed_location*, bool> r = get_cached_location(l);
          load_directory(*r.first);
 
          result.push_back(r.first);
       }
 
-      return features_2_dirs_.insert(make_pair(&properties, result)).first->second;
+      return features_2_dirs_.insert(std::make_pair(&properties, result)).first->second;
    }
 }
 
@@ -712,15 +711,15 @@ c_scanner_context::extract_includes(const hashed_location& file_dir,
    // FIXME: We use double negation because boost::iostreams::mapped_file_source has some bug in operator unspecified_bool()
    if (!!in)
    {
-      included_files_t& result = included_files_cache_[make_pair(&file_dir, &filename)];
+      included_files_t& result = included_files_cache_[std::make_pair(&file_dir, &filename)];
       result.clear();
       for(boost::cregex_iterator i(in.data(), in.data() + in.size(), pattern_), last = boost::cregex_iterator(); i != last; ++i)
       {
 		  if ((*i)[1].matched) {
-			  string l = (*i)[1];
+			  std::string l = (*i)[1];
 			  result.push_back(make_included_file(l, true));
 		  } else {
-			  string l = (*i)[2];
+			  std::string l = (*i)[2];
 			  result.push_back(make_included_file(l, false));
 		  }
       }
@@ -763,7 +762,7 @@ void c_scanner_context::save(Archive& ar, const unsigned int version) const
    for(reduced_locations_t::const_iterator i = reduced_locations.begin(), last = reduced_locations.end(); i != last; ++i, ++count)
    {
       ar & (**i).location().string();
-      location_remapper.insert(make_pair(*i, count));
+      location_remapper.insert(std::make_pair(*i, count));
    }
 
    size = public_dirs_.size();
@@ -791,7 +790,7 @@ void c_scanner_context::save(Archive& ar, const unsigned int version) const
 template<class Archive>
 void c_scanner_context::load(Archive & ar, const unsigned int version)
 {
-   vector<const hashed_location*> locations_index;
+   std::vector<const hashed_location*> locations_index;
 
    // load locations
    size_t size;
@@ -799,7 +798,7 @@ void c_scanner_context::load(Archive & ar, const unsigned int version)
 
    locations_index.resize(size);
 
-   string tmp_location;
+   std::string tmp_location;
    for(size_t i = 0; i < size; ++i)
    {
       ar & tmp_location;
@@ -825,7 +824,7 @@ void c_scanner_context::load(Archive & ar, const unsigned int version)
 
       ar & j_size & file_dir_idx & filename_idx & cached_timestamp;
 
-      included_files_t& included_files = included_files_cache_[make_pair(locations_index[file_dir_idx],
+      included_files_t& included_files = included_files_cache_[std::make_pair(locations_index[file_dir_idx],
                                                                          locations_index[filename_idx])];
       included_files.resize(j_size);
       for(size_t j = 0; j < j_size; ++j)

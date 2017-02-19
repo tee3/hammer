@@ -15,7 +15,6 @@
 #include <hammer/core/meta_target.h>
 
 using namespace hammer;
-using namespace std;
 using boost::format;
 
 void* get_target(const char* id, void* t, int is_top)
@@ -25,8 +24,8 @@ void* get_target(const char* id, void* t, int is_top)
 
    if (is_top)
    {
-      const vector<basic_target*>* targets = static_cast<const vector<basic_target*>*>(t);
-      for(vector<basic_target*>::const_iterator i = targets->begin(), last = targets->end(); i != last; ++i)
+      const std::vector<basic_target*>* targets = static_cast<const std::vector<basic_target*>*>(t);
+      for(std::vector<basic_target*>::const_iterator i = targets->begin(), last = targets->end(); i != last; ++i)
       {
          if ((**i).name() == id)
             return *i;
@@ -41,7 +40,7 @@ void* get_target(const char* id, void* t, int is_top)
       const main_target* mt = dynamic_cast<const main_target*>(bt);
       if (mt)
       {
-         for(vector<basic_target*>::const_iterator i = mt->sources().begin(), last = mt->sources().end(); i != last; ++i)
+         for(std::vector<basic_target*>::const_iterator i = mt->sources().begin(), last = mt->sources().end(); i != last; ++i)
          {
             if ((**i).name() == id)
                return *i;

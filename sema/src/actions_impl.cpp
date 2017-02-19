@@ -15,7 +15,6 @@
 #include <hammer/core/diagnostic.h>
 #include <set>
 
-using namespace std;
 using namespace hammer::ast;
 using namespace hammer::parscore;
 

@@ -6,8 +6,6 @@
 #include <hammer/core/feature.h>
 #include <hammer/core/feature_def.h>
 
-using namespace std;
-
 namespace hammer
 {
 
@@ -78,7 +76,7 @@ feature_def::add_subfeature(const std::string& subfeature_name)
       throw std::runtime_error("Feature '" + subfeature_name + "' cannot have subfeatures.");
    }
 
-   const auto r = subfeatures_.insert(make_pair(subfeature_name, unique_ptr<subfeature_def>(new subfeature_def(*this, subfeature_name))));
+   const auto r = subfeatures_.insert(make_pair(subfeature_name, std::unique_ptr<subfeature_def>(new subfeature_def(*this, subfeature_name))));
    if (!r.second)
       throw std::runtime_error("Subfeature '" + subfeature_name + "' already defined in feature_def '" + name() + "'.");
 

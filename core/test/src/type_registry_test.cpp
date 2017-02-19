@@ -6,7 +6,6 @@
 #include <hammer/core/feature_registry.h>
 
 using namespace hammer;
-using namespace std;
 
 struct type_registry_tests
 {

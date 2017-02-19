@@ -11,7 +11,6 @@
 #include "options.h"
 
 using namespace hammer;
-using namespace std;
 namespace fs = boost::filesystem;
 using namespace boost::unit_test;
 
@@ -34,7 +33,7 @@ struct instantiation_tests : public setuped_engine
       if (opts.exists("should-fail") || exists(test_data_path / "instantiation.jcf")) {
          feature_set* build_request = engine_.feature_registry().make_set();
 
-         vector<basic_target*> instantiated_targets;
+         std::vector<basic_target*> instantiated_targets;
          if (opts.exists("should-fail"))
             BOOST_CHECK_THROW(p.instantiate("test", *build_request, &instantiated_targets), std::exception)
          else {

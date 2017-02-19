@@ -6,7 +6,6 @@
 #include <hammer/core/requirements_decl.h>
 
 using namespace hammer;
-using namespace std;
 
 BOOST_AUTO_TEST_SUITE(requirements_decl_tests)
 
@@ -45,7 +44,7 @@ make_requirements_decl(feature_registry& fr,
 {
    requirements_decl requirements;
 
-   auto_ptr<linear_and_condition> condition(new linear_and_condition);
+   std::auto_ptr<linear_and_condition> condition(new linear_and_condition);
    condition->add(fr.create_feature("toolset", toolset));
    condition->result(fr.create_feature("link", "shared"));
    requirements.add(auto_ptr<requirement_base>(condition));
@@ -170,7 +169,7 @@ BOOST_FIXTURE_TEST_CASE(conditions_match_defaults, environment)
 
    requirements_decl requirements;
 
-   auto_ptr<linear_and_condition> condition(new linear_and_condition);
+   std::auto_ptr<linear_and_condition> condition(new linear_and_condition);
    condition->add(fr_.create_feature("link", "shared"));
    condition->result(fr_.create_feature("define", "FOO"));
    requirements.add(auto_ptr<requirement_base>(condition));

@@ -16,8 +16,6 @@
 #include "signature_target.h"
 #include <set>
 
-using namespace std;
-
 namespace hammer{
 
 boost::shared_ptr<mksig_action> main_target::mksig_action_ = boost::shared_ptr<mksig_action>(new mksig_action);
@@ -159,14 +157,14 @@ void main_target::additional_hash_string_data(std::ostream& s) const
       if (this != (**i).get_main_target())
          main_target_sources.insert((**i).get_main_target());
 
-   vector<string> hashes;
+   std::vector<std::string> hashes;
    for(main_target_sources_t::const_iterator i = main_target_sources.begin(), last = main_target_sources.end(); i != last; ++i)
       hashes.push_back((**i).name() + '-' + (**i).hash_string());
 
    sort(hashes.begin(), hashes.end());
 
    bool first = true;
-   for(vector<string>::const_iterator i = hashes.begin(), last = hashes.end(); i != last; ++i)
+   for(std::vector<std::string>::const_iterator i = hashes.begin(), last = hashes.end(); i != last; ++i)
    {
       if (!first)
          s << ' ';

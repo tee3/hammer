@@ -6,7 +6,6 @@
 #include <boost/assign/list_of.hpp>
 
 using namespace hammer;
-using namespace std;
 using namespace boost::assign;
 
 namespace
@@ -18,7 +17,7 @@ namespace
          {
             feature_attributes attrs = {0};
             attrs.free = 1;
-            fr_.add_feature_def("define", vector<string>(), attrs);
+            fr_.add_feature_def("define", std::vector<std::string>(), attrs);
          }
 
          {

@@ -17,8 +17,6 @@
 #include <hammer/core/location.h>
 #include <hammer/core/requirements_decl.h>
 
-using namespace std;
-
 namespace hammer{
 
 namespace {
@@ -198,8 +196,8 @@ void remove_duplicates(deduplicator_t& deduplicator,
       build_request_for_dependencies->copy_propagated(build_request);
       build_request_for_dependencies->copy_propagated(*mt_fs);
 
-      vector<basic_target*> instantiated_meta_targets;
-      vector<basic_target*> instantiated_dependency_meta_targets;
+      std::vector<basic_target*> instantiated_meta_targets;
+      std::vector<basic_target*> instantiated_dependency_meta_targets;
       sources_decl simple_targets;
       meta_targets_t meta_targets;
       meta_targets_t dependency_meta_targets;

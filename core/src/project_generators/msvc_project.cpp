@@ -22,8 +22,6 @@
 #include <hammer/core/source_argument_writer.h>
 #include <hammer/core/pch_argument_writer.h>
 
-using namespace std;
-
 namespace hammer{ namespace project_generators{
 
 namespace
@@ -284,7 +282,7 @@ void msvc_project::add_variant(boost::intrusive_ptr<const build_node> node)
             boost::regex pattern("ProjectGUID=\"\\{([^\\}]+)\\}\"");
             boost::smatch match;
             if (boost::regex_search(content, match, pattern))
-               uid_ = boost::guid(string(match[1]));
+               uid_ = boost::guid(std::string(match[1]));
          }
       }
    }

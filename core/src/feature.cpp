@@ -4,8 +4,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-using namespace std;
-
 namespace hammer{
 
 feature::feature(const feature_def* def,

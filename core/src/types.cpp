@@ -6,7 +6,6 @@
 #include <hammer/core/type_registry.h>
 #include <hammer/core/feature_set.h>
 
-using namespace std;
 using namespace boost::assign;
 
 namespace hammer{ namespace types{

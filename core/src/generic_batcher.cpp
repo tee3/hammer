@@ -4,8 +4,6 @@
 #include <boost/unordered_map.hpp>
 #include <vector>
 
-using namespace std;
-
 namespace hammer{
 
 generic_batcher::generic_batcher(unsigned concurency_level)
@@ -25,7 +23,7 @@ void generic_batcher::process(const build_node::nodes_t& nodes, unsigned concure
       }
 }
 
-typedef boost::unordered_map<pair<const feature_set*, const build_action*>, build_node::sources_t> selected_nodes_t;
+typedef boost::unordered_map<std::pair<const feature_set*, const build_action*>, build_node::sources_t> selected_nodes_t;
 static void process_interval(build_node& node,
                              selected_nodes_t::const_iterator i,
                              unsigned concurency_level)
@@ -78,7 +76,7 @@ void generic_batcher::process_impl(build_node& node) const
           i->source_node_->action()->batched_action() != NULL &&
           i->source_node_->up_to_date() != boost::tribool::true_value)
       {
-         selected_sources[make_pair(&i->source_node_->build_request(),
+         selected_sources[std::make_pair(&i->source_node_->build_request(),
                                     i->source_node_->action())].push_back(*i);
       }
       else

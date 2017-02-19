@@ -39,7 +39,6 @@
 #include <hammer/core/warehouse_impl.h>
 #include "builtin_features.h"
 
-using namespace std;
 namespace fs = boost::filesystem;
 using namespace boost::assign;
 
@@ -81,13 +80,13 @@ engine::engine()
 
    {
       feature_attributes ft = {0}; ft.free = 1;
-      fr->add_feature_def("__searched_lib_name", vector<string>(), ft);
+      fr->add_feature_def("__searched_lib_name", std::vector<std::string>(), ft);
    }
 
    {
       // used to mark targets that belong to pch meta target. Needed for distinguishing PCH and OBJ generators
       feature_attributes ft = {0}; ft.free = 1;
-      fr->add_feature_def("__pch", vector<string>(), ft);
+      fr->add_feature_def("__pch", std::vector<std::string>(), ft);
    }
 
    {
@@ -192,7 +191,7 @@ engine::load_project(location_t project_path,
       return result;
    } catch(const std::exception& e) {
       // FIXME: this is wrong approach, but I need to know where was a problem
-      cerr << "While loading project '" << project_path << "'\n";
+      std::cerr << "While loading project '" << project_path << "'\n";
       throw;
    }
 }
@@ -210,7 +209,7 @@ engine::try_load_project(location_t project_path,
             for(project_alias_node::aliases_data_t::const_iterator j = i->symlinks_data_->begin(), j_last = i->symlinks_data_->end(); j != j_last; ++j)
                result += try_load_project(i->tail_, *j);
 
-         if (warehouse_ && warehouse_->has_project(project_path, string())) {
+         if (warehouse_ && warehouse_->has_project(project_path, std::string())) {
             // If we can find project in warehouse than we need to add alternatives to resulting set of projects
             const project* materialized_warehouse_project = nullptr;
             for (const project* p : result) {
@@ -304,7 +303,7 @@ project& engine::load_project(location_t project_path)
 {
    loaded_projects_t result(try_load_project(project_path));
    if (result.empty())
-      throw  runtime_error("Can't load project at '"  + project_path.string() + ": no such path.");
+      throw std::runtime_error("Can't load project at '"  + project_path.string() + ": no such path.");
 
    return result.front();
 }
@@ -331,7 +330,7 @@ void engine::load_hammer_script(location_t filepath)
 
       parser p(this);
       if (!p.parse(filepath.string().c_str()))
-         throw  runtime_error("Can't load script at '"  + filepath.string() + ": parser errors");
+         throw std::runtime_error("Can't load script at '"  + filepath.string() + ": parser errors");
 
       p.walk(&ctx);
       assert(ctx.project_);
@@ -344,8 +343,8 @@ void engine::load_hammer_script(location_t filepath)
    }
 }
 
-void engine::load_hammer_script(const string& script_body,
-                                const string& script_name)
+void engine::load_hammer_script(const std::string& script_body,
+                                const std::string& script_name)
 {
    hammer_walker_context ctx;
 
@@ -358,7 +357,7 @@ void engine::load_hammer_script(const string& script_body,
 
       parser p(this);
       if (!p.parse_raw_script(script_body, script_name))
-         throw  runtime_error("Can't parse raw script '" + script_name + "': parser errors");
+         throw std::runtime_error("Can't parse raw script '" + script_name + "': parser errors");
 
       p.walk(&ctx);
       assert(ctx.project_);
@@ -413,7 +412,7 @@ engine::loaded_projects_t engine::try_load_project(location_t project_path)
          return loaded_projects_t();
 
       if (!p.parse(project_file.string().c_str()))
-         throw  runtime_error("Can't load project at '"  + project_path.string() + ": parser errors");
+         throw std::runtime_error("Can't load project at '"  + project_path.string() + ": parser errors");
 
       // �� ���� ��� �� ������ ������� ��� ������ ����� ��� ����� ��� ��������� �����������
       // � ��������� �� ��� ����� �������
@@ -443,7 +442,7 @@ engine::loaded_projects_t engine::try_load_project(location_t project_path)
 
 void engine::insert(project* p)
 {
-   projects_.insert(make_pair(p->location(), boost::shared_ptr<project>(p)));
+   projects_.insert(std::make_pair(p->location(), boost::shared_ptr<project>(p)));
 }
 
 engine::~engine()
@@ -458,7 +457,7 @@ boost::filesystem::path find_root(const boost::filesystem::path& initial_path)
    while(true)
    {
       if (p.empty())
-         throw runtime_error("Can't find boost-build.jam");
+         throw std::runtime_error("Can't find boost-build.jam");
 
       if (exists(p / "boost-build.jam"))
          return p;
@@ -491,7 +490,7 @@ void engine::project_rule(project* p, std::vector<string>& name,
 void engine::lib_rule(project* p, std::vector<string>& name, sources_decl* sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
+   std::auto_ptr<basic_meta_target> mt(new lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
                                                       usage_requirements ? *usage_requirements : requirements_decl()));
    if (sources)
       mt->sources(*sources);
@@ -506,7 +505,7 @@ void engine::searched_shared_lib_rule(project* p,
                                       requirements_decl* requirements,
                                       requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
+   std::auto_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
                                                                name.at(0),
                                                                lib_name,
                                                                requirements ? *requirements : requirements_decl(),
@@ -525,7 +524,7 @@ void engine::searched_static_lib_rule(project* p,
                                       requirements_decl* requirements,
                                       requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
+   std::auto_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
                                                                name,
                                                                lib_name,
                                                                requirements ? *requirements : requirements_decl(),
@@ -544,7 +543,7 @@ void engine::prebuilt_lib_rule(project* p,
                                requirements_decl* requirements,
                                requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new prebuilt_lib_meta_target(p,
+   std::auto_ptr<basic_meta_target> mt(new prebuilt_lib_meta_target(p,
                                                                name,
                                                                lib_filename,
                                                                requirements ? *requirements : requirements_decl(),
@@ -561,7 +560,7 @@ void engine::file_rule(project* p,
                        requirements_decl* requirements,
                        requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new file_meta_target(p,
+   std::auto_ptr<basic_meta_target> mt(new file_meta_target(p,
                                                        name.at(0),
                                                        filename,
                                                        requirements ? *requirements : requirements_decl(),
@@ -572,7 +571,7 @@ void engine::file_rule(project* p,
 void engine::header_lib_rule(project* p, std::vector<std::string>& name, sources_decl* sources, requirements_decl* requirements,
                              feature_set* default_build, requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new header_lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
+   std::auto_ptr<basic_meta_target> mt(new header_lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
                                                              usage_requirements ? *usage_requirements : requirements_decl()));
    if (sources)
       mt->sources(*sources);
@@ -583,7 +582,7 @@ void engine::header_lib_rule(project* p, std::vector<std::string>& name, sources
 void engine::exe_rule(project* p, std::vector<std::string>& name, sources_decl& sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new typed_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
+   std::auto_ptr<basic_meta_target> mt(new typed_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
                                                         usage_requirements ? *usage_requirements : requirements_decl(),
                                                         get_type_registry().get(types::EXE)));
    mt->sources(sources);
@@ -593,7 +592,7 @@ void engine::exe_rule(project* p, std::vector<std::string>& name, sources_decl& 
 void engine::obj_rule(project* p, std::string& name, sources_decl& sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new obj_meta_target(p, name, requirements ? *requirements : requirements_decl(),
+   std::auto_ptr<basic_meta_target> mt(new obj_meta_target(p, name, requirements ? *requirements : requirements_decl(),
                                                       usage_requirements ? *usage_requirements : requirements_decl()));
    mt->sources(sources);
    p->add_target(mt);
@@ -602,7 +601,7 @@ void engine::obj_rule(project* p, std::string& name, sources_decl& sources, requ
 void engine::pch_rule(project* p, std::string& name, sources_decl& sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new pch_meta_target(p, name, requirements ? *requirements : requirements_decl(),
+   std::auto_ptr<basic_meta_target> mt(new pch_meta_target(p, name, requirements ? *requirements : requirements_decl(),
       usage_requirements ? *usage_requirements : requirements_decl()));
    mt->sources(sources);
    p->add_target(mt);
@@ -611,7 +610,7 @@ void engine::pch_rule(project* p, std::string& name, sources_decl& sources, requ
 void engine::copy_rule(project* p, std::string& name, sources_decl& sources, requirements_decl* requirements,
                        feature_set* default_build, requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new copy_meta_target(p,
+   std::auto_ptr<basic_meta_target> mt(new copy_meta_target(p,
                                                        name,
                                                        requirements ? *requirements : requirements_decl(),
                                                        usage_requirements ? *usage_requirements : requirements_decl()));
@@ -737,7 +736,7 @@ void engine::alias_rule(project* p,
                         feature_set* default_build,
                         requirements_decl* usage_requirements)
 {
-   auto_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
+   std::auto_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
                                                         sources == NULL ? sources_decl() : *sources,
                                                         requirements ? *requirements : requirements_decl(),
                                                         usage_requirements ? *usage_requirements : requirements_decl()));
@@ -749,7 +748,7 @@ void engine::version_alias_rule(project* p,
                                 std::string& version,
                                 const std::string* target_path)
 {
-   auto_ptr<basic_meta_target> mt(new version_alias_meta_target(p, name, version, target_path));
+   std::auto_ptr<basic_meta_target> mt(new version_alias_meta_target(p, name, version, target_path));
    p->add_target(mt);
 }
 
@@ -758,7 +757,7 @@ void engine::target_version_alias_rule(project* p,
                                        std::string& version,
                                        const std::string* target_path)
 {
-   auto_ptr<basic_meta_target> mt(new target_version_alias_meta_target(p, name, version, target_path));
+   std::auto_ptr<basic_meta_target> mt(new target_version_alias_meta_target(p, name, version, target_path));
    p->add_target(mt);
 }
 
@@ -783,7 +782,7 @@ void engine::test_suite_rule(project* p,
       else
          i->properties(additional_sources_set);
 
-   auto_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
+   std::auto_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
                                                         sources,
                                                         requirements_decl(),
                                                         requirements_decl()));
@@ -798,7 +797,7 @@ sources_decl engine::testing_run_rule(project* p,
                                       requirements_decl* requirements,
                                       std::string* target_name)
 {
-   string real_target_name;
+   std::string real_target_name;
    if (target_name != NULL)
       real_target_name = *target_name;
    else
@@ -807,8 +806,8 @@ sources_decl engine::testing_run_rule(project* p,
       else
          throw std::runtime_error("Target must have either sources or target name");
 
-   const string& exe_name = real_target_name;
-   auto_ptr<basic_meta_target> intermediate_exe(
+   const std::string& exe_name = real_target_name;
+   std::auto_ptr<basic_meta_target> intermediate_exe(
       new testing_intermediate_meta_target(p,
                                            exe_name,
                                            requirements != NULL ? *requirements
@@ -831,7 +830,7 @@ sources_decl engine::testing_run_rule(project* p,
       for(vector<std::string>::const_iterator i = args->begin(), last = args->end(); i != last; ++i)
          run_requirements.add(*this->feature_registry().create_feature("testing.argument", *i));
 
-   auto_ptr<basic_meta_target> run_target(
+   std::auto_ptr<basic_meta_target> run_target(
       new testing_meta_target(p,
                               real_target_name + ".runner",
                               run_requirements,
@@ -862,11 +861,11 @@ engine::testing_compile_fail_rule(project* p,
                                   requirements_decl* default_build,
                                   requirements_decl* usage_requirements)
 {
-   const string target_name = location_t(sources.begin()->target_path()).stem().string();
-   auto_ptr<basic_meta_target> mt(new testing_compile_fail_meta_target(p,
-                                                                       target_name,
-                                                                       requirements ? *requirements : requirements_decl(),
-                                                                       usage_requirements ? *usage_requirements : requirements_decl()));
+   const std::string target_name = location_t(sources.begin()->target_path()).stem().string();
+   std::auto_ptr<basic_meta_target> mt(new testing_compile_fail_meta_target(p,
+                                                                            target_name,
+                                                                            requirements ? *requirements : requirements_decl(),
+                                                                            usage_requirements ? *usage_requirements : requirements_decl()));
    mt->sources(sources);
 
    const source_decl compile_source(mt->name(),
@@ -939,14 +938,14 @@ sources_decl engine::glob_rule(project* p, std::vector<std::string>& patterns,
    typedef std::vector<std::string>::const_iterator iter;
    for(const std::string& pattern : patterns)
    {
-      string::size_type mask_pos = pattern.find_first_of("*?");
+      std::string::size_type mask_pos = pattern.find_first_of("*?");
       if (mask_pos == string::npos)
          throw runtime_error("[glob] You must specify patterns to match");
       string::size_type separator_pos = pattern.find_last_of("/\\", mask_pos);
       path relative_path(separator_pos == string::npos ? path() : path(pattern.begin(),
                                                                        pattern.begin() + separator_pos));
       path searching_path(p->location() / relative_path);
-      boost::dos_wildcard wildcard(string(pattern.begin() + mask_pos, pattern.end()));
+      boost::dos_wildcard wildcard(std::string(pattern.begin() + mask_pos, pattern.end()));
       if (recursive)
          rglob_impl(result, searching_path, relative_path, wildcard, exceptions, *this);
       else
@@ -985,7 +984,7 @@ void engine::use_project_rule(project* p, const std::string& project_id_alias,
             throw std::runtime_error("alias '" + project_id_alias + "' already mapped to location '" + j->second + "'.");
       }
 
-      use_project_data_[p].insert(make_pair(location_t(l), project_location));
+      use_project_data_[p].insert(std::make_pair(location_t(l), project_location));
    }
    else
    {
@@ -1000,7 +999,7 @@ void engine::use_project_rule(project* p, const std::string& project_id_alias,
             boost::shared_ptr<project_alias_node> node(new project_alias_node);
             // FIXME stupid bug in ptr_map::insert
             location_t tmp(*i);
-            alias_data_home = project_links_node->insert(make_pair(tmp, node)).first;
+            alias_data_home = project_links_node->insert(std::make_pair(tmp, node)).first;
             project_links_node = &node->project_symlinks_;
          }
          else
@@ -1014,7 +1013,7 @@ void engine::use_project_rule(project* p, const std::string& project_id_alias,
 
       alias_data_home->second->aliases_data_.push_back(alias_data);
 
-      reversed_global_project_links_.insert(make_pair(alias_data.location_, alias_data));
+      reversed_global_project_links_.insert(std::make_pair(alias_data.location_, alias_data));
    }
 }
 
@@ -1026,7 +1025,7 @@ void engine::setup_warehouse_rule(project* p,
    if (warehouse_)
       throw std::runtime_error("You can setup only one warehouse to use");
 
-   string storage_dir;
+   std::string storage_dir;
    if (storage_dir_ && !storage_dir_->empty()) {
       fs::path sd(*storage_dir_);
       if (sd.is_absolute())
@@ -1055,7 +1054,7 @@ engine::loaded_projects_t::select_best_alternative(const feature_set& build_requ
    }
 
    if (result.empty()) {
-      stringstream s;
+      std::stringstream s;
       dump_for_hash(s, build_request);
       throw std::runtime_error("Can't select best alternative - no one founded\n"
                                "Build request: " + s.str());
@@ -1070,7 +1069,7 @@ engine::loaded_projects_t::select_best_alternative(const feature_set& build_requ
    auto second = ++result.begin();
    for(; second != result.end();) {
       if (first->target_->name() == second->target_->name()) {
-         stringstream s;
+         std::stringstream s;
          dump_for_hash(s, build_request);
          throw std::runtime_error("Can't select best alternative for target '"+ first->target_->name() + "' from projects:\n"
                                   "1) '" + first->target_->location().string() + "' \n"
@@ -1098,7 +1097,7 @@ engine::loaded_projects_t::select_best_alternative(const std::string& target_nam
    }
 
    if (result.empty()) {
-      stringstream s;
+      std::stringstream s;
       s << "Can't select best alternative for target '"+ target_name + "' - no one founded. \n"
            "Projects to search are:\n";
       for (const project* p : projects_)
@@ -1119,7 +1118,7 @@ engine::loaded_projects_t::select_best_alternative(const std::string& target_nam
    if (result[0].resolved_build_request_rank_ != result[1].resolved_build_request_rank_)
       return result.front();
    else {
-      stringstream s;
+      std::stringstream s;
       dump_for_hash(s, build_request);
       throw std::runtime_error("Can't select best alternative for target '"+ result[0].target_->name() + "' from projects:\n"
                                "1) '" + result[0].target_->location().string() + "' \n"

@@ -5,8 +5,6 @@
 #include <boost/spirit/include/classic_lists.hpp>
 #include <hammer/core/cmdline_builder.h>
 
-using namespace std;
-
 namespace hammer{
 
 cmdline_builder::cmdline_builder(const std::string& cmd) : cmd_(cmd)
@@ -24,7 +22,7 @@ void cmdline_builder::write(std::ostream& output, const build_node& node, const 
    using namespace boost::spirit::classic;
 
    typedef boost::iterator_range<const char*> range_t;
-   typedef vector<range_t> arguments_t;
+   typedef std::vector<range_t> arguments_t;
 
    arguments_t arguments;
    const char* c_str_cmd = cmd_.c_str();
@@ -43,7 +41,7 @@ void cmdline_builder::write(std::ostream& output, const build_node& node, const 
       if (c_str_cmd + 2 != i->begin())
          output.write(c_str_cmd, static_cast<std::streamsize>(i->begin() - 2 - c_str_cmd));
 
-      string writer(i->begin(), i->end());
+      std::string writer(i->begin(), i->end());
       writers_t::const_iterator w = writers_.find(writer);
       if (w == writers_.end())
          throw std::runtime_error("[cmdline_builder] Argument writer with name '" + writer + "' has not been registered");

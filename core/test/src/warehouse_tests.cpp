@@ -11,7 +11,6 @@
 #include "options.h"
 #include "jcf_parser.h"
 
-using namespace std;
 using namespace hammer;
 using boost::unit_test::test_suite;
 namespace fs = boost::filesystem;
@@ -30,7 +29,7 @@ struct warehouse_test : complete_build_tests_environment
    const fs::path installed_packages_path_;
    const fs::path tests_path_;
    const fs::path libs_path_;
-   unique_ptr<warehouse> warehouse_;
+   std::unique_ptr<warehouse> warehouse_;
 };
 
 warehouse_test::warehouse_test(const bool remove_packages,
@@ -106,7 +105,7 @@ void test_function_phase_1(const fs::path& test_data_path)
 #endif
    build_request->join("variant", "debug");
 
-   vector<basic_target*> instantiated_targets;
+   std::vector<basic_target*> instantiated_targets;
    p.instantiate("test", *build_request, &instantiated_targets);
 
    try {
@@ -119,7 +118,7 @@ void test_function_phase_1(const fs::path& test_data_path)
    } catch(const warehouse_unresolved_target_exception& e) {
    }
 
-   const vector<warehouse::package_info> packages =
+   const std::vector<warehouse::package_info> packages =
       env.engine_.warehouse().get_unresoved_targets_info(env.engine_, find_all_warehouse_unresolved_targets(instantiated_targets));
 
    null_warehouse_download_and_install notifier;
@@ -143,7 +142,7 @@ void test_function_phase_2(const fs::path& test_data_path)
 #endif
    build_request->join("variant", "debug");
 
-   vector<basic_target*> instantiated_targets;
+   std::vector<basic_target*> instantiated_targets;
    p.instantiate("test", *build_request, &instantiated_targets);
 
    // should be no throw here

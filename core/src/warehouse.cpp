@@ -11,19 +11,18 @@
 #include <boost/bind.hpp>
 #include <algorithm>
 
-using namespace std;
 using boost::unordered_set;
 
 namespace hammer{
 
-const std::string warehouse::any_version = string();
+const std::string warehouse::any_version = std::string();
 
 static
-void walk_over_targets(vector<const warehouse_target*>& result,
+void walk_over_targets(std::vector<const warehouse_target*>& result,
                        unordered_set<basic_target*>& visited,
-                       const vector<basic_target*>& targets)
+                       const std::vector<basic_target*>& targets)
 {
-   for(vector<basic_target*>::const_iterator i = targets.begin(), last = targets.end(); i != last; ++i) {
+   for(std::vector<basic_target*>::const_iterator i = targets.begin(), last = targets.end(); i != last; ++i) {
       if (warehouse_target* t = dynamic_cast<warehouse_target*>(*i))
          result.push_back(t);
       else if (main_target* m = dynamic_cast<main_target*>(*i)) {
@@ -36,10 +35,10 @@ void walk_over_targets(vector<const warehouse_target*>& result,
    }
 }
 
-vector<const warehouse_target*>
-find_all_warehouse_unresolved_targets(const vector<basic_target*>& targets)
+std::vector<const warehouse_target*>
+find_all_warehouse_unresolved_targets(const std::vector<basic_target*>& targets)
 {
-   vector<const warehouse_target*> result;
+   std::vector<const warehouse_target*> result;
    unordered_set<basic_target*> visited;
 
    walk_over_targets(result, visited, targets);
@@ -48,10 +47,10 @@ find_all_warehouse_unresolved_targets(const vector<basic_target*>& targets)
 }
 
 static
-vector<string>
+std::vector<std::string>
 collect_installed_versions(const project& p)
 {
-   vector<string> result;
+   std::vector<std::string> result;
 
    const feature_set& build_request = *p.get_engine()->feature_registry().make_set();
    for(const auto& t : p.targets()) {
@@ -73,7 +72,7 @@ void add_traps(project& p,
 {
    warehouse& wh = p.get_engine()->warehouse();
    warehouse::versions_t all_versions = wh.get_package_versions(public_id);
-   vector<string> installed_versions = collect_installed_versions(p);
+   std::vector<std::string> installed_versions = collect_installed_versions(p);
 
    warehouse::versions_t not_installed_versions;
 
@@ -85,11 +84,11 @@ void add_traps(project& p,
 
    struct pred
    {
-      bool operator()(const warehouse::version_info& lhs, const string& rhs) const { return lhs.version_ < rhs; }
-      bool operator()(const string& lhs, const warehouse::version_info& rhs) const { return lhs < rhs.version_; }
+      bool operator()(const warehouse::version_info& lhs, const std::string& rhs) const { return lhs.version_ < rhs; }
+      bool operator()(const std::string& lhs, const warehouse::version_info& rhs) const { return lhs < rhs.version_; }
       // These two need by msvc debug implementation
       bool operator()(const warehouse::version_info& lhs, const warehouse::version_info& rhs) const { return lhs.version_ < rhs.version_; }
-      bool operator()(const string& lhs, const string& rhs) const { return lhs < rhs; }
+      bool operator()(const std::string& lhs, const std::string& rhs) const { return lhs < rhs; }
    };
 
    set_difference(all_versions.begin(), all_versions.end(),
@@ -97,8 +96,8 @@ void add_traps(project& p,
                   back_inserter(not_installed_versions), pred());
 
    for(const auto& v : not_installed_versions) {
-      for (const string& target_name : v.targets_) {
-         auto_ptr<basic_meta_target> trap_target(new warehouse_meta_target(p, target_name, v.version_));
+      for (const std::string& target_name : v.targets_) {
+         std::auto_ptr<basic_meta_target> trap_target(new warehouse_meta_target(p, target_name, v.version_));
          p.add_target(trap_target);
       }
    }

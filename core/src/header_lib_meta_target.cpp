@@ -8,8 +8,6 @@
 #include <hammer/core/type_registry.h>
 #include <hammer/core/header_lib_main_target.h>
 
-using namespace std;
-
 namespace hammer{
 
 header_lib_meta_target::header_lib_meta_target(hammer::project* p,
@@ -68,7 +66,7 @@ void header_lib_meta_target::instantiate_impl(const main_target* owner,
                                                 mt_fs);
    mt_fs = mt->properties().clone();
 
-   vector<basic_target*> instantiated_simple_targets;
+   std::vector<basic_target*> instantiated_simple_targets;
    instantiate_simple_targets(simple_targets, *mt_fs, *mt, &instantiated_simple_targets);
    mt->sources(instantiated_simple_targets);
    mt->properties(mt_fs);

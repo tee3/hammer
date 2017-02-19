@@ -3,8 +3,6 @@
 #include <cassert>
 #include <string>
 
-using namespace std;
-
 namespace hammer{
 
 diagnostic::diagnostic() : error_count_(0)
@@ -32,7 +30,7 @@ void diagnostic::format_location()
 void diagnostic::format_message()
 {
    assert(message_);
-   stream_.str(string());
+   stream_.str(std::string());
 
    format_location();
    stream_ << "error: ";

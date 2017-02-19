@@ -26,7 +26,6 @@
 #include <unordered_set>
 #include <unordered_map>
 
-using namespace std;
 using namespace boost::spirit::classic;
 namespace bp = boost::process;
 namespace fs = boost::filesystem;
@@ -103,13 +102,13 @@ struct warehouse_impl::gramma : public grammar<warehouse_impl::gramma>
    mutable string value_;
    mutable unsigned int int_value_;
    mutable bool bool_value_;
-   mutable vector<warehouse_impl::package_t> packages_;
+   mutable std::vector<warehouse_impl::package_t> packages_;
    mutable warehouse_impl::package_t package_;
-   mutable vector<string> targets_;
+   mutable std::vector<std::string> targets_;
    mutable dependency_t dependency_;
    const warehouse_impl::package_t empty_package_;
    const dependency_t empty_dependency_;
-   const vector<string> empty_targets_;
+   const std::vector<std::string> empty_targets_;
 
    void assign_int_value(unsigned v) const { int_value_ = v; }
    void assign_bool_value(bool v) const { bool_value_ = v; }
@@ -192,7 +191,7 @@ warehouse_impl::warehouse_impl(const std::string& name,
 
    const fs::path hamroot_path = repository_path_ / "hamroot";
    if (!exists(hamroot_path)) {
-      fs::ofstream f(hamroot_path, ios_base::trunc);
+      fs::ofstream f(hamroot_path, std::ios_base::trunc);
       if (!f)
          throw std::runtime_error("Can't create '" + hamroot_path.string() + "'");
    }
@@ -225,7 +224,7 @@ warehouse_impl::load_packages(const fs::path& filepath)
       throw std::runtime_error("Can't parse warehouse database");
 
    packages_t packages;
-   for(vector<package_t>::const_iterator i = g.packages_.begin(), last = g.packages_.end(); i != last; ++i)
+   for(std::vector<package_t>::const_iterator i = g.packages_.begin(), last = g.packages_.end(); i != last; ++i)
       packages.insert(make_pair(i->public_id_, *i));
 
    return packages;
@@ -406,7 +405,7 @@ void warehouse_impl::resolve_dependency(unresolved_packages_t& packages,
    const package_t& package = i_dependency_package->second;
    packages.insert(make_pair(dep_hash, to_package_info(package)));
 
-   for(vector<dependency_t>::const_iterator i = package.dependencies_.begin(), last = package.dependencies_.end(); i != last; ++i)
+   for(std::vector<dependency_t>::const_iterator i = package.dependencies_.begin(), last = package.dependencies_.end(); i != last; ++i)
       resolve_dependency(packages, e, *i, repository_project);
 }
 
@@ -437,7 +436,7 @@ warehouse_impl::get_unresoved_targets_info(engine& e,
       p.package_file_size_ = pi->second.filesize_;
 
       const package_t& package = pi->second;
-      for(vector<dependency_t>::const_iterator i = package.dependencies_.begin(), last = package.dependencies_.end(); i != last; ++i) {
+      for(std::vector<dependency_t>::const_iterator i = package.dependencies_.begin(), last = package.dependencies_.end(); i != last; ++i) {
          const string dependency_hash = i->public_id_ + ":" + i->version_;
          if (packages.find(dependency_hash) == packages.end())
             deps.insert(make_pair(dependency_hash, *i));
@@ -450,7 +449,7 @@ warehouse_impl::get_unresoved_targets_info(engine& e,
    for(unresolved_dependencies_t::const_iterator i = deps.begin(), last = deps.end(); i != last; ++i)
       resolve_dependency(packages, e, i->second, repository_project);
 
-   vector<package_info> result;
+   std::vector<package_info> result;
    for(unresolved_packages_t::const_iterator i = packages.begin(), last = packages.end(); i != last; ++i)
       result.push_back(i->second);
 
@@ -484,14 +483,14 @@ static
 void append_line(const fs::path filename,
                  const string& line)
 {
-   fs::ofstream f(filename, ios_base::app);
+   fs::ofstream f(filename, std::ios_base::app);
    f << line << endl;
 }
 
 static
 string make_package_alias_line(const string& package_public_id,
                                const string& package_version,
-                               const vector<string>& targets)
+                               const std::vector<std::string>& targets)
 {
    stringstream s;
    for (const string& target : targets) {
@@ -629,7 +628,7 @@ void warehouse_impl::write_packages(const location_t& packages_db_path,
       else {
          tmp_packages << ",\n       dependencies : [\n";
          bool d_first = true;
-         for(vector<dependency_t>::const_iterator d = i->second.dependencies_.begin(), d_last = i->second.dependencies_.end(); d != d_last; ++d) {
+         for(std::vector<dependency_t>::const_iterator d = i->second.dependencies_.begin(), d_last = i->second.dependencies_.end(); d != d_last; ++d) {
             if (d_first) {
                tmp_packages << "          {\n";
                d_first = false;
@@ -677,7 +676,7 @@ void make_package_archive(const fs::path& package_root,
 vector<warehouse_impl::dependency_t>
 warehouse_impl::gather_dependencies(const project& p)
 {
-   vector<source_decl> source_dependencies;
+   std::vector<source_decl> source_dependencies;
    for(project::targets_t::const_iterator i = p.targets().begin(), last = p.targets().end(); i != last; ++i) {
       const sources_decl& sources = i->second->sources();
       for(sources_decl::const_iterator s_i = sources.begin(), s_last = sources.end(); s_i != s_last; ++s_i) {
@@ -689,7 +688,7 @@ warehouse_impl::gather_dependencies(const project& p)
    sort(source_dependencies.begin(), source_dependencies.end());
    source_dependencies.erase(unique(source_dependencies.begin(), source_dependencies.end()), source_dependencies.end());
 
-   vector<dependency_t> dependencies;
+   std::vector<dependency_t> dependencies;
    for(const source_decl& s : source_dependencies) {
       feature_set::const_iterator i = s.properties()->find("version");
       if (i == s.properties()->end())
@@ -752,7 +751,7 @@ string extract_filepath_from_url(const string& url)
 }
 
 static
-vector<string>
+vector<std::string>
 gather_targets(const project& p)
 {
    unordered_map<string, unsigned> targets_info;
@@ -770,7 +769,7 @@ gather_targets(const project& p)
    if (targets_info.empty())
       throw std::runtime_error("There is no targets to export");
 
-   vector<string> targets;
+   std::vector<std::string> targets;
    for (const auto& ti : targets_info)
       targets.push_back(ti.first);
 
@@ -783,7 +782,7 @@ void warehouse_impl::add_to_packages(const project& p,
    const location_t packages_db_root = packages_db_root_.empty() ? extract_filepath_from_url(repository_url_) : packages_db_root_;
    fs::path packages_db_full_path = packages_db_root / packages_filename;
    if (!exists(packages_db_full_path)) {
-      fs::ofstream f(packages_db_full_path, ios_base::trunc);
+      fs::ofstream f(packages_db_full_path, std::ios_base::trunc);
       if (!f)
          throw std::runtime_error("Can't create '" + packages_db_full_path.string() + "'");
       f << "[]";
@@ -835,7 +834,7 @@ warehouse_impl::get_package_versions(const string& public_id) const
 static
 void remove_alias_from_package_hamfile(const string& package_public_id,
                                        const string& package_version,
-                                       const vector<string>& package_targets,
+                                       const std::vector<std::string>& package_targets,
                                        const fs::path& path_to_hamfile)
 {
    if (!package_targets.empty())

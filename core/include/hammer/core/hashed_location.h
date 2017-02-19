@@ -26,8 +26,8 @@ namespace hammer
          hashed_location() {}
          const location_t& location() const { return static_cast<const location_t&>(*this); }
          std::size_t hash() const { return hash_; }
-         bool operator == (const location_t& rhs) const { return string() == rhs.string(); }
-         bool operator == (const hashed_location& rhs) const { return hash_ == rhs.hash_ && string() == rhs.string(); }
+         bool operator == (const location_t& rhs) const { return std::string() == rhs.string(); }
+         bool operator == (const hashed_location& rhs) const { return hash_ == rhs.hash_ && std::string() == rhs.string(); }
 
       private:
          std::size_t hash_;

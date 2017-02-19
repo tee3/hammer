@@ -51,13 +51,12 @@
 #include "dump_targets_to_update.h"
 #include "version.h"
 
-using namespace std;
 using namespace hammer;
 using namespace hammer::project_generators;
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-typedef vector<boost::intrusive_ptr<build_node> > nodes_t;
+typedef std::vector<boost::intrusive_ptr<build_node> > nodes_t;
 
 namespace
 {
@@ -89,7 +88,7 @@ namespace
 
    struct hammer_options
    {
-      vector<string> build_request_options_;
+      std::vector<std::string> build_request_options_;
       bool generate_projects_localy_ = false;
       bool only_up_to_date_check_ = false;
       bool disable_batcher_ = false;
@@ -147,7 +146,7 @@ namespace
    po::options_description options_for_work()
    {
       po::options_description desc(options_for_help());
-      desc.add_options()("build-request", po::value<vector<string> >());
+      desc.add_options()("build-request", po::value<vector<std::string> >());
       build_request_options.add("build-request", -1);
       return desc;
    }
@@ -187,10 +186,10 @@ namespace
       return try_resolve_implicit_feature(fr, fr.get_def("variant"), value);
    }
 
-   void resolve_arguments(vector<string>& targets, feature_set* build_request,
-                          feature_registry& fr, const vector<string>& build_request_options)
+   void resolve_arguments(std::vector<std::string>& targets, feature_set* build_request,
+                          feature_registry& fr, const std::vector<std::string>& build_request_options)
    {
-      typedef vector<string>::const_iterator iter;
+      typedef std::vector<std::string>::const_iterator iter;
       for(iter i = build_request_options.begin(), last = build_request_options.end(); i != last; ++i)
       {
          string::size_type p = i->find('=');
@@ -210,7 +209,7 @@ namespace
       }
    }
 
-   void add_all_targets(vector<string>& targets, const hammer::project& project)
+   void add_all_targets(std::vector<std::string>& targets, const hammer::project& project)
    {
       for(hammer::project::targets_t::const_iterator i = project.targets().begin(), last = project.targets().end(); i != last; ++i)
       {
@@ -227,9 +226,9 @@ namespace
       return s.find('/') != string::npos;
    }
 
-   void split_target_path(string& target_path,
-                          string& target_name,
-                          const string& to_split)
+   void split_target_path(std::string& target_path,
+                          std::string& target_name,
+                          const std::string& to_split)
    {
       boost::smatch match;
       boost::regex pattern("(.+?)//(.+)");
@@ -252,17 +251,17 @@ namespace
       return count > 1;
    }
 
-   vector<basic_target*>
-   instantiate_targets(const vector<string>& targets,
+   std::vector<basic_target*>
+   instantiate_targets(const std::vector<std::string>& targets,
                        const hammer::project& project,
                        const feature_set& build_request)
    {
       typedef hammer::project::selected_targets_t selected_targets_t;
 
-      vector<basic_target*> result;
+      std::vector<basic_target*> result;
       feature_set* usage_requirements = project.get_engine()->feature_registry().make_set();
       const feature_set* build_request_with_defs = project.get_engine()->feature_registry().add_defaults(build_request.clone());
-      for(vector<string>::const_iterator i = targets.begin(), last = targets.end(); i != last; ++i)
+      for(std::vector<std::string>::const_iterator i = targets.begin(), last = targets.end(); i != last; ++i)
       {
          if (is_looks_like_project(*i))
          {
@@ -294,9 +293,9 @@ namespace
       return result;
    }
 
-   nodes_t generate_targets(const vector<basic_target*>& targets)
+   nodes_t generate_targets(const std::vector<basic_target*>& targets)
    {
-      typedef vector<basic_target*> targets_t;
+      typedef std::vector<basic_target*> targets_t;
       nodes_t result;
       for(targets_t::const_iterator i = targets.begin(), last = targets.end(); i!= last; ++i)
       {
@@ -837,10 +836,10 @@ int main(int argc, char** argv) {
                     "WARNING!!!WARNING!!!WARNING!!!WARNING!!!\n\n" << flush;
          }
 
-         vector<string> targets;
+         std::vector<std::string> targets;
          feature_set* build_request = engine.feature_registry().make_set();
          if (vm.count("build-request"))
-            resolve_arguments(targets, build_request, engine.feature_registry(), vm["build-request"].as<vector<string> >());
+            resolve_arguments(targets, build_request, engine.feature_registry(), vm["build-request"].as<vector<std::string> >());
 
          // lets handle 'toolset' feature in build request
 #if defined(_WIN32)
@@ -907,7 +906,7 @@ int main(int argc, char** argv) {
          if (opts.debug_level_ > 0) {
             cout << "...Targets to " << (opts.clean_all_ ? "clean-all" : "build") << " is: ";
             bool first_pass = true;
-            for(vector<string>::const_iterator i = targets.begin(), last = targets.end(); i != last; ++i) {
+            for(std::vector<std::string>::const_iterator i = targets.begin(), last = targets.end(); i != last; ++i) {
                if (first_pass)
                   first_pass = false;
                else
@@ -919,7 +918,7 @@ int main(int argc, char** argv) {
          }
 
          cout << "...instantiating... " << flush;
-         vector<basic_target*> instantiated_targets(instantiate_targets(targets, project_to_build, *build_request));
+         std::vector<basic_target*> instantiated_targets(instantiate_targets(targets, project_to_build, *build_request));
          cout << "Done." << endl;
 
          if (vm.count("instantiate"))
@@ -933,7 +932,7 @@ int main(int argc, char** argv) {
          } catch(const warehouse_unresolved_target_exception& e) {
             // ups - we have some libs to download
             warehouse& wh = engine.warehouse();
-            vector<warehouse::package_info> packages = wh.get_unresoved_targets_info(engine, find_all_warehouse_unresolved_targets(instantiated_targets));
+            std::vector<warehouse::package_info> packages = wh.get_unresoved_targets_info(engine, find_all_warehouse_unresolved_targets(instantiated_targets));
 
             cout << boost::format("\n\nThere are %d unresolved package(s) to download and install:\n\n") % packages.size();
 
@@ -947,7 +946,7 @@ int main(int argc, char** argv) {
                                                      3 /*formating extras*/;
 
             long long total_bytes_to_download = 0;
-            for(vector<warehouse::package_info>::const_iterator i = packages.begin(), last = packages.end(); i != last; ++i) {
+            for(std::vector<warehouse::package_info>::const_iterator i = packages.begin(), last = packages.end(); i != last; ++i) {
                cout << setw(max_package_name_lenght) << left << (i->name_ + " ("+ i->version_ + ")") << " : " << setw(10) << right << human_readable_byte_count(i->package_file_size_) << endl;
                total_bytes_to_download += i->package_file_size_;
             }

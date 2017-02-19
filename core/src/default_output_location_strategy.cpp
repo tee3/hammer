@@ -5,8 +5,6 @@
 #include <hammer/core/project.h>
 #include <iostream>
 
-using namespace std;
-
 namespace hammer{
 
 location_t default_output_location_strategy::compute_output_location(const main_target& mt) const

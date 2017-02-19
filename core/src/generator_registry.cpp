@@ -8,7 +8,6 @@
 #include <hammer/core/feature.h>
 #include <hammer/core/subfeature.h>
 
-using namespace std;
 using namespace boost;
 
 namespace hammer{
@@ -108,7 +107,7 @@ generator_registry::find_viable_generators(const target_type& t,
             }
 
             if (rank == generator_rank)
-               result.push_back(make_pair(i->second.get(), j->type_));
+               result.push_back(std::make_pair(i->second.get(), j->type_));
          }
       }
    }
@@ -240,7 +239,7 @@ generator_registry::construct(const main_target* mt) const
       main_viable_generators.push_back(g.first);
 
    if (main_viable_generators.empty())
-      throw runtime_error("Can't find transformation to '" + mt->type().tag().name() + "'.");
+      throw std::runtime_error("Can't find transformation to '" + mt->type().tag().name() + "'.");
 
    // generate target sources
    build_node::nodes_t generated_sources;
@@ -262,7 +261,7 @@ generator_registry::construct(const main_target* mt) const
    {
       // FIXME: error messages
       if (has_choosed_generator && i->all_consumed_)
-         throw runtime_error("Found more than one transformations from sources to target.\n"
+         throw std::runtime_error("Found more than one transformations from sources to target.\n"
                              "First  was '" + choosed_generator->generator_->name() + "', constraints: " + dump_for_hash(*choosed_generator->generator_->constraints(), true) + "\n"
                              "Second was '" + i->generator_->name() + "', constraints: " + dump_for_hash(*i->generator_->constraints(), true));
 
@@ -275,7 +274,7 @@ generator_registry::construct(const main_target* mt) const
 
    // FIXME: error messages
    if (!has_choosed_generator)
-      throw runtime_error((boost::format("Can't find transformation 'sources' -> '%s'.")
+      throw std::runtime_error((boost::format("Can't find transformation 'sources' -> '%s'.")
                               % mt->type().tag().name()).str());
 
    build_nodes_t r(choosed_generator->generator_->construct(mt->type(), mt->properties(), choosed_generator->transformed_sources_, 0, &mt->name(), *mt));

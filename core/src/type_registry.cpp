@@ -4,8 +4,6 @@
 #include <hammer/core/target_type.h>
 #include <hammer/core/types.h>
 
-using namespace std;
-
 namespace hammer{
 
    type_registry::type_registry()
@@ -53,8 +51,8 @@ namespace hammer{
 
          for(target_type::suffixes_t::const_iterator j = i->second->suffixes().begin(), j_last = i->second->suffixes().end(); j != j_last; ++j)
          {
-            string::size_type p = rfind(name, j->suffix_);//s_name.rfind(j->c_str());
-            if (p != string::npos &&
+            std::string::size_type p = rfind(name, j->suffix_);//s_name.rfind(j->c_str());
+            if (p != std::string::npos &&
                 p + j->suffix_.size() == name.size())
                return i->second;
          }
@@ -82,7 +80,7 @@ namespace hammer{
 
    const target_type* type_registry::resolve_from_suffix(const char* first, const char* last) const
    {
-      return resolve_from_suffix(string(first, last));
+      return resolve_from_suffix(std::string(first, last));
    }
 
    const target_type* type_registry::resolve_from_suffix(const std::string& suffix) const
@@ -91,7 +89,7 @@ namespace hammer{
       if (i != types_by_suffix_.end())
          return i->second;
       else
-         throw runtime_error("Can't find type with suffix '" + suffix + "'");
+         throw std::runtime_error("Can't find type with suffix '" + suffix + "'");
    }
 
    const target_type* type_registry::find(const type_tag& tag) const
@@ -109,7 +107,7 @@ namespace hammer{
       if (result != NULL)
          return *result;
       else
-         throw runtime_error("Can't find type with tag '" + tag.name() + "'");
+         throw std::runtime_error("Can't find type with tag '" + tag.name() + "'");
    }
 
    const target_type& type_registry::insert(const target_type& a_t)
@@ -117,7 +115,7 @@ namespace hammer{
       std::unique_ptr<target_type> t(a_t.clone(*this));
       // FIXME: This is due bug in ptr_container insert method
       type_tag tag(t->tag());
-      pair<types_t::iterator, bool> i = types_.insert(tag, t.get());
+      std::pair<types_t::iterator, bool> i = types_.insert(tag, t.get());
       if (i.second)
       {
          if (!t->suffixes().empty())

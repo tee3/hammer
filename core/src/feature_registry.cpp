@@ -308,7 +308,7 @@ namespace hammer{
 
    feature_set* feature_registry::make_set()
    {
-      unique_ptr<feature_set> r(new feature_set(this));
+      std::unique_ptr<feature_set> r(new feature_set(this));
       impl_->feature_set_list_.push_back(r.get());
 
       return r.release();
@@ -328,7 +328,7 @@ namespace hammer{
       if (i != impl_->defs_.end())
          throw std::runtime_error("Definition for feature '" + name + "' already registered");
 
-      auto r = impl_->defs_.insert(std::move(std::make_pair(name, unique_ptr<feature_def>(new feature_def(name, legal_values, attributes)))));
+      auto r = impl_->defs_.insert(std::move(std::make_pair(name, std::unique_ptr<feature_def>(new feature_def(name, legal_values, attributes)))));
       return *r.first->second;
    }
 
@@ -352,7 +352,7 @@ namespace hammer{
           def.attributes().generated ||
           def.attributes().undefined_)
       {
-         unique_ptr<feature> f(new feature(&def, value));
+         std::unique_ptr<feature> f(new feature(&def, value));
          result = f.get();
          impl_->non_cached_features_.push_back(f.get());
          f.release();

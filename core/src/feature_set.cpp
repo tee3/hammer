@@ -14,8 +14,6 @@
 #include <boost/spirit/include/classic_lists.hpp>
 #include <hammer/core/subfeature.h>
 
-using namespace std;
-
 namespace hammer{
 
 feature_set::feature_set(feature_registry* fr) : fr_(fr), has_undefined_(false)
@@ -64,7 +62,7 @@ const feature& feature_set::get(const char* name_) const
 {
    const_iterator f = find(name_);
    if (f == features_.end())
-      throw runtime_error("feature '" + string(name_) + "not founded");
+      throw std::runtime_error("feature '" + std::string(name_) + "not founded");
 
    return **f;
 }
@@ -253,6 +251,8 @@ bool feature_set::operator == (const feature_set& rhs) const
 
 bool feature_set::compatible_with(const feature_set& rhs) const
 {
+   using std::swap;
+
    if (this == &rhs)
       return true;
 
@@ -309,14 +309,14 @@ feature_set* parse_simple_set(const std::string& s, feature_registry& r)
 {
    using namespace boost::spirit::classic;
 
-   vector<string> feature_names, feature_values;
+   std::vector<std::string> feature_names, feature_values;
    if (parse(s.begin(), s.end(),
              list_p('<' >> (+(anychar_p - '>'))[push_back_a(feature_names)] >> '>' >>
                            (+(anychar_p - '/'))[push_back_a(feature_values)], ch_p('/'))
             ).full)
    {
       feature_set* result = r.make_set();
-      for(vector<string>::const_iterator i = feature_names.begin(), v_i = feature_values.begin(), last = feature_names.end(); i != last; ++i, ++v_i)
+      for(std::vector<std::string>::const_iterator i = feature_names.begin(), v_i = feature_values.begin(), last = feature_names.end(); i != last; ++i, ++v_i)
          result->join(i->c_str(), v_i->c_str());
 
       return result;
@@ -372,7 +372,7 @@ static void dump_for_hash(std::ostream& s, const feature& f)
    if (f.subfeatures().empty())
       return;
 
-   typedef vector<const subfeature*> subfeatures_t;
+   typedef std::vector<const subfeature*> subfeatures_t;
    subfeatures_t subfeatures;
    for(feature::subfeatures_t::const_iterator i = f.subfeatures().begin(), last = f.subfeatures().end(); i != last; ++i)
       subfeatures.push_back(*i);
@@ -405,7 +405,7 @@ void dump_for_hash(std::ostream& s, const feature_set& fs, bool dump_all)
       return;
    }
 
-   typedef vector<const feature*> features_t;
+   typedef std::vector<const feature*> features_t;
    features_t features;
    for(feature_set::const_iterator i = fs.begin(), last = fs.end(); i != last; ++i)
    {

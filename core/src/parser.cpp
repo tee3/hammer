@@ -10,8 +10,6 @@
 #include "build/hammerParser.h"
 #include "build/hammer_walker.h"
 
-using namespace std;
-
 namespace hammer{
 
    struct parser::impl_t
@@ -72,7 +70,7 @@ namespace hammer{
    bool parser::parse(const char* file_name)
    {
       if (!exists(boost::filesystem::path(file_name)))
-         throw std::runtime_error("Path does not exists '" + string(file_name) + "'");
+         throw std::runtime_error("Path does not exists '" + std::string(file_name) + "'");
 
       reset();
 

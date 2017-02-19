@@ -15,8 +15,6 @@
 #include <hammer/core/main_target.h>
 #include <hammer/core/feature_registry.h>
 
-using namespace std;
-
 namespace hammer{
 
 basic_meta_target::basic_meta_target(hammer::project* p,

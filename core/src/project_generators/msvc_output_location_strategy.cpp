@@ -8,8 +8,6 @@
 #include <boost/crypto/md5.hpp>
 #include <iostream>
 
-using namespace std;
-
 namespace hammer{
 
 location_t msvc_output_location_strategy::compute_output_location(const main_target& mt) const

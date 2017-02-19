@@ -19,7 +19,6 @@
 
 boost::filesystem::path test_data_path;
 
-using namespace std;
 using namespace hammer;
 using namespace boost::unit_test;
 using namespace boost::assign;
@@ -74,7 +73,7 @@ class checked_diagnostic : public diagnostic
       size_t expected_error_count() const { return expected_diags_.size(); }
 
    private:
-      typedef map<int, string> reported_lines_t;
+      typedef map<int, std::string> reported_lines_t;
 
       expected_diags_t expected_diags_;
       reported_lines_t reported_lines_;
@@ -115,7 +114,7 @@ void checked_diagnostic::report_unreported_diagnostics() const
 
    for (const auto& i : expected_diags_)
       if (reported_lines_.find(i.first) == reported_lines_.end())
-         BOOST_CHECK_MESSAGE(false, string("Diagnostic '") + i.second.first + "' was not reported");
+         BOOST_CHECK_MESSAGE(false, std::string("Diagnostic '") + i.second.first + "' was not reported");
       else
          covered_lines.insert(i.first);
 
@@ -129,7 +128,7 @@ static expected_diags_t extract_expected_diags(const fs::path& hamfile)
    expected_diags_t result;
 
    fs::ifstream stream(hamfile);
-   string line;
+   std::string line;
    boost::smatch m;
    int line_number = 1;
    while(getline(stream, line))
@@ -149,7 +148,7 @@ void test_function(const fs::path& hamfile)
    checked_diagnostic diag(extract_expected_diags(hamfile));
 
    {
-      vector<parscore::identifier> arg_names;
+      std::vector<parscore::identifier> arg_names;
       arg_names += "project-name", "requirements", "usage-requirements";
       rule_manager.add_target("project",
                               boost::function<void(const parscore::identifier&,
@@ -159,7 +158,7 @@ void test_function(const fs::path& hamfile)
    }
 
    {
-      vector<parscore::identifier> arg_names;
+      std::vector<parscore::identifier> arg_names;
       arg_names += "target-name", "sources", "requirements", "default-build", "usage-requirements";
       rule_manager.add_target("lib",
                               boost::function<void(const parscore::identifier&,
@@ -171,7 +170,7 @@ void test_function(const fs::path& hamfile)
    }
 
    {
-      vector<parscore::identifier> arg_names;
+      std::vector<parscore::identifier> arg_names;
       arg_names += "target-name", "sources", "requirements", "default-build", "usage-requirements";
       rule_manager.add_target("exe",
                               boost::function<void(const parscore::identifier&,
@@ -183,7 +182,7 @@ void test_function(const fs::path& hamfile)
    }
 
    {
-      vector<parscore::identifier> arg_names;
+      std::vector<parscore::identifier> arg_names;
       arg_names += "pattern";
       rule_manager.add_target("glob",
                               boost::function<void(const hammer::path_like_seq&)>(&glob_rule),
@@ -191,7 +190,7 @@ void test_function(const fs::path& hamfile)
    }
 
    {
-      vector<parscore::identifier> arg_names;
+      std::vector<parscore::identifier> arg_names;
       arg_names += "pattern";
       rule_manager.add_target("rglob",
                               boost::function<void(const hammer::path_like_seq&)>(&rglob_rule),

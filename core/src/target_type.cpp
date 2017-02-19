@@ -6,8 +6,6 @@
 #include <algorithm>
 #include <cassert>
 
-using namespace std;
-
 namespace hammer{
 
 target_type::target_type(const type_tag& tag, const suffix_def& suffix, const prefix_def& prefix)
@@ -82,8 +80,8 @@ const std::string& target_type::suffix_for(const std::string& s, const feature_s
 {
    for(target_type::suffixes_t::const_iterator i = suffixes_.begin(), last = suffixes_.end(); i != last; ++i)
    {
-      string::size_type p = s.rfind(i->suffix_.c_str());
-      if (p != string::npos &&
+      std::string::size_type p = s.rfind(i->suffix_.c_str());
+      if (p != std::string::npos &&
          p + i->suffix_.size() == s.size())
          return i->suffix_;
    }

@@ -6,15 +6,14 @@
 #include <hammer/core/subfeature.h>
 #include <hammer/core/feature_registry.h>
 
-using namespace std;
 using namespace hammer;
 
 BOOST_AUTO_TEST_CASE(feature_def_simple_methods)
 {
    feature_registry fr;
 
-   vector<string> empty_values;
-   vector<string> values;
+   std::vector<std::string> empty_values;
+   std::vector<std::string> values;
       values.push_back("on");
       values.push_back("of");
 

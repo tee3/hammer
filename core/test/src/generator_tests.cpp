@@ -21,7 +21,6 @@
 // I leave it here just in case
 using namespace hammer;
 using namespace hammer::project_generators;
-using namespace std;
 using namespace boost::unit_test;
 namespace fs = boost::filesystem;
 
@@ -287,7 +286,7 @@ struct generator_tests : setuped_engine
    void run_generators(const fs::path& test_data_path, msvc_solution::generation_mode::value mode = msvc_solution::generation_mode::NON_LOCAL)
    {
       msvc_solution_.reset(new test_msvc_solution(*p_, test_data_path / generators_output_dir_name_, mode));
-      for(vector<basic_target*>::iterator i = itargets_.begin(), last = itargets_.end(); i != last; ++i)
+      for(std::vector<basic_target*>::iterator i = itargets_.begin(), last = itargets_.end(); i != last; ++i)
       {
          std::vector<boost::intrusive_ptr<build_node> > r((**i).generate());
          sort_tree(r);
@@ -324,10 +323,10 @@ struct generator_tests : setuped_engine
    }
 
    jcf_parser checker_;
-   auto_ptr<test_msvc_solution> msvc_solution_;
+   std::auto_ptr<test_msvc_solution> msvc_solution_;
    const project* p_;
-   vector<basic_target*> itargets_;
-   vector<boost::intrusive_ptr<build_node> > nodes_;
+   std::vector<basic_target*> itargets_;
+   std::vector<boost::intrusive_ptr<build_node> > nodes_;
    std::string test_name_;
    location_t generators_output_dir_name_;
 };

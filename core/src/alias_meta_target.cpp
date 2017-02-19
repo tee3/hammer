@@ -8,8 +8,6 @@
 #include <hammer/core/feature.h>
 #include <hammer/core/fs_helpers.h>
 
-using namespace std;
-
 namespace hammer{
 
 alias_meta_target::alias_meta_target(hammer::project* p, const std::string& name,
@@ -51,7 +49,7 @@ void alias_meta_target::instantiate_impl(const main_target* owner,
       usage_requirements->join(sources_as_features);
    } else {
       // top level alias instantiation
-      vector<basic_target*> sources;
+      std::vector<basic_target*> sources;
       sources_decl simple_targets;
       meta_targets_t meta_targets;
       split_sources(&simple_targets, &meta_targets, this->sources(), build_request);

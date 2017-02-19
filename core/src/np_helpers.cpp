@@ -6,8 +6,6 @@
 #include <hammer/core/basic_target.h>
 #include <boost/crypto/md5.hpp>
 
-using namespace std;
-
 namespace hammer{
 
 static string compute_hash(const feature_set& features, const main_target& mt)

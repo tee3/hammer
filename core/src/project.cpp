@@ -7,8 +7,6 @@
 #include <boost/format.hpp>
 #include <sstream>
 
-using namespace std;
-
 namespace hammer{
 
 project::project(hammer::engine* e,
@@ -121,7 +119,7 @@ void error_cannot_choose_alternative(const project& p,
    auto fmt = boost::format("Failed to selecting best alternatives for target '%s' in project '%s'\n"
                             "Build request: %s\n");
 
-   stringstream s;
+   std::stringstream s;
    dump_for_hash(s, build_request_param);
    throw std::runtime_error((fmt % target_name % p.location()
                                  % s.str()).str());
@@ -141,7 +139,7 @@ project::try_select_best_alternative(const std::string& target_name,
    if (r.empty())
       throw std::runtime_error("Can't find target '" + target_name + "'");
 
-   vector<selected_target> selected_targets;
+   std::vector<selected_target> selected_targets;
 
    for(targets_t::const_iterator first = r.begin(), last = r.end(); first != last; ++first)
    {

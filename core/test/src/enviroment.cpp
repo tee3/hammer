@@ -21,7 +21,6 @@
 #include <hammer/core/htmpl/htmpl.h>
 
 using namespace hammer;
-using namespace std;
 namespace fs = boost::filesystem;
 using namespace boost::unit_test;
 
@@ -89,7 +88,7 @@ void complete_build_tests_environment::run_test(const boost::filesystem::path& w
 #endif
    build_request->join("variant", "debug");
 
-   vector<basic_target*> instantiated_targets;
+   std::vector<basic_target*> instantiated_targets;
    BOOST_REQUIRE_NO_THROW(p.instantiate("test", *build_request, &instantiated_targets));
    BOOST_REQUIRE(!instantiated_targets.empty());
 

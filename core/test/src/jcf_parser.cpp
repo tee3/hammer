@@ -10,8 +10,6 @@ extern "C"
 #include "jcf_parser.h"
 #include <boost/filesystem/convenience.hpp>
 
-using namespace std;
-
 struct jcf_parser::impl_t
 {
    impl_t() : input_(0), lexer_(0),
@@ -98,7 +96,7 @@ void jcf_parser::reset()
    impl_->input_ = 0;
 }
 
-void jcf_parser::walk(const vector<hammer::basic_target*>& targets, hammer::engine* e)
+void jcf_parser::walk(const std::vector<hammer::basic_target*>& targets, hammer::engine* e)
 {
    pANTLR3_COMMON_TREE_NODE_STREAM nodes;
    pjcf_walker          jcf_walker;

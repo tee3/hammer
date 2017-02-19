@@ -7,7 +7,6 @@
 
 boost::filesystem::path test_data_path;
 
-using namespace std;
 namespace fs = boost::filesystem;
 
 void init_instantiation_tests(const fs::path& test_data_root);

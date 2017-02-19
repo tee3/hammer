@@ -8,8 +8,6 @@
 #include "buffered_output_environment.h"
 #include <hammer/core/product_argument_writer.h>
 
-using namespace std;
-
 namespace hammer {
 
 class compile_fail_build_environment : public proxied_build_environment
@@ -34,14 +32,14 @@ class compile_fail_build_environment : public proxied_build_environment
 class compile_fail_build_action : public build_action
 {
    public:
-      compile_fail_build_action(unique_ptr<build_action> compile_action,
+      compile_fail_build_action(std::unique_ptr<build_action> compile_action,
                                 const target_type& output_target_type)
          : build_action("compile-fail.action"),
            compile_action_(move(compile_action)),
            output_target_type_(output_target_type)
       {}
 
-      string target_tag(const build_node& node,
+      std::string target_tag(const build_node& node,
                         const build_environment& environment) const override
       {
          return compile_action_->target_tag(node, environment);
@@ -54,7 +52,7 @@ class compile_fail_build_action : public build_action
          compile_fail_build_environment env(environment);
 
          product_argument_writer output_product_builder("compile-fail-output", output_target_type_);
-         stringstream product_path_stream;
+         std::stringstream product_path_stream;
          output_product_builder.write(product_path_stream, node, env);
 
          const bool result = !compile_action_->execute(node, env);
@@ -64,13 +62,13 @@ class compile_fail_build_action : public build_action
       }
 
    private:
-      unique_ptr<build_action> compile_action_;
+      std::unique_ptr<build_action> compile_action_;
       const target_type& output_target_type_;
 };
 
 compile_fail_generator::compile_fail_generator(engine& e,
-                                               unique_ptr<generator> compile_generator,
-                                               unique_ptr<build_action> compile_action)
+                                               std::unique_ptr<generator> compile_generator,
+                                               std::unique_ptr<build_action> compile_action)
    : generator(e,
                "compile-fail." + compile_generator->name(),
                compile_generator->consumable_types(),
@@ -80,7 +78,7 @@ compile_fail_generator::compile_fail_generator(engine& e,
      compile_generator_(move(compile_generator))
 {
    const target_type& output_type = e.get_type_registry().get(types::TESTING_OUTPUT);
-   unique_ptr<compile_fail_build_action> compile_fail_action(new compile_fail_build_action(move(compile_action), output_type));
+   std::unique_ptr<compile_fail_build_action> compile_fail_action(new compile_fail_build_action(move(compile_action), output_type));
    compile_generator_->action(move(compile_fail_action));
 }
 

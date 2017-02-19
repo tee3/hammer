@@ -9,7 +9,6 @@
 #include <hammer/core/fs_helpers.h>
 #include <stdexcept>
 
-using namespace std;
 namespace fs = boost::filesystem;
 
 namespace hammer {
@@ -68,7 +67,7 @@ htmpl_meta_target::construct_main_target(const main_target* owner,
       throw std::runtime_error("htmpl targets MUST not be used in alias-kind targets");
 
    const fs::path source = sources().begin()->target_path();
-   const string main_target_name = source.filename().stem().stem().string();
+   const std::string main_target_name = source.filename().stem().stem().string();
    // we use owner properties because htmpl targets created without any properties at all
    main_target* mt = new main_target(this,
                                      main_target_name,

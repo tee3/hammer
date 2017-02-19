@@ -8,8 +8,6 @@
 #include "non_buffered_token_stream.h"
 #include <hammer/core/feature_registry.h>
 
-using namespace std;
-
 namespace hammer{ namespace details{
 
 #define MAKE_CTX() hammer_parser_context& ctx = *static_cast<hammer_parser_context*>(parser->super)
@@ -21,7 +19,7 @@ void on_enter_rule(pANTLR3_PARSER parser, pANTLR3_UINT8 rule_name_)
    call_resolver& resolver = ctx.engine_->call_resolver();
    call_resolver::const_iterator i = resolver.find(rule_name);
    if (i == resolver.end())
-      throw std::runtime_error("Unknown rule '" + string(rule_name) + "'.");
+      throw std::runtime_error("Unknown rule '" + std::string(rule_name) + "'.");
 
    // this block implement feature creation hook to be able to answer on is_dependency_feature
    // question later, when feature will appear in code
@@ -97,7 +95,7 @@ bool argument_is_string(pANTLR3_PARSER parser)
 bool argument_is_string_list(pANTLR3_PARSER parser)
 {
    MAKE_CTX();
-   return ctx.rule_context_.rule_->second->args().at(ctx.rule_context_.arg_).ti() == typeid(vector<string>);
+   return ctx.rule_context_.rule_->second->args().at(ctx.rule_context_.arg_).ti() == typeid(std::vector<std::string>);
 }
 
 bool argument_is_feature(pANTLR3_PARSER parser)

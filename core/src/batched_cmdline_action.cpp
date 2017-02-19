@@ -5,8 +5,6 @@
 #include <hammer/core/build_node.h>
 #include <hammer/core/main_target.h>
 
-using namespace std;
-
 namespace hammer{
 
 batched_cmdline_action::batched_cmdline_action(const std::string& name)
