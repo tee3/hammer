@@ -18,14 +18,13 @@
 #include <hammer/core/main_target.h>
 #include "buffered_output_environment.h"
 
-using namespace boost;
 using namespace boost::multi_index;
 
 namespace hammer{
 namespace{
 
 struct build_queue_node_t;
-typedef unordered_set<build_queue_node_t*> build_queue_nodes_t;
+typedef boost::unordered_set<build_queue_node_t*> build_queue_nodes_t;
 
 struct build_queue_node_t
 {
@@ -41,7 +40,7 @@ struct build_queue_node_t
    build_queue_nodes_t uses_nodes_;
 };
 
-typedef unordered_map<const build_node*, build_queue_node_t*> nodes_to_build_t;
+typedef boost::unordered_map<const build_node*, build_queue_node_t*> nodes_to_build_t;
 struct build_queue_dependency_key_extractor
 {
    typedef unsigned int result_type;
@@ -65,12 +64,12 @@ typedef multi_index_container<build_queue_node_t*,
                              > build_queue_t;
 typedef build_queue_t::nth_index<0>::type queue_index_t;
 
-typedef unordered_set<build_queue_node_t*> nodes_in_progress_t;
+typedef boost::unordered_set<build_queue_node_t*> nodes_in_progress_t;
 
 struct worker_ctx_t
 {
-   worker_ctx_t(asio::io_service& scheduler,
-                asio::io_service::strand& strand,
+   worker_ctx_t(boost::asio::io_service& scheduler,
+                boost::asio::io_service::strand& strand,
                 build_queue_t& queue,
                 nodes_in_progress_t& nodes_in_progess,
                 build_queue_node_t* current_node)
@@ -86,8 +85,8 @@ struct worker_ctx_t
    build_node& node() { return *current_node_->node_; }
    build_queue_node_t& queue_node() { return *current_node_; }
 
-   asio::io_service& scheduler_;
-   asio::io_service::strand& strand_;
+   boost::asio::io_service& scheduler_;
+   boost::asio::io_service::strand& strand_;
    build_queue_t& queue_;
    nodes_in_progress_t& nodes_in_progess_;
    build_queue_node_t* current_node_;
@@ -118,10 +117,10 @@ struct builder::impl_t
                                     build_queue_node_t& parent_node,
                                     build_node& node,
                                     const project* bounds);
-   void task_completition_handler(shared_ptr<worker_ctx_t> ctx);
-   void task_handler(shared_ptr<worker_ctx_t> ctx);
+   void task_completition_handler(boost::shared_ptr<worker_ctx_t> ctx);
+   void task_handler(boost::shared_ptr<worker_ctx_t> ctx);
 
-   void flatter_queue(unordered_set<const build_queue_node_t*>& result,
+   void flatter_queue(boost::unordered_set<const build_queue_node_t*>& result,
                       const build_queue_node_t& node);
 
    const build_environment& environment_;
@@ -159,7 +158,7 @@ builder::result builder::build(nodes_t& nodes, const project* bounds)
    return impl_->build(nodes, bounds);
 }
 
-void builder::impl_t::task_handler(shared_ptr<worker_ctx_t> ctx)
+void builder::impl_t::task_handler(boost::shared_ptr<worker_ctx_t> ctx)
 {
    if (ctx->node().action())
    {
@@ -184,7 +183,7 @@ void mark_deps_failed_to_build(build_queue_node_t& node)
          mark_deps_failed_to_build(**i);
 }
 
-void builder::impl_t::task_completition_handler(shared_ptr<worker_ctx_t> ctx)
+void builder::impl_t::task_completition_handler(boost::shared_ptr<worker_ctx_t> ctx)
 {
    if (interrupt_flag_)
       return;
@@ -216,7 +215,7 @@ void builder::impl_t::task_completition_handler(shared_ptr<worker_ctx_t> ctx)
       build_queue_node_t& current_node = **current_node_iterator;
       if (current_node.dependencies_count_ == 0)
       {
-         shared_ptr<worker_ctx_t> worker_ctx(new worker_ctx_t(*ctx));
+         boost::shared_ptr<worker_ctx_t> worker_ctx(new worker_ctx_t(*ctx));
          worker_ctx->current_node_ = *current_node_iterator;
          worker_ctx->action_result_ = false;
          ctx->nodes_in_progess_.insert(&current_node);
@@ -267,7 +266,7 @@ void builder::generate_graphviz(std::ostream& os, const nodes_t& nodes, const pr
       if (!(**i).up_to_date() || impl_->unconditional_build_)
          impl_->gather_nodes(nodes_to_build, **i, bounds);
 
-   unordered_set<const build_queue_node_t*> all_build_nodes;
+   boost::unordered_set<const build_queue_node_t*> all_build_nodes;
    for(nodes_to_build_t::const_iterator i = nodes_to_build.begin(), last = nodes_to_build.end(); i != last; ++i)
       impl_->flatter_queue(all_build_nodes, *i->second);
 
@@ -343,7 +342,7 @@ void builder::generate_graphviz(std::ostream& os, const nodes_t& nodes, const pr
    os << "}";
 }
 
-void builder::impl_t::flatter_queue(unordered_set<const build_queue_node_t*>& result,
+void builder::impl_t::flatter_queue(boost::unordered_set<const build_queue_node_t*>& result,
                                     const build_queue_node_t& node)
 {
    if (result.find(&node) != result.end())
@@ -374,10 +373,10 @@ builder::result builder::impl_t::build(nodes_t& nodes, const project* bounds)
       return result_;
 
    boost::asio::io_service scheduler;
-   asio::io_service::strand strand(scheduler);
+   boost::asio::io_service::strand strand(scheduler);
    nodes_in_progress_t nodes_in_progress;
 
-   shared_ptr<worker_ctx_t> initial_ctx(
+   boost::shared_ptr<worker_ctx_t> initial_ctx(
       new worker_ctx_t(scheduler, strand, build_queue, nodes_in_progress, NULL));
 
    scheduler.post(boost::bind(&impl_t::task_completition_handler, this, initial_ctx));
@@ -385,7 +384,7 @@ builder::result builder::impl_t::build(nodes_t& nodes, const project* bounds)
    boost::thread_group thread_pool;
    if (worker_count_ > 1)
       for(unsigned i = 0; i < worker_count_ - 1; ++i)
-         thread_pool.create_thread(boost::bind(&asio::io_service::run, &scheduler));
+         thread_pool.create_thread(boost::bind(&boost::asio::io_service::run, &scheduler));
 
    scheduler.run();
 

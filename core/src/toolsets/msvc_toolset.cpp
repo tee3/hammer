@@ -23,7 +23,6 @@
 #include <hammer/core/batched_cmdline_action.h>
 
 using namespace boost::assign;
-using namespace boost;
 
 namespace hammer{
 
@@ -101,15 +100,15 @@ void msvc_toolset::init(engine& e,
       generator_condition->join("toolset", name().c_str());
 
    cmdline_builder setup_vars("call \"" + config_data.setup_script_.string() + "\" >nul");
-   shared_ptr<source_argument_writer> static_lib_sources(new source_argument_writer("static_lib_sources", e.get_type_registry().get(types::STATIC_LIB), true, source_argument_writer::FULL_PATH));
-   shared_ptr<source_argument_writer> searched_lib_sources(new source_argument_writer("searched_lib_sources", e.get_type_registry().get(types::SEARCHED_LIB), false, source_argument_writer::WITHOUT_PATH));
-   shared_ptr<source_argument_writer> prebuilt_lib_sources(new source_argument_writer("prebuilt_lib_sources", e.get_type_registry().get(types::PREBUILT_STATIC_LIB), true, source_argument_writer::FULL_PATH));
-   shared_ptr<source_argument_writer> import_lib_sources(new source_argument_writer("import_lib_sources", e.get_type_registry().get(types::IMPORT_LIB), true, source_argument_writer::FULL_PATH));
+   boost::shared_ptr<source_argument_writer> static_lib_sources(new source_argument_writer("static_lib_sources", e.get_type_registry().get(types::STATIC_LIB), true, source_argument_writer::FULL_PATH));
+   boost::shared_ptr<source_argument_writer> searched_lib_sources(new source_argument_writer("searched_lib_sources", e.get_type_registry().get(types::SEARCHED_LIB), false, source_argument_writer::WITHOUT_PATH));
+   boost::shared_ptr<source_argument_writer> prebuilt_lib_sources(new source_argument_writer("prebuilt_lib_sources", e.get_type_registry().get(types::PREBUILT_STATIC_LIB), true, source_argument_writer::FULL_PATH));
+   boost::shared_ptr<source_argument_writer> import_lib_sources(new source_argument_writer("import_lib_sources", e.get_type_registry().get(types::IMPORT_LIB), true, source_argument_writer::FULL_PATH));
 
-   shared_ptr<product_argument_writer> obj_product(new product_argument_writer("obj_product", e.get_type_registry().get(types::OBJ)));
-   shared_ptr<product_argument_writer> pch_product(new product_argument_writer("pch_product", e.get_type_registry().get(types::PCH)));
+   boost::shared_ptr<product_argument_writer> obj_product(new product_argument_writer("obj_product", e.get_type_registry().get(types::OBJ)));
+   boost::shared_ptr<product_argument_writer> pch_product(new product_argument_writer("pch_product", e.get_type_registry().get(types::PCH)));
 
-   shared_ptr<free_feature_arg_writer> searched_lib_searched_dirs(
+   boost::shared_ptr<free_feature_arg_writer> searched_lib_searched_dirs(
       new free_feature_arg_writer("searched_lib_searched_dirs",
                                   e.feature_registry().get_def("search"),
                                   std::string(),
@@ -118,7 +117,7 @@ void msvc_toolset::init(engine& e,
                                   "/LIBPATH:\"",
                                   "\""));
 
-   shared_ptr<fs_argument_writer> link_flags(new fs_argument_writer("link_flags", e.feature_registry()));
+   boost::shared_ptr<fs_argument_writer> link_flags(new fs_argument_writer("link_flags", e.feature_registry()));
    link_flags->add("<debug-symbols>on", "/DEBUG /INCREMENTAL").
                add("<debug-symbols>on/<runtime-debugging>off", "/OPT:REF,ICF").
                add("<user-interface>console", "/subsystem:console").
@@ -128,7 +127,7 @@ void msvc_toolset::init(engine& e,
                add("<user-interface>native", "/subsystem:native").
                add("<user-interface>auto", "/subsystem:posix");
 
-   shared_ptr<fs_argument_writer> cflags(new fs_argument_writer("cflags", e.feature_registry()));
+   boost::shared_ptr<fs_argument_writer> cflags(new fs_argument_writer("cflags", e.feature_registry()));
    cflags->add("<optimization>speed", "/O2").
            add("<optimization>space", "/O1").
            add("<optimization>off", "/Od").
@@ -148,30 +147,30 @@ void msvc_toolset::init(engine& e,
            add("<runtime-debugging>off/<runtime-link>shared", "/MD").
            add("<runtime-debugging>on/<runtime-link>shared", "/MDd");
 
-   shared_ptr<fs_argument_writer> cppflags(new fs_argument_writer("cppflags", e.feature_registry()));
+   boost::shared_ptr<fs_argument_writer> cppflags(new fs_argument_writer("cppflags", e.feature_registry()));
    cppflags->add("<exception-handling>on/<asynch-exceptions>off/<extern-c-nothrow>off", "/EHs").
              add("<exception-handling>on/<asynch-exceptions>off/<extern-c-nothrow>on", "/EHsc").
              add("<exception-handling>on/<asynch-exceptions>on/<extern-c-nothrow>off", "/EHa").
              add("<exception-handling>on/<asynch-exceptions>on/<extern-c-nothrow>on", "/EHac");
 
-   shared_ptr<free_feature_arg_writer> user_c_flags(new free_feature_arg_writer("user_c_flags", e.feature_registry().get_def("cflags")));
-   shared_ptr<free_feature_arg_writer> user_link_flags(new free_feature_arg_writer("user_link_flags", e.feature_registry().get_def("linkflags")));
-   shared_ptr<free_feature_arg_writer> user_cxx_flags(new free_feature_arg_writer("user_cxx_flags", e.feature_registry().get_def("cxxflags")));
-   shared_ptr<free_feature_arg_writer> user_archive_flags(new free_feature_arg_writer("user_archive_flags", e.feature_registry().get_def("archiveflags")));
+   boost::shared_ptr<free_feature_arg_writer> user_c_flags(new free_feature_arg_writer("user_c_flags", e.feature_registry().get_def("cflags")));
+   boost::shared_ptr<free_feature_arg_writer> user_link_flags(new free_feature_arg_writer("user_link_flags", e.feature_registry().get_def("linkflags")));
+   boost::shared_ptr<free_feature_arg_writer> user_cxx_flags(new free_feature_arg_writer("user_cxx_flags", e.feature_registry().get_def("cxxflags")));
+   boost::shared_ptr<free_feature_arg_writer> user_archive_flags(new free_feature_arg_writer("user_archive_flags", e.feature_registry().get_def("archiveflags")));
 
-   shared_ptr<free_feature_arg_writer> includes(new free_feature_arg_writer("includes", e.feature_registry().get_def("include"), "-I \"", "\""));
-   shared_ptr<free_feature_arg_writer> defines(new free_feature_arg_writer("defines", e.feature_registry().get_def("define"), "-D \"", "\""));
-   shared_ptr<free_feature_arg_writer> undefines(new free_feature_arg_writer("undefines", e.feature_registry().get_def("undef"), "-U \"", "\""));
+   boost::shared_ptr<free_feature_arg_writer> includes(new free_feature_arg_writer("includes", e.feature_registry().get_def("include"), "-I \"", "\""));
+   boost::shared_ptr<free_feature_arg_writer> defines(new free_feature_arg_writer("defines", e.feature_registry().get_def("define"), "-D \"", "\""));
+   boost::shared_ptr<free_feature_arg_writer> undefines(new free_feature_arg_writer("undefines", e.feature_registry().get_def("undef"), "-U \"", "\""));
 
-   shared_ptr<source_argument_writer> cpp_input(new source_argument_writer("cpp_input", e.get_type_registry().get(types::CPP), /*exact_type=*/false));
-   shared_ptr<source_argument_writer> res_sources(new source_argument_writer("res_sources", e.get_type_registry().get(types::RES)));
-   shared_ptr<pch_argument_writer> create_pch_header(new pch_argument_writer("create_pch_header", pch_argument_writer::part::header,
+   boost::shared_ptr<source_argument_writer> cpp_input(new source_argument_writer("cpp_input", e.get_type_registry().get(types::CPP), /*exact_type=*/false));
+   boost::shared_ptr<source_argument_writer> res_sources(new source_argument_writer("res_sources", e.get_type_registry().get(types::RES)));
+   boost::shared_ptr<pch_argument_writer> create_pch_header(new pch_argument_writer("create_pch_header", pch_argument_writer::part::header,
                                                                              "/Yc\"", "\""));
-   shared_ptr<pch_argument_writer> use_pch_header(new pch_argument_writer("use_pch_header", pch_argument_writer::part::header,
+   boost::shared_ptr<pch_argument_writer> use_pch_header(new pch_argument_writer("use_pch_header", pch_argument_writer::part::header,
                                                                           "/Yu\"", "\""));
-   shared_ptr<pch_argument_writer> use_pch_product(new pch_argument_writer("use_pch_product", pch_argument_writer::part::product,
+   boost::shared_ptr<pch_argument_writer> use_pch_product(new pch_argument_writer("use_pch_product", pch_argument_writer::part::product,
                                                                            "/Fp\"", "\""));
-   shared_ptr<output_dir_argument_writer> output_dir(new output_dir_argument_writer("output_dir"));
+   boost::shared_ptr<output_dir_argument_writer> output_dir(new output_dir_argument_writer("output_dir"));
 
    const std::string generator_prefix = name() + "-" + version_id;
 
@@ -257,7 +256,7 @@ void msvc_toolset::init(engine& e,
 
    // C -> OBJ
    {
-      shared_ptr<source_argument_writer> c_source(new source_argument_writer("c_source", e.get_type_registry().get(types::C)));
+      boost::shared_ptr<source_argument_writer> c_source(new source_argument_writer("c_source", e.get_type_registry().get(types::C)));
       cmdline_builder obj_cmd(config_data.compiler_.string() +
                               " /c /TC /nologo $(cflags) $(user_c_flags) $(includes) $(undefines) $(defines) $(c_source) /Fo\"$(obj_product)\" /FS /Fd\"$(output_dir)\\vc.pdb\"");
       obj_cmd += cflags;
@@ -283,8 +282,8 @@ void msvc_toolset::init(engine& e,
 
    // RC -> RES
    {
-      shared_ptr<source_argument_writer> rc_source(new source_argument_writer("rc_source", e.get_type_registry().get(types::RC)));
-      shared_ptr<product_argument_writer> res_product(new product_argument_writer("res_product", e.get_type_registry().get(types::RES)));
+      boost::shared_ptr<source_argument_writer> rc_source(new source_argument_writer("rc_source", e.get_type_registry().get(types::RC)));
+      boost::shared_ptr<product_argument_writer> res_product(new product_argument_writer("res_product", e.get_type_registry().get(types::RES)));
       cmdline_builder res_cmd(config_data.resource_compiler_.string() + " $(includes) $(undefines) $(defines) /Fo\"$(res_product)\" $(rc_source)");
 
       res_cmd += rc_source;
@@ -308,11 +307,11 @@ void msvc_toolset::init(engine& e,
 
    // ... -> EXE
    {
-      shared_ptr<source_argument_writer> obj_sources(new source_argument_writer("obj_sources", e.get_type_registry().get(types::OBJ)));
-      shared_ptr<product_argument_writer> exe_product_unc(new product_argument_writer("exe_product_unc", e.get_type_registry().get(types::EXE),
+      boost::shared_ptr<source_argument_writer> obj_sources(new source_argument_writer("obj_sources", e.get_type_registry().get(types::OBJ)));
+      boost::shared_ptr<product_argument_writer> exe_product_unc(new product_argument_writer("exe_product_unc", e.get_type_registry().get(types::EXE),
                                                                                       product_argument_writer::output_strategy::FULL_PATH));
-      shared_ptr<product_argument_writer> exe_product(new product_argument_writer("exe_product", e.get_type_registry().get(types::EXE)));
-      shared_ptr<product_argument_writer> exe_manifest_product(new product_argument_writer("exe_manifest_product", e.get_type_registry().get(types::EXE_MANIFEST)));
+      boost::shared_ptr<product_argument_writer> exe_product(new product_argument_writer("exe_product", e.get_type_registry().get(types::EXE)));
+      boost::shared_ptr<product_argument_writer> exe_manifest_product(new product_argument_writer("exe_manifest_product", e.get_type_registry().get(types::EXE_MANIFEST)));
       cmdline_builder exe_cmd(config_data.linker_.string() + " \"@$(exe_product).rsp\"\n"
                               "if %ERRORLEVEL% NEQ 0 EXIT %ERRORLEVEL%\n"
                               "if exist \"$(exe_manifest_product)\" (" + config_data.manifest_tool_.string() + " -nologo -manifest \"$(exe_manifest_product)\" \"-outputresource:$(exe_product);1\")");
@@ -354,9 +353,9 @@ void msvc_toolset::init(engine& e,
 
    // ... -> STATIC_LIB
    {
-      shared_ptr<source_argument_writer> obj_sources(new source_argument_writer("obj_sources", e.get_type_registry().get(types::OBJ)));
-      shared_ptr<product_argument_writer> static_lib_product(new product_argument_writer("static_lib_product", e.get_type_registry().get(types::STATIC_LIB)));
-      shared_ptr<product_argument_writer> static_lib_product_unc(new product_argument_writer("static_lib_product_unc",
+      boost::shared_ptr<source_argument_writer> obj_sources(new source_argument_writer("obj_sources", e.get_type_registry().get(types::OBJ)));
+      boost::shared_ptr<product_argument_writer> static_lib_product(new product_argument_writer("static_lib_product", e.get_type_registry().get(types::STATIC_LIB)));
+      boost::shared_ptr<product_argument_writer> static_lib_product_unc(new product_argument_writer("static_lib_product_unc",
                                                                                              e.get_type_registry().get(types::STATIC_LIB),
                                                                                              product_argument_writer::output_strategy::FULL_PATH));
       cmdline_builder static_lib_rsp("$(user_archive_flags) /out:\"$(static_lib_product)\"\n$(obj_sources)");
@@ -387,12 +386,12 @@ void msvc_toolset::init(engine& e,
 
    // ... -> SHARED_LIB IMPORT_LIB
    {
-      shared_ptr<source_argument_writer> obj_sources(new source_argument_writer("obj_sources", e.get_type_registry().get(types::OBJ)));
-      shared_ptr<product_argument_writer> import_lib_product(new product_argument_writer("import_lib_product", e.get_type_registry().get(types::IMPORT_LIB)));
-      shared_ptr<product_argument_writer> shared_lib_rel_product(new product_argument_writer("shared_lib_rel_product", e.get_type_registry().get(types::SHARED_LIB)));
-      shared_ptr<product_argument_writer> shared_lib_product(new product_argument_writer("shared_lib_product", e.get_type_registry().get(types::SHARED_LIB),
+      boost::shared_ptr<source_argument_writer> obj_sources(new source_argument_writer("obj_sources", e.get_type_registry().get(types::OBJ)));
+      boost::shared_ptr<product_argument_writer> import_lib_product(new product_argument_writer("import_lib_product", e.get_type_registry().get(types::IMPORT_LIB)));
+      boost::shared_ptr<product_argument_writer> shared_lib_rel_product(new product_argument_writer("shared_lib_rel_product", e.get_type_registry().get(types::SHARED_LIB)));
+      boost::shared_ptr<product_argument_writer> shared_lib_product(new product_argument_writer("shared_lib_product", e.get_type_registry().get(types::SHARED_LIB),
                                                                                          product_argument_writer::output_strategy::FULL_PATH));
-      shared_ptr<product_argument_writer> dll_manifest_product(new product_argument_writer("dll_manifest_product", e.get_type_registry().get(types::DLL_MANIFEST)));
+      boost::shared_ptr<product_argument_writer> dll_manifest_product(new product_argument_writer("dll_manifest_product", e.get_type_registry().get(types::DLL_MANIFEST)));
       cmdline_builder shared_lib_cmd(config_data.linker_.string() + " \"@$(shared_lib_rel_product).rsp\"\n"
                                      "if %ERRORLEVEL% NEQ 0 EXIT %ERRORLEVEL%\n"
                                      "if exist \"$(dll_manifest_product)\" (" + config_data.manifest_tool_.string() + " -nologo -manifest \"$(dll_manifest_product)\" \"-outputresource:$(shared_lib_rel_product);2\")");

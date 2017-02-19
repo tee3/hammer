@@ -8,8 +8,6 @@
 #include <hammer/core/feature.h>
 #include <hammer/core/subfeature.h>
 
-using namespace boost;
-
 namespace hammer{
 
 void generator_registry::insert(std::unique_ptr<generator> g)

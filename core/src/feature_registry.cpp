@@ -15,7 +15,6 @@
 #include <hammer/core/feature.h>
 #include <hammer/core/subfeature.h>
 
-using namespace boost;
 using namespace boost::multi_index;
 
 namespace hammer{
@@ -193,7 +192,7 @@ namespace hammer{
       struct feature_storage_key_extractor
       {
          typedef const feature& result_type;
-         result_type operator()(const shared_ptr<feature>& v) const { return *v; }
+         result_type operator()(const boost::shared_ptr<feature>& v) const { return *v; }
       };
 
       typedef std::map<std::string, std::unique_ptr<feature_def> > defs_t;
@@ -359,7 +358,7 @@ namespace hammer{
          result = impl_->find_feature(name, value);
          if (result == NULL)
          {
-            shared_ptr<feature> f(new feature(&def, value));
+            boost::shared_ptr<feature> f(new feature(&def, value));
             result = f.get();
             impl_->features_.get<0>().insert(f);
          }
@@ -462,7 +461,7 @@ namespace hammer{
       {
          feature::subfeatures_t new_subfeatures(f.subfeatures());
          new_subfeatures.push_back(&sf);
-         shared_ptr<feature> shared_result(new feature(&f.definition(), f.value(), new_subfeatures));
+         boost::shared_ptr<feature> shared_result(new feature(&f.definition(), f.value(), new_subfeatures));
          result = shared_result.get();
          impl_->features_.get<0>().insert(shared_result);
       }

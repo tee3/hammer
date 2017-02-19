@@ -84,7 +84,7 @@ class checked_diagnostic : public diagnostic
 void checked_diagnostic::report(const char* formated_message)
 {
    boost::cmatch m;
-   if (regex_search(formated_message, m, boost::regex(".+?\\((\\d+)\\) : (\\w+): (.*)"))) {
+   if (boost::regex_search(formated_message, m, boost::regex(".+?\\((\\d+)\\) : (\\w+): (.*)"))) {
       // m[1] line number
       // m[2] message type
       // m[3] message
@@ -133,7 +133,7 @@ static expected_diags_t extract_expected_diags(const fs::path& hamfile)
    int line_number = 1;
    while(getline(stream, line))
    {
-      if (regex_search(line, m, boost::regex(".*?#(\\w+): (.+)")))
+      if (boost::regex_search(line, m, boost::regex(".*?#(\\w+): (.+)")))
          result[line_number] = make_pair(m[2], diagnostic::type::error);
 
       ++line_number;
