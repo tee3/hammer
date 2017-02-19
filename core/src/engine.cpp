@@ -47,24 +47,24 @@ namespace hammer{
 engine::engine()
    :  feature_registry_(0)
 {
-   auto_ptr<hammer::feature_registry> fr(new hammer::feature_registry());
+   std::auto_ptr<hammer::feature_registry> fr(new hammer::feature_registry());
 
-   resolver_.insert("project", boost::function<void (project*, vector<string>&, project_requirements_decl*, project_requirements_decl*)>(boost::bind(&engine::project_rule, this, _1, _2, _3, _4)));
-   resolver_.insert("lib", boost::function<void (project*, vector<string>&, sources_decl*, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::lib_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("searched-shared-lib", boost::function<void (project*, vector<string>&, sources_decl*, string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::searched_shared_lib_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("searched-static-lib", boost::function<void (project*, string&, sources_decl*, string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::searched_static_lib_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("prebuilt-lib", boost::function<void (project*, string&, sources_decl*, string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::prebuilt_lib_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("file", boost::function<void (project*, vector<string>&, string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::file_rule, this, _1, _2, _3, _4, _5)));
-   resolver_.insert("header-lib", boost::function<void (project*, vector<string>&, sources_decl*, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::header_lib_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("exe", boost::function<void (project*, vector<string>&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::exe_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("obj", boost::function<void (project*, string&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::obj_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("pch", boost::function<void (project*, string&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::pch_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("copy", boost::function<void (project*, string&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::copy_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("alias", boost::function<void (project*, string&, sources_decl*, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::alias_rule, this, _1, _2, _3, _4, _5, _6)));
-   resolver_.insert("version-alias", boost::function<void (project*, string&, string&, const string*)>(boost::bind(&engine::version_alias_rule, this, _1, _2, _3, _4)));
-   resolver_.insert("target-version-alias", boost::function<void (project*, string&, string&, const string*)>(boost::bind(&engine::target_version_alias_rule, this, _1, _2, _3, _4)));
-   resolver_.insert("test-suite", boost::function<void (project*, string&, sources_decl&, sources_decl*)>(boost::bind(&engine::test_suite_rule, this, _1, _2, _3, _4)));
-   resolver_.insert("testing.run", boost::function<sources_decl (project*, sources_decl*, std::vector<string>*, std::vector<string>*, requirements_decl*, string*)>(boost::bind(&engine::testing_run_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("project", boost::function<void (project*, vector<std::string>&, project_requirements_decl*, project_requirements_decl*)>(boost::bind(&engine::project_rule, this, _1, _2, _3, _4)));
+   resolver_.insert("lib", boost::function<void (project*, vector<std::string>&, sources_decl*, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::lib_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("searched-shared-lib", boost::function<void (project*, vector<std::string>&, sources_decl*, std::string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::searched_shared_lib_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("searched-static-lib", boost::function<void (project*, std::string&, sources_decl*, std::string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::searched_static_lib_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("prebuilt-lib", boost::function<void (project*, std::string&, sources_decl*, std::string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::prebuilt_lib_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("file", boost::function<void (project*, vector<std::string>&, std::string&, requirements_decl*, requirements_decl*)>(boost::bind(&engine::file_rule, this, _1, _2, _3, _4, _5)));
+   resolver_.insert("header-lib", boost::function<void (project*, vector<std::string>&, sources_decl*, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::header_lib_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("exe", boost::function<void (project*, vector<std::string>&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::exe_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("obj", boost::function<void (project*, std::string&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::obj_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("pch", boost::function<void (project*, std::string&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::pch_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("copy", boost::function<void (project*, std::string&, sources_decl&, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::copy_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("alias", boost::function<void (project*, std::string&, sources_decl*, requirements_decl*, feature_set*, requirements_decl*)>(boost::bind(&engine::alias_rule, this, _1, _2, _3, _4, _5, _6)));
+   resolver_.insert("version-alias", boost::function<void (project*, std::string&, std::string&, const std::string*)>(boost::bind(&engine::version_alias_rule, this, _1, _2, _3, _4)));
+   resolver_.insert("target-version-alias", boost::function<void (project*, std::string&, std::string&, const std::string*)>(boost::bind(&engine::target_version_alias_rule, this, _1, _2, _3, _4)));
+   resolver_.insert("test-suite", boost::function<void (project*, std::string&, sources_decl&, sources_decl*)>(boost::bind(&engine::test_suite_rule, this, _1, _2, _3, _4)));
+   resolver_.insert("testing.run", boost::function<sources_decl (project*, sources_decl*, std::vector<std::string>*, std::vector<std::string>*, requirements_decl*, std::string*)>(boost::bind(&engine::testing_run_rule, this, _1, _2, _3, _4, _5, _6)));
    resolver_.insert("testing.compile-fail", boost::function<sources_decl (project*, const sources_decl&, requirements_decl*, requirements_decl*, requirements_decl*)>(boost::bind(&engine::testing_compile_fail_rule, this, _1, _2, _3, _4, _5)));
    resolver_.insert("import", boost::function<void (project*, vector<string>&)>(boost::bind(&engine::import_rule, this, _1, _2)));
    resolver_.insert("feature.feature", boost::function<void (project*, vector<string>&, vector<string>*, vector<string>*)>(boost::bind(&engine::feature_feature_rule, this, _1, _2, _3, _4)));
@@ -490,7 +490,7 @@ void engine::project_rule(project* p, std::vector<string>& name,
 void engine::lib_rule(project* p, std::vector<string>& name, sources_decl* sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
+   std::unique_ptr<basic_meta_target> mt(new lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
                                                       usage_requirements ? *usage_requirements : requirements_decl()));
    if (sources)
       mt->sources(*sources);
@@ -505,7 +505,7 @@ void engine::searched_shared_lib_rule(project* p,
                                       requirements_decl* requirements,
                                       requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
+   std::unique_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
                                                                name.at(0),
                                                                lib_name,
                                                                requirements ? *requirements : requirements_decl(),
@@ -524,7 +524,7 @@ void engine::searched_static_lib_rule(project* p,
                                       requirements_decl* requirements,
                                       requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
+   std::unique_ptr<basic_meta_target> mt(new searched_lib_meta_target(p,
                                                                name,
                                                                lib_name,
                                                                requirements ? *requirements : requirements_decl(),
@@ -543,7 +543,7 @@ void engine::prebuilt_lib_rule(project* p,
                                requirements_decl* requirements,
                                requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new prebuilt_lib_meta_target(p,
+   std::unique_ptr<basic_meta_target> mt(new prebuilt_lib_meta_target(p,
                                                                name,
                                                                lib_filename,
                                                                requirements ? *requirements : requirements_decl(),
@@ -560,7 +560,7 @@ void engine::file_rule(project* p,
                        requirements_decl* requirements,
                        requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new file_meta_target(p,
+   std::unique_ptr<basic_meta_target> mt(new file_meta_target(p,
                                                        name.at(0),
                                                        filename,
                                                        requirements ? *requirements : requirements_decl(),
@@ -571,7 +571,7 @@ void engine::file_rule(project* p,
 void engine::header_lib_rule(project* p, std::vector<std::string>& name, sources_decl* sources, requirements_decl* requirements,
                              feature_set* default_build, requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new header_lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
+   std::unique_ptr<basic_meta_target> mt(new header_lib_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
                                                              usage_requirements ? *usage_requirements : requirements_decl()));
    if (sources)
       mt->sources(*sources);
@@ -582,7 +582,7 @@ void engine::header_lib_rule(project* p, std::vector<std::string>& name, sources
 void engine::exe_rule(project* p, std::vector<std::string>& name, sources_decl& sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new typed_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
+   std::unique_ptr<basic_meta_target> mt(new typed_meta_target(p, name.at(0), requirements ? *requirements : requirements_decl(),
                                                         usage_requirements ? *usage_requirements : requirements_decl(),
                                                         get_type_registry().get(types::EXE)));
    mt->sources(sources);
@@ -592,7 +592,7 @@ void engine::exe_rule(project* p, std::vector<std::string>& name, sources_decl& 
 void engine::obj_rule(project* p, std::string& name, sources_decl& sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new obj_meta_target(p, name, requirements ? *requirements : requirements_decl(),
+   std::unique_ptr<basic_meta_target> mt(new obj_meta_target(p, name, requirements ? *requirements : requirements_decl(),
                                                       usage_requirements ? *usage_requirements : requirements_decl()));
    mt->sources(sources);
    p->add_target(mt);
@@ -601,7 +601,7 @@ void engine::obj_rule(project* p, std::string& name, sources_decl& sources, requ
 void engine::pch_rule(project* p, std::string& name, sources_decl& sources, requirements_decl* requirements,
                       feature_set* default_build, requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new pch_meta_target(p, name, requirements ? *requirements : requirements_decl(),
+   std::unique_ptr<basic_meta_target> mt(new pch_meta_target(p, name, requirements ? *requirements : requirements_decl(),
       usage_requirements ? *usage_requirements : requirements_decl()));
    mt->sources(sources);
    p->add_target(mt);
@@ -610,7 +610,7 @@ void engine::pch_rule(project* p, std::string& name, sources_decl& sources, requ
 void engine::copy_rule(project* p, std::string& name, sources_decl& sources, requirements_decl* requirements,
                        feature_set* default_build, requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new copy_meta_target(p,
+   std::unique_ptr<basic_meta_target> mt(new copy_meta_target(p,
                                                        name,
                                                        requirements ? *requirements : requirements_decl(),
                                                        usage_requirements ? *usage_requirements : requirements_decl()));
@@ -736,7 +736,7 @@ void engine::alias_rule(project* p,
                         feature_set* default_build,
                         requirements_decl* usage_requirements)
 {
-   std::auto_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
+   std::unique_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
                                                         sources == NULL ? sources_decl() : *sources,
                                                         requirements ? *requirements : requirements_decl(),
                                                         usage_requirements ? *usage_requirements : requirements_decl()));
@@ -748,7 +748,7 @@ void engine::version_alias_rule(project* p,
                                 std::string& version,
                                 const std::string* target_path)
 {
-   std::auto_ptr<basic_meta_target> mt(new version_alias_meta_target(p, name, version, target_path));
+   std::unique_ptr<basic_meta_target> mt(new version_alias_meta_target(p, name, version, target_path));
    p->add_target(mt);
 }
 
@@ -757,7 +757,7 @@ void engine::target_version_alias_rule(project* p,
                                        std::string& version,
                                        const std::string* target_path)
 {
-   std::auto_ptr<basic_meta_target> mt(new target_version_alias_meta_target(p, name, version, target_path));
+   std::unique_ptr<basic_meta_target> mt(new target_version_alias_meta_target(p, name, version, target_path));
    p->add_target(mt);
 }
 
@@ -782,7 +782,7 @@ void engine::test_suite_rule(project* p,
       else
          i->properties(additional_sources_set);
 
-   std::auto_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
+   std::unique_ptr<basic_meta_target> mt(new alias_meta_target(p, name,
                                                         sources,
                                                         requirements_decl(),
                                                         requirements_decl()));
@@ -807,7 +807,7 @@ sources_decl engine::testing_run_rule(project* p,
          throw std::runtime_error("Target must have either sources or target name");
 
    const std::string& exe_name = real_target_name;
-   std::auto_ptr<basic_meta_target> intermediate_exe(
+   std::unique_ptr<basic_meta_target> intermediate_exe(
       new testing_intermediate_meta_target(p,
                                            exe_name,
                                            requirements != NULL ? *requirements
@@ -830,7 +830,7 @@ sources_decl engine::testing_run_rule(project* p,
       for(vector<std::string>::const_iterator i = args->begin(), last = args->end(); i != last; ++i)
          run_requirements.add(*this->feature_registry().create_feature("testing.argument", *i));
 
-   std::auto_ptr<basic_meta_target> run_target(
+   std::unique_ptr<basic_meta_target> run_target(
       new testing_meta_target(p,
                               real_target_name + ".runner",
                               run_requirements,
@@ -862,10 +862,10 @@ engine::testing_compile_fail_rule(project* p,
                                   requirements_decl* usage_requirements)
 {
    const std::string target_name = location_t(sources.begin()->target_path()).stem().string();
-   std::auto_ptr<basic_meta_target> mt(new testing_compile_fail_meta_target(p,
-                                                                            target_name,
-                                                                            requirements ? *requirements : requirements_decl(),
-                                                                            usage_requirements ? *usage_requirements : requirements_decl()));
+   std::unique_ptr<basic_meta_target> mt(new testing_compile_fail_meta_target(p,
+                                                                              target_name,
+                                                                              requirements ? *requirements : requirements_decl(),
+                                                                              usage_requirements ? *usage_requirements : requirements_decl()));
    mt->sources(sources);
 
    const source_decl compile_source(mt->name(),

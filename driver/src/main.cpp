@@ -764,8 +764,8 @@ int main(int argc, char** argv) {
          if (opts.debug_level_ > 0)
             cout << "...Installing generators... " << flush;
 
-         engine.generators().insert(std::auto_ptr<generator>(new copy_generator(engine)));
-         engine.generators().insert(std::auto_ptr<generator>(new obj_generator(engine)));
+         engine.generators().insert(std::unique_ptr<generator>(new copy_generator(engine)));
+         engine.generators().insert(std::unique_ptr<generator>(new obj_generator(engine)));
          add_testing_generators(engine, engine.generators());
          add_header_lib_generator(engine, engine.generators());
          install_htmpl(engine);
@@ -787,9 +787,9 @@ int main(int argc, char** argv) {
          if (opts.debug_level_ > 0)
             cout << "...Registering known toolsets... " << flush;
 
-         engine.toolset_manager().add_toolset(auto_ptr<toolset>(new msvc_toolset));
-         engine.toolset_manager().add_toolset(auto_ptr<toolset>(new gcc_toolset));
-         engine.toolset_manager().add_toolset(auto_ptr<toolset>(new qt_toolset));
+         engine.toolset_manager().add_toolset(unique_ptr<toolset>(new msvc_toolset));
+         engine.toolset_manager().add_toolset(unique_ptr<toolset>(new gcc_toolset));
+         engine.toolset_manager().add_toolset(unique_ptr<toolset>(new qt_toolset));
 
          if (opts.debug_level_ > 0)
             cout << "Done" << endl;

@@ -322,7 +322,7 @@ struct generator_tests : setuped_engine
    }
 
    jcf_parser checker_;
-   std::auto_ptr<test_msvc_solution> msvc_solution_;
+   std::unique_ptr<test_msvc_solution> msvc_solution_;
    const project* p_;
    std::vector<basic_target*> itargets_;
    std::vector<boost::intrusive_ptr<build_node> > nodes_;

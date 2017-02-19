@@ -22,7 +22,7 @@ struct requirements_decl::impl_t
 
 requirements_decl::impl_t* requirements_decl::impl_t::clone() const
 {
-   std::auto_ptr<impl_t> result(new impl_t);
+   std::unique_ptr<impl_t> result(new impl_t);
 
    for(requirements_t::const_iterator i = requirements_.begin(), last = requirements_.end(); i != last; ++i)
       result->requirements_.push_back(i->clone()); //  FIX: memory leak
@@ -53,7 +53,7 @@ requirements_decl& requirements_decl::operator = (const requirements_decl& rhs)
    return *this;
 }
 
-void requirements_decl::add(std::auto_ptr<requirement_base> r)
+void requirements_decl::add(std::unique_ptr<requirement_base> r)
 {
    if (impl_->ref_counter_ > 1)
    {
@@ -67,7 +67,7 @@ void requirements_decl::add(std::auto_ptr<requirement_base> r)
 
 void requirements_decl::add(const feature& f)
 {
-   std::auto_ptr<requirement_base> r(new just_feature_requirement(const_cast<feature*>(&f)));
+   std::unique_ptr<requirement_base> r(new just_feature_requirement(const_cast<feature*>(&f)));
    add(r);
 }
 

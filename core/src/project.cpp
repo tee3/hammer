@@ -36,7 +36,7 @@ void project::location(const location_t& l)
       location_ = l;
 }
 
-void project::add_target(std::auto_ptr<basic_meta_target> t)
+void project::add_target(std::unique_ptr<basic_meta_target> t)
 {
    if (add_targets_as_explicit_)
       t->set_explicit(true);

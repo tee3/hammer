@@ -26,14 +26,14 @@ void* hammer_make_args_list(void* context)
 
 void* hammer_rule_call(void* context, const char* rule_name, int local, void* args_list_in)
 {
-   std::auto_ptr<hammer::args_list_t> args_list(static_cast<hammer::args_list_t*>(args_list_in));
+   std::unique_ptr<hammer::args_list_t> args_list(static_cast<hammer::args_list_t*>(args_list_in));
    hammer::hammer_walker_context* ctx = static_cast<hammer::hammer_walker_context*>(context);
    args_list->insert(args_list->begin(), new hammer::call_resolver_call_arg<hammer::project>(ctx->project_, false));
 
    if (local)
       ctx->project_->add_targets_as_local(true);
 
-   std::auto_ptr<hammer::call_resolver_call_arg_base> result(ctx->call_resolver_->invoke(rule_name, *args_list));
+   std::unique_ptr<hammer::call_resolver_call_arg_base> result(ctx->call_resolver_->invoke(rule_name, *args_list));
 
    if (local)
       ctx->project_->add_targets_as_local(false);
@@ -148,7 +148,7 @@ void* hammer_make_project_requirements_decl_arg(void* pdecl)
 void hammer_add_conditional_to_rdecl(void* condition, char is_public, void* rdecl)
 {
    hammer::requirements_decl* r = static_cast<hammer::requirements_decl*>(rdecl);
-   std::auto_ptr<hammer::requirement_base> c(static_cast<hammer::linear_and_condition*>(condition));
+   std::unique_ptr<hammer::requirement_base> c(static_cast<hammer::linear_and_condition*>(condition));
    c->set_public(is_public);
    r->add(c);
 }
@@ -156,7 +156,7 @@ void hammer_add_conditional_to_rdecl(void* condition, char is_public, void* rdec
 void hammer_add_feature_to_rdecl(void* feature, char is_public, void* rdecl)
 {
    hammer::requirements_decl* r = static_cast<hammer::requirements_decl*>(rdecl);
-   std::auto_ptr<hammer::requirement_base> nr(new hammer::just_feature_requirement(static_cast<hammer::feature*>(feature)));
+   std::unique_ptr<hammer::requirement_base> nr(new hammer::just_feature_requirement(static_cast<hammer::feature*>(feature)));
    nr->set_public(is_public);
    r->add(nr);
 }

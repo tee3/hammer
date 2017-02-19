@@ -3,7 +3,7 @@
 
 namespace hammer{
 
-std::auto_ptr<call_resolver_call_arg_base>
+std::unique_ptr<call_resolver_call_arg_base>
 call_resolver::invoke(const char* func_name, args_list_t& args)
 {
    functions_t::const_iterator i = find(func_name);

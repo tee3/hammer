@@ -241,7 +241,7 @@ static std::string make_variant_name(const main_target& mt)
 void msvc_project::add_variant(boost::intrusive_ptr<const build_node> node)
 {
    assert(!node->products_.empty());
-   std::auto_ptr<variant> v(new variant);
+   std::unique_ptr<variant> v(new variant);
    variant* naked_variant = v.get();
 
    // if this testing runner than we actually need exe target that we run in post build step

@@ -81,7 +81,7 @@ void impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first,
           !i->second->has_variant(*first)))
       {
 
-         std::auto_ptr<msvc_project> p_guard(new msvc_project(engine_, project_output_dir(*(**first).build_node()), variant_names_.front(), owner_->generate_id()));
+         std::unique_ptr<msvc_project> p_guard(new msvc_project(engine_, project_output_dir(*(**first).build_node()), variant_names_.front(), owner_->generate_id()));
          msvc_project* p = p_guard.get();
          p->add_variant((**first).build_node());
          p->generate();
@@ -169,10 +169,10 @@ void msvc_solution::add_target(boost::intrusive_ptr<const build_node> node)
       throw std::runtime_error("MSVC solution generator can handle only one top level target.");
 
    impl_->variant_names_.push_back(node->products_[0]->get_main_target()->properties().get("variant").value());
-   std::auto_ptr<msvc_project> p_guarg(new msvc_project(impl_->engine_,
-                                                        impl_->project_output_dir(*node),
-                                                        impl_->variant_names_.front(),
-                                                        generate_id()));
+   std::unique_ptr<msvc_project> p_guarg(new msvc_project(impl_->engine_,
+                                                          impl_->project_output_dir(*node),
+                                                          impl_->variant_names_.front(),
+                                                          generate_id()));
    msvc_project* p = p_guarg.get();
    p->add_variant(node);
    impl_->projects_.insert(&p->meta_target(), p_guarg);

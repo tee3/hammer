@@ -56,7 +56,7 @@ namespace hammer
 
          virtual const location_t& location() const { return location_; }
          void location(const location_t& l);
-         void add_target(std::auto_ptr<basic_meta_target> t);
+         void add_target(std::unique_ptr<basic_meta_target> t);
          const targets_t& targets() const { return targets_; }
 
          // FIXME: there is can be many metatargets with same name

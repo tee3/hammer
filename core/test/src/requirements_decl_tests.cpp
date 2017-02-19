@@ -42,10 +42,10 @@ make_requirements_decl(feature_registry& fr,
 {
    requirements_decl requirements;
 
-   std::auto_ptr<linear_and_condition> condition(new linear_and_condition);
+   std::unique_ptr<linear_and_condition> condition(new linear_and_condition);
    condition->add(fr.create_feature("toolset", toolset));
    condition->result(fr.create_feature("link", "shared"));
-   requirements.add(auto_ptr<requirement_base>(condition));
+   requirements.add(unique_ptr<requirement_base>(condition));
 
    return requirements;
 }
@@ -167,10 +167,10 @@ BOOST_FIXTURE_TEST_CASE(conditions_match_defaults, environment)
 
    requirements_decl requirements;
 
-   std::auto_ptr<linear_and_condition> condition(new linear_and_condition);
+   std::unique_ptr<linear_and_condition> condition(new linear_and_condition);
    condition->add(fr_.create_feature("link", "shared"));
    condition->result(fr_.create_feature("define", "FOO"));
-   requirements.add(auto_ptr<requirement_base>(condition));
+   requirements.add(unique_ptr<requirement_base>(condition));
 
    feature_set& evaluation_result = *fr_.make_set();
    requirements.eval(build_request, &evaluation_result, nullptr);

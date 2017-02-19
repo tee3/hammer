@@ -38,8 +38,8 @@ class build_environment_impl : public build_environment
       location_t current_directory_;
       const bool print_shell_commands_;
       location_t cache_directory_;
-      std::auto_ptr<std::ostream*> output_stream_;
-      std::auto_ptr<std::ostream*> error_stream_;
+      std::unique_ptr<std::ostream*> output_stream_;
+      std::unique_ptr<std::ostream*> error_stream_;
 
       // FIXME: need to find better name
       void dump_shell_command(std::ostream& s, const location_t& full_content_file_name) const;

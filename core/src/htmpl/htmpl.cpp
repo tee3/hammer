@@ -21,7 +21,7 @@ sources_decl htmpl_rule(project& p,
 
    for (const source_decl& sd : src) {
       const std::string target_name = "#unnamed::htmpl." + sd.target_path();
-      std::auto_ptr<basic_meta_target> mt(new htmpl_meta_target(&p, target_name, sd));
+      std::unique_ptr<basic_meta_target> mt(new htmpl_meta_target(&p, target_name, sd));
       p.add_target(mt);
 
       result.push_back(source_decl(target_name, std::string(), nullptr, nullptr));

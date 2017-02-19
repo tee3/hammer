@@ -95,7 +95,7 @@ void add_traps(project& p,
 
    for(const auto& v : not_installed_versions) {
       for (const std::string& target_name : v.targets_) {
-         std::auto_ptr<basic_meta_target> trap_target(new warehouse_meta_target(p, target_name, v.version_));
+         std::unique_ptr<basic_meta_target> trap_target(new warehouse_meta_target(p, target_name, v.version_));
          p.add_target(trap_target);
       }
    }

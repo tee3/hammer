@@ -44,7 +44,7 @@ namespace hammer
 
          builders_t builders_;
          boost::shared_ptr<argument_writer> target_writer_;
-         std::auto_ptr<cmdline_builder> rsp_builder_;
+         std::unique_ptr<cmdline_builder> rsp_builder_;
    };
 }
 

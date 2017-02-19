@@ -112,12 +112,12 @@ const std::string& target_type::prefix_for(const feature_set& environment) const
    return empty_prefix;
 }
 
-std::auto_ptr<target_type> target_type::clone(const type_registry& tr) const
+std::unique_ptr<target_type> target_type::clone(const type_registry& tr) const
 {
    if (base() != NULL && base()->owner_ != &tr)
       throw std::logic_error("[type] Can't clone because base type is not registered in owner.");
 
-   std::auto_ptr<target_type> result(base() == NULL ? new target_type(tag(), suffixes()) : new target_type(tag(), suffixes(), *base(), prefixes()));
+   std::unique_ptr<target_type> result(base() == NULL ? new target_type(tag(), suffixes()) : new target_type(tag(), suffixes(), *base(), prefixes()));
    result->owner_ = &tr;
    return result;
 }

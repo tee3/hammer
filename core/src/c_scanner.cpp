@@ -314,7 +314,7 @@ bool c_scanner_context::load_directory(const hashed_location& dir, dir_node_t& c
          fs::file_status st = i->status();
          if (is_directory(st))
          {
-            std::auto_ptr<dir_node_t> new_dir_node(new dir_node_t);
+            std::unique_ptr<dir_node_t> new_dir_node(new dir_node_t);
             dir_node_t* new_cur_dir_node = new_dir_node.get();
             const hashed_location* element = get_cached_location(i->path().filename()).first;
             const hashed_location* full_dir_path = get_cached_location(dir.location().parent_path() / i->path().filename() / ".").first;
@@ -391,7 +391,7 @@ void c_scanner_context::add_new_suffix_to_tree(location_t::const_iterator first,
    suffix_nodes_t::iterator i = s_node.nodes_.find(element);
    if (i == s_node.nodes_.end())
    {
-      std::auto_ptr<suffix_node> new_node(new suffix_node);
+      std::unique_ptr<suffix_node> new_node(new suffix_node);
       new_node->path_element_ = element;
       i = s_node.nodes_.insert(element, new_node).first;
    }

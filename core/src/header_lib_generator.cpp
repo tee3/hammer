@@ -37,7 +37,7 @@ header_lib_generator::construct(const target_type& type_to_construct,
    boost::intrusive_ptr<build_node> header_lib_node(new build_node(owner, true));
    header_lib_node->targeting_type_ = &type_to_construct;
    result.push_back(header_lib_node);
-   std::auto_ptr<header_lib_target> header_lib_product(new header_lib_target(&owner, *composite_target_name, &type_to_construct, &props));
+   std::unique_ptr<header_lib_target> header_lib_product(new header_lib_target(&owner, *composite_target_name, &type_to_construct, &props));
    header_lib_node->products_.push_back(header_lib_product.get());
    header_lib_product.release();
 
