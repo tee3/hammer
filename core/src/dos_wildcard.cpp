@@ -1,6 +1,6 @@
 
 #include "wildcard.hpp"
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/filesystem/path.hpp>
 
 namespace boost{
@@ -8,7 +8,7 @@ namespace boost{
 class dos_wildcard_implementation
 {
 public:
-   boost::regex m_expression;
+   std::regex m_expression;
 };
 
 dos_wildcard::dos_wildcard()
@@ -100,11 +100,11 @@ bool dos_wildcard::operator()(const filesystem::path& text)
 //implementation:
 void dos_wildcard::do_assign(const char* p1, const char* p2, bool ignore_case)
 {
-   static const boost::regex transformer("([+{}()\\[\\]$\\^|])|(\\*)|(\\?)|(\\.)|([\\\\/:])");
+   static const std::regex transformer("([+{}()\\[\\]$\\^|])|(\\*)|(\\?)|(\\.)|([\\\\/:])");
    static const char* replace_string = "(?1\\\\$1)(?2[^\\\\\\\\/\\:]*)(?3[^\\\\\\\\/\\:])(?4\\(\\?\\:\\\\.|$\\))(?5[\\\\\\\\\\\\/\\:])";
    cow();
-   boost::regex::flag_type flags = (ignore_case == 0 ? boost::regex::perl : boost::regex::perl | boost::regex::icase);
-   m_pimpl->m_expression.assign(regex_replace(std::string(p1, p2), transformer, replace_string, boost::format_all), flags);
+   std::regex::flag_type flags = (ignore_case == 0 ? std::regex::ECMAScript : std::regex::ECMAScript | std::regex::icase);
+   m_pimpl->m_expression.assign(regex_replace(std::string(p1, p2), transformer, replace_string, std::format_default), flags);
 }
 
 bool dos_wildcard::do_match(const char* p1, const char*p2) const

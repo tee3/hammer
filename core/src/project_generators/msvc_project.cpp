@@ -2,7 +2,7 @@
 #include <iostream>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/regex.hpp>
+#include <regex>
 #include <hammer/core/project_generators/msvc_project.h>
 #include <hammer/core/main_target.h>
 #include <hammer/core/meta_target.h>
@@ -279,9 +279,9 @@ void msvc_project::add_variant(boost::intrusive_ptr<const build_node> node)
             boost::filesystem::ifstream f(full_project_name());
             copy(istreambuf_iterator<char>(f), istreambuf_iterator<char>(), back_inserter(content));
 
-            boost::regex pattern("ProjectGUID=\"\\{([^\\}]+)\\}\"");
-            boost::smatch match;
-            if (boost::regex_search(content, match, pattern))
+            std::regex pattern("ProjectGUID=\"\\{([^\\}]+)\\}\"");
+            std::smatch match;
+            if (std::regex_search(content, match, pattern))
                uid_ = boost::guid(std::string(match[1]));
          }
       }

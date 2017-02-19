@@ -2,7 +2,7 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/format.hpp>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/bind.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/thread/thread.hpp>
@@ -229,9 +229,9 @@ namespace
                           std::string& target_name,
                           const std::string& to_split)
    {
-      boost::smatch match;
-      boost::regex pattern("(.+?)//(.+)");
-      if (boost::regex_match(to_split, match, pattern))
+      std::smatch match;
+      std::regex pattern("(.+?)//(.+)");
+      if (std::regex_match(to_split, match, pattern))
       {
          target_path = match[1];
          target_name = match[2];

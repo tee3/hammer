@@ -8,7 +8,7 @@
 #include <boost/date_time/posix_time/ptime.hpp>
 #include <boost/date_time/posix_time/time_serialize.hpp>
 #include <boost/date_time/posix_time/conversion.hpp>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
@@ -198,7 +198,7 @@ struct c_scanner_context : public scanner_context
                                             visited_nodes_t& visited_nodes);
 
    const c_scanner& owner_;
-   boost::regex pattern_;
+   std::regex pattern_;
    const build_environment& env_;
    mutable included_files_t empty_included_files_;
    mutable features_2_dirs_t features_2_dirs_;
@@ -713,7 +713,7 @@ c_scanner_context::extract_includes(const hashed_location& file_dir,
    {
       included_files_t& result = included_files_cache_[std::make_pair(&file_dir, &filename)];
       result.clear();
-      for(boost::cregex_iterator i(in.data(), in.data() + in.size(), pattern_), last = boost::cregex_iterator(); i != last; ++i)
+      for(std::cregex_iterator i(in.data(), in.data() + in.size(), pattern_), last = std::cregex_iterator(); i != last; ++i)
       {
 		  if ((*i)[1].matched) {
 			  std::string l = (*i)[1];

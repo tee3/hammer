@@ -13,7 +13,7 @@
 #include <hammer/ast/hamfile.h>
 #include <hammer/core/rule_manager.h>
 #include <hammer/core/diagnostic.h>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/lexical_cast.hpp>
 #include <set>
 
@@ -82,8 +82,8 @@ class checked_diagnostic : public diagnostic
 
 void checked_diagnostic::report(const char* formated_message)
 {
-   boost::cmatch m;
-   if (boost::regex_search(formated_message, m, boost::regex(".+?\\((\\d+)\\) : (\\w+): (.*)"))) {
+   std::cmatch m;
+   if (std::regex_search(formated_message, m, std::regex(".+?\\((\\d+)\\) : (\\w+): (.*)"))) {
       // m[1] line number
       // m[2] message type
       // m[3] message
@@ -128,11 +128,11 @@ static expected_diags_t extract_expected_diags(const fs::path& hamfile)
 
    fs::ifstream stream(hamfile);
    std::string line;
-   boost::smatch m;
+   std::smatch m;
    int line_number = 1;
    while(getline(stream, line))
    {
-      if (boost::regex_search(line, m, boost::regex(".*?#(\\w+): (.+)")))
+      if (std::regex_search(line, m, std::regex(".*?#(\\w+): (.+)")))
          result[line_number] = make_pair(m[2], diagnostic::type::error);
 
       ++line_number;

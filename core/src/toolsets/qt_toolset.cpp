@@ -10,7 +10,7 @@
 #include <hammer/core/prebuilt_lib_meta_target.h>
 #include <hammer/core/searched_lib_meta_target.h>
 #include <boost/filesystem/operations.hpp>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/assign/list_of.hpp>
 #include <hammer/core/cmdline_action.h>
 #include <hammer/core/source_argument_writer.h>
@@ -186,9 +186,9 @@ static std::string determinate_version(const location_t& toolset_home)
 {
    for(fs::directory_iterator i = fs::directory_iterator(toolset_home), last = fs::directory_iterator(); i != last; ++i)
    {
-      boost::smatch m;
+      std::smatch m;
       std::string filename = i->path().filename().string();
-      if (boost::regex_match(filename, m, boost::regex("changes-([0-9\\.]+)")))
+      if (std::regex_match(filename, m, std::regex("changes-([0-9\\.]+)")))
          return m[1];
    }
 

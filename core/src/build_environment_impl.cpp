@@ -4,7 +4,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/process.hpp>
 #include <boost/guid.hpp>
 #include <boost/thread/thread.hpp>
@@ -213,12 +213,12 @@ void build_environment_impl::remove(const location_t& p) const
 
 void build_environment_impl::remove_file_by_pattern(const location_t& dir, const std::string& pattern) const
 {
-   boost::regex rpattern(pattern);
+   std::regex rpattern(pattern);
    typedef fs::directory_iterator iter;
    for(iter i = iter(dir), last = iter(); i != last; ++i)
    {
       fs::file_status st = i->status();
-      if (!is_directory(st) && boost::regex_match(i->path().filename().string(), rpattern))
+      if (!is_directory(st) && std::regex_match(i->path().filename().string(), rpattern))
          remove(i->path());
    }
 }
