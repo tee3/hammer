@@ -13,3 +13,5 @@ add_library(hammer.core STATIC ${c_as_cpp_src} ../src/build/hammer_walker.c ${ma
 target_link_libraries(hammer.core antlr3c boost.all boost.crypto boost.process boost.guid)
 target_include_directories(hammer.core PUBLIC ../include)
 
+set_property(TARGET hammer.core PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET hammer.core PROPERTY CXX_STANDARD 11)
