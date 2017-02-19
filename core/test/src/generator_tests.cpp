@@ -19,7 +19,6 @@
 
 // FIXME: this is outdated and I even don't know how it works
 // I leave it here just in case
-using namespace hammer;
 using namespace hammer::project_generators;
 using namespace boost::unit_test;
 namespace fs = boost::filesystem;

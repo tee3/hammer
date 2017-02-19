@@ -51,7 +51,6 @@
 #include "dump_targets_to_update.h"
 #include "version.h"
 
-using namespace hammer;
 using namespace hammer::project_generators;
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;

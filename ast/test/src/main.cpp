@@ -19,7 +19,6 @@
 
 boost::filesystem::path test_data_path;
 
-using namespace hammer;
 using namespace boost::unit_test;
 using namespace boost::assign;
 namespace fs = boost::filesystem;

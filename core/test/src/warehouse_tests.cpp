@@ -11,7 +11,6 @@
 #include "options.h"
 #include "jcf_parser.h"
 
-using namespace hammer;
 using boost::unit_test::test_suite;
 namespace fs = boost::filesystem;
 

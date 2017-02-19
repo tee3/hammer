@@ -10,7 +10,6 @@
 #include <iostream>
 #include "options.h"
 
-using namespace hammer;
 namespace fs = boost::filesystem;
 using namespace boost::unit_test;
 

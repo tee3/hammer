@@ -4,8 +4,6 @@
 #include <hammer/core/subfeature.h>
 #include <hammer/core/feature_registry.h>
 
-using namespace hammer;
-
 struct feature_registry_test
 {
    feature_registry registry_;

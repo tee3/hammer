@@ -6,8 +6,6 @@
 #include <hammer/core/subfeature.h>
 #include <hammer/core/feature_registry.h>
 
-using namespace hammer;
-
 BOOST_AUTO_TEST_CASE(feature_def_simple_methods)
 {
    feature_registry fr;

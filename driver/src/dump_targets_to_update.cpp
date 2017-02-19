@@ -3,8 +3,6 @@
 #include <hammer/core/basic_target.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-using namespace hammer;
-
 static std::ostream& put_indent(std::ostream& os, int indent)
 {
    for(; indent > 0; --indent)

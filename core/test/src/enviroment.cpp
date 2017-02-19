@@ -20,7 +20,6 @@
 #include <hammer/core/toolsets/qt_toolset.h>
 #include <hammer/core/htmpl/htmpl.h>
 
-using namespace hammer;
 namespace fs = boost::filesystem;
 using namespace boost::unit_test;
 

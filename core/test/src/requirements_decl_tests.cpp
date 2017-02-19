@@ -5,8 +5,6 @@
 #include <hammer/core/feature.h>
 #include <hammer/core/requirements_decl.h>
 
-using namespace hammer;
-
 BOOST_AUTO_TEST_SUITE(requirements_decl_tests)
 
 struct environment

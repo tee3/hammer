@@ -5,7 +5,6 @@
 #include <hammer/core/feature.h>
 #include <boost/assign/list_of.hpp>
 
-using namespace hammer;
 using namespace boost::assign;
 
 namespace

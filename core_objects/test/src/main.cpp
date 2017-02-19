@@ -5,7 +5,6 @@
 #include <boost/bind.hpp>
 #include <boost/assign/std/vector.hpp>
 
-using namespace hammer;
 using namespace hammer::parscore;
 using namespace boost::unit_test;
 using namespace boost::assign;

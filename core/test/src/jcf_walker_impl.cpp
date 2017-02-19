@@ -14,7 +14,6 @@
 #include <hammer/core/fs_helpers.h>
 #include <hammer/core/meta_target.h>
 
-using namespace hammer;
 using boost::format;
 
 void* get_target(const char* id, void* t, int is_top)

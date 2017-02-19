@@ -5,8 +5,6 @@
 #include <hammer/core/target_type.h>
 #include <hammer/core/feature_registry.h>
 
-using namespace hammer;
-
 struct type_registry_tests
 {
    type_registry_tests()
