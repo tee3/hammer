@@ -136,3 +136,36 @@ with one-liner:
     use-project /hammer : ./hammer ;
 
 This will create global target alias */hammer* that needs to be somewhere defined because all build scripts references different part of hammer sources using global references like */hammer/core* or */hammer/parser*
+
+### Requirements
+
+* CMake
+* GCC 6 or MSVC 2015
+* libantlr3c
+* Boost 1.58.0 (or later)
+* Boost.GUID (not part of Boost 1.58.0)
+* Boost.Crypto (not part of Boost 1.58.0)
+* Boost.Process (not part of Boost 1.58.0)
+
+### Unix
+
+Assuming the code is located at ``HAMMERDIR``, run the following
+commands to bootstrap the ``hammer`` executable.
+
+``` shell
+$ cd $(HAMMERDIR)
+$ mkdir build
+$ cd build
+$ CC=gcc-6 CXX=g++-6 cmake ../core/build
+$ make -k
+```
+
+### Windows
+
+``` batchfile
+C:\> cd %HAMMERDIR%
+C:\> mkdir build
+C:\> cd build
+C:\> cmake ..\core\build
+C:\> REM open the project with MSVC
+```
