@@ -8,6 +8,9 @@ install(TARGETS hammer
         RUNTIME DESTINATION bin
 )
 
+set_property(TARGET hammer PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET hammer PROPERTY CXX_STANDARD 11)
+
 INCLUDE(InstallRequiredSystemLibraries)
 
 SET(MAJOR_VERSION "0")
