@@ -25,10 +25,6 @@
 #include <hammer/core/feature_set.h>
 #include <hammer/core/output_location_strategy.h>
 
-using std::string;
-using std::unique_ptr;
-using std::auto_ptr;
-using std::vector;
 using namespace boost;
 using namespace boost::assign;
 namespace fs = boost::filesystem;
@@ -187,17 +183,17 @@ qt_toolset::qt_toolset()
 {
 }
 
-static string determinate_version(const location_t& toolset_home)
+static std::string determinate_version(const location_t& toolset_home)
 {
    for(fs::directory_iterator i = fs::directory_iterator(toolset_home), last = fs::directory_iterator(); i != last; ++i)
    {
       boost::smatch m;
-      string filename = i->path().filename().string();
+      std::string filename = i->path().filename().string();
       if (boost::regex_match(filename, m, boost::regex("changes-([0-9\\.]+)")))
          return m[1];
    }
 
-   return string();
+   return std::string();
 }
 
 void qt_toolset::autoconfigure(engine& e) const
@@ -205,15 +201,15 @@ void qt_toolset::autoconfigure(engine& e) const
     const char* qt_dir = getenv("QTDIR");
     if (qt_dir != NULL) {
       location_t toolset_home(qt_dir);
-      string version = determinate_version(toolset_home);
+      std::string version = determinate_version(toolset_home);
       if (version.empty())
-         throw std::runtime_error("Can't determinate version for Qt toolset at '" + toolset_home.string<string>() + "'");
+         throw std::runtime_error("Can't determinate version for Qt toolset at '" + toolset_home.string<std::string>() + "'");
 
       init_impl(e, version, &toolset_home);
     } else if (fs::exists("/usr/include/qt4/Qt/QtCore")) {
        // FIXME: linux part
        location_t toolset_home("/usr");
-       string version = "4";
+       std::string version = "4";
 
        init_impl(e, version, &toolset_home);
     }
@@ -221,12 +217,12 @@ void qt_toolset::autoconfigure(engine& e) const
 
 static
 void add_lib(project& qt_project,
-             const string& lib_name,
+             const std::string& lib_name,
              const std::vector<std::string>& dependencies,
              engine& e,
-             const string& include_tag,
-             const string& additional_include_path,
-             const string& lib_tag)
+             const std::string& include_tag,
+             const std::string& additional_include_path,
+             const std::string& lib_tag)
 {
    requirements_decl debug_req;
 
@@ -241,45 +237,45 @@ void add_lib(project& qt_project,
    {
       std::auto_ptr<just_feature_requirement> include_req(new just_feature_requirement(include_feature));
       include_req->set_public(true);
-      debug_req.add(auto_ptr<requirement_base>(include_req));
+      debug_req.add(std::auto_ptr<requirement_base>(include_req));
    }
    {
       std::auto_ptr<just_feature_requirement> top_include_req(new just_feature_requirement(top_include_feature));
       top_include_req->set_public(true);
-      debug_req.add(auto_ptr<requirement_base>(top_include_req));
+      debug_req.add(std::auto_ptr<requirement_base>(top_include_req));
    }
-   debug_req.add(auto_ptr<requirement_base>(new just_feature_requirement(e.feature_registry().create_feature("variant", "debug"))));
+   debug_req.add(std::auto_ptr<requirement_base>(new just_feature_requirement(e.feature_registry().create_feature("variant", "debug"))));
 
    requirements_decl release_req;
    {
       std::auto_ptr<just_feature_requirement> include_req(new just_feature_requirement(include_feature));
       include_req->set_public(true);
-      release_req.add(auto_ptr<requirement_base>(include_req));
+      release_req.add(std::auto_ptr<requirement_base>(include_req));
    }
    {
       std::auto_ptr<just_feature_requirement> top_include_req(new just_feature_requirement(top_include_feature));
       top_include_req->set_public(true);
-      release_req.add(auto_ptr<requirement_base>(top_include_req));
+      release_req.add(std::auto_ptr<requirement_base>(top_include_req));
    }
    {
       std::auto_ptr<just_feature_requirement> qt_no_debug(new just_feature_requirement(qt_no_debug_feature));
       qt_no_debug->set_public(true);
-      release_req.add(auto_ptr<requirement_base>(qt_no_debug));
+      release_req.add(std::auto_ptr<requirement_base>(qt_no_debug));
    }
-   release_req.add(auto_ptr<requirement_base>(new just_feature_requirement(e.feature_registry().create_feature("variant", "release"))));
+   release_req.add(std::auto_ptr<requirement_base>(new just_feature_requirement(e.feature_registry().create_feature("variant", "release"))));
 
    requirements_decl profile_req;
    {
       std::auto_ptr<just_feature_requirement> include_req(new just_feature_requirement(include_feature));
       include_req->set_public(true);
-      profile_req.add(auto_ptr<requirement_base>(include_req));
+      profile_req.add(std::auto_ptr<requirement_base>(include_req));
    }
    {
       std::auto_ptr<just_feature_requirement> top_include_req(new just_feature_requirement(top_include_feature));
       top_include_req->set_public(true);
-      profile_req.add(auto_ptr<requirement_base>(top_include_req));
+      profile_req.add(std::auto_ptr<requirement_base>(top_include_req));
    }
-   profile_req.add(auto_ptr<requirement_base>(new just_feature_requirement(e.feature_registry().create_feature("variant", "profile"))));
+   profile_req.add(std::auto_ptr<requirement_base>(new just_feature_requirement(e.feature_registry().create_feature("variant", "profile"))));
 #if defined(_WIN32)
    std::auto_ptr<prebuilt_lib_meta_target> lib_debug(
          new prebuilt_lib_meta_target(&qt_project,
@@ -298,7 +294,7 @@ void add_lib(project& qt_project,
    search_feature->get_path_data().target_ = &qt_project;
    {
       std::auto_ptr<just_feature_requirement> search_req(new just_feature_requirement(search_feature));
-      debug_req.add(auto_ptr<requirement_base>(search_req));
+      debug_req.add(std::auto_ptr<requirement_base>(search_req));
    }
    std::auto_ptr<searched_lib_meta_target> lib_debug(
          new searched_lib_meta_target(&qt_project,
@@ -310,7 +306,7 @@ void add_lib(project& qt_project,
 
    {
       std::auto_ptr<just_feature_requirement> search_req(new just_feature_requirement(search_feature));
-      release_req.add(auto_ptr<requirement_base>(search_req));
+      release_req.add(std::auto_ptr<requirement_base>(search_req));
    }
    std::auto_ptr<searched_lib_meta_target> lib_release(
          new searched_lib_meta_target(&qt_project,
@@ -321,7 +317,7 @@ void add_lib(project& qt_project,
                                       e.get_type_registry().get(types::SEARCHED_SHARED_LIB)));
    {
       std::auto_ptr<just_feature_requirement> search_req(new just_feature_requirement(search_feature));
-      profile_req.add(auto_ptr<requirement_base>(search_req));
+      profile_req.add(std::auto_ptr<requirement_base>(search_req));
    }
    std::auto_ptr<searched_lib_meta_target> lib_profile(
          new searched_lib_meta_target(&qt_project,
@@ -340,7 +336,7 @@ void add_lib(project& qt_project,
          source_decl sd("/Qt", dependencies[i], NULL, e.feature_registry().make_set());
          source_feature->set_dependency_data(sd, &qt_project);
          std::auto_ptr<just_feature_requirement> source_req(new just_feature_requirement(source_feature));
-         usage_req.add(auto_ptr<requirement_base>(source_req));
+         usage_req.add(std::auto_ptr<requirement_base>(source_req));
       }
 
       lib_debug->usage_requirements().insert(usage_req);
@@ -348,17 +344,17 @@ void add_lib(project& qt_project,
       lib_profile->usage_requirements().insert(usage_req);
    }
 
-   qt_project.add_target(auto_ptr<basic_meta_target>(lib_debug));
-   qt_project.add_target(auto_ptr<basic_meta_target>(lib_release));
-   qt_project.add_target(auto_ptr<basic_meta_target>(lib_profile));
+   qt_project.add_target(std::auto_ptr<basic_meta_target>(lib_debug));
+   qt_project.add_target(std::auto_ptr<basic_meta_target>(lib_release));
+   qt_project.add_target(std::auto_ptr<basic_meta_target>(lib_profile));
 }
 
 static
 void add_types_and_generators(engine& e,
                               const location_t* toolset_home,
                               const std::string& bin_tag,
-                              const string& lib_tag,
-                              const string& include_tag,
+                              const std::string& lib_tag,
+                              const std::string& include_tag,
                               const bool qt5)
 {
    // register qt types
@@ -374,7 +370,7 @@ void add_types_and_generators(engine& e,
    {
       shared_ptr<source_argument_writer> ui_source(new source_argument_writer("ui_source", e.get_type_registry().get(qt_ui)));
       shared_ptr<product_argument_writer> uic_product(new product_argument_writer("uic_product", e.get_type_registry().get(qt_uiced_h)));
-      cmdline_builder uic_cmd((*toolset_home / ("bin/uic" + bin_tag)).string<string>() + " -o \"$(uic_product)\" $(ui_source)");
+      cmdline_builder uic_cmd((*toolset_home / ("bin/uic" + bin_tag)).string<std::string>() + " -o \"$(uic_product)\" $(ui_source)");
 
       uic_cmd += ui_source;
       uic_cmd += uic_product;
@@ -395,7 +391,7 @@ void add_types_and_generators(engine& e,
    {
       shared_ptr<source_argument_writer> rcc_source(new source_argument_writer("rcc_source", e.get_type_registry().get(qt_rc)));
       shared_ptr<product_argument_writer> rcc_product(new product_argument_writer("rcc_product", e.get_type_registry().get(qt_rced_cpp)));
-      cmdline_builder rcc_cmd((*toolset_home / ("bin/rcc" + bin_tag)).string<string>() + " -o \"$(rcc_product)\" $(rcc_source)");
+      cmdline_builder rcc_cmd((*toolset_home / ("bin/rcc" + bin_tag)).string<std::string>() + " -o \"$(rcc_product)\" $(rcc_source)");
 
       rcc_cmd += rcc_source;
       rcc_cmd += rcc_product;
@@ -416,7 +412,7 @@ void add_types_and_generators(engine& e,
    {
       shared_ptr<source_argument_writer> mocable_source(new source_argument_writer("mocable_source", e.get_type_registry().get(qt_mocable)));
       shared_ptr<product_argument_writer> cpp_product(new product_argument_writer("cpp_product", e.get_type_registry().get(types::CPP)));
-      cmdline_builder moc_cmd((*toolset_home / ("bin/moc" + bin_tag)).string<string>() + " -o \"$(cpp_product)\" $(mocable_source)");
+      cmdline_builder moc_cmd((*toolset_home / ("bin/moc" + bin_tag)).string<std::string>() + " -o \"$(cpp_product)\" $(mocable_source)");
 
       moc_cmd += mocable_source;
       moc_cmd += cpp_product;

@@ -19,8 +19,6 @@
 #include <hammer/core/testing_generators.h>
 
 using namespace boost;
-using std::string;
-using std::unique_ptr;
 
 namespace hammer{
 
@@ -73,8 +71,8 @@ void gcc_toolset::init_impl(engine& e, const std::string& version_id,
    shared_ptr<free_feature_arg_writer> searched_lib_searched_dirs(
       new free_feature_arg_writer("searched_lib_searched_dirs",
                                   e.feature_registry().get_def("search"),
-                                  string("-L \""),
-                                  string("\"")));
+                                  std::string("-L \""),
+                                  std::string("\"")));
 
    shared_ptr<fs_argument_writer> cflags(new fs_argument_writer("cflags", e.feature_registry()));
    cflags->add("<optimization>speed", "-O3").
@@ -108,7 +106,7 @@ void gcc_toolset::init_impl(engine& e, const std::string& version_id,
    shared_ptr<free_feature_arg_writer> includes(new free_feature_arg_writer("includes", e.feature_registry().get_def("include"), "-I\"", "\""));
    shared_ptr<free_feature_arg_writer> defines(new free_feature_arg_writer("defines", e.feature_registry().get_def("define"), "-D"));
 
-   const string generator_prefix = name() + "-" + install_data.version_;
+   const std::string generator_prefix = name() + "-" + install_data.version_;
 
    // C -> OBJ
    {
@@ -206,8 +204,8 @@ void gcc_toolset::init_impl(engine& e, const std::string& version_id,
       shared_ptr<free_feature_arg_writer> ld_library_path_dirs(
          new free_feature_arg_writer("ld_library_path_dirs",
                                      e.feature_registry().get_def("search"),
-                                     string(),
-                                     string(),
+                                     std::string(),
+                                     std::string(),
                                      ":"));
 
       shared_ptr<source_argument_writer> obj_sources(new source_argument_writer("obj_sources", e.get_type_registry().get(types::OBJ)));

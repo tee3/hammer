@@ -15,9 +15,6 @@
 #include <hammer/core/feature.h>
 #include <hammer/core/subfeature.h>
 
-using std::string;
-using std::unique_ptr;
-using std::pair;
 using namespace boost;
 using namespace boost::multi_index;
 
@@ -109,13 +106,13 @@ namespace hammer{
       struct find_feature_data
       {
          find_feature_data(const feature_def& def,
-                           const string& value,
+                           const std::string& value,
                            const feature::subfeatures_t& subfeatures)
                            : def_(def), value_(value), subfeatures_(subfeatures)
          {}
 
          const feature_def& def_;
-         const string& value_;
+         const std::string& value_;
          const feature::subfeatures_t subfeatures_;
       };
 
@@ -216,10 +213,10 @@ namespace hammer{
       typedef subfeatures_t::nth_index<0>::type main_subfeature_index_t;
 
       feature_def* find_def(const std::string& name);
-      feature* find_feature(const std::string& name, const string& value);
+      feature* find_feature(const std::string& name, const std::string& value);
       feature* find_feature(const feature& f,
                             const subfeature& sf);
-      subfeature& create_subfeature(const feature& f, const string& name, const string& value);
+      subfeature& create_subfeature(const feature& f, const std::string& name, const std::string& value);
 
       defs_t defs_;
       feature_set_storage_t feature_set_list_;
@@ -238,7 +235,7 @@ namespace hammer{
          return i->second.get();
    }
 
-   feature* feature_registry::impl_t::find_feature(const string& name, const string& value)
+   feature* feature_registry::impl_t::find_feature(const std::string& name, const std::string& value)
    {
       feature_def* def = find_def(name);
       if (def == NULL)
@@ -252,8 +249,8 @@ namespace hammer{
    }
 
    subfeature& feature_registry::impl_t::create_subfeature(const feature& f,
-                                                           const string& name,
-                                                           const string& value)
+                                                           const std::string& name,
+                                                           const std::string& value)
    {
       const subfeature_def* sdef = f.definition().find_subfeature(name);
       if (sdef == NULL)
@@ -392,7 +389,7 @@ namespace hammer{
       if (first != last)
       {
          feature* result = simply_create_feature(name, *first);
-         const string feature_value = *first;
+         const std::string feature_value = *first;
          ++first;
 
          for(; first != last; ++first)
@@ -447,17 +444,17 @@ namespace hammer{
       if (result != NULL)
          return result;
       // FIXME: performance hit
-      string feature_name_str(feature_name);
-      string::size_type p = feature_name_str.find('-');
-      if (p != string::npos)
+      std::string feature_name_str(feature_name);
+      std::string::size_type p = feature_name_str.find('-');
+      if (p != std::string::npos)
          return find_def(feature_name_str.substr(0, p).c_str());
       else
          return NULL;
    }
 
    feature* feature_registry::create_feature(const feature& f,
-                                             const string& subfeature_name,
-                                             const string& subfeature_value)
+                                             const std::string& subfeature_name,
+                                             const std::string& subfeature_value)
    {
       subfeature& sf = impl_->create_subfeature(f, subfeature_name, subfeature_value);
       feature* result = impl_->find_feature(f, sf);

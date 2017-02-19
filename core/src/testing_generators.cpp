@@ -11,7 +11,6 @@
 #include <hammer/core/feature_registry.h>
 #include <hammer/core/compile_fail_generator.h>
 
-using std::unique_ptr;
 using namespace boost;
 
 namespace hammer{

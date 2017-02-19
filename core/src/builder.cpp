@@ -20,8 +20,6 @@
 
 using namespace boost;
 using namespace boost::multi_index;
-using std::string;
-using std::stringstream;
 
 namespace hammer{
 namespace{
@@ -280,8 +278,8 @@ void builder::generate_graphviz(std::ostream& os, const nodes_t& nodes, const pr
                                "shape = \"record\"];\n");
    for(const build_queue_node_t* n : all_build_nodes)
    {
-      string labels = (boost::format("%s|dependencies_count = %s") % n % n->dependencies_count_).str();
-      labels += "|{action |{ " + (n->node_->action() ? n->node_->action()->name() : string("null")) + "}}";
+      std::string labels = (boost::format("%s|dependencies_count = %s") % n % n->dependencies_count_).str();
+      labels += "|{action |{ " + (n->node_->action() ? n->node_->action()->name() : std::string("null")) + "}}";
       // write build node sources
       {
          labels += "|{src|{";
@@ -318,7 +316,7 @@ void builder::generate_graphviz(std::ostream& os, const nodes_t& nodes, const pr
 
       if (!n->uses_nodes_.empty())
       {
-         stringstream s;
+         std::stringstream s;
          bool first = true;
          for(const build_queue_node_t* un : n->uses_nodes_)
          {
