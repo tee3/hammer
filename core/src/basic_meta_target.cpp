@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#include <exception>
+#include <stdexcept>
+
 #include <hammer/core/basic_meta_target.h>
 #include <hammer/core/feature_set.h>
 #include <hammer/core/feature.h>

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <boost/filesystem/convenience.hpp>
 #include <boost/assign/list_of.hpp>
-#include <antlr3recognizersharedstate.h>
+#include <antlr3.h>
 #include <hammer/core/parser.h>
 #include "hammer_parser_context.h"
 #include "non_buffered_token_stream.h"
