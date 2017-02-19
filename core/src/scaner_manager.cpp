@@ -9,7 +9,7 @@ namespace hammer{
 struct scanner_manager::impl_t
 {
    typedef boost::unordered_map<const target_type*,
-                                boost::shared_ptr<scanner> > scanners_t;
+                                std::shared_ptr<scanner> > scanners_t;
    scanners_t scanners_;
 };
 
@@ -19,7 +19,7 @@ scanner_manager::scanner_manager()
 
 }
 
-void scanner_manager::register_scanner(const target_type& t, const boost::shared_ptr<scanner>& scanner)
+void scanner_manager::register_scanner(const target_type& t, const std::shared_ptr<scanner>& scanner)
 {
    if (const hammer::scanner* s = find(t))
       throw std::runtime_error("Scanner '" + s->name() + "' for type '" + t.tag().name() + "' already registered.");

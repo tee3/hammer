@@ -3,7 +3,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/unordered_map.hpp>
 #include <deque>
 #include "location.h"
@@ -48,18 +48,18 @@ namespace hammer
          hammer::warehouse& warehouse() { return *warehouse_; }
 
          hammer::output_location_strategy& output_location_strategy() { return *output_location_strategy_; }
-         void output_location_strategy(boost::shared_ptr<hammer::output_location_strategy>& strategy);
+         void output_location_strategy(std::shared_ptr<hammer::output_location_strategy>& strategy);
          void use_project(const project& p, const std::string& project_id_alias, const location_t& project_location);
          ~engine();
 
       private:
          typedef boost::unordered_map<const location_t,
-                                      boost::shared_ptr<project>,
+                                      std::shared_ptr<project>,
                                       boost::hash<location_t>,
                                       location_equal_to> projects_t;
          struct project_alias_node;
          typedef boost::unordered_map<location_t,
-                                      boost::shared_ptr<project_alias_node>,
+                                      std::shared_ptr<project_alias_node>,
                                       boost::hash<location_t>,
                                       location_equal_to>  global_project_links_t;
 
@@ -111,16 +111,16 @@ namespace hammer
          global_project_links_t global_project_links_;
          reversed_global_project_links_t reversed_global_project_links_;
 
-         boost::shared_ptr<type_registry> type_registry_;
+         std::shared_ptr<type_registry> type_registry_;
          hammer::feature_registry* feature_registry_;
          hammer::call_resolver resolver_;
-         boost::shared_ptr<generator_registry> generators_;
-         boost::shared_ptr<hammer::toolset_manager> toolset_manager_;
-         boost::shared_ptr<hammer::scanner_manager> scanner_manager_;
-         boost::shared_ptr<hammer::output_location_strategy> output_location_strategy_;
+         std::shared_ptr<generator_registry> generators_;
+         std::shared_ptr<hammer::toolset_manager> toolset_manager_;
+         std::shared_ptr<hammer::scanner_manager> scanner_manager_;
+         std::shared_ptr<hammer::output_location_strategy> output_location_strategy_;
 
          use_project_data_t use_project_data_;
-         boost::shared_ptr<hammer::warehouse> warehouse_;
+         std::shared_ptr<hammer::warehouse> warehouse_;
 
          loaded_projects_t try_load_project(const location_t& tail_path, const project_alias_data& symlink);
          loaded_projects_t try_load_project(location_t project_path);

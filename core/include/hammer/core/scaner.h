@@ -4,7 +4,7 @@
 #include <string>
 #include <hammer/core/scaner_context.h>
 #include <boost/date_time/posix_time/ptime.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace hammer
 {
@@ -18,7 +18,7 @@ namespace hammer
 
          virtual boost::posix_time::ptime process(const basic_target& t,
                                                   scanner_context& context) const = 0;
-         virtual boost::shared_ptr<scanner_context> create_context(const build_environment& env) const = 0;
+         virtual std::shared_ptr<scanner_context> create_context(const build_environment& env) const = 0;
          const std::string& name() const { return name_; }
          virtual ~scanner() {}
 

@@ -117,8 +117,8 @@ struct builder::impl_t
                                     build_queue_node_t& parent_node,
                                     build_node& node,
                                     const project* bounds);
-   void task_completition_handler(boost::shared_ptr<worker_ctx_t> ctx);
-   void task_handler(boost::shared_ptr<worker_ctx_t> ctx);
+   void task_completition_handler(std::shared_ptr<worker_ctx_t> ctx);
+   void task_handler(std::shared_ptr<worker_ctx_t> ctx);
 
    void flatter_queue(boost::unordered_set<const build_queue_node_t*>& result,
                       const build_queue_node_t& node);
@@ -158,7 +158,7 @@ builder::result builder::build(nodes_t& nodes, const project* bounds)
    return impl_->build(nodes, bounds);
 }
 
-void builder::impl_t::task_handler(boost::shared_ptr<worker_ctx_t> ctx)
+void builder::impl_t::task_handler(std::shared_ptr<worker_ctx_t> ctx)
 {
    if (ctx->node().action())
    {
@@ -183,7 +183,7 @@ void mark_deps_failed_to_build(build_queue_node_t& node)
          mark_deps_failed_to_build(**i);
 }
 
-void builder::impl_t::task_completition_handler(boost::shared_ptr<worker_ctx_t> ctx)
+void builder::impl_t::task_completition_handler(std::shared_ptr<worker_ctx_t> ctx)
 {
    if (interrupt_flag_)
       return;
@@ -215,7 +215,7 @@ void builder::impl_t::task_completition_handler(boost::shared_ptr<worker_ctx_t> 
       build_queue_node_t& current_node = **current_node_iterator;
       if (current_node.dependencies_count_ == 0)
       {
-         boost::shared_ptr<worker_ctx_t> worker_ctx(new worker_ctx_t(*ctx));
+         std::shared_ptr<worker_ctx_t> worker_ctx(new worker_ctx_t(*ctx));
          worker_ctx->current_node_ = *current_node_iterator;
          worker_ctx->action_result_ = false;
          ctx->nodes_in_progess_.insert(&current_node);
@@ -376,7 +376,7 @@ builder::result builder::impl_t::build(nodes_t& nodes, const project* bounds)
    boost::asio::io_service::strand strand(scheduler);
    nodes_in_progress_t nodes_in_progress;
 
-   boost::shared_ptr<worker_ctx_t> initial_ctx(
+   std::shared_ptr<worker_ctx_t> initial_ctx(
       new worker_ctx_t(scheduler, strand, build_queue, nodes_in_progress, NULL));
 
    scheduler.post(boost::bind(&impl_t::task_completition_handler, this, initial_ctx));

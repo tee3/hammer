@@ -2,7 +2,7 @@
 #define ad250e1ad_1eb7_49c2_ba1f_dea30727a139
 
 #include <hammer/core/location.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 
 namespace hammer {
@@ -50,7 +50,7 @@ namespace hammer {
                                   const std::string& version) const = 0;
          // FIXME: this is not a real load - we just create fake project with trap rule
          // maybe this should be renamed
-         virtual boost::shared_ptr<project> load_project(engine& e,
+         virtual std::shared_ptr<project> load_project(engine& e,
                                                          const location_t& project_path) = 0;
          // FIXME: we need to represent some form of unknown package
          // possibly by introducing something like pair<known packages/unknown packages> or separate class

@@ -10,10 +10,10 @@ namespace hammer
       public:
          template<typename T>
          testing_run_action(const std::string& name,
-                            boost::shared_ptr<T>& target_writer,
-                            boost::shared_ptr<T>& output_writer)
+                            std::shared_ptr<T>& target_writer,
+                            std::shared_ptr<T>& output_writer)
          : cmdline_action(name, target_writer),
-           output_writer_(boost::static_pointer_cast<argument_writer>(output_writer))
+           output_writer_(std::static_pointer_cast<argument_writer>(output_writer))
          {
          }
 
@@ -23,7 +23,7 @@ namespace hammer
                                          const build_environment& environment) const;
 
       private:
-         boost::shared_ptr<argument_writer> output_writer_;
+         std::shared_ptr<argument_writer> output_writer_;
    };
 }
 

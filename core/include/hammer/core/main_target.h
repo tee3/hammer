@@ -52,7 +52,7 @@ namespace hammer
          mutable location_t intermediate_dir_;
          mutable std::vector<boost::intrusive_ptr<hammer::build_node> > generate_cache_;
          mutable bool generate_cache_filled_;
-         static boost::shared_ptr<mksig_action> mksig_action_;
+         static std::shared_ptr<mksig_action> mksig_action_;
 
          virtual void timestamp_info_impl() const;
 

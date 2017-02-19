@@ -3,7 +3,7 @@
 #include <map>
 #include <cassert>
 #include <cstdlib>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/checked_delete.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/multi_index_container.hpp>
@@ -42,7 +42,7 @@ namespace hammer{
       struct subfeature_storage_item
       {
          const feature_def* feature_def_;
-         boost::shared_ptr<subfeature> subfeature_;
+         std::shared_ptr<subfeature> subfeature_;
       };
 
       struct subfeature_find_data
@@ -192,14 +192,14 @@ namespace hammer{
       struct feature_storage_key_extractor
       {
          typedef const feature& result_type;
-         result_type operator()(const boost::shared_ptr<feature>& v) const { return *v; }
+         result_type operator()(const std::shared_ptr<feature>& v) const { return *v; }
       };
 
       typedef std::map<std::string, std::unique_ptr<feature_def> > defs_t;
       typedef std::list<feature_set*> feature_set_storage_t;
       typedef boost::ptr_vector<feature> non_cached_features_t;
 
-      typedef multi_index_container<boost::shared_ptr<feature>,
+      typedef multi_index_container<std::shared_ptr<feature>,
                                     indexed_by<
                                        ordered_unique<feature_storage_key_extractor, feature_storage_comparator> >
                                    > features_t;
@@ -358,7 +358,7 @@ namespace hammer{
          result = impl_->find_feature(name, value);
          if (result == NULL)
          {
-            boost::shared_ptr<feature> f(new feature(&def, value));
+            std::shared_ptr<feature> f(new feature(&def, value));
             result = f.get();
             impl_->features_.get<0>().insert(f);
          }
@@ -461,7 +461,7 @@ namespace hammer{
       {
          feature::subfeatures_t new_subfeatures(f.subfeatures());
          new_subfeatures.push_back(&sf);
-         boost::shared_ptr<feature> shared_result(new feature(&f.definition(), f.value(), new_subfeatures));
+         std::shared_ptr<feature> shared_result(new feature(&f.definition(), f.value(), new_subfeatures));
          result = shared_result.get();
          impl_->features_.get<0>().insert(shared_result);
       }

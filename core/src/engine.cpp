@@ -220,7 +220,7 @@ engine::try_load_project(location_t project_path,
             }
 
             if (!materialized_warehouse_project) {
-               boost::shared_ptr<project> not_yet_materialized_versions = warehouse_->load_project(*this, project_path);
+               std::shared_ptr<project> not_yet_materialized_versions = warehouse_->load_project(*this, project_path);
                // we need to check if we already inserted this project before. When we doing warehouse::download_and_install we check
                // if project knows to engine and that trigger loading project again, but engine may already manadge this project loaded before
                auto i = projects_.find(not_yet_materialized_versions->location());
@@ -442,7 +442,7 @@ engine::loaded_projects_t engine::try_load_project(location_t project_path)
 
 void engine::insert(project* p)
 {
-   projects_.insert(std::make_pair(p->location(), boost::shared_ptr<project>(p)));
+   projects_.insert(std::make_pair(p->location(), std::shared_ptr<project>(p)));
 }
 
 engine::~engine()
@@ -996,7 +996,7 @@ void engine::use_project_rule(project* p, const std::string& project_id_alias,
          alias_data_home = project_links_node->find(*i);
          if (alias_data_home == project_links_node->end())
          {
-            boost::shared_ptr<project_alias_node> node(new project_alias_node);
+            std::shared_ptr<project_alias_node> node(new project_alias_node);
             // FIXME stupid bug in ptr_map::insert
             location_t tmp(*i);
             alias_data_home = project_links_node->insert(std::make_pair(tmp, node)).first;
@@ -1127,7 +1127,7 @@ engine::loaded_projects_t::select_best_alternative(const std::string& target_nam
    }
 }
 
-void engine::output_location_strategy(boost::shared_ptr<hammer::output_location_strategy>& strategy)
+void engine::output_location_strategy(std::shared_ptr<hammer::output_location_strategy>& strategy)
 {
    if (!strategy)
       output_location_strategy_.reset(new default_output_location_strategy);

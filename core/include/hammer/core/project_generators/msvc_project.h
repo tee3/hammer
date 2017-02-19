@@ -8,7 +8,7 @@
 #include <boost/guid.hpp>
 #include <boost/intrusive_ptr.hpp>
 #include <hammer/core/build_node.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <hammer/core/cmdline_builder.h>
 

@@ -2,7 +2,7 @@
 #define h_db895abe_fa99_475c_a70c_3e9fdd978a51
 
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/function.hpp>
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
@@ -326,7 +326,7 @@ namespace hammer
 
    class call_resolver : public boost::noncopyable
 	{
-         typedef std::map<std::string, boost::shared_ptr<call_resolver_function_base> > functions_t;
+         typedef std::map<std::string, std::shared_ptr<call_resolver_function_base> > functions_t;
 
       public:
          typedef functions_t::const_iterator const_iterator;
@@ -341,7 +341,7 @@ namespace hammer
             std::vector<call_resolver_arg_def> call_args = make_args<T>();
             std::unique_ptr<call_resolver_function<T> > crf(new call_resolver_function<T>(f, call_args, result_def));
 
-            functions_.insert(std::make_pair(func_name, boost::shared_ptr<call_resolver_function_base>(crf)));
+            functions_.insert(std::make_pair(func_name, std::shared_ptr<call_resolver_function_base>(crf)));
          }
 
          std::unique_ptr<call_resolver_call_arg_base> invoke(const char* func_name, args_list_t& args);

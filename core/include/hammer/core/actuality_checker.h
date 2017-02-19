@@ -21,7 +21,7 @@ namespace hammer
          std::size_t check(nodes_t& nodes);
 
       private:
-         typedef boost::unordered_map<const target_type*, boost::shared_ptr<scanner_context> > scanner_contexts_t;
+         typedef boost::unordered_map<const target_type*, std::shared_ptr<scanner_context> > scanner_contexts_t;
 
          scanner_contexts_t scanner_contexts_;
          const engine& engine_;

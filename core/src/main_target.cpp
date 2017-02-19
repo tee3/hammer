@@ -18,7 +18,7 @@
 
 namespace hammer{
 
-boost::shared_ptr<mksig_action> main_target::mksig_action_ = boost::shared_ptr<mksig_action>(new mksig_action);
+std::shared_ptr<mksig_action> main_target::mksig_action_ = std::shared_ptr<mksig_action>(new mksig_action);
 
 main_target::main_target(const basic_meta_target* mt,
                          const std::string& name,

@@ -30,11 +30,11 @@ void add_testing_generators(engine& e, generator_registry& gr)
    std::unique_ptr<generator> g(new generator(e, "testing.run", source, target, true));
    g->include_composite_generators(true);
 
-   boost::shared_ptr<product_argument_writer> run_product(new product_argument_writer("run_product", e.get_type_registry().get(types::TESTING_RUN_PASSED)));
-   boost::shared_ptr<product_argument_writer> run_output_product(new product_argument_writer("run_output_product", e.get_type_registry().get(types::TESTING_OUTPUT)));
-   boost::shared_ptr<source_argument_writer> test_executable(new source_argument_writer("test_executable", e.get_type_registry().get(types::EXE)));
-   boost::shared_ptr<shared_lib_dirs_writer> additional_dirs(new shared_lib_dirs_writer("additional_dirs", e.get_type_registry().get(types::SHARED_LIB)));
-   boost::shared_ptr<free_feature_arg_writer> input_files(new free_feature_arg_writer("input_files", e.feature_registry().get_def("testing.input-file")));
+   std::shared_ptr<product_argument_writer> run_product(new product_argument_writer("run_product", e.get_type_registry().get(types::TESTING_RUN_PASSED)));
+   std::shared_ptr<product_argument_writer> run_output_product(new product_argument_writer("run_output_product", e.get_type_registry().get(types::TESTING_OUTPUT)));
+   std::shared_ptr<source_argument_writer> test_executable(new source_argument_writer("test_executable", e.get_type_registry().get(types::EXE)));
+   std::shared_ptr<shared_lib_dirs_writer> additional_dirs(new shared_lib_dirs_writer("additional_dirs", e.get_type_registry().get(types::SHARED_LIB)));
+   std::shared_ptr<free_feature_arg_writer> input_files(new free_feature_arg_writer("input_files", e.feature_registry().get_def("testing.input-file")));
 #if defined(_WIN32)
    cmdline_builder cmdline("@SET PATH=%PATH%;$(additional_dirs)\n"
                            "@$(test_executable) $(input_files)\n");

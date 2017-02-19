@@ -328,13 +328,13 @@ bool warehouse_impl::has_project(const location_t& project_path,
    return false;
 }
 
-boost::shared_ptr<project>
+std::shared_ptr<project>
 warehouse_impl::load_project(engine& e,
                              const location_t& project_path)
 {
    const string public_id = package_id_from_location(project_path);
 
-   boost::shared_ptr<project> wproject(new warehouse_project(e, public_id, repository_path_ / "libs" / public_id));
+   std::shared_ptr<project> wproject(new warehouse_project(e, public_id, repository_path_ / "libs" / public_id));
    add_traps(*wproject, public_id);
 
    return wproject;

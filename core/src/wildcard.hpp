@@ -2,7 +2,7 @@
 #define BOOST_WILDCARD_HPP
 
 #include <string>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/filesystem/path.hpp>
 
 namespace boost{
@@ -41,7 +41,7 @@ private:
    bool do_match(const char* p1, const char*p2) const;
    void cow();
 
-   boost::shared_ptr<dos_wildcard_implementation> m_pimpl;
+   std::shared_ptr<dos_wildcard_implementation> m_pimpl;
 
 };
 

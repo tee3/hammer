@@ -8,7 +8,7 @@
 namespace hammer{
 
 batched_cmdline_action::batched_cmdline_action(const std::string& name)
-   : cmdline_action(name, boost::shared_ptr<batch_tag_writer>(new batch_tag_writer))
+   : cmdline_action(name, std::shared_ptr<batch_tag_writer>(new batch_tag_writer))
 {
 
 }

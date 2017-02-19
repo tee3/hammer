@@ -21,7 +21,7 @@ namespace hammer
          c_scanner() : scanner("C scanner") {}
          virtual boost::posix_time::ptime process(const basic_target& t,
                                                   scanner_context& context) const;
-         virtual boost::shared_ptr<scanner_context> create_context(const build_environment& env) const;
+         virtual std::shared_ptr<scanner_context> create_context(const build_environment& env) const;
 
       protected:
          // WARNING! Implementation is required to cache extracted data
@@ -29,7 +29,7 @@ namespace hammer
 //                                                           const boost::posix_time::ptime& file_timestamp,
 //                                                           const c_scanner_context& context) const;
       private:
-         mutable boost::weak_ptr<scanner_context> context_;
+         mutable std::weak_ptr<scanner_context> context_;
    };
 }
 

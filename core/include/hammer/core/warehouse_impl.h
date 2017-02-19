@@ -23,7 +23,7 @@ class warehouse_impl : public warehouse
       bool has_project(const location_t& project_path,
                        const std::string& version) const override;
 
-      boost::shared_ptr<project>
+      std::shared_ptr<project>
       load_project(engine& e,
                    const location_t& project_path) override;
 
