@@ -1,1 +1,3 @@
-*.ham text
+* text=auto
+*.vcproj text=crlf
+*.sln text=crlf
