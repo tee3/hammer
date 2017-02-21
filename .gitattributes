@@ -1,2 +1,3 @@
-*.ham text
-instantiation.jcf text
+* text=auto
+*.vcproj text=crlf
+*.sln text=crlf
