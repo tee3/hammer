@@ -15,7 +15,6 @@
 
 using namespace std;
 
-
 namespace hammer{ namespace project_generators{
 
 namespace
@@ -108,7 +107,6 @@ void impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first,
 // lib b : a/<link>static b.cpp ;
 // exe xoxma : main.cpp a b ;
 //
-
 
 void msvc_solution::impl_t::write_project_section(ostream& os, const msvc_project& project) const
 {

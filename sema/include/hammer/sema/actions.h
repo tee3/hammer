@@ -72,7 +72,6 @@ class actions
       ast::context& ctx_;
 };
 
-
 }}
 
 #endif //h_56170038_85be_461a_817e_733c4bb21a2b

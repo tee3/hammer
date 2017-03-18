@@ -22,7 +22,6 @@ class htmpl_meta_target : public typed_meta_target
                                       const feature_set& computed_usage_requirements,
                                       const main_target* owner) const override;
 
-
 };
 
 }

@@ -121,7 +121,6 @@ bool build_environment_impl::run_shell_commands(std::ostream* captured_output_st
          (captured_error_stream ? *captured_error_stream : cerr) << cmd_stream.str();
 #endif
 
-
 #if defined(_WIN32)
       remove(full_tmp_file_name);
 #endif

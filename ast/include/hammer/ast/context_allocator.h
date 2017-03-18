@@ -35,5 +35,4 @@ class context_allocator
 
 }}
 
-
 #endif

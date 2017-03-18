@@ -186,7 +186,6 @@ static pANTLR3_COMMON_TOKEN nbs_tokLT(pANTLR3_TOKEN_STREAM ts, ANTLR3_INT32 k)
 
    cts	    = (pANTLR3_COMMON_TOKEN_STREAM)ts->super;
 
-
    if	(k == 0)
       return NULL;
 

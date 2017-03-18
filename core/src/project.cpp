@@ -38,7 +38,6 @@ void project::location(const location_t& l)
       location_ = l;
 }
 
-
 void project::add_target(std::auto_ptr<basic_meta_target> t)
 {
    if (add_targets_as_explicit_)
@@ -169,7 +168,6 @@ project::try_select_best_alternative(const std::string& target_name,
    else
       error_cannot_choose_alternative(*this, target_name, build_request_param);
 }
-
 
 void project::instantiate(const std::string& target_name,
                           const feature_set& build_request,

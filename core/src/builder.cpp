@@ -123,7 +123,6 @@ struct builder::impl_t
    void task_completition_handler(shared_ptr<worker_ctx_t> ctx);
    void task_handler(shared_ptr<worker_ctx_t> ctx);
 
-
    void flatter_queue(unordered_set<const build_queue_node_t*>& result,
                       const build_queue_node_t& node);
 

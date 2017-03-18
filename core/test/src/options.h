@@ -22,5 +22,4 @@ class options
                          const boost::filesystem::path& from_file);
 };
 
-
 #endif //h_d73fde8f_1206_4c59_9a1a_764b2ba6e15e

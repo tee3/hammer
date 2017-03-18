@@ -63,7 +63,6 @@ void register_standart_types(type_registry& tr, feature_registry& fr)
    const target_type& tSTATIC_LIB = tr.insert(target_type(STATIC_LIB, ".lib", tLIB));
    tr.insert(target_type(PREBUILT_STATIC_LIB, "", tSTATIC_LIB));
 
-
    target_type::suffixes_t static_lib_suffixes = list_of<target_type::suffix_def>(".lib", *parse_simple_set("<host-os>windows", fr))
                                                                                  (".a", *parse_simple_set("<host-os>linux", fr));
    tr.insert(target_type(IMPORT_LIB, static_lib_suffixes, tSTATIC_LIB));
@@ -71,7 +70,6 @@ void register_standart_types(type_registry& tr, feature_registry& fr)
    tr.insert(target_type(SEARCHED_SHARED_LIB, "", tSEARCHED_LIB));
    tr.insert(target_type(SEARCHED_STATIC_LIB, "", tSEARCHED_LIB));
    tr.insert(target_type(HEADER_LIB, target_type::suffixes_t(), tLIB));
-
 
    target_type::suffixes_t exe_suffixes = list_of<target_type::suffix_def>(".exe", *parse_simple_set("<host-os>windows", fr))
                                                                            ("", *parse_simple_set("<host-os>linux", fr));

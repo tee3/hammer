@@ -18,5 +18,4 @@ call_resolver::const_iterator call_resolver::find(const char* func_name) const
    return functions_.find(func_name);
 }
 
-
 }

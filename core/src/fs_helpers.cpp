@@ -27,20 +27,16 @@ boost::filesystem::path relative_path(boost::filesystem::path p,
    if(equivalent(current, p))
       return path(".");
 
-
    // Doesn't share a root
    if(!equivalent(current.root_path(), p.root_path()))
       return p;
-
 
    // We don't care about the root anymore
    // (and makes the rest easier)
    current = current.relative_path();
    p = p.relative_path();
 
-
    path final(".");
-
 
    path::iterator pit = p.begin(),
       cit = current.begin();
@@ -49,7 +45,6 @@ boost::filesystem::path relative_path(boost::filesystem::path p,
       if(*pit != *cit) // May not be right
          break;
 
-
    // Put needed parent dirs in
    while(cit != current.end())
    {
@@ -57,12 +52,10 @@ boost::filesystem::path relative_path(boost::filesystem::path p,
       ++cit;
    }
 
-
    // Add the path from shared
    while(pit != p.end())
       // Gah! Why doesn't *path::iterator return paths?
       final /= path(*pit++);
-
 
    // .normalize()?
    return final;
@@ -129,6 +122,5 @@ boost::filesystem::wpath to_wide(const boost::filesystem::path& narrow_path)
    throw std::runtime_error("Non windows platforms should not invoke 'to_wide'. Posible broken build of hammer.core");
 }
 #endif
-
 
 }

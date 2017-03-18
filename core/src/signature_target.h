@@ -20,5 +20,4 @@ class signature_target : public generated_target
 
 }
 
-
 #endif //h_5db3364a_84ce_4a8f_a5bc_bde34dcef26f

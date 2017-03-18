@@ -114,7 +114,6 @@ void generic_batcher::process_impl(build_node& node) const
       node.down_.erase(unique(node.down_.begin(), node.down_.end()), node.down_.end());
    }
 
-
    for(build_node::nodes_t::const_iterator i = node.down_.begin(), last = node.down_.end(); i != last; ++i)
    {
       if (visited_nodes_.find(i->get()) == visited_nodes_.end() &&

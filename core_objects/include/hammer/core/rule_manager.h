@@ -87,7 +87,6 @@ class rule_declaration
       const_iterator find(const parscore::identifier& arg_name) const;
       bool is_target() const { return is_target_; }
 
-
    private:
       parscore::identifier name_;
       rule_arguments args_;

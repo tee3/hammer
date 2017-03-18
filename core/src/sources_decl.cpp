@@ -4,7 +4,6 @@
 #include <hammer/core/sources_decl.h>
 #include <hammer/core/feature_set.h>
 
-
 namespace hammer{
 
 struct sources_decl::impl_t

@@ -9,6 +9,5 @@ override /hammer/<version>1.0 : /boost/<version>1.58.0 : /boost/<version>1.60.0 
 # override for all packages boost libs to newer version
 override / : /boost/<version>1.58.0 : /boost/<version>1.60 ;
 
-
 exe test : main.cpp /hammer/core ;
 

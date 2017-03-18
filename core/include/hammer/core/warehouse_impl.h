@@ -38,7 +38,6 @@ class warehouse_impl : public warehouse
                            const location_t& packages_db_root_ = location_t()) override;
       versions_t get_package_versions(const std::string& public_id) const override;
 
-
    protected:
       package_infos_t update_impl() override;
       void update_all_packages_impl(engine& e) override;

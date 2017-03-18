@@ -26,7 +26,6 @@ namespace hammer
       private:
          generators_t generators_;
 
-
          bool transform_to_consumable(const generator& target_generator,
                                       const generator& current_generator,
                                       build_node_ptr t,

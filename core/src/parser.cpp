@@ -12,7 +12,6 @@
 
 using namespace std;
 
-
 namespace hammer{
 
    struct parser::impl_t

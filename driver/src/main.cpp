@@ -724,7 +724,6 @@ namespace
    };
 }
 
-
 int main(int argc, char** argv) {
    try {
       po::options_description desc(options_for_work());
