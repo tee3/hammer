@@ -48,10 +48,10 @@ namespace hammer{
          const feature_def* feature_def_;
          boost::shared_ptr<subfeature> subfeature_;
       };
-      
+
       struct subfeature_find_data
       {
-         subfeature_find_data(const feature_def& fdef, 
+         subfeature_find_data(const feature_def& fdef,
                               const subfeature_def& sdef,
                               const std::string& value)
                               : fdef_(fdef), sdef_(sdef), value_(value)
@@ -64,7 +64,7 @@ namespace hammer{
 
       struct subfeature_storage_item_comparator
       {
-         bool operator()(const subfeature_storage_item& lhs, 
+         bool operator()(const subfeature_storage_item& lhs,
                          const subfeature_storage_item& rhs) const
          {
             if (lhs.feature_def_ != rhs.feature_def_)
@@ -77,13 +77,13 @@ namespace hammer{
          }
 
          template<typename Comparator>
-         bool compare_impl(const subfeature_storage_item& lhs, 
+         bool compare_impl(const subfeature_storage_item& lhs,
                            const subfeature_find_data& rhs,
                            Comparator comparator) const
          {
             if (lhs.feature_def_ != &rhs.fdef_)
                return comparator(lhs.feature_def_, &rhs.fdef_);
-            
+
             if (&lhs.subfeature_->definition() != &rhs.sdef_)
                return comparator(&lhs.subfeature_->definition(), &rhs.sdef_);
 
@@ -93,24 +93,24 @@ namespace hammer{
             return false;
          }
 
-         bool operator()(const subfeature_storage_item& lhs, 
-                         const subfeature_find_data& rhs) const 
-         { 
-            return compare_impl(lhs, rhs, generic_less_comparator()); 
-         }            
+         bool operator()(const subfeature_storage_item& lhs,
+                         const subfeature_find_data& rhs) const
+         {
+            return compare_impl(lhs, rhs, generic_less_comparator());
+         }
 
-         bool operator()(const subfeature_find_data& lhs, 
-                         const subfeature_storage_item& rhs) const 
-         { 
-            return compare_impl(rhs, lhs, generic_greater_equal_comparator()); 
-         }            
+         bool operator()(const subfeature_find_data& lhs,
+                         const subfeature_storage_item& rhs) const
+         {
+            return compare_impl(rhs, lhs, generic_greater_equal_comparator());
+         }
       };
 
       struct find_feature_data
       {
-         find_feature_data(const feature_def& def, 
+         find_feature_data(const feature_def& def,
                            const string& value,
-                           const feature::subfeatures_t& subfeatures) 
+                           const feature::subfeatures_t& subfeatures)
                            : def_(def), value_(value), subfeatures_(subfeatures)
          {}
 
@@ -121,14 +121,14 @@ namespace hammer{
 
       struct feature_storage_comparator
       {
-         bool operator()(const feature& lhs, const feature& rhs) const 
+         bool operator()(const feature& lhs, const feature& rhs) const
          {
             if (&lhs == &rhs)
                return false;
-            
+
             if (&lhs.definition() != &rhs.definition())
                return &lhs.definition() < &rhs.definition();
-            
+
             if (lhs.value() != rhs.value())
                return lhs.value() < rhs.value();
 
@@ -139,10 +139,10 @@ namespace hammer{
             if (lhs.subfeatures().empty())
                return false;
 
-            for(feature::subfeatures_t::const_iterator i = lhs.subfeatures().begin(), 
-                                                       last = lhs.subfeatures().end(), 
-                                                       outer = rhs.subfeatures().begin(); 
-                i != last; 
+            for(feature::subfeatures_t::const_iterator i = lhs.subfeatures().begin(),
+                                                       last = lhs.subfeatures().end(),
+                                                       outer = rhs.subfeatures().begin();
+                i != last;
                 ++i, ++outer)
              {
                 if (*i != *outer)
@@ -160,19 +160,19 @@ namespace hammer{
 
             if (lhs.value() != rhs.value_)
                return comparator(lhs.value(), rhs.value_);
-            
+
             if (lhs.subfeatures().size() != rhs.subfeatures_.size())
                return comparator(lhs.subfeatures().size(), rhs.subfeatures_.size());
-            
+
             // FIXME: this is due msvc-8.0 debug iterator bug
             if (lhs.subfeatures().empty())
                return false;
 
             typedef feature::subfeatures_t::const_iterator iter;
-            for(iter i = lhs.subfeatures().begin(), 
-                     last = lhs.subfeatures().end(), 
-                     outer = rhs.subfeatures_.begin(); 
-                i != last; 
+            for(iter i = lhs.subfeatures().begin(),
+                     last = lhs.subfeatures().end(),
+                     outer = rhs.subfeatures_.begin();
+                i != last;
                 ++i, ++outer)
              {
                if (*i != *outer)
@@ -182,17 +182,17 @@ namespace hammer{
             return false;
          }
 
-         bool operator()(const feature& lhs, const find_feature_data& rhs) const 
+         bool operator()(const feature& lhs, const find_feature_data& rhs) const
          {
             return compare_impl(lhs, rhs, generic_less_comparator());
          }
 
-         bool operator()(const find_feature_data& lhs, const feature& rhs) const 
+         bool operator()(const find_feature_data& lhs, const feature& rhs) const
          {
             return compare_impl(rhs, lhs, generic_greater_equal_comparator());
          }
       };
-      
+
       struct feature_storage_key_extractor
       {
          typedef const feature& result_type;
@@ -209,15 +209,15 @@ namespace hammer{
                                    > features_t;
       typedef features_t::nth_index<0>::type main_feature_index_t;
 
-      typedef multi_index_container<subfeature_storage_item, 
-                                    indexed_by< 
+      typedef multi_index_container<subfeature_storage_item,
+                                    indexed_by<
                                        ordered_unique<identity<subfeature_storage_item>, subfeature_storage_item_comparator> >
                                    > subfeatures_t;
       typedef subfeatures_t::nth_index<0>::type main_subfeature_index_t;
 
       feature_def* find_def(const std::string& name);
       feature* find_feature(const std::string& name, const string& value);
-      feature* find_feature(const feature& f, 
+      feature* find_feature(const feature& f,
                             const subfeature& sf);
       subfeature& create_subfeature(const feature& f, const string& name, const string& value);
 
@@ -247,7 +247,7 @@ namespace hammer{
        main_feature_index_t::iterator i = features_.get<0>().find(find_feature_data(*def, value, feature::subfeatures_t()));
        if (i == features_.get<0>().end())
           return NULL;
-       else 
+       else
           return i->get();
    }
 
@@ -258,7 +258,7 @@ namespace hammer{
       const subfeature_def* sdef = f.definition().find_subfeature(name);
       if (sdef == NULL)
          throw std::runtime_error("Feature '" + f.name() + "' does not have subfeature '" + name + "'.");
-      
+
       if (!sdef->is_legal_value(f.value(), value))
          throw std::runtime_error("Value '" + value + "' is not a legal value for subfeature '" + name + "'.");
 
@@ -276,7 +276,7 @@ namespace hammer{
       }
    }
 
-   feature* feature_registry::impl_t::find_feature(const feature& f, 
+   feature* feature_registry::impl_t::find_feature(const feature& f,
                                                    const subfeature& sf)
    {
       feature::subfeatures_t subfeatures(f.subfeatures());
@@ -284,7 +284,7 @@ namespace hammer{
       main_feature_index_t::iterator i = features_.get<0>().find(find_feature_data(f.definition(), f.value(), subfeatures));
       if (i == features_.get<0>().end())
          return NULL;
-      else 
+      else
          return i->get();
    }
 
@@ -347,7 +347,7 @@ namespace hammer{
 
       const feature_def& def = *maybe_def;
 
-      if (def.attributes().path || 
+      if (def.attributes().path ||
           def.attributes().dependency ||
           def.attributes().generated ||
           def.attributes().undefined_)
@@ -367,7 +367,7 @@ namespace hammer{
             impl_->features_.get<0>().insert(f);
          }
       }
-      
+
       return result;
    }
 
@@ -378,7 +378,7 @@ namespace hammer{
 
       const feature_def* posible_feature = find_def(name.c_str());
 
-      if (posible_feature != NULL && 
+      if (posible_feature != NULL &&
           (posible_feature->attributes().free ||
            posible_feature->is_legal_value(value)))
       {
@@ -386,7 +386,7 @@ namespace hammer{
       }
 
       typedef boost::tokenizer<boost::char_separator<char>, const char*> tokenizer;
-      tokenizer tok(value.c_str(), value.c_str() + value.size(), 
+      tokenizer tok(value.c_str(), value.c_str() + value.size(),
                     boost::char_separator<char>("-"));
       tokenizer::const_iterator first = tok.begin(), last = tok.end();
       if (first != last)
@@ -455,8 +455,8 @@ namespace hammer{
          return NULL;
    }
 
-   feature* feature_registry::create_feature(const feature& f, 
-                                             const string& subfeature_name, 
+   feature* feature_registry::create_feature(const feature& f,
+                                             const string& subfeature_name,
                                              const string& subfeature_value)
    {
       subfeature& sf = impl_->create_subfeature(f, subfeature_name, subfeature_value);

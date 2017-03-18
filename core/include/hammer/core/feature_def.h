@@ -44,7 +44,7 @@ namespace hammer
          find_subfeature_for_value(const std::string& feature_value,
                                    const std::string& value) const;
 
-         ~feature_def(); 
+         ~feature_def();
          bool operator ==(const feature_def& rhs) const { return this == &rhs; }
 
       private:

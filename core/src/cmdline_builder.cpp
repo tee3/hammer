@@ -30,14 +30,14 @@ void cmdline_builder::write(std::ostream& output, const build_node& node, const 
    const char* c_str_cmd = cmd_.c_str();
    const char* end_c_str_cmd = c_str_cmd + cmd_.size();
    if (!parse(c_str_cmd, end_c_str_cmd,
-              *(anychar_p - str_p("$(")) >> 
-                 !list_p(str_p("$(") >> (+(anychar_p - ')'))[push_back_a(arguments)] >> ')', *(anychar_p - "$(")) >> 
+              *(anychar_p - str_p("$(")) >>
+                 !list_p(str_p("$(") >> (+(anychar_p - ')'))[push_back_a(arguments)] >> ')', *(anychar_p - "$(")) >>
               *anychar_p
        ).full)
    {
       throw std::runtime_error("[cmdline_builder] Can't parse command template '" + cmd_ + "'");
    }
-   
+
    for(arguments_t::const_iterator i = arguments.begin(), last = arguments.end(); i != last; ++i)
    {
       if (c_str_cmd + 2 != i->begin())
@@ -47,7 +47,7 @@ void cmdline_builder::write(std::ostream& output, const build_node& node, const 
       writers_t::const_iterator w = writers_.find(writer);
       if (w == writers_.end())
          throw std::runtime_error("[cmdline_builder] Argument writer with name '" + writer + "' has not been registered");
-      
+
       w->second->write(output, node, environment);
       c_str_cmd = i->end() + 1;
    }

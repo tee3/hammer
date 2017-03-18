@@ -5,10 +5,10 @@ namespace hammer{
 
 static location_t empty_location;
 
-fake_target::fake_target(const main_target* mt, 
+fake_target::fake_target(const main_target* mt,
                          const build_node::sources_t& sources,
                          const std::string& name,
-                         const target_type* t, 
+                         const target_type* t,
                          const feature_set* f)
    : basic_target(mt, name, t, f), sources_(sources)
 {

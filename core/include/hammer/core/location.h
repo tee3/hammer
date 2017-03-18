@@ -7,7 +7,7 @@
 namespace hammer
 {
    typedef boost::filesystem::path location_t;
-   
+
    struct location_equal_to : std::binary_function<location_t, location_t, bool>
    {
       bool operator()(const location_t& lhs, const location_t& rhs) const

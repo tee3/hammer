@@ -7,8 +7,8 @@ namespace hammer{
 
 struct cleaner::impl_t
 {
-   impl_t(engine& e, 
-          const build_environment& environment) 
+   impl_t(engine& e,
+          const build_environment& environment)
       : engine_(e),
         environment_(environment)
    {}
@@ -44,7 +44,7 @@ void cleaner::impl_t::clean_all(result& r, build_node& n)
       }
 }
 
-cleaner::cleaner(engine& e, const build_environment& environment) 
+cleaner::cleaner(engine& e, const build_environment& environment)
    : impl_(new impl_t(e, environment))
 {}
 
@@ -52,7 +52,7 @@ cleaner::result cleaner::clean_all(nodes_t& nodes)
 {
    result r;
    impl_->visited_nodes_.clear();
-   
+
    for(nodes_t::iterator i = nodes.begin(), last = nodes.end(); i != last; ++i)
       impl_->clean_all(r, **i);
 

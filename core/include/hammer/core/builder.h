@@ -12,12 +12,12 @@ namespace hammer
    {
       public:
          typedef std::vector<boost::intrusive_ptr<build_node> > nodes_t;
-         
+
          struct result
          {
             result() : updated_targets_(0),
                        failed_to_build_targets_(0),
-                       skipped_targets_(0) 
+                       skipped_targets_(0)
             {}
 
             unsigned updated_targets_;
@@ -25,9 +25,9 @@ namespace hammer
             unsigned skipped_targets_;
          };
 
-         builder(const build_environment& environment, 
+         builder(const build_environment& environment,
                  volatile bool& interrupt_flag,
-                 unsigned worker_count, 
+                 unsigned worker_count,
                  bool unconditional_build);
          ~builder();
 

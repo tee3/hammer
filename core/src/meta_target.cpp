@@ -65,8 +65,8 @@ void remove_duplicates(deduplicator_t& deduplicator,
 
    meta_target::meta_target(hammer::project* p,
                             const std::string& name,
-                            const requirements_decl& props, 
-                            const requirements_decl& usage_req) 
+                            const requirements_decl& props,
+                            const requirements_decl& usage_req)
                            : basic_meta_target(p, name, props, usage_req)
    {
       requirements().insert_infront(p->requirements());
@@ -159,7 +159,7 @@ void remove_duplicates(deduplicator_t& deduplicator,
    }
 
    static void transfer_public_sources(feature_set& dest,
-                                       const sources_decl& sources, 
+                                       const sources_decl& sources,
                                        const feature_set& build_request,
                                        feature_registry& fr,
                                        const basic_meta_target& relative_to_target)
@@ -180,13 +180,13 @@ void remove_duplicates(deduplicator_t& deduplicator,
       apply_build_request(uses, build_request);
       dest.join(uses);
    }
-   
+
    void meta_target::instantiate_impl(const main_target* owner,
                                       const feature_set& build_request_param,
                                       std::vector<basic_target*>* result,
                                       feature_set* usage_requirements) const
    {
-      const feature_set& build_request = build_request_param.has_undefined_features() 
+      const feature_set& build_request = build_request_param.has_undefined_features()
                                               ? resolve_undefined_features(build_request_param)
                                               : build_request_param;
 
@@ -211,11 +211,11 @@ void remove_duplicates(deduplicator_t& deduplicator,
       extract_sources(sources_from_requirements, *mt_fs, *this);
       extract_dependencies(dependencies_from_requierements, *mt_fs, *this);
 
-      split_sources(&simple_targets, &meta_targets, sources(), *build_request_for_dependencies); 
+      split_sources(&simple_targets, &meta_targets, sources(), *build_request_for_dependencies);
       split_sources(&simple_targets, &meta_targets, sources_from_requirements, *build_request_for_dependencies);
       split_sources(&simple_targets, &meta_targets, additional_sources, *build_request_for_dependencies);
       split_sources(&simple_targets, &dependency_meta_targets, dependencies_from_requierements, *build_request_for_dependencies);
-      
+
       deduplicator_t sources_deduplicator;
       remove_duplicates(sources_deduplicator, meta_targets);
 
@@ -229,7 +229,7 @@ void remove_duplicates(deduplicator_t& deduplicator,
          instantiate_meta_targets(simple_targets, instantiated_meta_targets, sources_deduplicator, sources_from_features,
                                   *local_usage_requirements, *this, meta_targets,
                                   *build_request_for_dependencies, *mt);
-      
+
       sources_decl dependencies_from_instantiations;
       extract_dependencies(dependencies_from_instantiations, *local_usage_requirements, *this);
       split_sources(&simple_targets, &dependency_meta_targets, dependencies_from_instantiations, *build_request_for_dependencies);
@@ -257,7 +257,7 @@ void remove_duplicates(deduplicator_t& deduplicator,
       instantiate_simple_targets(simple_targets, *mt_fs, *mt, &instantiated_meta_targets);
       mt->sources(instantiated_meta_targets);
       mt->dependencies(instantiated_dependency_meta_targets);
-      
+
       sources_decl all_sources = sources();
       all_sources.insert(sources_from_requirements);
       all_sources.insert(sources_from_features);
@@ -270,7 +270,7 @@ void remove_duplicates(deduplicator_t& deduplicator,
       result->push_back(mt);
    }
 
-   void meta_target::compute_usage_requirements(feature_set& result, 
+   void meta_target::compute_usage_requirements(feature_set& result,
                                                 const main_target& constructed_target,
                                                 const feature_set& build_request,
                                                 const feature_set& computed_usage_requirements,

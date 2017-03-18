@@ -46,8 +46,8 @@ namespace hammer
 
             typedef boost::ptr_vector<variant> variants_t;
 
-            msvc_project(engine& e, 
-                         const location_t& output_dir, 
+            msvc_project(engine& e,
+                         const location_t& output_dir,
                          const std::string& solution_configuration_name,
                          const boost::guid& uid = boost::guid::create());
 
@@ -65,14 +65,14 @@ namespace hammer
             const location_t& project_output_dir() const { return project_output_dir_; }
             const std::string name() const;
             const variants_t& variants() const { return variants_; }
-            
+
          private:
             struct write_context
             {
                write_context(std::ostream& s,
                              const target_type& h_type,
                              build_environment& environment,
-                             const cmdline_builder& compiller_options) 
+                             const cmdline_builder& compiller_options)
                   : h_type_(h_type), output_(s),
                     environment_(environment),
                     compiller_options_(compiller_options)
@@ -87,7 +87,7 @@ namespace hammer
             struct file_configuration
             {
                file_configuration() : exclude_from_build(true) {}
-               
+
                void write(write_context& ctx, const variant& v) const;
                const basic_target* target_;
                boost::intrusive_ptr<build_node> node_;
@@ -99,30 +99,30 @@ namespace hammer
                typedef std::map<const variant*, file_configuration> file_config_t;
 
                void write(write_context& ctx, const std::string& path_prefix) const;
-               
+
                std::string file_name_;
                file_config_t file_config;
             };
 
             class filter_t
             {
-               public:   
+               public:
                   typedef std::vector<const target_type*> types_t;
                   typedef std::map<const basic_target*, file_with_cfgs_t> files_t;
                   std::string name;
                   std::string uid;
                   files_t files_;
 
-                  filter_t(const types_t& t, 
+                  filter_t(const types_t& t,
                            const std::string& name,
-                           const std::string& uid = std::string()) 
-                     : name(name), uid(uid), types_(t) 
+                           const std::string& uid = std::string())
+                     : name(name), uid(uid), types_(t)
                   {}
 
                   void write(write_context& ctx, const std::string& path_prefix) const;
                   bool accept(const target_type* t) const;
                   void insert(const boost::intrusive_ptr<build_node>& node,
-                              const basic_target* t, 
+                              const basic_target* t,
                               const variant& v);
                   virtual ~filter_t() {}
 
@@ -131,7 +131,7 @@ namespace hammer
             };
 
             typedef std::vector<filter_t> files_t;
-            
+
             engine* engine_;
             mutable variants_t variants_;
             files_t files_;
@@ -144,7 +144,7 @@ namespace hammer
             location_t project_output_dir_;
             location_t meta_target_relative_to_output_;
             std::string solution_configuration_name_;
-            
+
             const target_type& searched_lib_;
             const target_type& obj_type_;
             const target_type& pch_type_;
@@ -162,8 +162,8 @@ namespace hammer
             void write_files(write_context& ctx) const;
             void gether_files_impl(const build_node& node, variant& v);
             void gether_files();
-            void insert_into_files(const boost::intrusive_ptr<build_node>& node, 
-                                   const basic_target* t, 
+            void insert_into_files(const boost::intrusive_ptr<build_node>& node,
+                                   const basic_target* t,
                                    const variant& v);
             configuration_types::value resolve_configuration_type(const variant& v) const;
       };

@@ -9,7 +9,7 @@ namespace hammer
    {
       public:
          timestamp_info_t() : is_unknown_(true) {}
-         timestamp_info_t(const boost::posix_time::ptime& timestamp) 
+         timestamp_info_t(const boost::posix_time::ptime& timestamp)
             : timestamp_(timestamp),
               is_unknown_(false)
          {}

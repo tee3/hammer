@@ -36,8 +36,8 @@ target_type::target_type(const type_tag& tag, const suffixes_t& suffixes, const 
 
 bool target_type::equal(const target_type& rhs) const
 {
-   return tag() == tag() && 
-          suffixes().size() == rhs.suffixes().size() && 
+   return tag() == tag() &&
+          suffixes().size() == rhs.suffixes().size() &&
           std::equal(suffixes().begin(), suffixes().end(), rhs.suffixes().begin());
 }
 
@@ -47,12 +47,12 @@ bool target_type::suffix_def::operator == (const suffix_def& rhs) const
 }
 
 bool target_type::equal_or_derived_from(const target_type& rhs) const
-{ 
+{
    assert(owner_ != NULL && "To perform this operation owner_ must be not NULL.");
 
    if (owner_ != rhs.owner_)
       return equal(rhs);
-   
+
    if (this == &rhs)
       return true;
    else
@@ -74,7 +74,7 @@ bool target_type::operator == (const target_type& rhs) const
    assert(owner_ != NULL && "To perform this operation owner_ must be not NULL.");
    if (owner_ != rhs.owner_)
       return equal(rhs);
-   
+
    return this == &rhs;
 }
 
@@ -83,7 +83,7 @@ const std::string& target_type::suffix_for(const std::string& s, const feature_s
    for(target_type::suffixes_t::const_iterator i = suffixes_.begin(), last = suffixes_.end(); i != last; ++i)
    {
       string::size_type p = s.rfind(i->suffix_.c_str());
-      if (p != string::npos && 
+      if (p != string::npos &&
          p + i->suffix_.size() == s.size())
          return i->suffix_;
    }

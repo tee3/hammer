@@ -56,7 +56,7 @@ feature_set& feature_set::join(feature* f)
       if (find(*f) == end())
          features_.push_back(f);
    }
-   
+
    return *this;
 }
 
@@ -65,7 +65,7 @@ const feature& feature_set::get(const char* name_) const
    const_iterator f = find(name_);
    if (f == features_.end())
       throw runtime_error("feature '" + string(name_) + "not founded");
-   
+
    return **f;
 }
 
@@ -258,7 +258,7 @@ bool feature_set::compatible_with(const feature_set& rhs) const
 
    const feature_set* rhs_p = &rhs;
    const feature_set* lhs_p = this;
-   
+
    if (size() < rhs.size())
       swap(lhs_p, rhs_p);
 
@@ -310,8 +310,8 @@ feature_set* parse_simple_set(const std::string& s, feature_registry& r)
    using namespace boost::spirit::classic;
 
    vector<string> feature_names, feature_values;
-   if (parse(s.begin(), s.end(), 
-             list_p('<' >> (+(anychar_p - '>'))[push_back_a(feature_names)] >> '>' >> 
+   if (parse(s.begin(), s.end(),
+             list_p('<' >> (+(anychar_p - '>'))[push_back_a(feature_names)] >> '>' >>
                            (+(anychar_p - '/'))[push_back_a(feature_values)], ch_p('/'))
             ).full)
    {
@@ -343,7 +343,7 @@ static void dump_value(std::ostream& s, const feature& f)
       location_t l(f.value());
       if (!l.has_root_name())
       {
-         l = pd.target_->location() / l;   
+         l = pd.target_->location() / l;
          l.normalize();
       }
 
@@ -356,7 +356,7 @@ static void dump_value(std::ostream& s, const feature& f)
          s << dd.source_.target_path();
          if (!dd.source_.target_name().empty())
             s << "//" << dd.source_.target_name();
-         
+
           if (f.get_path_data().target_ != NULL)
              s << " " << f.get_path_data().target_->location();
       }
@@ -371,7 +371,7 @@ static void dump_for_hash(std::ostream& s, const feature& f)
 
    if (f.subfeatures().empty())
       return;
-   
+
    typedef vector<const subfeature*> subfeatures_t;
    subfeatures_t subfeatures;
    for(feature::subfeatures_t::const_iterator i = f.subfeatures().begin(), last = f.subfeatures().end(); i != last; ++i)
@@ -409,10 +409,10 @@ void dump_for_hash(std::ostream& s, const feature_set& fs, bool dump_all)
    features_t features;
    for(feature_set::const_iterator i = fs.begin(), last = fs.end(); i != last; ++i)
    {
-      if (dump_all || 
-          !((**i).attributes().free || 
+      if (dump_all ||
+          !((**i).attributes().free ||
             (**i).attributes().incidental ||
-            (**i).attributes().path || 
+            (**i).attributes().path ||
             (**i).attributes().dependency ||
             (**i).attributes().generated ||
             (**i).attributes().composite))
@@ -420,7 +420,7 @@ void dump_for_hash(std::ostream& s, const feature_set& fs, bool dump_all)
          features.push_back(*i);
       }
    }
-   
+
    std::stable_sort(features.begin(), features.end(), &less_by_name);
 
    bool first = true;

@@ -1,1 +1,1 @@
-exe test : main.cpp lib1 ; 
+exe test : main.cpp lib1 ;

@@ -6,8 +6,8 @@
 
 namespace hammer{ namespace ast{
 
-requirement_set::requirement_set(const requirements_t& requirements) 
-   : requirements_(requirements) 
+requirement_set::requirement_set(const requirements_t& requirements)
+   : requirements_(requirements)
 {}
 
 parscore::source_location requirement_set::start_loc() const

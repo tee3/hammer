@@ -11,9 +11,9 @@ namespace hammer
    class free_feature_arg_writer : public argument_writer
    {
       public:
-         free_feature_arg_writer(const std::string& name, 
+         free_feature_arg_writer(const std::string& name,
                                  const feature_def& def,
-                                 const std::string& prefix = std::string(), 
+                                 const std::string& prefix = std::string(),
                                  const std::string& suffix = std::string(),
                                  const std::string& delimiter = std::string(" "),
                                  const std::string& global_prefix = std::string(),

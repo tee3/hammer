@@ -14,7 +14,7 @@ namespace hammer
    {
       public:
          fs_argument_writer(const std::string& name, feature_registry& fr)
-            : argument_writer(name), feature_registry_(&fr) 
+            : argument_writer(name), feature_registry_(&fr)
          {}
 
          fs_argument_writer& add(const feature_set* pattern, const std::string& what_write);
@@ -23,7 +23,7 @@ namespace hammer
 
       private:
          typedef std::vector<std::pair<const feature_set* /*pattern*/, std::string /*what write*/> > patterns_t;
-         
+
          patterns_t patterns_;
          feature_registry* feature_registry_;
 

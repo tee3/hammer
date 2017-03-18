@@ -8,13 +8,13 @@
 
 namespace hammer{
 
-source_argument_writer::source_argument_writer(const std::string& name, 
+source_argument_writer::source_argument_writer(const std::string& name,
                                                const target_type& t,
                                                bool exact_type,
                                                output_strategy os,
                                                const std::string& quoting_string,
                                                const std::string& prefix)
-   : targets_argument_writer(name, t), 
+   : targets_argument_writer(name, t),
      exact_type_(exact_type),
      output_strategy_(os),
      quoting_string_(quoting_string),

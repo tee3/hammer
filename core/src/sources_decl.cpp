@@ -22,7 +22,7 @@ sources_decl::impl_t* sources_decl::impl_t::clone() const
    std::auto_ptr<impl_t> result(new impl_t);
 
    result->values_ = values_;
-   return result.release();   
+   return result.release();
 }
 
 sources_decl::sources_decl(const sources_decl& rhs) : impl_(rhs.impl_)
@@ -113,8 +113,8 @@ void sources_decl::add_to_source_properties(const feature_set& props)
    for(impl_t::values_t::iterator i = impl_->values_.begin(), last = impl_->values_.end(); i != last; ++i)
       if (i->properties() == NULL)
          i->properties(props.clone());
-      else 
-         i->properties(const_cast<const feature_set*>(i->properties())->join(props)); 
+      else
+         i->properties(const_cast<const feature_set*>(i->properties())->join(props));
 }
 
 void sources_decl::transfer_from(sources_decl& s)

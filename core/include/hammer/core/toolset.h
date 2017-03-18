@@ -8,21 +8,21 @@ namespace hammer
 {
    class engine;
 
-   class toolset 
+   class toolset
    {
       public:
          toolset(const std::string& name);
 
          const std::string name() const { return name_; }
 
-         void init(engine& e, const std::string& version_id = std::string(), 
+         void init(engine& e, const std::string& version_id = std::string(),
                    const location_t* toolset_home = NULL) const;
          virtual void autoconfigure(engine& e) const = 0;
 
          virtual ~toolset() {}
 
       protected:
-         virtual void init_impl(engine& e, const std::string& version_id = std::string(), 
+         virtual void init_impl(engine& e, const std::string& version_id = std::string(),
                                 const location_t* toolset_home = NULL) const = 0;
 
       private:

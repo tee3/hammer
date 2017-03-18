@@ -13,7 +13,7 @@ namespace hammer{
 
 copy_main_target::copy_main_target(const basic_meta_target* mt,
                                    const std::string& name,
-                                   const target_type* t, 
+                                   const target_type* t,
                                    const feature_set* props)
    : main_target(mt, name, t, props),
      recursive_(false)
@@ -21,7 +21,7 @@ copy_main_target::copy_main_target(const basic_meta_target* mt,
    feature_set::const_iterator d = props->find("destination");
    if (d == props->end())
       throw std::runtime_error("Copy main target must have <destination> feature in requirements");
-   
+
    destination_ = (**d).get_path_data().target_->location() / (**d).value();
    destination_.normalize();
 

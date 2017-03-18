@@ -20,40 +20,40 @@ namespace hammer
       public:
          struct selected_target
          {
-            selected_target(const basic_meta_target* t, 
+            selected_target(const basic_meta_target* t,
                             const feature_set* resolved_build_request,
                             unsigned resolved_build_request_rank)
                            : target_(t),
                              resolved_build_request_(resolved_build_request),
                              resolved_build_request_rank_(resolved_build_request_rank)
             {}
-            
-            selected_target() 
-               : target_(NULL), 
-                 resolved_build_request_(NULL) 
+
+            selected_target()
+               : target_(NULL),
+                 resolved_build_request_(NULL)
             {}
 
             const basic_meta_target* target_;
             // == project.try_resolve_local_features(build_request)
-            const feature_set* resolved_build_request_; 
+            const feature_set* resolved_build_request_;
             unsigned resolved_build_request_rank_;
          };
 
          typedef boost::ptr_multimap<const std::string /* target name */, basic_meta_target> targets_t;
          typedef std::vector<selected_target> selected_targets_t;
 
-         project(engine* e, 
+         project(engine* e,
                  const std::string& name,
                  const location_t& location,
                  const requirements_decl& req,
                  const requirements_decl& usage_req
                  );
 
-         project(engine* e) : engine_(e), 
-                              is_root_(false), 
+         project(engine* e) : engine_(e),
+                              is_root_(false),
                               add_targets_as_explicit_(false)
          {};
-         
+
          virtual const location_t& location() const { return location_; }
          void location(const location_t& l);
          void add_target(std::auto_ptr<basic_meta_target> t);
@@ -75,12 +75,12 @@ namespace hammer
 
          void mark_as_explicit(const std::string& name);
 
-         void instantiate(const std::string& target_name, 
+         void instantiate(const std::string& target_name,
                           const feature_set& build_request,
                           std::vector<basic_target*>* result) const;
          bool operator == (const project& rhs) const;
          bool operator != (const project& rhs) const { return !(*this == rhs); }
-         
+
          // select targets in project that satisfied build_request. Can return empty list.
          selected_targets_t select_best_alternative(const feature_set& build_request) const;
 
@@ -99,15 +99,15 @@ namespace hammer
          bool add_targets_as_local_ = false;
          mutable feature_registry local_feature_registry_;
 
-         virtual void instantiate_impl(const main_target* owner, 
+         virtual void instantiate_impl(const main_target* owner,
                                        const feature_set& build_request,
-                                       std::vector<basic_target*>* result, 
+                                       std::vector<basic_target*>* result,
                                        feature_set* usage_requirements) const;
    };
 
-   // -1 == not suitable 
+   // -1 == not suitable
    // > -1 == suitable with computed rank. Zero IS valid rank
-   int compute_alternative_rank(const feature_set& target_properties, 
+   int compute_alternative_rank(const feature_set& target_properties,
                                 const feature_set& build_request);
 
 }

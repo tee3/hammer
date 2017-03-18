@@ -23,9 +23,9 @@ namespace hammer
          typedef std::vector<boost::intrusive_ptr<build_node> > build_nodes_t;
 
          basic_target(const main_target* mt, const std::string& name,
-                      const target_type* t, const feature_set* f) 
-                     : main_target_(mt),  
-                       type_(t), 
+                      const target_type* t, const feature_set* f)
+                     : main_target_(mt),
+                       type_(t),
                        name_(name),
                        features_(f)
          {};
@@ -38,7 +38,7 @@ namespace hammer
          const basic_meta_target* get_meta_target() const;
          const project* get_project() const;
          engine* get_engine() const;
-         
+
          virtual build_nodes_t generate() const = 0;
          // maybe this is wrong? The reason to making it const was cleaner implementation
          virtual void clean(const build_environment& environment) const {};
@@ -52,7 +52,7 @@ namespace hammer
          static std::string hash_string(const feature_set& fs, const main_target& mt);
 
          virtual ~basic_target(){};
-      
+
       protected:
          mutable timestamp_info_t timestamp_info_;
 

@@ -4,7 +4,7 @@
  *     -  From the grammar source file : jcf.g
  *     -                            On : 2017-01-01 21:44:35
  *     -                 for the lexer : jcfLexerLexer *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -45,7 +45,7 @@ static ANTLR3_UCHAR	lit_6[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
  * confusing the reader of the generated output, who may not wish to know the gory
  * details of the interface inheritance.
  */
- 
+
 #define		CTX	ctx
 
 /* Aids in accessing scopes for grammar programmers
@@ -59,12 +59,12 @@ static ANTLR3_UCHAR	lit_6[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
 #define	SCOPE_SIZE(scope)			(ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
 #define SCOPE_INSTANCE(scope, i)	(ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope),i))
 
- 
+
 /* Macros for accessing things in a lexer
  */
 #undef	    LEXER
-#undef	    RECOGNIZER		    
-#undef	    RULEMEMO		    
+#undef	    RECOGNIZER
+#undef	    RULEMEMO
 #undef	    GETCHARINDEX
 #undef	    GETLINE
 #undef	    GETCHARPOSITIONINLINE
@@ -161,7 +161,7 @@ static ANTLR3_UCHAR	lit_6[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
 
 # else
 
-#  define	    NEXTCHAR			((pANTLR3_UINT16)(INPUT->nextChar)) 
+#  define	    NEXTCHAR			((pANTLR3_UINT16)(INPUT->nextChar))
 #  define	    DATAP				((pANTLR3_UINT16)(INPUT->data))
 
 # endif
@@ -252,7 +252,7 @@ static void
 jcfLexerFree  (pjcfLexer ctx)
 {
     LEXER->free(LEXER);
-    
+
     ANTLR3_FREE(ctx);
 }
 
@@ -270,11 +270,11 @@ static const char * getGrammarFileName()
 /** \brief Create a new lexer called jcfLexer
  *
  * \param[in]    instream Pointer to an initialized input stream
- * \return 
+ * \return
  *     - Success pjcfLexer initialized for the lex start
  *     - Fail NULL
  */
-ANTLR3_API pjcfLexer jcfLexerNew         
+ANTLR3_API pjcfLexer jcfLexerNew
 (pANTLR3_INPUT_STREAM instream)
 {
 	// See if we can create a new lexer with the standard constructor
@@ -286,11 +286,11 @@ ANTLR3_API pjcfLexer jcfLexerNew
  *
  * \param[in]    instream Pointer to an initialized input stream
  * \param[state] state Previously created shared recognizer stat
- * \return 
+ * \return
  *     - Success pjcfLexer initialized for the lex start
  *     - Fail NULL
  */
-ANTLR3_API pjcfLexer jcfLexerNewSSD         
+ANTLR3_API pjcfLexer jcfLexerNewSSD
 (pANTLR3_INPUT_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
     pjcfLexer ctx; // Context structure we will build and return
@@ -308,16 +308,16 @@ ANTLR3_API pjcfLexer jcfLexerNewSSD
      * in base ANTLR3 structures. We initialize the function pointers
      * for the standard ANTLR3 lexer function set, but upon return
      * from here, the programmer may set the pointers to provide custom
-     * implementations of each function. 
+     * implementations of each function.
      *
      * We don't use the macros defined in jcfLexer.h here so you can get a sense
      * of what goes where.
      */
-    
+
     /* Create a base lexer, using the supplied input stream
      */
     ctx->pLexer	= antlr3LexerNewStream(ANTLR3_SIZE_HINT, instream, state);
-    
+
     /* Check that we allocated the memory correctly
      */
     if	(ctx->pLexer == NULL)
@@ -346,22 +346,22 @@ ANTLR3_API pjcfLexer jcfLexerNewSSD
     ctx->mCOMMENT	= mCOMMENT;
     ctx->mWS	= mWS;
     ctx->mTokens	= mTokens;
-    
+
     /** When the nextToken() call is made to this lexer's pANTLR3_TOKEN_SOURCE
      *  it will call mTokens() in this generated code, and will pass it the ctx
      * pointer of this lexer, not the context of the base lexer, so store that now.
      */
     ctx->pLexer->ctx	    = ctx;
-    
+
     /**Install the token matching function
      */
     ctx->pLexer->mTokens = (void (*) (void *))(mTokens);
-    
+
     ctx->getGrammarFileName	= getGrammarFileName;
     ctx->free		= jcfLexerFree;
 
-    
-    
+
+
 
 
     /* Return the newly built lexer to the caller
@@ -377,44 +377,44 @@ ANTLR3_API pjcfLexer jcfLexerNewSSD
  */
 static const ANTLR3_INT32 dfa6_eot[57] =
     {
-	-1, -1, -1, -1, -1, -1, 15, 19, 15, -1, -1, -1, 15, 15, 23, -1, -1, -1, 
-	15, -1, 15, 15, 15, -1, 15, 15, 15, 15, 32, 15, 15, 15, -1, 15, 15, 15, 
-	15, 15, 15, 15, 15, 15, 45, 46, 15, -1, -1, 15, 15, 15, 15, 15, 15, 15, 
+	-1, -1, -1, -1, -1, -1, 15, 19, 15, -1, -1, -1, 15, 15, 23, -1, -1, -1,
+	15, -1, 15, 15, 15, -1, 15, 15, 15, 15, 32, 15, 15, 15, -1, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 45, 46, 15, -1, -1, 15, 15, 15, 15, 15, 15, 15,
 	15, 56, -1
     };
 static const ANTLR3_INT32 dfa6_eof[57] =
     {
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1
     };
 static const ANTLR3_INT32 dfa6_min[57] =
     {
-	10, -1, -1, -1, -1, -1, 121, 45, 101, -1, -1, -1, 111, 117, 45, -1, -1, 
-	-1, 112, -1, 97, 99, 109, -1, 101, 116, 97, 98, 45, 117, 116, 101, -1, 
-	114, 105, 114, 101, 111, 95, 115, 110, 111, 45, 45, 102, -1, -1, 95, 115, 
+	10, -1, -1, -1, -1, -1, 121, 45, 101, -1, -1, -1, 111, 117, 45, -1, -1,
+	-1, 112, -1, 97, 99, 109, -1, 101, 116, 97, 98, 45, 117, 116, 101, -1,
+	114, 105, 114, 101, 111, 95, 115, 110, 111, 45, 45, 102, -1, -1, 95, 115,
 	111, 117, 114, 99, 101, 115, 45, -1
     };
 static const ANTLR3_INT32 dfa6_max[57] =
     {
-	125, -1, -1, -1, -1, -1, 121, 122, 101, -1, -1, -1, 111, 117, 122, -1, 
-	-1, -1, 112, -1, 97, 99, 109, -1, 101, 116, 97, 98, 122, 117, 116, 101, 
-	-1, 114, 105, 114, 101, 111, 95, 115, 110, 111, 122, 122, 102, -1, -1, 
+	125, -1, -1, -1, -1, -1, 121, 122, 101, -1, -1, -1, 111, 117, 122, -1,
+	-1, -1, 112, -1, 97, 99, 109, -1, 101, 116, 97, 98, 122, 117, 116, 101,
+	-1, 114, 105, 114, 101, 111, 95, 115, 110, 111, 122, 122, 102, -1, -1,
 	95, 115, 111, 117, 114, 99, 101, 115, 122, -1
     };
 static const ANTLR3_INT32 dfa6_accept[57] =
     {
-	-1, 1, 2, 3, 4, 5, -1, -1, -1, 9, 10, 11, -1, -1, -1, 15, 16, 17, -1, 7, 
-	-1, -1, -1, 14, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1, -1, -1, -1, -1, 
-	-1, -1, -1, -1, -1, -1, -1, 8, 12, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+	-1, 1, 2, 3, 4, 5, -1, -1, -1, 9, 10, 11, -1, -1, -1, 15, 16, 17, -1, 7,
+	-1, -1, -1, 14, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, 8, 12, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	13
     };
 static const ANTLR3_INT32 dfa6_special[57] =
-    {	
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+    {
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1
     };
 
@@ -447,10 +447,10 @@ static const ANTLR3_INT32 dfa6_T0[] =
 	47
     };static const ANTLR3_INT32 dfa6_T8[] =
     {
-	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, -1, -1, -1, 15, -1, 
-	-1, -1, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 
-	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, -1, -1, -1, -1, 15, -1, 15, 15, 
-	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, -1, -1, -1, 15, -1,
+	-1, -1, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, -1, -1, -1, -1, 15, -1, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
 	15, 15, 15, 15, 15, 15
     };static const ANTLR3_INT32 dfa6_T9[] =
     {
@@ -475,12 +475,12 @@ static const ANTLR3_INT32 dfa6_T0[] =
 	54
     };static const ANTLR3_INT32 dfa6_T16[] =
     {
-	17, -1, -1, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-	-1, -1, -1, -1, 17, 11, 15, 16, -1, -1, -1, -1, -1, -1, -1, -1, -1, 15, 
-	15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, -1, 5, 9, 7, 10, -1, -1, 
-	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 
-	15, 15, 15, 15, 15, 15, 15, 15, 1, -1, 2, -1, 15, -1, 15, 15, 15, 15, 15, 
-	8, 15, 15, 15, 15, 15, 12, 15, 13, 15, 15, 15, 15, 15, 6, 15, 15, 15, 15, 
+	17, -1, -1, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, 17, 11, 15, 16, -1, -1, -1, -1, -1, -1, -1, -1, -1, 15,
+	15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, -1, 5, 9, 7, 10, -1, -1,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 1, -1, 2, -1, 15, -1, 15, 15, 15, 15, 15,
+	8, 15, 15, 15, 15, 15, 12, 15, 13, 15, 15, 15, 15, 15, 6, 15, 15, 15, 15,
 	15, 15, 3, -1, 4
     };static const ANTLR3_INT32 dfa6_T17[] =
     {
@@ -543,15 +543,15 @@ static const ANTLR3_INT32 dfa6_T0[] =
  */
 static const ANTLR3_INT32 * const dfa6_transitions[] =
 {
-    dfa6_T16, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, 
-    dfa6_T18, dfa6_T8, dfa6_T21, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, 
-    dfa6_T28, dfa6_T0, dfa6_T8, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, 
-    dfa6_T19, dfa6_T_empty, dfa6_T22, dfa6_T29, dfa6_T1, dfa6_T_empty, dfa6_T20, 
-    dfa6_T23, dfa6_T30, dfa6_T2, dfa6_T8, dfa6_T24, dfa6_T31, dfa6_T3, dfa6_T_empty, 
-    dfa6_T25, dfa6_T32, dfa6_T4, dfa6_T26, dfa6_T33, dfa6_T5, dfa6_T27, 
-    dfa6_T34, dfa6_T6, dfa6_T8, dfa6_T8, dfa6_T7, dfa6_T_empty, dfa6_T_empty, 
-    dfa6_T9, dfa6_T10, dfa6_T11, dfa6_T12, dfa6_T13, dfa6_T14, dfa6_T15, 
-    dfa6_T17, dfa6_T8, dfa6_T_empty	
+    dfa6_T16, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
+    dfa6_T18, dfa6_T8, dfa6_T21, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
+    dfa6_T28, dfa6_T0, dfa6_T8, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
+    dfa6_T19, dfa6_T_empty, dfa6_T22, dfa6_T29, dfa6_T1, dfa6_T_empty, dfa6_T20,
+    dfa6_T23, dfa6_T30, dfa6_T2, dfa6_T8, dfa6_T24, dfa6_T31, dfa6_T3, dfa6_T_empty,
+    dfa6_T25, dfa6_T32, dfa6_T4, dfa6_T26, dfa6_T33, dfa6_T5, dfa6_T27,
+    dfa6_T34, dfa6_T6, dfa6_T8, dfa6_T8, dfa6_T7, dfa6_T_empty, dfa6_T_empty,
+    dfa6_T9, dfa6_T10, dfa6_T11, dfa6_T12, dfa6_T13, dfa6_T14, dfa6_T15,
+    dfa6_T17, dfa6_T8, dfa6_T_empty
 };
 
 
@@ -562,7 +562,7 @@ ANTLR3_CYCLIC_DFA cdfa6
     =	{
 	    6,		    /* Decision number of this dfa	    */
 	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"1:1: Tokens : ( T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | NUMBER | ID | COMMENT | WS );",	
+	    (const pANTLR3_UCHAR)"1:1: Tokens : ( T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | NUMBER | ID | COMMENT | WS );",
 	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
 	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
 	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
@@ -574,13 +574,13 @@ ANTLR3_CYCLIC_DFA cdfa6
 	    dfa6_special,	/* Special transition states	    */
 	    dfa6_transitions	/* Table of transition tables	    */
 
-	};	    
+	};
 /* End of Cyclic DFA 6
  * ---------------------
- */ 
+ */
 /* =========================================================================
  * End of DFA tables for the lexer
- */ 
+ */
 
 /* =========================================================================
  * Functions to match the lexer grammar defined tokens from the input stream
@@ -603,14 +603,14 @@ void mT__18(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__18;
-       
-    
+
+
     // jcf.g:7:7: ( '[' )
     // jcf.g:7:9: '['
     {
-        MATCHC('['); 
+        MATCHC('[');
         if  (HASEXCEPTION())
         {
             goto ruleT__18Ex;
@@ -646,14 +646,14 @@ void mT__19(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__19;
-       
-    
+
+
     // jcf.g:8:7: ( ']' )
     // jcf.g:8:9: ']'
     {
-        MATCHC(']'); 
+        MATCHC(']');
         if  (HASEXCEPTION())
         {
             goto ruleT__19Ex;
@@ -689,14 +689,14 @@ void mT__20(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__20;
-       
-    
+
+
     // jcf.g:9:7: ( '{' )
     // jcf.g:9:9: '{'
     {
-        MATCHC('{'); 
+        MATCHC('{');
         if  (HASEXCEPTION())
         {
             goto ruleT__20Ex;
@@ -732,14 +732,14 @@ void mT__21(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__21;
-       
-    
+
+
     // jcf.g:10:7: ( '}' )
     // jcf.g:10:9: '}'
     {
-        MATCHC('}'); 
+        MATCHC('}');
         if  (HASEXCEPTION())
         {
             goto ruleT__21Ex;
@@ -775,14 +775,14 @@ void mT__22(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__22;
-       
-    
+
+
     // jcf.g:11:7: ( ';' )
     // jcf.g:11:9: ';'
     {
-        MATCHC(';'); 
+        MATCHC(';');
         if  (HASEXCEPTION())
         {
             goto ruleT__22Ex;
@@ -818,14 +818,14 @@ void mT__23(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__23;
-       
-    
+
+
     // jcf.g:12:7: ( 'type' )
     // jcf.g:12:9: 'type'
     {
-        MATCHS(lit_1); 
+        MATCHS(lit_1);
         if  (HASEXCEPTION())
         {
             goto ruleT__23Ex;
@@ -862,14 +862,14 @@ void mT__24(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__24;
-       
-    
+
+
     // jcf.g:13:7: ( '=' )
     // jcf.g:13:9: '='
     {
-        MATCHC('='); 
+        MATCHC('=');
         if  (HASEXCEPTION())
         {
             goto ruleT__24Ex;
@@ -905,14 +905,14 @@ void mT__25(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__25;
-       
-    
+
+
     // jcf.g:14:7: ( 'features' )
     // jcf.g:14:9: 'features'
     {
-        MATCHS(lit_2); 
+        MATCHS(lit_2);
         if  (HASEXCEPTION())
         {
             goto ruleT__25Ex;
@@ -949,14 +949,14 @@ void mT__26(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__26;
-       
-    
+
+
     // jcf.g:15:7: ( '<' )
     // jcf.g:15:9: '<'
     {
-        MATCHC('<'); 
+        MATCHC('<');
         if  (HASEXCEPTION())
         {
             goto ruleT__26Ex;
@@ -992,14 +992,14 @@ void mT__27(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__27;
-       
-    
+
+
     // jcf.g:16:7: ( '>' )
     // jcf.g:16:9: '>'
     {
-        MATCHC('>'); 
+        MATCHC('>');
         if  (HASEXCEPTION())
         {
             goto ruleT__27Ex;
@@ -1035,14 +1035,14 @@ void mT__28(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__28;
-       
-    
+
+
     // jcf.g:17:7: ( '!<' )
     // jcf.g:17:9: '!<'
     {
-        MATCHS(lit_3); 
+        MATCHS(lit_3);
         if  (HASEXCEPTION())
         {
             goto ruleT__28Ex;
@@ -1079,14 +1079,14 @@ void mT__29(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__29;
-       
-    
+
+
     // jcf.g:18:7: ( 'location' )
     // jcf.g:18:9: 'location'
     {
-        MATCHS(lit_4); 
+        MATCHS(lit_4);
         if  (HASEXCEPTION())
         {
             goto ruleT__29Ex;
@@ -1123,14 +1123,14 @@ void mT__30(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__30;
-       
-    
+
+
     // jcf.g:19:7: ( 'number_of_sources' )
     // jcf.g:19:9: 'number_of_sources'
     {
-        MATCHS(lit_5); 
+        MATCHS(lit_5);
         if  (HASEXCEPTION())
         {
             goto ruleT__30Ex;
@@ -1167,14 +1167,14 @@ void mNUMBER(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = NUMBER;
-       
-    
+
+
     // jcf.g:33:8: ( '0' .. '9' )
     // jcf.g:33:10: '0' .. '9'
     {
-        MATCHRANGE('0', '9'); 
+        MATCHRANGE('0', '9');
         if  (HASEXCEPTION())
         {
             goto ruleNUMBEREx;
@@ -1210,13 +1210,13 @@ void mID(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = ID;
-       
-    
+
+
     {
         //  jcf.g:34:5: ( ( 'a' .. 'z' | 'A' .. 'Z' | NUMBER | '.' | '-' | '_' | '=' | '/' )+ | STRING )
-        
+
         ANTLR3_UINT32 alt2;
 
         alt2=2;
@@ -1224,17 +1224,17 @@ void mID(pjcfLexer ctx)
 
         {
             int LA2_0 = LA(1);
-            if ( (((LA2_0 >= '-') && (LA2_0 <= '9')) || LA2_0 == '=' || ((LA2_0 >= 'A') && (LA2_0 <= 'Z')) || LA2_0 == '_' || ((LA2_0 >= 'a') && (LA2_0 <= 'z'))) ) 
+            if ( (((LA2_0 >= '-') && (LA2_0 <= '9')) || LA2_0 == '=' || ((LA2_0 >= 'A') && (LA2_0 <= 'Z')) || LA2_0 == '_' || ((LA2_0 >= 'a') && (LA2_0 <= 'z'))) )
             {
                 alt2=1;
             }
-            else if ( (LA2_0 == '"') ) 
+            else if ( (LA2_0 == '"') )
             {
                 alt2=2;
             }
-            else 
+            else
             {
-            
+
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                 EXCEPTION->message      = (void *)"";
@@ -1245,7 +1245,7 @@ void mID(pjcfLexer ctx)
                 goto ruleIDEx;
             }
         }
-        switch (alt2) 
+        switch (alt2)
         {
     	case 1:
     	    // jcf.g:34:9: ( 'a' .. 'z' | 'A' .. 'Z' | NUMBER | '.' | '-' | '_' | '=' | '/' )+
@@ -1261,13 +1261,13 @@ void mID(pjcfLexer ctx)
     	        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
     	        	    */
     	        	    int LA1_0 = LA(1);
-    	        	    if ( (((LA1_0 >= '-') && (LA1_0 <= '9')) || LA1_0 == '=' || ((LA1_0 >= 'A') && (LA1_0 <= 'Z')) || LA1_0 == '_' || ((LA1_0 >= 'a') && (LA1_0 <= 'z'))) ) 
+    	        	    if ( (((LA1_0 >= '-') && (LA1_0 <= '9')) || LA1_0 == '=' || ((LA1_0 >= 'A') && (LA1_0 <= 'Z')) || LA1_0 == '_' || ((LA1_0 >= 'a') && (LA1_0 <= 'z'))) )
     	        	    {
     	        	        alt1=1;
     	        	    }
 
     	        	}
-    	        	switch (alt1) 
+    	        	switch (alt1)
     	        	{
     	        	    case 1:
     	        	        // jcf.g:
@@ -1277,7 +1277,7 @@ void mID(pjcfLexer ctx)
     	        	                CONSUME();
 
     	        	            }
-    	        	            else 
+    	        	            else
     	        	            {
     	        	                CONSTRUCTEX();
     	        	                EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1291,7 +1291,7 @@ void mID(pjcfLexer ctx)
     	        	        break;
 
     	        	    default:
-    	        	    
+
     	        		if ( cnt1 >= 1 )
     	        		{
     	        		    goto loop1;
@@ -1316,7 +1316,7 @@ void mID(pjcfLexer ctx)
     	    // jcf.g:34:74: STRING
     	    {
     	        /* 34:74: STRING */
-    	        mSTRING(ctx ); 
+    	        mSTRING(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleIDEx;
@@ -1355,11 +1355,11 @@ void mSTRING(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-        
+
     // jcf.g:37:9: ( '\"' ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )* '\"' )
     // jcf.g:37:11: '\"' ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )* '\"'
     {
-        MATCHC('"'); 
+        MATCHC('"');
         if  (HASEXCEPTION())
         {
             goto ruleSTRINGEx;
@@ -1375,50 +1375,50 @@ void mSTRING(pjcfLexer ctx)
                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                 */
                 int LA3_0 = LA(1);
-                if ( (LA3_0 == '\\') ) 
+                if ( (LA3_0 == '\\') )
                 {
                     {
                        /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                         */
                         int LA3_2 = LA(2);
-                        if ( (LA3_2 == '"') ) 
+                        if ( (LA3_2 == '"') )
                         {
                             {
                                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                                 */
                                 int LA3_4 = LA(3);
-                                if ( (((LA3_4 >= 0x0000) && (LA3_4 <= '\t')) || ((LA3_4 >= 0x000B) && (LA3_4 <= '\f')) || ((LA3_4 >= 0x000E) && (LA3_4 <= 0xFFFF))) ) 
+                                if ( (((LA3_4 >= 0x0000) && (LA3_4 <= '\t')) || ((LA3_4 >= 0x000B) && (LA3_4 <= '\f')) || ((LA3_4 >= 0x000E) && (LA3_4 <= 0xFFFF))) )
                                 {
                                     alt3=1;
                                 }
 
-                                
-                                else 
+
+                                else
                                 {
                             	alt3=2;
                                 }
 
                             }
                         }
-                        else if ( (((LA3_2 >= 0x0000) && (LA3_2 <= '\t')) || ((LA3_2 >= 0x000B) && (LA3_2 <= '\f')) || ((LA3_2 >= 0x000E) && (LA3_2 <= '!')) || ((LA3_2 >= '#') && (LA3_2 <= 0xFFFF))) ) 
+                        else if ( (((LA3_2 >= 0x0000) && (LA3_2 <= '\t')) || ((LA3_2 >= 0x000B) && (LA3_2 <= '\f')) || ((LA3_2 >= 0x000E) && (LA3_2 <= '!')) || ((LA3_2 >= '#') && (LA3_2 <= 0xFFFF))) )
                         {
                             alt3=2;
                         }
 
                     }
                 }
-                else if ( (((LA3_0 >= 0x0000) && (LA3_0 <= '\t')) || ((LA3_0 >= 0x000B) && (LA3_0 <= '\f')) || ((LA3_0 >= 0x000E) && (LA3_0 <= '!')) || ((LA3_0 >= '#') && (LA3_0 <= '[')) || ((LA3_0 >= ']') && (LA3_0 <= 0xFFFF))) ) 
+                else if ( (((LA3_0 >= 0x0000) && (LA3_0 <= '\t')) || ((LA3_0 >= 0x000B) && (LA3_0 <= '\f')) || ((LA3_0 >= 0x000E) && (LA3_0 <= '!')) || ((LA3_0 >= '#') && (LA3_0 <= '[')) || ((LA3_0 >= ']') && (LA3_0 <= 0xFFFF))) )
                 {
                     alt3=2;
                 }
 
             }
-            switch (alt3) 
+            switch (alt3)
             {
         	case 1:
         	    // jcf.g:37:16: '\\\\\"'
         	    {
-        	        MATCHS(lit_6); 
+        	        MATCHS(lit_6);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleSTRINGEx;
@@ -1436,7 +1436,7 @@ void mSTRING(pjcfLexer ctx)
         	            CONSUME();
 
         	        }
-        	        else 
+        	        else
         	        {
         	            CONSTRUCTEX();
         	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1456,7 +1456,7 @@ void mSTRING(pjcfLexer ctx)
         }
         loop3: ; /* Jump out to here if this rule does not match */
 
-        MATCHC('"'); 
+        MATCHC('"');
         if  (HASEXCEPTION())
         {
             goto ruleSTRINGEx;
@@ -1492,14 +1492,14 @@ void mCOMMENT(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = COMMENT;
-       
-    
+
+
     // jcf.g:39:9: ( '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )? )
     // jcf.g:39:11: '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )?
     {
-        MATCHC('#'); 
+        MATCHC('#');
         if  (HASEXCEPTION())
         {
             goto ruleCOMMENTEx;
@@ -1515,13 +1515,13 @@ void mCOMMENT(pjcfLexer ctx)
                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                 */
                 int LA4_0 = LA(1);
-                if ( (((LA4_0 >= 0x0000) && (LA4_0 <= '\t')) || ((LA4_0 >= 0x000B) && (LA4_0 <= '\f')) || ((LA4_0 >= 0x000E) && (LA4_0 <= 0xFFFF))) ) 
+                if ( (((LA4_0 >= 0x0000) && (LA4_0 <= '\t')) || ((LA4_0 >= 0x000B) && (LA4_0 <= '\f')) || ((LA4_0 >= 0x000E) && (LA4_0 <= 0xFFFF))) )
                 {
                     alt4=1;
                 }
 
             }
-            switch (alt4) 
+            switch (alt4)
             {
         	case 1:
         	    // jcf.g:39:16: ~ ( '\\n' | '\\r' )
@@ -1531,7 +1531,7 @@ void mCOMMENT(pjcfLexer ctx)
         	            CONSUME();
 
         	        }
-        	        else 
+        	        else
         	        {
         	            CONSTRUCTEX();
         	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1557,12 +1557,12 @@ void mCOMMENT(pjcfLexer ctx)
             int alt5=2;
             {
                 int LA5_0 = LA(1);
-                if ( (LA5_0 == '\n' || LA5_0 == '\r') ) 
+                if ( (LA5_0 == '\n' || LA5_0 == '\r') )
                 {
                     alt5=1;
                 }
             }
-            switch (alt5) 
+            switch (alt5)
             {
         	case 1:
         	    // jcf.g:
@@ -1572,7 +1572,7 @@ void mCOMMENT(pjcfLexer ctx)
         	            CONSUME();
 
         	        }
-        	        else 
+        	        else
         	        {
         	            CONSTRUCTEX();
         	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1588,7 +1588,7 @@ void mCOMMENT(pjcfLexer ctx)
             }
         }
         {
-             LEXSTATE->channel = HIDDEN; 
+             LEXSTATE->channel = HIDDEN;
         }
 
     }
@@ -1620,10 +1620,10 @@ void mWS(pjcfLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = WS;
-       
-    
+
+
     // jcf.g:41:4: ( ( ' ' | '\\n' | '\\r' ) )
     // jcf.g:41:6: ( ' ' | '\\n' | '\\r' )
     {
@@ -1632,7 +1632,7 @@ void mWS(pjcfLexer ctx)
             CONSUME();
 
         }
-        else 
+        else
         {
             CONSTRUCTEX();
             EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1642,7 +1642,7 @@ void mWS(pjcfLexer ctx)
         }
 
         {
-             LEXSTATE->channel = HIDDEN; 
+             LEXSTATE->channel = HIDDEN;
         }
 
     }
@@ -1660,12 +1660,12 @@ void mWS(pjcfLexer ctx)
 /** This is the entry point in to the lexer from an object that
  *  wants to generate the next token, such as a pCOMMON_TOKEN_STREAM
  */
-static void 
+static void
 mTokens(pjcfLexer ctx)
 {
     {
         //  jcf.g:1:8: ( T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | NUMBER | ID | COMMENT | WS )
-        
+
         ANTLR3_UINT32 alt6;
 
         alt6=17;
@@ -1676,13 +1676,13 @@ mTokens(pjcfLexer ctx)
             goto ruleTokensEx;
         }
 
-        switch (alt6) 
+        switch (alt6)
         {
     	case 1:
     	    // jcf.g:1:10: T__18
     	    {
     	        /* 1:10: T__18 */
-    	        mT__18(ctx ); 
+    	        mT__18(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1695,7 +1695,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:16: T__19
     	    {
     	        /* 1:16: T__19 */
-    	        mT__19(ctx ); 
+    	        mT__19(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1708,7 +1708,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:22: T__20
     	    {
     	        /* 1:22: T__20 */
-    	        mT__20(ctx ); 
+    	        mT__20(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1721,7 +1721,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:28: T__21
     	    {
     	        /* 1:28: T__21 */
-    	        mT__21(ctx ); 
+    	        mT__21(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1734,7 +1734,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:34: T__22
     	    {
     	        /* 1:34: T__22 */
-    	        mT__22(ctx ); 
+    	        mT__22(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1747,7 +1747,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:40: T__23
     	    {
     	        /* 1:40: T__23 */
-    	        mT__23(ctx ); 
+    	        mT__23(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1760,7 +1760,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:46: T__24
     	    {
     	        /* 1:46: T__24 */
-    	        mT__24(ctx ); 
+    	        mT__24(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1773,7 +1773,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:52: T__25
     	    {
     	        /* 1:52: T__25 */
-    	        mT__25(ctx ); 
+    	        mT__25(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1786,7 +1786,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:58: T__26
     	    {
     	        /* 1:58: T__26 */
-    	        mT__26(ctx ); 
+    	        mT__26(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1799,7 +1799,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:64: T__27
     	    {
     	        /* 1:64: T__27 */
-    	        mT__27(ctx ); 
+    	        mT__27(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1812,7 +1812,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:70: T__28
     	    {
     	        /* 1:70: T__28 */
-    	        mT__28(ctx ); 
+    	        mT__28(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1825,7 +1825,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:76: T__29
     	    {
     	        /* 1:76: T__29 */
-    	        mT__29(ctx ); 
+    	        mT__29(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1838,7 +1838,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:82: T__30
     	    {
     	        /* 1:82: T__30 */
-    	        mT__30(ctx ); 
+    	        mT__30(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1851,7 +1851,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:88: NUMBER
     	    {
     	        /* 1:88: NUMBER */
-    	        mNUMBER(ctx ); 
+    	        mNUMBER(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1864,7 +1864,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:95: ID
     	    {
     	        /* 1:95: ID */
-    	        mID(ctx ); 
+    	        mID(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1877,7 +1877,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:98: COMMENT
     	    {
     	        /* 1:98: COMMENT */
-    	        mCOMMENT(ctx ); 
+    	        mCOMMENT(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1890,7 +1890,7 @@ mTokens(pjcfLexer ctx)
     	    // jcf.g:1:106: WS
     	    {
     	        /* 1:106: WS */
-    	        mWS(ctx ); 
+    	        mWS(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1903,7 +1903,7 @@ mTokens(pjcfLexer ctx)
         }
     }
 
-    
+
     goto ruleTokensEx; /* Prevent compiler warnings */
 ruleTokensEx: ;
 }
@@ -1915,7 +1915,7 @@ ruleTokensEx: ;
 /* End of Lexer code
  * ================================================
  * ================================================
- */ 
+ */
 
 
 /* End of code

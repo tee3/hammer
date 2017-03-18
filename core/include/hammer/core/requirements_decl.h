@@ -21,13 +21,13 @@ namespace hammer
          virtual requirement_base* clone() const = 0;
          virtual void setup_path_data(const basic_meta_target* t) = 0;
          virtual ~requirement_base() {}
-         void set_public(bool v) { public_ = v; } 
+         void set_public(bool v) { public_ = v; }
          bool is_public() const { return public_; }
 
       private:
          bool public_;
    };
-   
+
    class just_feature_requirement : public requirement_base
    {
       public:
@@ -37,7 +37,7 @@ namespace hammer
                            feature_set* public_result) const;
          virtual requirement_base* clone() const { return new just_feature_requirement(*this); }
          virtual void setup_path_data(const basic_meta_target* t);
-      
+
       private:
          feature* f_;
    };
@@ -52,7 +52,7 @@ namespace hammer
                            feature_set* public_result) const;
          virtual requirement_base* clone() const { return new linear_and_condition(*this); }
          virtual void setup_path_data(const basic_meta_target* t);
-      
+
       private:
          typedef std::vector<const feature*> features_t;
          feature* result_;
@@ -67,7 +67,7 @@ namespace hammer
          requirements_decl& operator = (const requirements_decl& rhs);
          void add(std::auto_ptr<requirement_base> r);
          void add(const feature& f);
-         void eval(const feature_set& build_request, 
+         void eval(const feature_set& build_request,
                    feature_set* result,
                    feature_set* public_result = NULL) const;
          void setup_path_data(const basic_meta_target* t);

@@ -47,9 +47,9 @@ namespace hammer
                             const sources_decl& sources,
                             const feature_set& build_request) const;
 
-         virtual void instantiate(const main_target* owner, 
+         virtual void instantiate(const main_target* owner,
                                   const feature_set& build_request,
-                                  std::vector<basic_target*>* result, 
+                                  std::vector<basic_target*>* result,
                                   feature_set* usage_requirements) const;
 
          void set_explicit(bool v) { is_explicit_ = v; }
@@ -62,14 +62,14 @@ namespace hammer
          // returns true if instantiate() can cache instantiation for build_request
          virtual bool is_cachable(const main_target* owner) const { return true; }
 
-         virtual void instantiate_impl(const main_target* owner, 
+         virtual void instantiate_impl(const main_target* owner,
                                        const feature_set& build_request,
-                                       std::vector<basic_target*>* result, 
+                                       std::vector<basic_target*>* result,
                                        feature_set* usage_requirements) const = 0;
-         
-         void instantiate_simple_targets(const sources_decl& targets, 
+
+         void instantiate_simple_targets(const sources_decl& targets,
                                          const feature_set& build_request,
-                                         const main_target& owner, 
+                                         const main_target& owner,
                                          std::vector<basic_target*>* result) const;
          void split_one_source(sources_decl* simple_targets,
                                meta_targets_t* meta_targets,
@@ -77,7 +77,7 @@ namespace hammer
                                const feature_set& build_request,
                                const type_registry& tr) const;
          void resolve_meta_target_source(const source_decl& source,
-                                         const feature_set& build_request, 
+                                         const feature_set& build_request,
                                          sources_decl* simple_targets,
                                          meta_targets_t* meta_targets) const;
 

@@ -31,19 +31,19 @@ struct msvc_solution::impl_t
    typedef boost::ptr_map<const basic_meta_target*, msvc_project> projects_t;
    typedef std::vector<std::string> variant_names_t;
 
-   impl_t(msvc_solution* owner, const project& source_project, 
+   impl_t(msvc_solution* owner, const project& source_project,
           const location_t& output_path,
-          generation_mode::value mode) 
-      : owner_(owner), 
+          generation_mode::value mode)
+      : owner_(owner),
         source_project_(source_project),
-        engine_(*source_project.get_engine()), 
+        engine_(*source_project.get_engine()),
         output_location_(output_path),
         generation_mode_(mode)
    {
       output_location_.normalize();
    }
 
-   void generate_dependencies(dependencies_t::const_iterator first, 
+   void generate_dependencies(dependencies_t::const_iterator first,
                               dependencies_t::const_iterator last) const;
    void write_project_section(ostream& os, const msvc_project& project) const;
    boost::guid generate_id() const { return boost::guid(); }
@@ -72,7 +72,7 @@ static bool less_by_location_and_name(const main_target* lhs, const main_target*
    return lhs_id < rhs_id;
 }
 
-void impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first, 
+void impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first,
                                    impl_t::dependencies_t::const_iterator last) const
 {
    dependencies_t dependencies;
@@ -83,7 +83,7 @@ void impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first,
          (i != projects_.end() &&
           !i->second->has_variant(*first)))
       {
-         
+
          auto_ptr<msvc_project> p_guard(new msvc_project(engine_, project_output_dir(*(**first).build_node()), variant_names_.front(), owner_->generate_id()));
          msvc_project* p = p_guard.get();
          p->add_variant((**first).build_node());
@@ -108,14 +108,14 @@ void impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first,
 // lib b : a/<link>static b.cpp ;
 // exe xoxma : main.cpp a b ;
 //
- 
+
 
 void msvc_solution::impl_t::write_project_section(ostream& os, const msvc_project& project) const
 {
    location_t project_path(relative_path(project.full_project_name(), output_location_));
    project_path.normalize();
 
-   os << "Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"" << project.name() 
+   os << "Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"" << project.name()
       << "\", \"" << project_path << "\", \"{" << project.guid() << "}\"\n" ;
 
    os << "\tProjectSection(ProjectDependencies) = postProject\n";
@@ -157,7 +157,7 @@ location_t msvc_solution::impl_t::project_output_dir(const build_node& node) con
 }
 
 msvc_solution::msvc_solution(const project& source_project, const location_t& output_path,
-                             generation_mode::value mode) 
+                             generation_mode::value mode)
   : impl_(new impl_t(this, source_project, output_path / "vc80", mode))
 {
 }
@@ -173,9 +173,9 @@ void msvc_solution::add_target(boost::intrusive_ptr<const build_node> node)
       throw std::runtime_error("MSVC solution generator can handle only one top level target.");
 
    impl_->variant_names_.push_back(node->products_[0]->get_main_target()->properties().get("variant").value());
-   std::auto_ptr<msvc_project> p_guarg(new msvc_project(impl_->engine_, 
-                                                        impl_->project_output_dir(*node), 
-                                                        impl_->variant_names_.front(), 
+   std::auto_ptr<msvc_project> p_guarg(new msvc_project(impl_->engine_,
+                                                        impl_->project_output_dir(*node),
+                                                        impl_->variant_names_.front(),
                                                         generate_id()));
    msvc_project* p = p_guarg.get();
    p->add_variant(node);
@@ -184,8 +184,8 @@ void msvc_solution::add_target(boost::intrusive_ptr<const build_node> node)
 
    msvc_project::dependencies_t dependencies;
    p->generate();
-   dependencies.insert(dependencies.begin(), 
-                       p->dependencies().begin(), 
+   dependencies.insert(dependencies.begin(),
+                       p->dependencies().begin(),
                        p->dependencies().end());
 
    // stabilize order to allow normal testing. May be FIXME:
@@ -193,7 +193,7 @@ void msvc_solution::add_target(boost::intrusive_ptr<const build_node> node)
    impl_->generate_dependencies(dependencies.begin(), dependencies.end());
 }
 
-static bool less_by_name(const msvc_project* lhs, 
+static bool less_by_name(const msvc_project* lhs,
                          const msvc_project* rhs)
 {
    return lhs->name() < rhs->name();
@@ -207,7 +207,7 @@ void msvc_solution::write() const
    f.open(filename, std::ios::trunc);
    f << "Microsoft Visual Studio Solution File, Format Version 9.00\n"
         "# Visual Studio 2005\n";
-   
+
    typedef impl_t::projects_t::const_iterator iter;
    typedef vector<const msvc_project*> sorted_projects_t;
 
@@ -221,14 +221,14 @@ void msvc_solution::write() const
       (**i).write();
       impl_->write_project_section(f, **i);
    }
-   
+
    f << "Global\n"
      << "\tGlobalSection(SolutionConfigurationPlatforms) = preSolution\n";
-   
+
    for(impl_t::variant_names_t::const_iterator i = impl_->variant_names_.begin(), last = impl_->variant_names_.end(); i != last; ++i)
       f << "\t\t" << *i << "|Win32" << " = " << *i << "|Win32\n";
-   
-   f << "\tEndGlobalSection\n" 
+
+   f << "\tEndGlobalSection\n"
      << "EndGlobal\n";
 }
 

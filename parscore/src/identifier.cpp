@@ -22,7 +22,7 @@ identifier::identifier(const ANTLR3_COMMON_TOKEN_struct* v)
 }
 
 identifier::identifier()
-   : v_(NULL), 
+   : v_(NULL),
      no_lok_(true)
 {
 }

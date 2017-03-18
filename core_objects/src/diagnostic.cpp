@@ -5,12 +5,12 @@
 
 using namespace std;
 
-namespace hammer{ 
+namespace hammer{
 
-diagnostic::diagnostic() : error_count_(0) 
+diagnostic::diagnostic() : error_count_(0)
 {}
 
-diagnostic_builder diagnostic::error(parscore::source_location loc, 
+diagnostic_builder diagnostic::error(parscore::source_location loc,
                                      const char* message)
 {
    ++error_count_;
@@ -45,7 +45,7 @@ void diagnostic::format_message()
          case '%':
          {
             assert(arg_pos < args_.size() && "Too much argument");
-            
+
             ++message_;
             assert(*message_ && "Missing argument type specifier");
             switch(*message_)
@@ -74,14 +74,14 @@ void diagnostic::format_message()
 
                case 'd':
                {
-                  assert(arg_types_[arg_pos] == arg_type::integer && 
+                  assert(arg_types_[arg_pos] == arg_type::integer &&
                          "Format specifier doesn't match passed argument");
-                  
+
                   stream_ << *static_cast<const int*>(args_[arg_pos]);
 
                   break;
                }
-               
+
                default:
                   assert(false && "Unknown argument type specifier");
             }
@@ -95,7 +95,7 @@ void diagnostic::format_message()
             break;
          }
       }
-      
+
       ++message_;
    }
 

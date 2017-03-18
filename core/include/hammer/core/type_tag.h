@@ -5,7 +5,7 @@
 
 namespace hammer
 {
-   class type_tag 
+   class type_tag
    {
       public:
          explicit type_tag(const std::string& name) : name_(name) {}

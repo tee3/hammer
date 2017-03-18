@@ -22,8 +22,8 @@ void on_enter_rule(pANTLR3_PARSER parser, pANTLR3_UINT8 rule_name_)
    call_resolver::const_iterator i = resolver.find(rule_name);
    if (i == resolver.end())
       throw std::runtime_error("Unknown rule '" + string(rule_name) + "'.");
-   
-   // this block implement feature creation hook to be able to answer on is_dependency_feature 
+
+   // this block implement feature creation hook to be able to answer on is_dependency_feature
    // question later, when feature will appear in code
    if (strcmp("feature.feature", rule_name) == 0)
    {
@@ -77,7 +77,7 @@ void on_rule_argument(pANTLR3_PARSER parser)
 void on_string_list_element(pANTLR3_PARSER parser, pANTLR3_UINT8 id_)
 {
    MAKE_CTX();
-   
+
    // this is feature creation hook
    const char* id = reinterpret_cast<const char*>(id_);
    if (ctx.rule_context_.in_feature_feature_rule_ &&
@@ -105,7 +105,7 @@ bool argument_is_feature(pANTLR3_PARSER parser)
    MAKE_CTX();
    return ctx.rule_context_.rule_->second->args().at(ctx.rule_context_.arg_).ti() == typeid(hammer::feature);
 }
- 
+
 bool argument_is_requirements(pANTLR3_PARSER parser)
 {
    MAKE_CTX();

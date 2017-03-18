@@ -12,7 +12,7 @@ namespace hammer
    {
       public:
          template<typename T>
-         cmdline_action(const std::string& name, 
+         cmdline_action(const std::string& name,
                         const boost::shared_ptr<T>& target_writer)
             : build_action(name),
               target_writer_(boost::static_pointer_cast<argument_writer>(target_writer))
@@ -20,7 +20,7 @@ namespace hammer
          }
 
          template<typename T>
-         cmdline_action(const std::string& name, 
+         cmdline_action(const std::string& name,
                         boost::shared_ptr<T>& target_writer,
                         const cmdline_builder& rsp_builder)
          : build_action(name),
@@ -36,7 +36,7 @@ namespace hammer
       protected:
          virtual bool execute_impl(const build_node& node, const build_environment& environment) const;
          virtual bool run_shell_commands(const std::vector<std::string>& commands,
-                                         const build_node& node, 
+                                         const build_node& node,
                                          const build_environment& environment) const;
 
       private:

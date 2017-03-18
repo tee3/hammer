@@ -21,7 +21,7 @@ namespace hammer
 
          main_target(const basic_meta_target* mt,
                      const std::string& name,
-                     const target_type* t, 
+                     const target_type* t,
                      const feature_set* props);
 
          virtual const location_t& location() const;
@@ -55,10 +55,10 @@ namespace hammer
          static boost::shared_ptr<mksig_action> mksig_action_;
 
          virtual void timestamp_info_impl() const;
-         
-         build_node_ptr 
+
+         build_node_ptr
          create_intermediate_dir_dependency() const;
-         
+
          void add_hamfile_dependency(hammer::build_node& node,
                                      const build_node_ptr& intermediate_dir_node) const;
          bool add_this_target_dependency(hammer::build_node& node,

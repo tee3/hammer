@@ -18,7 +18,7 @@ namespace hammer
          const basic_target& pch_source() const { return *pch_source_; }
          const basic_target& pch_product() const { return *pch_product_; }
          virtual build_nodes_t generate() const;
-      
+
       protected:
          virtual location_t intermediate_dir_impl() const;
 

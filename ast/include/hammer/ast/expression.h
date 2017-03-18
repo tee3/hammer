@@ -18,12 +18,12 @@ class expression : public statement
 class error_expression : public expression
 {
    public:
-      error_expression(const parscore::source_location& loc) 
-         : loc_(loc) 
+      error_expression(const parscore::source_location& loc)
+         : loc_(loc)
       {}
 
-      error_expression(const expression* e) 
-         : loc_(e->start_loc()) 
+      error_expression(const expression* e)
+         : loc_(e->start_loc())
       {}
 
       parscore::source_location start_loc() const override { return loc_; }
@@ -51,11 +51,11 @@ class empty_expr : public expression
 class id_expr : public expression
 {
    public:
-      id_expr(const parscore::identifier& id) 
-         : id_(id) 
+      id_expr(const parscore::identifier& id)
+         : id_(id)
       {}
 
-      const parscore::identifier& id() const { return id_; } 
+      const parscore::identifier& id() const { return id_; }
 
       parscore::source_location start_loc() const override { return id_.start_lok(); }
       bool accept(visitor& v) const override;
@@ -73,7 +73,7 @@ class named_expr : public expression
                    value_(value)
       {
       }
-   
+
       const parscore::identifier& name() const { return name_; }
       const expression* value() const { return value_; }
       parscore::source_location start_loc() const override { return name_.start_lok(); }

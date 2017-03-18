@@ -20,21 +20,21 @@ searched_lib_main_target::searched_lib_main_target(const basic_meta_target* mt,
                                                    const std::string& lib_name,
                                                    const feature_set* props,
                                                    const target_type& t)
-   : 
+   :
     main_target(mt, name, &mt->get_engine()->get_type_registry().get(types::SEARCHED_LIB), props),
     type_(&t),
     lib_name_(lib_name)
 {
 }
 
-std::vector<boost::intrusive_ptr<hammer::build_node> > 
+std::vector<boost::intrusive_ptr<hammer::build_node> >
 searched_lib_main_target::generate() const
 {
    boost::intrusive_ptr<hammer::build_node> result(new hammer::build_node(*this, true));
-   basic_target* t = type_->equal_or_derived_from(get_engine()->get_type_registry().get(types::SEARCHED_LIB)) 
-                     ? 
-                      new searched_lib_target(this, lib_name_, type_, &properties()) 
-                     : 
+   basic_target* t = type_->equal_or_derived_from(get_engine()->get_type_registry().get(types::SEARCHED_LIB))
+                     ?
+                      new searched_lib_target(this, lib_name_, type_, &properties())
+                     :
                       new file_target(this, lib_name_, type_, &properties())
                      ;
    result->products_.push_back(t);

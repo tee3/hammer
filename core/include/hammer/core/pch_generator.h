@@ -14,7 +14,7 @@ namespace hammer
                        const producable_types_t& target_types,
                        bool composite,
                        const feature_set* c = 0);
-         
+
          build_nodes_t
          construct(const target_type& type_to_construct,
                    const feature_set& props,

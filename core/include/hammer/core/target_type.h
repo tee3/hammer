@@ -39,7 +39,7 @@ namespace hammer
          target_type(const type_tag& tag, const suffix_def& suffix, const target_type& base, const prefix_def& prefix = prefix_def());
          target_type(const type_tag& tag, const suffixes_t& suffixes, const prefixes_t& prefixes = prefixes_t());
          target_type(const type_tag& tag, const suffixes_t& suffixes, const target_type& base, const prefixes_t& prefixes = prefixes_t());
-         
+
          const type_tag& tag() const { return tag_; }
          const suffixes_t& suffixes() const { return suffixes_; }
          const prefixes_t& prefixes() const { return prefixes_; }

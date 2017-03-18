@@ -15,14 +15,14 @@ class fake_generator : public generator
                      bool composite,
                      const feature_set* c = 0);
    protected:
-      virtual basic_target* create_target(const main_target* mt, 
+      virtual basic_target* create_target(const main_target* mt,
                                           const build_node::sources_t& sources,
                                           const std::string& n,
-                                          const target_type* t, 
+                                          const target_type* t,
                                           const feature_set* f) const;
-      
+
       build_nodes_t
-      construct(const target_type& type_to_construct, 
+      construct(const target_type& type_to_construct,
                 const feature_set& props,
                 const std::vector<boost::intrusive_ptr<build_node> >& sources,
                 const basic_target* source_target,

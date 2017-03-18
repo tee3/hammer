@@ -13,10 +13,10 @@ namespace hammer
    class scanner
    {
       public:
-         scanner(const std::string& name) : name_(name) 
+         scanner(const std::string& name) : name_(name)
          {}
 
-         virtual boost::posix_time::ptime process(const basic_target& t, 
+         virtual boost::posix_time::ptime process(const basic_target& t,
                                                   scanner_context& context) const = 0;
          virtual boost::shared_ptr<scanner_context> create_context(const build_environment& env) const = 0;
          const std::string& name() const { return name_; }

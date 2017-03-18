@@ -8,14 +8,14 @@
 
 namespace hammer{
 
-const timestamp_info_t& 
+const timestamp_info_t&
 basic_target::timestamp_info() const
 {
    if (!timestamp_info_.is_unknown_)
       return timestamp_info_;
-   
+
    timestamp_info_impl();
-   
+
    return timestamp_info_;
 }
 
@@ -24,17 +24,17 @@ const location_t& basic_target::location() const
    return main_target_->location();
 }
 
-void basic_target::properties(const feature_set* p) 
-{ 
+void basic_target::properties(const feature_set* p)
+{
    hash_.reset();
-   features_ = p; 
+   features_ = p;
 }
 
 const std::string& basic_target::hash_string() const
 {
    if (!hash_)
       hash_ = hash_string(properties(), *main_target_);
-   
+
    return *hash_;
 }
 

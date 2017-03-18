@@ -14,7 +14,7 @@ class file_main_target : public main_target
                        const feature_set* props,
                        const target_type& t);
          virtual std::vector<boost::intrusive_ptr<hammer::build_node> > generate();
-      
+
       private:
          const target_type* type_;
          const std::string filename_;

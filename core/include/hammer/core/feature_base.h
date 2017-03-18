@@ -20,7 +20,7 @@ namespace hammer
 
             const basic_meta_target* target_;
             bool operator < (const path_data& rhs) const { return target_ < rhs.target_; }
-            bool operator != (const path_data& rhs) const { return target_ != rhs.target_; } 
+            bool operator != (const path_data& rhs) const { return target_ != rhs.target_; }
          };
 
          struct dependency_data
@@ -55,7 +55,7 @@ namespace hammer
 
          const generated_data& get_generated_data() const { return generated_data_; }
          generated_data& get_generated_data() { return generated_data_; }
-         
+
       protected:
          const feature_def* definition_;
          std::string value_;

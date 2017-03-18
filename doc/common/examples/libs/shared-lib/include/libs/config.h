@@ -6,7 +6,7 @@
 #      define SHARED_LIB_API __declspec(dllexport)
 #   endif
 #   if defined(__BORLANDC__)
-#      define SHARED_LIB_API _export      
+#      define SHARED_LIB_API _export
 #   endif
 #   if defined(__linux__)
 #      define SHARED_LIB_API
@@ -16,7 +16,7 @@
 #      define SHARED_LIB_API __declspec(dllimport)
 #   endif
 #   if defined(__BORLANDC__)
-#      define SHARED_LIB_API _export      
+#      define SHARED_LIB_API _export
 #   endif
 #   if defined(__linux__)
 #      define SHARED_LIB_API

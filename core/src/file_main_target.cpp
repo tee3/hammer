@@ -9,7 +9,7 @@ file_main_target::file_main_target(const basic_meta_target* mt,
                                    const std::string& filename,
                                    const feature_set* props,
                                    const target_type& t)
-   : 
+   :
     main_target(mt, name, &t, props),
     type_(&t),
     filename_(filename)
@@ -17,7 +17,7 @@ file_main_target::file_main_target(const basic_meta_target* mt,
 
 }
 
-std::vector<boost::intrusive_ptr<hammer::build_node> > 
+std::vector<boost::intrusive_ptr<hammer::build_node> >
 file_main_target::generate()
 {
    boost::intrusive_ptr<hammer::build_node> result(new hammer::build_node(*this, true));

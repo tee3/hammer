@@ -9,12 +9,12 @@ namespace hammer
    {
       public:
          file_target(const main_target* mt, const std::string& name,
-                     const target_type* t, const feature_set* f) : basic_target(mt, name, t, f) 
+                     const target_type* t, const feature_set* f) : basic_target(mt, name, t, f)
          {
          }
 
          virtual std::vector<boost::intrusive_ptr<build_node> > generate() const;
-      
+
       protected:
          virtual void timestamp_info_impl() const;
    };

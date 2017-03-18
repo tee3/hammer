@@ -12,7 +12,7 @@ namespace hammer
    {
       public:
          typedef std::vector<boost::intrusive_ptr<build_node> > nodes_t;
-         
+
          struct result
          {
             result() : cleaned_target_count_(0),
@@ -25,7 +25,7 @@ namespace hammer
 
          cleaner(engine& e, const build_environment& environment);
          result clean_all(nodes_t& nodes);
-      
+
       private:
          struct impl_t;
          impl_t* impl_;

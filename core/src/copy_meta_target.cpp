@@ -17,9 +17,9 @@ copy_meta_target::copy_meta_target(hammer::project* p, const std::string& name,
 
 main_target* copy_meta_target::construct_main_target(const main_target* owner, const feature_set* properties) const
 {
-   main_target* mt = new copy_main_target(this, 
-                                          name(), 
-                                          &get_engine()->get_type_registry().get(types::COPIED), 
+   main_target* mt = new copy_main_target(this,
+                                          name(),
+                                          &get_engine()->get_type_registry().get(types::COPIED),
                                           properties);
    return mt;
 }

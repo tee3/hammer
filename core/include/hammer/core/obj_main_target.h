@@ -16,7 +16,7 @@ namespace hammer
 
       protected:
          virtual location_t intermediate_dir_impl() const;
-      
+
       private:
          const main_target& owner_;
    };

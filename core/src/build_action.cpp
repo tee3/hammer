@@ -8,15 +8,15 @@ using namespace std;
 
 namespace hammer{
 
-bool build_action::execute(const build_node& node, const build_environment& environment) const 
-{ 
+bool build_action::execute(const build_node& node, const build_environment& environment) const
+{
    string tag(target_tag(node, environment));
    environment.output_stream() << name() << ' ' << tag << '\n';
 
    bool execution_result = false;
    try
    {
-      execution_result = execute_impl(node, environment); 
+      execution_result = execute_impl(node, environment);
    }
    catch(const std::exception& e)
    {

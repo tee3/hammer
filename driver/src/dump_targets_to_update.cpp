@@ -13,9 +13,9 @@ static std::ostream& put_indent(std::ostream& os, int indent)
    return os;
 }
 
-static void dump(std::ostream& os, 
-                 const build_node& node, 
-                 hammer::build_environment& environment, 
+static void dump(std::ostream& os,
+                 const build_node& node,
+                 hammer::build_environment& environment,
                  int indent)
 {
    if (node.up_to_date() == boost::tribool::true_value)
@@ -47,7 +47,7 @@ static void dump(std::ostream& os,
       put_indent(os, indent) << "[p]" << (**i).name() << " " << to_simple_string((**i).timestamp_info().timestamp_) << std::endl;
 }
 
-void dump_targets_to_update(std::ostream& os, 
+void dump_targets_to_update(std::ostream& os,
                             const build_node::nodes_t& nodes,
                             hammer::build_environment& environment)
 {

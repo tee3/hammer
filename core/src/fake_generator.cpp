@@ -15,7 +15,7 @@ fake_generator::fake_generator(engine& e,
 }
 
 build_nodes_t
-fake_generator::construct(const target_type& type_to_construct, 
+fake_generator::construct(const target_type& type_to_construct,
                           const feature_set& props,
                           const build_nodes_t& sources,
                           const basic_target* source_target,
@@ -24,7 +24,7 @@ fake_generator::construct(const target_type& type_to_construct,
 {
    // Because fake target always exists and up to date we need make it depends on sources
    // so actuality checker will go thought it
-   
+
    build_nodes_t result = generator::construct(type_to_construct, props, sources, source_target, composite_target_name, owner);
 
    build_nodes_t dependencies;

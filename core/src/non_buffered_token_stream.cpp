@@ -57,7 +57,7 @@ LB  (pANTLR3_COMMON_TOKEN_STREAM cts, ANTLR3_INT32 k)
    */
    while   (  n <= (ANTLR3_INT32)k )
    {
-      /* Skip off-channel tokens 
+      /* Skip off-channel tokens
       */
 
       i = skipOffTokenChannelsReverse(cts, i-1); /* leave p on valid token    */
@@ -249,7 +249,7 @@ bool is_lexing_sources_decl(pANTLR3_LEXER lexer)
    hammer_lexer_context* ctx = static_cast<hammer_lexer_context*>(lexer->super);
    if (ctx->source_lexing_.empty())
       return false;
-   
+
    return ctx->source_lexing_.top();
 }
 

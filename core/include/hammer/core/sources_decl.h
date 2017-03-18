@@ -6,9 +6,9 @@
 
 namespace hammer
 {
-   
+
 	class feature_set;
-	
+
    // @Semantic(Reference)
    class sources_decl
     {
@@ -22,10 +22,10 @@ namespace hammer
 
          void push_back(const std::string& v, const type_registry& tr);
          void push_back(const source_decl& v);
-         
+
          void insert(const std::vector<std::string>& v, const type_registry& tr);
          void insert(const sources_decl& s);
-         
+
          void transfer_from(sources_decl& s);
          void add_to_source_properties(const feature_set& props);
          const_iterator begin() const;

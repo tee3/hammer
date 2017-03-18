@@ -20,9 +20,9 @@ parscore::source_location simple_requirement::start_loc() const
    return is_public() ? public_tag() : value_->start_loc();
 }
 
-parscore::source_location 
-conditional_requirement::start_loc() const 
-{ 
+parscore::source_location
+conditional_requirement::start_loc() const
+{
    return condition_.front()->start_loc();
 }
 

@@ -150,7 +150,7 @@ void* hammer_make_project_requirements_decl_arg(void* pdecl)
 void hammer_add_conditional_to_rdecl(void* condition, char is_public, void* rdecl)
 {
    requirements_decl* r = static_cast<requirements_decl*>(rdecl);
-   std::auto_ptr<requirement_base> c(static_cast<linear_and_condition*>(condition)); 
+   std::auto_ptr<requirement_base> c(static_cast<linear_and_condition*>(condition));
    c->set_public(is_public);
    r->add(c);
 }
@@ -241,12 +241,12 @@ void hammer_source_decl_set_target_path(void* context, void* sd, void* tp)
    if (target_path_tokens->second == NULL)
       target_path_tokens->second = target_path_tokens->first;
 
-   pANTLR3_STRING s = target_path_tokens->first->input->substr(target_path_tokens->first->input, 
-                                                               target_path_tokens->first->start, 
+   pANTLR3_STRING s = target_path_tokens->first->input->substr(target_path_tokens->first->input,
+                                                               target_path_tokens->first->start,
                                                                target_path_tokens->second->stop);
    string target_path(reinterpret_cast<const char*>(s->chars));
    source_decl->target_path(target_path, ctx->engine_->get_type_registry().resolve_from_target_name(target_path));
-   
+
    delete target_path_tokens;
    s->factory->destroy(s->factory, s);
 }
@@ -296,7 +296,7 @@ void* hammer_make_feature_set(void* context)
 
 void hammer_add_feature_to_feature_set(void* feature_set, void* feature)
 {
-   static_cast<hammer::feature_set*>(feature_set)->join(static_cast<hammer::feature*>(feature));   
+   static_cast<hammer::feature_set*>(feature_set)->join(static_cast<hammer::feature*>(feature));
 }
 
 void hammer_feature_set_dependency_data(void* f, void* sd_)

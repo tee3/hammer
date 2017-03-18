@@ -4,7 +4,7 @@
  *     -  From the grammar source file : hammer.g
  *     -                            On : 2017-01-06 16:21:32
  *     -                 for the lexer : hammerLexerLexer *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -13,7 +13,7 @@
  * which will invoke the code for the associated rule in the source grammar
  * assuming that the input stream is pointing to a token/text stream that could begin
  * this rule.
- * 
+ *
  * For instance if you call the first (topmost) rule in a parser grammar, you will
  * get the results of a full parse, but calling a rule half way through the grammar will
  * allow you to pass part of a full token stream to the parser, such as for syntax checking
@@ -60,7 +60,7 @@
 /* End of standard antlr 3 runtime definitions
  * =============================================================================
  */
- 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -79,7 +79,7 @@ typedef struct hammerLexer_Ctx_struct hammerLexer, * phammerLexer;
 //          constant conditional,							- ANTLR realizes that a prediction is always true (synpred usually)
 //          initialized but unused variable					- tree rewrite variables declared but not needed
 //          Unreferenced local variable						- lexer rule declares but does not always use _type
-//          potentially unitialized variable used			- retval always returned from a rule 
+//          potentially unitialized variable used			- retval always returned from a rule
 //			unreferenced local function has been removed	- susually getTokenNames or freeScope, they can go without warnigns
 //
 // These are only really displayed at warning level /W4 but that is the code ideal I am aiming at
@@ -122,7 +122,7 @@ struct hammerLexer_Ctx_struct
      void (*mWS)	(struct hammerLexer_Ctx_struct * ctx);
      void (*mTokens)	(struct hammerLexer_Ctx_struct * ctx);    const char * (*getGrammarFileName)();
     void	    (*free)   (struct hammerLexer_Ctx_struct * ctx);
-        
+
 };
 
 // Function protoypes for the constructor functions that external translation units
@@ -144,7 +144,7 @@ ANTLR3_API phammerLexer hammerLexerNewSSD      (pANTLR3_INPUT_STREAM instream, p
 #endif
 #ifdef	Tokens
 #undef	Tokens
-#endif 
+#endif
 #define STRING_LIST      7
 #define SOURCES_DECL      16
 #define TARGET_PATH      18

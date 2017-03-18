@@ -35,8 +35,8 @@ scanner_context& actuality_checker::get_scanner_context(const target_type& t, co
 }
 
 // go deep in down nodes and mark all of they as needed to update, including dependency nodes
-void actuality_checker::mark_to_update(build_node& node, 
-                                       std::size_t& nodes_to_update, 
+void actuality_checker::mark_to_update(build_node& node,
+                                       std::size_t& nodes_to_update,
                                        const main_target& products_owner)
 {
    for(build_node::nodes_t::iterator i = node.down_.begin(), last = node.down_.end(); i != last; ++i)
@@ -52,7 +52,7 @@ void actuality_checker::mark_to_update(build_node& node,
          ptime max_node_time(neg_infin);
          check(max_node_time, nodes_to_update, **i);
       }
-   
+
    // We should mark dependencies also if they was generated as part of main_target generation process
    // just as direct dependencies. PCH or QT_UIC go to deps not to sources.
    for(build_node::nodes_t::iterator i = node.dependencies_.begin(), last = node.dependencies_.end(); i != last; ++i)
@@ -108,10 +108,10 @@ bool actuality_checker::check(boost::posix_time::ptime& max_target_time, std::si
 
 /*
    // if we have some sources and they older then dependencies than
-   // we should mark all nodes down from here to update, 
+   // we should mark all nodes down from here to update,
    // because we should build dependencies first and than sources
    if (!dependency_need_to_be_updated &&
-       !node.sources_.empty() && 
+       !node.sources_.empty() &&
        sources_max_time < dependency_max_time)
    {
       mark_to_update(node, nodes_to_update, node.products_owner());

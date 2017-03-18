@@ -27,7 +27,7 @@ struct jcf_parser::impl_t
    jcfParser_jsf_file_return langAST_;
 };
 
-namespace 
+namespace
 {
    struct jcf_parser_context
    {
@@ -36,7 +36,7 @@ namespace
       void (*base_displayRecognitionError)(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * tokenNames);
       unsigned int error_count_;
    };
-   
+
    void displayRecognitionError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * tokenNames)
    {
 
@@ -74,7 +74,7 @@ bool jcf_parser::parse(const char* file_name)
    jcf_parser_context ctx;
    ctx.base_displayRecognitionError = impl_->parser_->pParser->rec->displayRecognitionError;
    impl_->parser_->pParser->super = &ctx;
-   
+
    return ctx.error_count_ == 0;
 }
 
@@ -96,7 +96,7 @@ void jcf_parser::reset()
    if (impl_->input_)
       impl_->input_->close(impl_->input_);
    impl_->input_ = 0;
-}                 
+}
 
 void jcf_parser::walk(const vector<hammer::basic_target*>& targets, hammer::engine* e)
 {
@@ -107,7 +107,7 @@ void jcf_parser::walk(const vector<hammer::basic_target*>& targets, hammer::engi
    jcf_walker = jcf_walkerNew(nodes);
    jcf_walker->pTreeParser->super = e;
    jcf_walker->jcf_file(jcf_walker, const_cast<vector<hammer::basic_target*>*>(&targets));
-   
+
    jcf_walker->free(jcf_walker);
    nodes->free(nodes);
 }

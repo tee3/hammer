@@ -9,7 +9,7 @@
 #        define UNCONSTRAINED_LIB_API __declspec(dllexport)
 #     endif
 #     if defined(__BORLANDC__)
-#        define UNCONSTRAINED_LIB_API _export      
+#        define UNCONSTRAINED_LIB_API _export
 #     endif
 #     if defined(__linux__)
 #        define UNCONSTRAINED_LIB_API
@@ -19,7 +19,7 @@
 #        define UNCONSTRAINED_LIB_API __declspec(dllimport)
 #     endif
 #     if defined(__BORLANDC__)
-#        define UNCONSTRAINED_LIB_API _export      
+#        define UNCONSTRAINED_LIB_API _export
 #     endif
 #     if defined(__linux__)
 #        define UNCONSTRAINED_LIB_API

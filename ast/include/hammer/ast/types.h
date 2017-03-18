@@ -21,7 +21,7 @@ typedef std::vector<parscore::identifier> identifiers_t;
 typedef std::vector<const statement*, context_allocator<const statement*> > statements_t;
 typedef std::vector<const requirement*, context_allocator<const requirement*> > requirements_t;
 typedef std::vector<const feature*, context_allocator<const feature*> > features_t;
-   
+
 }}
 
 #endif

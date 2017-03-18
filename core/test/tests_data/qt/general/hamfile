@@ -1,4 +1,4 @@
-exe test 
+exe test
    : main.cpp
      mainwindow.cpp
      mainwindow.h

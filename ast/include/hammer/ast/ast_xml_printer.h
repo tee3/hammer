@@ -9,7 +9,7 @@ namespace hammer{ namespace ast{
 class ast_xml_printer : public visitor
 {
    public:
-      ast_xml_printer(std::ostream& os, 
+      ast_xml_printer(std::ostream& os,
                       bool write_header = true);
       bool visit(const hamfile& v) override;
       bool visit(const rule_invocation& v) override;

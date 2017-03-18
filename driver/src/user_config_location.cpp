@@ -18,7 +18,7 @@ hammer::location_t get_user_config_location()
 
    if (home_path != NULL)
       return hammer::location_t(home_path) / "user-config.ham";
-   else   
+   else
       throw std::runtime_error("Can't find user home directory.");
 }
 

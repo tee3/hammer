@@ -4,7 +4,7 @@
  *     -  From the grammar source file : hammer.g
  *     -                            On : 2017-01-06 16:21:32
  *     -                for the parser : hammerParserParser *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -32,7 +32,7 @@
  * confusing the reader of the generated output, who may not wish to know the gory
  * details of the interface inheritance.
  */
- 
+
 #define		CTX	ctx
 
 /* Aids in accessing scopes for grammar programmers
@@ -48,9 +48,9 @@
 
 /* Macros for accessing things in the parser
  */
- 
-#undef	    PARSER		    
-#undef	    RECOGNIZER		    
+
+#undef	    PARSER
+#undef	    RECOGNIZER
 #undef	    HAVEPARSEDRULE
 #undef		MEMOIZE
 #undef	    INPUT
@@ -79,10 +79,10 @@
 #undef		INDEX
 #undef      ADAPTOR
 #undef		SEEK
-#undef	    RULEMEMO		    
+#undef	    RULEMEMO
 #undef		DBG
 
-#define	    PARSER							ctx->pParser  
+#define	    PARSER							ctx->pParser
 #define	    RECOGNIZER						PARSER->rec
 #define		PSRSTATE						RECOGNIZER->state
 #define	    HAVEPARSEDRULE(r)				RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
@@ -154,8 +154,8 @@ pANTLR3_UINT8   hammerParserTokenNames[33+4]
      = {
         (pANTLR3_UINT8) "<invalid>",       /* String to print to indicate an invalid token */
         (pANTLR3_UINT8) "<EOR>",
-        (pANTLR3_UINT8) "<DOWN>", 
-        (pANTLR3_UINT8) "<UP>", 
+        (pANTLR3_UINT8) "<DOWN>",
+        (pANTLR3_UINT8) "<UP>",
         (pANTLR3_UINT8) "RULE_CALL",
         (pANTLR3_UINT8) "NULL_ARG",
         (pANTLR3_UINT8) "STRING_ARG",
@@ -191,7 +191,7 @@ pANTLR3_UINT8   hammerParserTokenNames[33+4]
         (pANTLR3_UINT8) "'@'"
        };
 
-        
+
 
 // Forward declare the locally static matching functions we have generated.
 //
@@ -228,7 +228,7 @@ static hammerParser_trail_slash_return	trail_slash    (phammerParser ctx);
 static hammerParser_head_slash_return	head_slash    (phammerParser ctx);
 static void	hammerParserFree(phammerParser ctx);
 /* For use in tree output where we are accumulating rule labels via label += ruleRef
- * we need a function that knows how to free a return scope when the list is destroyed. 
+ * we need a function that knows how to free a return scope when the list is destroyed.
  * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a macro.
  */
 static	void ANTLR3_CDECL freeScope(void * scope)
@@ -270,22 +270,22 @@ ANTLR3_API phammerParser
 hammerParserNewSSD   (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
     phammerParser ctx;	    /* Context structure we will build and return   */
-    
+
     ctx	= (phammerParser) ANTLR3_CALLOC(1, sizeof(hammerParser));
-    
+
     if	(ctx == NULL)
     {
 		// Failed to allocate memory for parser context
 		//
         return  NULL;
     }
-    
+
     /* -------------------------------------------------------------------
      * Memory for basic structure is allocated, now to fill in
      * the base ANTLR3 structures. We initialize the function pointers
      * for the standard ANTLR3 parser function set, but upon return
      * from here, the programmer may set the pointers to provide custom
-     * implementations of each function. 
+     * implementations of each function.
      *
      * We don't use the macros defined in hammerParser.h here, in order that you can get a sense
      * of what goes where.
@@ -329,19 +329,19 @@ hammerParserNewSSD   (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_S
     ctx->head_slash	= head_slash;
     ctx->free			= hammerParserFree;
     ctx->getGrammarFileName	= getGrammarFileName;
-    
+
     /* Install the scope pushing methods.
      */
     ADAPTOR	= ANTLR3_TREE_ADAPTORNew(instream->tstream->tokenSource->strFactory);
     ctx->vectors	= antlr3VectorFactoryNew(64);
-    
 
-	
+
+
     /* Install the token table
      */
     PSRSTATE->tokenNames   = hammerParserTokenNames;
-    
-    
+
+
     /* Return the newly built parser to the caller
      */
     return  ctx;
@@ -354,7 +354,7 @@ hammerParserNewSSD   (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_S
  {
     /* Free any scope memory
      */
-    
+
     ctx->vectors->close(ctx->vectors);
     /* We created the adaptor so we must free it
      */
@@ -368,20 +368,20 @@ hammerParserNewSSD   (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_S
      */
     return;
  }
- 
+
 /** Return token names used by this parser
  *
- * The returned pointer is used as an index into the token names table (using the token 
+ * The returned pointer is used as an index into the token names table (using the token
  * number as the index).
- * 
+ *
  * \return Pointer to first char * in the table.
  */
-static pANTLR3_UINT8    *getTokenNames() 
+static pANTLR3_UINT8    *getTokenNames()
 {
-        return hammerParserTokenNames; 
+        return hammerParserTokenNames;
 }
 
-    
+
 /* Declare the bitsets
  */
 
@@ -604,7 +604,7 @@ static  ANTLR3_BITSET_LIST FOLLOW_SLASH_in_trail_slash988	= { FOLLOW_SLASH_in_tr
 /** Bitset defining follow set for error recovery in rule state: FOLLOW_SLASH_in_head_slash998  */
 static	ANTLR3_BITWORD FOLLOW_SLASH_in_head_slash998_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
 static  ANTLR3_BITSET_LIST FOLLOW_SLASH_in_head_slash998	= { FOLLOW_SLASH_in_head_slash998_bits, 1	};
-     
+
 
 
 /* =========================================================================
@@ -634,7 +634,7 @@ static const ANTLR3_INT32 dfa7_accept[18] =
 	-1, -1, -1, -1, 7, 2, 1, 3, -1, 5, -1, -1, -1, -1, 4, 6, -1, -1
     };
 static const ANTLR3_INT32 dfa7_special[18] =
-    {	
+    {
 	5, 2, -1, 4, -1, -1, -1, -1, -1, -1, 3, 0, 1, 8, -1, -1, 6, 7
     };
 
@@ -675,20 +675,20 @@ static const ANTLR3_INT32 dfa7_T0[] =
  */
 static const ANTLR3_INT32 * const dfa7_transitions[] =
 {
-    dfa7_T7, dfa7_T3, dfa7_T1, dfa7_T5, dfa7_T_empty, dfa7_T_empty, dfa7_T_empty, 
-    dfa7_T_empty, dfa7_T6, dfa7_T_empty, dfa7_T4, dfa7_T0, dfa7_T2, dfa7_T8, 
-    dfa7_T_empty, dfa7_T_empty, dfa7_T0, dfa7_T0	
+    dfa7_T7, dfa7_T3, dfa7_T1, dfa7_T5, dfa7_T_empty, dfa7_T_empty, dfa7_T_empty,
+    dfa7_T_empty, dfa7_T6, dfa7_T_empty, dfa7_T4, dfa7_T0, dfa7_T2, dfa7_T8,
+    dfa7_T_empty, dfa7_T_empty, dfa7_T0, dfa7_T0
 };
 
 static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_INT_STREAM is, pANTLR3_CYCLIC_DFA dfa, ANTLR3_INT32 s)
 {
     ANTLR3_INT32    _s;
-    
+
     _s	    = s;
     switch  (s)
     {
         case 0:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_11;
 
@@ -697,7 +697,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_11 = LA(1);
 
-    	 
+
     	    index7_11 = INDEX();
 
     	    REWINDLAST();
@@ -718,17 +718,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 15;
     	    }
 
-    	 
+
     		SEEK(index7_11);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 1:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_12;
 
@@ -737,7 +737,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_12 = LA(1);
 
-    	 
+
     	    index7_12 = INDEX();
 
     	    REWINDLAST();
@@ -753,17 +753,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 16;
     	    }
 
-    	 
+
     		SEEK(index7_12);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 2:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_1;
 
@@ -772,7 +772,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_1 = LA(1);
 
-    	 
+
     	    index7_1 = INDEX();
 
     	    REWINDLAST();
@@ -798,17 +798,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 4;
     	    }
 
-    	 
+
     		SEEK(index7_1);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 3:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_10;
 
@@ -817,7 +817,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_10 = LA(1);
 
-    	 
+
     	    index7_10 = INDEX();
 
     	    REWINDLAST();
@@ -838,17 +838,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 13;
     	    }
 
-    	 
+
     		SEEK(index7_10);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 4:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_3;
 
@@ -857,7 +857,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_3 = LA(1);
 
-    	 
+
     	    index7_3 = INDEX();
 
     	    REWINDLAST();
@@ -873,17 +873,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 4;
     	    }
 
-    	 
+
     		SEEK(index7_3);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 5:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_0;
 
@@ -892,7 +892,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_0 = LA(1);
 
-    	 
+
     	    index7_0 = INDEX();
 
     	    REWINDLAST();
@@ -918,17 +918,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 4;
     	    }
 
-    	 
+
     		SEEK(index7_0);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 6:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_16;
 
@@ -937,7 +937,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_16 = LA(1);
 
-    	 
+
     	    index7_16 = INDEX();
 
     	    REWINDLAST();
@@ -958,17 +958,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 15;
     	    }
 
-    	 
+
     		SEEK(index7_16);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 7:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_17;
 
@@ -977,7 +977,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_17 = LA(1);
 
-    	 
+
     	    index7_17 = INDEX();
 
     	    REWINDLAST();
@@ -998,17 +998,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 15;
     	    }
 
-    	 
+
     		SEEK(index7_17);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 8:
-        
+
     	{
     	    ANTLR3_UINT32 LA7_13;
 
@@ -1017,7 +1017,7 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
 
     		LA7_13 = LA(1);
 
-    	 
+
     	    index7_13 = INDEX();
 
     	    REWINDLAST();
@@ -1028,17 +1028,17 @@ static ANTLR3_INT32 dfa7_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogniz
     	        s = 17;
     	    }
 
-    	 
+
     		SEEK(index7_13);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
     }
-    
+
     CONSTRUCTEX();
     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
     EXCEPTION->message      = (void *)"53:1: rule_posible_args : ({...}? => string_arg | {...}? => project_requirements | {...}? => string_list | {...}? => feature_arg | {...}? => requirements -> ^( REQUIREMENTS_DECL requirements ) | feature_set_arg | {...}? => sources_decl );";
@@ -1054,7 +1054,7 @@ ANTLR3_CYCLIC_DFA cdfa7
     =	{
 	    7,		    /* Decision number of this dfa	    */
 	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"53:1: rule_posible_args : ({...}? => string_arg | {...}? => project_requirements | {...}? => string_list | {...}? => feature_arg | {...}? => requirements -> ^( REQUIREMENTS_DECL requirements ) | feature_set_arg | {...}? => sources_decl );",	
+	    (const pANTLR3_UCHAR)"53:1: rule_posible_args : ({...}? => string_arg | {...}? => project_requirements | {...}? => string_list | {...}? => feature_arg | {...}? => requirements -> ^( REQUIREMENTS_DECL requirements ) | feature_set_arg | {...}? => sources_decl );",
 	    (CDFA_SPECIAL_FUNC) dfa7_sst,
 	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
 	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
@@ -1066,7 +1066,7 @@ ANTLR3_CYCLIC_DFA cdfa7
 	    dfa7_special,	/* Special transition states	    */
 	    dfa7_transitions	/* Table of transition tables	    */
 
-	};	    
+	};
 /* End of Cyclic DFA 7
  * ---------------------
  *//** Static dfa state tables for Cyclic dfa:
@@ -1093,7 +1093,7 @@ static const ANTLR3_INT32 dfa21_accept[11] =
 	-1, -1, 2, -1, -1, -1, -1, -1, -1, 1, -1
     };
 static const ANTLR3_INT32 dfa21_special[11] =
-    {	
+    {
 	-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 0
     };
 
@@ -1131,19 +1131,19 @@ static const ANTLR3_INT32 dfa21_T0[] =
  */
 static const ANTLR3_INT32 * const dfa21_transitions[] =
 {
-    dfa21_T6, dfa21_T3, dfa21_T_empty, dfa21_T4, dfa21_T7, dfa21_T5, dfa21_T0, 
-    dfa21_T1, dfa21_T2, dfa21_T_empty, dfa21_T0	
+    dfa21_T6, dfa21_T3, dfa21_T_empty, dfa21_T4, dfa21_T7, dfa21_T5, dfa21_T0,
+    dfa21_T1, dfa21_T2, dfa21_T_empty, dfa21_T0
 };
 
 static ANTLR3_INT32 dfa21_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_INT_STREAM is, pANTLR3_CYCLIC_DFA dfa, ANTLR3_INT32 s)
 {
     ANTLR3_INT32    _s;
-    
+
     _s	    = s;
     switch  (s)
     {
         case 0:
-        
+
     	{
     	    ANTLR3_UINT32 LA21_10;
 
@@ -1152,7 +1152,7 @@ static ANTLR3_INT32 dfa21_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogni
 
     		LA21_10 = LA(1);
 
-    	 
+
     	    index21_10 = INDEX();
 
     	    REWINDLAST();
@@ -1168,17 +1168,17 @@ static ANTLR3_INT32 dfa21_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogni
     	        s = 2;
     	    }
 
-    	 
+
     		SEEK(index21_10);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
         case 1:
-        
+
     	{
     	    ANTLR3_UINT32 LA21_6;
 
@@ -1187,7 +1187,7 @@ static ANTLR3_INT32 dfa21_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogni
 
     		LA21_6 = LA(1);
 
-    	 
+
     	    index21_6 = INDEX();
 
     	    REWINDLAST();
@@ -1203,17 +1203,17 @@ static ANTLR3_INT32 dfa21_sst(phammerParser ctx, pANTLR3_BASE_RECOGNIZER recogni
     	        s = 2;
     	    }
 
-    	 
+
     		SEEK(index21_6);
 
-    	    if ( s>=0 ) 
+    	    if ( s>=0 )
     	    {
     		return s;
     	    }
     	}
     	break;
     }
-    
+
     CONSTRUCTEX();
     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
     EXCEPTION->message      = (void *)"90:1: target_features : ( path_slash feature ( path_slash feature )* -> ^( FEATURE_SET ( feature )+ ) | -> ^( FEATURE_SET NULL_ARG ) );";
@@ -1229,7 +1229,7 @@ ANTLR3_CYCLIC_DFA cdfa21
     =	{
 	    21,		    /* Decision number of this dfa	    */
 	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"90:1: target_features : ( path_slash feature ( path_slash feature )* -> ^( FEATURE_SET ( feature )+ ) | -> ^( FEATURE_SET NULL_ARG ) );",	
+	    (const pANTLR3_UCHAR)"90:1: target_features : ( path_slash feature ( path_slash feature )* -> ^( FEATURE_SET ( feature )+ ) | -> ^( FEATURE_SET NULL_ARG ) );",
 	    (CDFA_SPECIAL_FUNC) dfa21_sst,
 	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
 	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
@@ -1241,24 +1241,24 @@ ANTLR3_CYCLIC_DFA cdfa21
 	    dfa21_special,	/* Special transition states	    */
 	    dfa21_transitions	/* Table of transition tables	    */
 
-	};	    
+	};
 /* End of Cyclic DFA 21
  * ---------------------
- */ 
+ */
 /* =========================================================================
  * End of DFA tables for the parser
- */ 
- 
+ */
+
 /* ==============================================
  * Parsing rules
  */
-/** 
+/**
  * $ANTLR start project
  * hammer.g:43:1: project : ( WS )* rules -> rules ;
  */
 static hammerParser_project_return
 project(phammerParser ctx)
-{   
+{
     hammerParser_project_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -1283,7 +1283,7 @@ project(phammerParser ctx)
     retval.start = LT(1);
 
     WS1_tree   = NULL;
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS"); 
+    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
     stream_rules=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule rules");
     retval.tree  = NULL;
     {
@@ -1300,23 +1300,23 @@ project(phammerParser ctx)
                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                     */
                     int LA1_0 = LA(1);
-                    if ( (LA1_0 == WS) ) 
+                    if ( (LA1_0 == WS) )
                     {
                         alt1=1;
                     }
 
                 }
-                switch (alt1) 
+                switch (alt1)
                 {
             	case 1:
             	    // hammer.g:43:11: WS
             	    {
-            	        WS1 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_project127); 
+            	        WS1 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_project127);
             	        if  (HASEXCEPTION())
             	        {
             	            goto ruleprojectEx;
             	        }
-            	         
+
             	        stream_WS->add(stream_WS, WS1, NULL);
 
 
@@ -1341,13 +1341,13 @@ project(phammerParser ctx)
 
             stream_rules->add(stream_rules, rules2.tree, NULL);
 
-             
+
             /* AST REWRITE
              * elements          : rules
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -1370,7 +1370,7 @@ project(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1394,13 +1394,13 @@ project(phammerParser ctx)
 }
 /* $ANTLR end project */
 
-/** 
+/**
  * $ANTLR start rules
  * hammer.g:44:1: rules : ( rule )* ;
  */
 static hammerParser_rules_return
 rules(phammerParser ctx)
-{   
+{
     hammerParser_rules_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -1437,13 +1437,13 @@ rules(phammerParser ctx)
                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                     */
                     int LA2_0 = LA(1);
-                    if ( (LA2_0 == LOCAL || LA2_0 == ID) ) 
+                    if ( (LA2_0 == LOCAL || LA2_0 == ID) )
                     {
                         alt2=1;
                     }
 
                 }
-                switch (alt2) 
+                switch (alt2)
                 {
             	case 1:
             	    // hammer.g:44:10: rule
@@ -1473,7 +1473,7 @@ rules(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1497,13 +1497,13 @@ rules(phammerParser ctx)
 }
 /* $ANTLR end rules */
 
-/** 
+/**
  * $ANTLR start rule
  * hammer.g:45:1: rule : rule_impl ';' -> rule_impl ;
  */
 static hammerParser_rule_return
 rule(phammerParser ctx)
-{   
+{
     hammerParser_rule_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -1528,7 +1528,7 @@ rule(phammerParser ctx)
     retval.start = LT(1);
 
     char_literal5_tree   = NULL;
-    stream_30   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 30"); 
+    stream_30   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 30");
     stream_rule_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule rule_impl");
     retval.tree  = NULL;
     {
@@ -1545,22 +1545,22 @@ rule(phammerParser ctx)
             }
 
             stream_rule_impl->add(stream_rule_impl, rule_impl4.tree, NULL);
-            char_literal5 = (pANTLR3_COMMON_TOKEN) MATCHT(30, &FOLLOW_30_in_rule155); 
+            char_literal5 = (pANTLR3_COMMON_TOKEN) MATCHT(30, &FOLLOW_30_in_rule155);
             if  (HASEXCEPTION())
             {
                 goto ruleruleEx;
             }
-             
+
             stream_30->add(stream_30, char_literal5, NULL);
 
 
-             
+
             /* AST REWRITE
              * elements          : rule_impl
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -1583,7 +1583,7 @@ rule(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1607,13 +1607,13 @@ rule(phammerParser ctx)
 }
 /* $ANTLR end rule */
 
-/** 
+/**
  * $ANTLR start rule_impl
  * hammer.g:46:1: rule_impl : ( LOCAL )? ID rule_args -> ^( RULE_CALL ID ( LOCAL )? rule_args ) ;
  */
 static hammerParser_rule_impl_return
 rule_impl(phammerParser ctx)
-{   
+{
     hammerParser_rule_impl_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -1643,8 +1643,8 @@ rule_impl(phammerParser ctx)
 
     LOCAL6_tree   = NULL;
     ID7_tree   = NULL;
-    stream_LOCAL   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token LOCAL"); 
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID"); 
+    stream_LOCAL   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token LOCAL");
+    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
     stream_rule_args=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule rule_args");
     retval.tree  = NULL;
     {
@@ -1657,22 +1657,22 @@ rule_impl(phammerParser ctx)
                 int alt3=2;
                 {
                     int LA3_0 = LA(1);
-                    if ( (LA3_0 == LOCAL) ) 
+                    if ( (LA3_0 == LOCAL) )
                     {
                         alt3=1;
                     }
                 }
-                switch (alt3) 
+                switch (alt3)
                 {
             	case 1:
             	    // hammer.g:46:13: LOCAL
             	    {
-            	        LOCAL6 = (pANTLR3_COMMON_TOKEN) MATCHT(LOCAL, &FOLLOW_LOCAL_in_rule_impl166); 
+            	        LOCAL6 = (pANTLR3_COMMON_TOKEN) MATCHT(LOCAL, &FOLLOW_LOCAL_in_rule_impl166);
             	        if  (HASEXCEPTION())
             	        {
             	            goto rulerule_implEx;
             	        }
-            	         
+
             	        stream_LOCAL->add(stream_LOCAL, LOCAL6, NULL);
 
 
@@ -1681,16 +1681,16 @@ rule_impl(phammerParser ctx)
 
                 }
             }
-            ID7 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_rule_impl169); 
+            ID7 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_rule_impl169);
             if  (HASEXCEPTION())
             {
                 goto rulerule_implEx;
             }
-             
+
             stream_ID->add(stream_ID, ID7, NULL);
 
             {
-                 on_enter_rule(PARSER, (ID7 != NULL ? ID7->getText(ID7) : NULL)->chars); 
+                 on_enter_rule(PARSER, (ID7 != NULL ? ID7->getText(ID7) : NULL)->chars);
             }
             FOLLOWPUSH(FOLLOW_rule_args_in_rule_impl173);
             rule_args8=rule_args(ctx);
@@ -1703,13 +1703,13 @@ rule_impl(phammerParser ctx)
 
             stream_rule_args->add(stream_rule_args, rule_args8.tree, NULL);
 
-             
+
             /* AST REWRITE
              * elements          : rule_args, ID, LOCAL
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -1728,7 +1728,7 @@ rule_impl(phammerParser ctx)
             	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
             	        // hammer.g:46:95: ( LOCAL )?
             	        {
-            	        	if ( stream_LOCAL->hasNext(stream_LOCAL) ) 
+            	        	if ( stream_LOCAL->hasNext(stream_LOCAL) )
             	        	{
             	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_LOCAL->nextNode(stream_LOCAL));
 
@@ -1751,7 +1751,7 @@ rule_impl(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1776,13 +1776,13 @@ rule_impl(phammerParser ctx)
 }
 /* $ANTLR end rule_impl */
 
-/** 
+/**
  * $ANTLR start rule_args
  * hammer.g:47:1: rule_args : ( rule_posible_args )? ( maybe_arg )* ;
  */
 static hammerParser_rule_args_return
 rule_args(phammerParser ctx)
-{   
+{
     hammerParser_rule_args_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -1821,24 +1821,24 @@ rule_args(phammerParser ctx)
                 int alt4=2;
                 {
                     int LA4_0 = LA(1);
-                    if ( (LA4_0 == ID) && (((( argument_is_string(PARSER) ))||(( argument_is_sources(PARSER) ))||(( argument_is_string_list(PARSER) ))||(( argument_is_project_requirements(PARSER) ))))) 
+                    if ( (LA4_0 == ID) && (((( argument_is_string(PARSER) ))||(( argument_is_sources(PARSER) ))||(( argument_is_string_list(PARSER) ))||(( argument_is_project_requirements(PARSER) )))))
                     {
                         alt4=1;
                     }
-                    else if ( (LA4_0 == 32) ) 
+                    else if ( (LA4_0 == 32) )
                     {
                         alt4=1;
                     }
-                    else if ( (LA4_0 == 36) && (((( argument_is_sources(PARSER) ))||(( argument_is_requirements(PARSER) ))))) 
+                    else if ( (LA4_0 == 36) && (((( argument_is_sources(PARSER) ))||(( argument_is_requirements(PARSER) )))))
                     {
                         alt4=1;
                     }
-                    else if ( (LA4_0 == SLASH || LA4_0 == 34) && (( argument_is_sources(PARSER) ))) 
+                    else if ( (LA4_0 == SLASH || LA4_0 == 34) && (( argument_is_sources(PARSER) )))
                     {
                         alt4=1;
                     }
                 }
-                switch (alt4) 
+                switch (alt4)
                 {
             	case 1:
             	    // hammer.g:47:15: rule_posible_args
@@ -1854,7 +1854,7 @@ rule_args(phammerParser ctx)
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, rule_posible_args9.tree);
             	        {
-            	             on_rule_argument(PARSER); 
+            	             on_rule_argument(PARSER);
             	        }
 
             	    }
@@ -1872,13 +1872,13 @@ rule_args(phammerParser ctx)
                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                     */
                     int LA5_0 = LA(1);
-                    if ( (LA5_0 == COLON) ) 
+                    if ( (LA5_0 == COLON) )
                     {
                         alt5=1;
                     }
 
                 }
-                switch (alt5) 
+                switch (alt5)
                 {
             	case 1:
             	    // hammer.g:47:66: maybe_arg
@@ -1894,7 +1894,7 @@ rule_args(phammerParser ctx)
 
             	        ADAPTOR->addChild(ADAPTOR, root_0, maybe_arg10.tree);
             	        {
-            	             on_rule_argument(PARSER); 
+            	             on_rule_argument(PARSER);
             	        }
 
             	    }
@@ -1911,7 +1911,7 @@ rule_args(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1935,13 +1935,13 @@ rule_args(phammerParser ctx)
 }
 /* $ANTLR end rule_args */
 
-/** 
+/**
  * $ANTLR start maybe_arg
  * hammer.g:49:1: maybe_arg : ( ':' rule_posible_args -> rule_posible_args | ':' -> ^( NULL_ARG ) );
  */
 static hammerParser_maybe_arg_return
 maybe_arg(phammerParser ctx)
-{   
+{
     hammerParser_maybe_arg_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -1970,13 +1970,13 @@ maybe_arg(phammerParser ctx)
 
     char_literal11_tree   = NULL;
     char_literal13_tree   = NULL;
-    stream_COLON   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token COLON"); 
+    stream_COLON   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token COLON");
     stream_rule_posible_args=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule rule_posible_args");
     retval.tree  = NULL;
     {
         {
             //  hammer.g:50:9: ( ':' rule_posible_args -> rule_posible_args | ':' -> ^( NULL_ARG ) )
-            
+
             ANTLR3_UINT32 alt6;
 
             alt6=2;
@@ -1984,22 +1984,22 @@ maybe_arg(phammerParser ctx)
 
             {
                 int LA6_0 = LA(1);
-                if ( (LA6_0 == COLON) ) 
+                if ( (LA6_0 == COLON) )
                 {
 
                     {
                         int LA6_1 = LA(2);
-                        if ( (LA6_1 == ID || LA6_1 == SLASH || LA6_1 == 32 || LA6_1 == 34 || LA6_1 == 36) ) 
+                        if ( (LA6_1 == ID || LA6_1 == SLASH || LA6_1 == 32 || LA6_1 == 34 || LA6_1 == 36) )
                         {
                             alt6=1;
                         }
-                        else if ( (LA6_1 == COLON || LA6_1 == 30 || LA6_1 == 35) ) 
+                        else if ( (LA6_1 == COLON || LA6_1 == 30 || LA6_1 == 35) )
                         {
                             alt6=2;
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -2011,9 +2011,9 @@ maybe_arg(phammerParser ctx)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2024,17 +2024,17 @@ maybe_arg(phammerParser ctx)
                     goto rulemaybe_argEx;
                 }
             }
-            switch (alt6) 
+            switch (alt6)
             {
         	case 1:
         	    // hammer.g:50:11: ':' rule_posible_args
         	    {
-        	        char_literal11 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_maybe_arg223); 
+        	        char_literal11 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_maybe_arg223);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulemaybe_argEx;
         	        }
-        	         
+
         	        stream_COLON->add(stream_COLON, char_literal11, NULL);
 
         	        FOLLOWPUSH(FOLLOW_rule_posible_args_in_maybe_arg225);
@@ -2048,13 +2048,13 @@ maybe_arg(phammerParser ctx)
 
         	        stream_rule_posible_args->add(stream_rule_posible_args, rule_posible_args12.tree, NULL);
 
-        	         
+
         	        /* AST REWRITE
         	         * elements          : rule_posible_args
-        	         * token labels      : 
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -2079,22 +2079,22 @@ maybe_arg(phammerParser ctx)
         	case 2:
         	    // hammer.g:51:11: ':'
         	    {
-        	        char_literal13 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_maybe_arg241); 
+        	        char_literal13 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_maybe_arg241);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulemaybe_argEx;
         	        }
-        	         
+
         	        stream_COLON->add(stream_COLON, char_literal13, NULL);
 
 
-        	         
+
         	        /* AST REWRITE
-        	         * elements          : 
-        	         * token labels      : 
+        	         * elements          :
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -2126,7 +2126,7 @@ maybe_arg(phammerParser ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2150,13 +2150,13 @@ maybe_arg(phammerParser ctx)
 }
 /* $ANTLR end maybe_arg */
 
-/** 
+/**
  * $ANTLR start rule_posible_args
  * hammer.g:53:1: rule_posible_args : ({...}? => string_arg | {...}? => project_requirements | {...}? => string_list | {...}? => feature_arg | {...}? => requirements -> ^( REQUIREMENTS_DECL requirements ) | feature_set_arg | {...}? => sources_decl );
  */
 static hammerParser_rule_posible_args_return
 rule_posible_args(phammerParser ctx)
-{   
+{
     hammerParser_rule_posible_args_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -2217,7 +2217,7 @@ rule_posible_args(phammerParser ctx)
     {
         {
             //  hammer.g:54:19: ({...}? => string_arg | {...}? => project_requirements | {...}? => string_list | {...}? => feature_arg | {...}? => requirements -> ^( REQUIREMENTS_DECL requirements ) | feature_set_arg | {...}? => sources_decl )
-            
+
             ANTLR3_UINT32 alt7;
 
             alt7=7;
@@ -2228,14 +2228,14 @@ rule_posible_args(phammerParser ctx)
                 goto rulerule_posible_argsEx;
             }
 
-            switch (alt7) 
+            switch (alt7)
             {
         	case 1:
         	    // hammer.g:54:21: {...}? => string_arg
         	    {
         	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        if ( !(( argument_is_string(PARSER) )) ) 
+        	        if ( !(( argument_is_string(PARSER) )) )
         	        {
         	                CONSTRUCTEX();
         	                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -2262,7 +2262,7 @@ rule_posible_args(phammerParser ctx)
         	    {
         	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        if ( !(( argument_is_project_requirements(PARSER) )) ) 
+        	        if ( !(( argument_is_project_requirements(PARSER) )) )
         	        {
         	                CONSTRUCTEX();
         	                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -2289,7 +2289,7 @@ rule_posible_args(phammerParser ctx)
         	    {
         	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        if ( !(( argument_is_string_list(PARSER) )) ) 
+        	        if ( !(( argument_is_string_list(PARSER) )) )
         	        {
         	                CONSTRUCTEX();
         	                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -2316,7 +2316,7 @@ rule_posible_args(phammerParser ctx)
         	    {
         	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        if ( !(( argument_is_feature(PARSER) )) ) 
+        	        if ( !(( argument_is_feature(PARSER) )) )
         	        {
         	                CONSTRUCTEX();
         	                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -2341,7 +2341,7 @@ rule_posible_args(phammerParser ctx)
         	case 5:
         	    // hammer.g:58:21: {...}? => requirements
         	    {
-        	        if ( !(( argument_is_requirements(PARSER) )) ) 
+        	        if ( !(( argument_is_requirements(PARSER) )) )
         	        {
         	                CONSTRUCTEX();
         	                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -2361,13 +2361,13 @@ rule_posible_args(phammerParser ctx)
 
         	        stream_requirements->add(stream_requirements, requirements18.tree, NULL);
 
-        	         
+
         	        /* AST REWRITE
         	         * elements          : requirements
-        	         * token labels      : 
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -2420,7 +2420,7 @@ rule_posible_args(phammerParser ctx)
         	    {
         	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        if ( !(( argument_is_sources(PARSER) )) ) 
+        	        if ( !(( argument_is_sources(PARSER) )) )
         	        {
         	                CONSTRUCTEX();
         	                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -2446,7 +2446,7 @@ rule_posible_args(phammerParser ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2470,13 +2470,13 @@ rule_posible_args(phammerParser ctx)
 }
 /* $ANTLR end rule_posible_args */
 
-/** 
+/**
  * $ANTLR start string_list
  * hammer.g:61:1: string_list : ( ID )+ -> ^( STRING_LIST ( ID )+ ) ;
  */
 static hammerParser_string_list_return
 string_list(phammerParser ctx)
-{   
+{
     hammerParser_string_list_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -2496,7 +2496,7 @@ string_list(phammerParser ctx)
     retval.start = LT(1);
 
     ID21_tree   = NULL;
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID"); 
+    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
     retval.tree  = NULL;
     {
         // hammer.g:61:13: ( ( ID )+ -> ^( STRING_LIST ( ID )+ ) )
@@ -2513,34 +2513,34 @@ string_list(phammerParser ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA8_0 = LA(1);
-            	    if ( (LA8_0 == ID) ) 
+            	    if ( (LA8_0 == ID) )
             	    {
             	        alt8=1;
             	    }
 
             	}
-            	switch (alt8) 
+            	switch (alt8)
             	{
             	    case 1:
             	        // hammer.g:61:16: ID
             	        {
-            	            ID21 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_string_list458); 
+            	            ID21 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_string_list458);
             	            if  (HASEXCEPTION())
             	            {
             	                goto rulestring_listEx;
             	            }
-            	             
+
             	            stream_ID->add(stream_ID, ID21, NULL);
 
             	            {
-            	                 on_string_list_element(PARSER, (ID21 != NULL ? ID21->getText(ID21) : NULL)->chars); 
+            	                 on_string_list_element(PARSER, (ID21 != NULL ? ID21->getText(ID21) : NULL)->chars);
             	            }
 
             	        }
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt8 >= 1 )
             		{
             		    goto loop8;
@@ -2559,13 +2559,13 @@ string_list(phammerParser ctx)
                 loop8: ;	/* Jump to here if this rule does not match */
             }
 
-             
+
             /* AST REWRITE
              * elements          : ID
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -2581,7 +2581,7 @@ string_list(phammerParser ctx)
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, STRING_LIST, (pANTLR3_UINT8)"STRING_LIST"), root_1));
 
-            	        if ( !(stream_ID->hasNext(stream_ID)) ) 
+            	        if ( !(stream_ID->hasNext(stream_ID)) )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -2609,7 +2609,7 @@ string_list(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2633,13 +2633,13 @@ string_list(phammerParser ctx)
 }
 /* $ANTLR end string_list */
 
-/** 
+/**
  * $ANTLR start feature_set_arg
  * hammer.g:62:1: feature_set_arg : feature_set -> ^( FEATURE_SET_ARG feature_set ) ;
  */
 static hammerParser_feature_set_arg_return
 feature_set_arg(phammerParser ctx)
-{   
+{
     hammerParser_feature_set_arg_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -2676,13 +2676,13 @@ feature_set_arg(phammerParser ctx)
 
             stream_feature_set->add(stream_feature_set, feature_set22.tree, NULL);
 
-             
+
             /* AST REWRITE
              * elements          : feature_set
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -2713,7 +2713,7 @@ feature_set_arg(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2737,13 +2737,13 @@ feature_set_arg(phammerParser ctx)
 }
 /* $ANTLR end feature_set_arg */
 
-/** 
+/**
  * $ANTLR start feature_set
  * hammer.g:63:1: feature_set : ( feature )+ -> ^( FEATURE_SET ( feature )+ ) ;
  */
 static hammerParser_feature_set_return
 feature_set(phammerParser ctx)
-{   
+{
     hammerParser_feature_set_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -2780,13 +2780,13 @@ feature_set(phammerParser ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA9_0 = LA(1);
-            	    if ( (LA9_0 == 32) ) 
+            	    if ( (LA9_0 == 32) )
             	    {
             	        alt9=1;
             	    }
 
             	}
-            	switch (alt9) 
+            	switch (alt9)
             	{
             	    case 1:
             	        // hammer.g:63:15: feature
@@ -2806,7 +2806,7 @@ feature_set(phammerParser ctx)
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt9 >= 1 )
             		{
             		    goto loop9;
@@ -2825,13 +2825,13 @@ feature_set(phammerParser ctx)
                 loop9: ;	/* Jump to here if this rule does not match */
             }
 
-             
+
             /* AST REWRITE
              * elements          : feature
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -2847,7 +2847,7 @@ feature_set(phammerParser ctx)
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, FEATURE_SET, (pANTLR3_UINT8)"FEATURE_SET"), root_1));
 
-            	        if ( !(stream_feature->hasNext(stream_feature)) ) 
+            	        if ( !(stream_feature->hasNext(stream_feature)) )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -2875,7 +2875,7 @@ feature_set(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2899,13 +2899,13 @@ feature_set(phammerParser ctx)
 }
 /* $ANTLR end feature_set */
 
-/** 
+/**
  * $ANTLR start project_requirements
  * hammer.g:65:1: project_requirements : ID requirements -> ^( PROJECT_REQUIREMENTS ID ^( REQUIREMENTS_DECL requirements ) ) ;
  */
 static hammerParser_project_requirements_return
 project_requirements(phammerParser ctx)
-{   
+{
     hammerParser_project_requirements_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -2930,19 +2930,19 @@ project_requirements(phammerParser ctx)
     retval.start = LT(1);
 
     ID24_tree   = NULL;
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID"); 
+    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
     stream_requirements=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule requirements");
     retval.tree  = NULL;
     {
         // hammer.g:65:22: ( ID requirements -> ^( PROJECT_REQUIREMENTS ID ^( REQUIREMENTS_DECL requirements ) ) )
         // hammer.g:65:24: ID requirements
         {
-            ID24 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_project_requirements511); 
+            ID24 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_project_requirements511);
             if  (HASEXCEPTION())
             {
                 goto ruleproject_requirementsEx;
             }
-             
+
             stream_ID->add(stream_ID, ID24, NULL);
 
             FOLLOWPUSH(FOLLOW_requirements_in_project_requirements513);
@@ -2956,13 +2956,13 @@ project_requirements(phammerParser ctx)
 
             stream_requirements->add(stream_requirements, requirements25.tree, NULL);
 
-             
+
             /* AST REWRITE
              * elements          : ID, requirements
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -3002,7 +3002,7 @@ project_requirements(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3026,13 +3026,13 @@ project_requirements(phammerParser ctx)
 }
 /* $ANTLR end project_requirements */
 
-/** 
+/**
  * $ANTLR start requirements
  * hammer.g:66:1: requirements : ( public_tag ( feature | conditional_features ) )+ ;
  */
 static hammerParser_requirements_return
 requirements(phammerParser ctx)
-{   
+{
     hammerParser_requirements_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -3082,13 +3082,13 @@ requirements(phammerParser ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA11_0 = LA(1);
-            	    if ( (LA11_0 == ID || LA11_0 == SLASH || LA11_0 == 32 || LA11_0 == 36) ) 
+            	    if ( (LA11_0 == ID || LA11_0 == SLASH || LA11_0 == 32 || LA11_0 == 36) )
             	    {
             	        alt11=1;
             	    }
 
             	}
-            	switch (alt11) 
+            	switch (alt11)
             	{
             	    case 1:
             	        // hammer.g:66:17: public_tag ( feature | conditional_features )
@@ -3110,22 +3110,22 @@ requirements(phammerParser ctx)
 
             	                {
             	                    int LA10_0 = LA(1);
-            	                    if ( (LA10_0 == 32) && (((!( (((( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) ))||(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )))) ))||(( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) ))||(!( (((( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) ))||(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )))) ))||(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) ))))) 
+            	                    if ( (LA10_0 == 32) && (((!( (((( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) ))||(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )))) ))||(( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) ))||(!( (((( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) ))||(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )))) ))||(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )))))
             	                    {
 
             	                        {
             	                            int LA10_1 = LA(2);
-            	                            if ( (!( (((( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) ))||(( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) )))) )) ) 
+            	                            if ( (!( (((( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) ))||(( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) )))) )) )
             	                            {
             	                                alt10=1;
             	                            }
-            	                            else if ( (((( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) ))||(( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) )))) ) 
+            	                            else if ( (((( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) ))||(( (( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) && (( is_dependency_feature(PARSER) )) )))) )
             	                            {
             	                                alt10=2;
             	                            }
-            	                            else 
+            	                            else
             	                            {
-            	                            
+
             	                                CONSTRUCTEX();
             	                                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
             	                                EXCEPTION->message      = (void *)"";
@@ -3137,9 +3137,9 @@ requirements(phammerParser ctx)
             	                            }
             	                        }
             	                    }
-            	                    else 
+            	                    else
             	                    {
-            	                    
+
             	                        CONSTRUCTEX();
             	                        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
             	                        EXCEPTION->message      = (void *)"";
@@ -3150,7 +3150,7 @@ requirements(phammerParser ctx)
             	                        goto rulerequirementsEx;
             	                    }
             	                }
-            	                switch (alt10) 
+            	                switch (alt10)
             	                {
             	            	case 1:
             	            	    // hammer.g:66:29: feature
@@ -3192,7 +3192,7 @@ requirements(phammerParser ctx)
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt11 >= 1 )
             		{
             		    goto loop11;
@@ -3214,7 +3214,7 @@ requirements(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3238,13 +3238,13 @@ requirements(phammerParser ctx)
 }
 /* $ANTLR end requirements */
 
-/** 
+/**
  * $ANTLR start string_arg
  * hammer.g:68:1: string_arg : ID -> ^( STRING_ARG ID ) ;
  */
 static hammerParser_string_arg_return
 string_arg(phammerParser ctx)
-{   
+{
     hammerParser_string_arg_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -3264,28 +3264,28 @@ string_arg(phammerParser ctx)
     retval.start = LT(1);
 
     ID29_tree   = NULL;
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID"); 
+    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
     retval.tree  = NULL;
     {
         // hammer.g:68:13: ( ID -> ^( STRING_ARG ID ) )
         // hammer.g:68:15: ID
         {
-            ID29 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_string_arg554); 
+            ID29 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_string_arg554);
             if  (HASEXCEPTION())
             {
                 goto rulestring_argEx;
             }
-             
+
             stream_ID->add(stream_ID, ID29, NULL);
 
 
-             
+
             /* AST REWRITE
              * elements          : ID
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -3316,7 +3316,7 @@ string_arg(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3340,13 +3340,13 @@ string_arg(phammerParser ctx)
 }
 /* $ANTLR end string_arg */
 
-/** 
+/**
  * $ANTLR start feature_arg
  * hammer.g:69:1: feature_arg : feature -> ^( FEATURE_ARG feature ) ;
  */
 static hammerParser_feature_arg_return
 feature_arg(phammerParser ctx)
-{   
+{
     hammerParser_feature_arg_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -3383,13 +3383,13 @@ feature_arg(phammerParser ctx)
 
             stream_feature->add(stream_feature, feature30.tree, NULL);
 
-             
+
             /* AST REWRITE
              * elements          : feature
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -3420,7 +3420,7 @@ feature_arg(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3444,13 +3444,13 @@ feature_arg(phammerParser ctx)
 }
 /* $ANTLR end feature_arg */
 
-/** 
+/**
  * $ANTLR start conditional_features
  * hammer.g:72:1: conditional_features : {...}? => condition condition_result -> ^( CONDITIONAL_FEATURES condition condition_result ) ;
  */
 static hammerParser_conditional_features_return
 conditional_features(phammerParser ctx)
-{   
+{
     hammerParser_conditional_features_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -3484,7 +3484,7 @@ conditional_features(phammerParser ctx)
         // hammer.g:72:22: ({...}? => condition condition_result -> ^( CONDITIONAL_FEATURES condition condition_result ) )
         // hammer.g:72:24: {...}? => condition condition_result
         {
-            if ( !(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) ) 
+            if ( !(( is_conditional_feature(PARSER) && !is_dependency_feature(PARSER) )) )
             {
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -3514,13 +3514,13 @@ conditional_features(phammerParser ctx)
 
             stream_condition_result->add(stream_condition_result, condition_result32.tree, NULL);
 
-             
+
             /* AST REWRITE
              * elements          : condition_result, condition
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -3552,7 +3552,7 @@ conditional_features(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3577,13 +3577,13 @@ conditional_features(phammerParser ctx)
 }
 /* $ANTLR end conditional_features */
 
-/** 
+/**
  * $ANTLR start condition
  * hammer.g:73:1: condition : feature ( ',' feature )* -> ^( CONDITION ( feature )+ ) ;
  */
 static hammerParser_condition_return
 condition(phammerParser ctx)
-{   
+{
     hammerParser_condition_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -3614,7 +3614,7 @@ condition(phammerParser ctx)
     retval.start = LT(1);
 
     char_literal34_tree   = NULL;
-    stream_31   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 31"); 
+    stream_31   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 31");
     stream_feature=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule feature");
     retval.tree  = NULL;
     {
@@ -3641,23 +3641,23 @@ condition(phammerParser ctx)
                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                     */
                     int LA12_0 = LA(1);
-                    if ( (LA12_0 == 31) ) 
+                    if ( (LA12_0 == 31) )
                     {
                         alt12=1;
                     }
 
                 }
-                switch (alt12) 
+                switch (alt12)
                 {
             	case 1:
             	    // hammer.g:73:23: ',' feature
             	    {
-            	        char_literal34 = (pANTLR3_COMMON_TOKEN) MATCHT(31, &FOLLOW_31_in_condition612); 
+            	        char_literal34 = (pANTLR3_COMMON_TOKEN) MATCHT(31, &FOLLOW_31_in_condition612);
             	        if  (HASEXCEPTION())
             	        {
             	            goto ruleconditionEx;
             	        }
-            	         
+
             	        stream_31->add(stream_31, char_literal34, NULL);
 
             	        FOLLOWPUSH(FOLLOW_feature_in_condition614);
@@ -3682,13 +3682,13 @@ condition(phammerParser ctx)
             loop12: ; /* Jump out to here if this rule does not match */
 
 
-             
+
             /* AST REWRITE
              * elements          : feature
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -3704,7 +3704,7 @@ condition(phammerParser ctx)
             	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, CONDITION, (pANTLR3_UINT8)"CONDITION"), root_1));
 
-            	        if ( !(stream_feature->hasNext(stream_feature)) ) 
+            	        if ( !(stream_feature->hasNext(stream_feature)) )
             	        {
             	            CONSTRUCTEX();
             	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -3732,7 +3732,7 @@ condition(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3756,13 +3756,13 @@ condition(phammerParser ctx)
 }
 /* $ANTLR end condition */
 
-/** 
+/**
  * $ANTLR start condition_result
  * hammer.g:75:1: condition_result : COLON feature ;
  */
 static hammerParser_condition_result_return
 condition_result(phammerParser ctx)
-{   
+{
     hammerParser_condition_result_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -3793,7 +3793,7 @@ condition_result(phammerParser ctx)
         {
             root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-            COLON36 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_condition_result633); 
+            COLON36 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_condition_result633);
             if  (HASEXCEPTION())
             {
                 goto rulecondition_resultEx;
@@ -3816,7 +3816,7 @@ condition_result(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3840,13 +3840,13 @@ condition_result(phammerParser ctx)
 }
 /* $ANTLR end condition_result */
 
-/** 
+/**
  * $ANTLR start feature
  * hammer.g:76:1: feature : ({...}? => '<' ID '>' source_decl -> ^( FEATURE ID source_decl ) | '<' ID '>' ID -> ^( FEATURE ID ID ) );
  */
 static hammerParser_feature_return
 feature(phammerParser ctx)
-{   
+{
     hammerParser_feature_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -3897,15 +3897,15 @@ feature(phammerParser ctx)
     ID43_tree   = NULL;
     char_literal44_tree   = NULL;
     ID45_tree   = NULL;
-    stream_33   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 33"); 
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID"); 
-    stream_32   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 32"); 
+    stream_33   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 33");
+    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
+    stream_32   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 32");
     stream_source_decl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule source_decl");
     retval.tree  = NULL;
     {
         {
             //  hammer.g:76:15: ({...}? => '<' ID '>' source_decl -> ^( FEATURE ID source_decl ) | '<' ID '>' ID -> ^( FEATURE ID ID ) )
-            
+
             ANTLR3_UINT32 alt13;
 
             alt13=2;
@@ -3913,37 +3913,37 @@ feature(phammerParser ctx)
 
             {
                 int LA13_0 = LA(1);
-                if ( (LA13_0 == 32) ) 
+                if ( (LA13_0 == 32) )
                 {
 
                     {
                         int LA13_1 = LA(2);
-                        if ( (LA13_1 == ID) ) 
+                        if ( (LA13_1 == ID) )
                         {
 
                             {
                                 int LA13_2 = LA(3);
-                                if ( (LA13_2 == 33) ) 
+                                if ( (LA13_2 == 33) )
                                 {
 
                                     {
                                         int LA13_3 = LA(4);
-                                        if ( (LA13_3 == ID) ) 
+                                        if ( (LA13_3 == ID) )
                                         {
 
                                             {
                                                 int LA13_4 = LA(5);
-                                                if ( (( is_dependency_feature(PARSER) )) ) 
+                                                if ( (( is_dependency_feature(PARSER) )) )
                                                 {
                                                     alt13=1;
                                                 }
-                                                else if ( (ANTLR3_TRUE) ) 
+                                                else if ( (ANTLR3_TRUE) )
                                                 {
                                                     alt13=2;
                                                 }
-                                                else 
+                                                else
                                                 {
-                                                
+
                                                     CONSTRUCTEX();
                                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                                     EXCEPTION->message      = (void *)"";
@@ -3955,13 +3955,13 @@ feature(phammerParser ctx)
                                                 }
                                             }
                                         }
-                                        else if ( (LA13_3 == SLASH || LA13_3 == 36) && (( is_dependency_feature(PARSER) ))) 
+                                        else if ( (LA13_3 == SLASH || LA13_3 == 36) && (( is_dependency_feature(PARSER) )))
                                         {
                                             alt13=1;
                                         }
-                                        else 
+                                        else
                                         {
-                                        
+
                                             CONSTRUCTEX();
                                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                             EXCEPTION->message      = (void *)"";
@@ -3973,9 +3973,9 @@ feature(phammerParser ctx)
                                         }
                                     }
                                 }
-                                else 
+                                else
                                 {
-                                
+
                                     CONSTRUCTEX();
                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                     EXCEPTION->message      = (void *)"";
@@ -3987,9 +3987,9 @@ feature(phammerParser ctx)
                                 }
                             }
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -4001,9 +4001,9 @@ feature(phammerParser ctx)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -4014,12 +4014,12 @@ feature(phammerParser ctx)
                     goto rulefeatureEx;
                 }
             }
-            switch (alt13) 
+            switch (alt13)
             {
         	case 1:
         	    // hammer.g:76:17: {...}? => '<' ID '>' source_decl
         	    {
-        	        if ( !(( is_dependency_feature(PARSER) )) ) 
+        	        if ( !(( is_dependency_feature(PARSER) )) )
         	        {
         	                CONSTRUCTEX();
         	                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -4028,28 +4028,28 @@ feature(phammerParser ctx)
 
 
         	        }
-        	        char_literal38 = (pANTLR3_COMMON_TOKEN) MATCHT(32, &FOLLOW_32_in_feature651); 
+        	        char_literal38 = (pANTLR3_COMMON_TOKEN) MATCHT(32, &FOLLOW_32_in_feature651);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
-        	         
+
         	        stream_32->add(stream_32, char_literal38, NULL);
 
-        	        ID39 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature653); 
+        	        ID39 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature653);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
-        	         
+
         	        stream_ID->add(stream_ID, ID39, NULL);
 
-        	        char_literal40 = (pANTLR3_COMMON_TOKEN) MATCHT(33, &FOLLOW_33_in_feature655); 
+        	        char_literal40 = (pANTLR3_COMMON_TOKEN) MATCHT(33, &FOLLOW_33_in_feature655);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
-        	         
+
         	        stream_33->add(stream_33, char_literal40, NULL);
 
         	        FOLLOWPUSH(FOLLOW_source_decl_in_feature657);
@@ -4063,13 +4063,13 @@ feature(phammerParser ctx)
 
         	        stream_source_decl->add(stream_source_decl, source_decl41.tree, NULL);
 
-        	         
+
         	        /* AST REWRITE
         	         * elements          : ID, source_decl
-        	         * token labels      : 
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -4103,46 +4103,46 @@ feature(phammerParser ctx)
         	case 2:
         	    // hammer.g:77:17: '<' ID '>' ID
         	    {
-        	        char_literal42 = (pANTLR3_COMMON_TOKEN) MATCHT(32, &FOLLOW_32_in_feature685); 
+        	        char_literal42 = (pANTLR3_COMMON_TOKEN) MATCHT(32, &FOLLOW_32_in_feature685);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
-        	         
+
         	        stream_32->add(stream_32, char_literal42, NULL);
 
-        	        ID43 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature687); 
+        	        ID43 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature687);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
-        	         
+
         	        stream_ID->add(stream_ID, ID43, NULL);
 
-        	        char_literal44 = (pANTLR3_COMMON_TOKEN) MATCHT(33, &FOLLOW_33_in_feature689); 
+        	        char_literal44 = (pANTLR3_COMMON_TOKEN) MATCHT(33, &FOLLOW_33_in_feature689);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
-        	         
+
         	        stream_33->add(stream_33, char_literal44, NULL);
 
-        	        ID45 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature691); 
+        	        ID45 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature691);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
-        	         
+
         	        stream_ID->add(stream_ID, ID45, NULL);
 
 
-        	         
+
         	        /* AST REWRITE
         	         * elements          : ID, ID
-        	         * token labels      : 
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -4177,7 +4177,7 @@ feature(phammerParser ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -4203,13 +4203,13 @@ feature(phammerParser ctx)
 }
 /* $ANTLR end feature */
 
-/** 
+/**
  * $ANTLR start sources_decl
  * hammer.g:78:1: sources_decl : sources_decl_impl -> ^( SOURCES_DECL sources_decl_impl ) ;
  */
 static hammerParser_sources_decl_return
 sources_decl(phammerParser ctx)
-{   
+{
     hammerParser_sources_decl_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -4236,7 +4236,7 @@ sources_decl(phammerParser ctx)
         // hammer.g:78:16: sources_decl_impl
         {
             {
-                 enter_sources_decl(PARSER); 
+                 enter_sources_decl(PARSER);
             }
             FOLLOWPUSH(FOLLOW_sources_decl_impl_in_sources_decl710);
             sources_decl_impl46=sources_decl_impl(ctx);
@@ -4249,16 +4249,16 @@ sources_decl(phammerParser ctx)
 
             stream_sources_decl_impl->add(stream_sources_decl_impl, sources_decl_impl46.tree, NULL);
             {
-                 leave_sources_decl(PARSER); 
+                 leave_sources_decl(PARSER);
             }
 
-             
+
             /* AST REWRITE
              * elements          : sources_decl_impl
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -4289,7 +4289,7 @@ sources_decl(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -4313,13 +4313,13 @@ sources_decl(phammerParser ctx)
 }
 /* $ANTLR end sources_decl */
 
-/** 
+/**
  * $ANTLR start sources_decl_impl
  * hammer.g:79:1: sources_decl_impl : ( source_decl | rule_invoke )+ ;
  */
 static hammerParser_sources_decl_impl_return
 sources_decl_impl(phammerParser ctx)
-{   
+{
     hammerParser_sources_decl_impl_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -4363,17 +4363,17 @@ sources_decl_impl(phammerParser ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA14_0 = LA(1);
-            	    if ( (LA14_0 == ID || LA14_0 == SLASH || LA14_0 == 32 || LA14_0 == 36) ) 
+            	    if ( (LA14_0 == ID || LA14_0 == SLASH || LA14_0 == 32 || LA14_0 == 36) )
             	    {
             	        alt14=1;
             	    }
-            	    else if ( (LA14_0 == 34) ) 
+            	    else if ( (LA14_0 == 34) )
             	    {
             	        alt14=2;
             	    }
 
             	}
-            	switch (alt14) 
+            	switch (alt14)
             	{
             	    case 1:
             	        // hammer.g:79:23: source_decl
@@ -4409,7 +4409,7 @@ sources_decl_impl(phammerParser ctx)
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt14 >= 1 )
             		{
             		    goto loop14;
@@ -4431,7 +4431,7 @@ sources_decl_impl(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -4455,13 +4455,13 @@ sources_decl_impl(phammerParser ctx)
 }
 /* $ANTLR end sources_decl_impl */
 
-/** 
+/**
  * $ANTLR start rule_invoke
  * hammer.g:80:1: rule_invoke : '[' rule_impl ']' -> rule_impl ;
  */
 static hammerParser_rule_invoke_return
 rule_invoke(phammerParser ctx)
-{   
+{
     hammerParser_rule_invoke_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -4491,8 +4491,8 @@ rule_invoke(phammerParser ctx)
 
     char_literal49_tree   = NULL;
     char_literal51_tree   = NULL;
-    stream_34   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 34"); 
-    stream_35   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 35"); 
+    stream_34   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 34");
+    stream_35   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 35");
     stream_rule_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule rule_impl");
     retval.tree  = NULL;
     {
@@ -4500,18 +4500,18 @@ rule_invoke(phammerParser ctx)
         // hammer.g:80:17: '[' rule_impl ']'
         {
             {
-                 enter_rule_invoke(PARSER); 
+                 enter_rule_invoke(PARSER);
             }
-            char_literal49 = (pANTLR3_COMMON_TOKEN) MATCHT(34, &FOLLOW_34_in_rule_invoke748); 
+            char_literal49 = (pANTLR3_COMMON_TOKEN) MATCHT(34, &FOLLOW_34_in_rule_invoke748);
             if  (HASEXCEPTION())
             {
                 goto rulerule_invokeEx;
             }
-             
+
             stream_34->add(stream_34, char_literal49, NULL);
 
             {
-                 on_nested_rule_enter(PARSER); 
+                 on_nested_rule_enter(PARSER);
             }
             FOLLOWPUSH(FOLLOW_rule_impl_in_rule_invoke752);
             rule_impl50=rule_impl(ctx);
@@ -4524,27 +4524,27 @@ rule_invoke(phammerParser ctx)
 
             stream_rule_impl->add(stream_rule_impl, rule_impl50.tree, NULL);
             {
-                 on_nested_rule_leave(PARSER); 
+                 on_nested_rule_leave(PARSER);
             }
-            char_literal51 = (pANTLR3_COMMON_TOKEN) MATCHT(35, &FOLLOW_35_in_rule_invoke755); 
+            char_literal51 = (pANTLR3_COMMON_TOKEN) MATCHT(35, &FOLLOW_35_in_rule_invoke755);
             if  (HASEXCEPTION())
             {
                 goto rulerule_invokeEx;
             }
-             
+
             stream_35->add(stream_35, char_literal51, NULL);
 
             {
-                 leave_rule_invoke(PARSER); 
+                 leave_rule_invoke(PARSER);
             }
 
-             
+
             /* AST REWRITE
              * elements          : rule_impl
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -4567,7 +4567,7 @@ rule_invoke(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -4592,13 +4592,13 @@ rule_invoke(phammerParser ctx)
 }
 /* $ANTLR end rule_invoke */
 
-/** 
+/**
  * $ANTLR start source_decl
  * hammer.g:82:1: source_decl : source_decl_impl -> ^( SOURCE_DECL source_decl_impl ) ;
  */
 static hammerParser_source_decl_return
 source_decl(phammerParser ctx)
-{   
+{
     hammerParser_source_decl_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -4625,7 +4625,7 @@ source_decl(phammerParser ctx)
         // hammer.g:82:15: source_decl_impl
         {
             {
-                 enter_sources_decl(PARSER); 
+                 enter_sources_decl(PARSER);
             }
             FOLLOWPUSH(FOLLOW_source_decl_impl_in_source_decl771);
             source_decl_impl52=source_decl_impl(ctx);
@@ -4638,16 +4638,16 @@ source_decl(phammerParser ctx)
 
             stream_source_decl_impl->add(stream_source_decl_impl, source_decl_impl52.tree, NULL);
             {
-                 leave_sources_decl(PARSER); 
+                 leave_sources_decl(PARSER);
             }
 
-             
+
             /* AST REWRITE
              * elements          : source_decl_impl
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -4678,7 +4678,7 @@ source_decl(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -4702,13 +4702,13 @@ source_decl(phammerParser ctx)
 }
 /* $ANTLR end source_decl */
 
-/** 
+/**
  * $ANTLR start source_decl_impl
  * hammer.g:83:1: source_decl_impl : public_tag target_path target_name target_features -> public_tag ^( TARGET_PATH target_path ) target_name target_features ;
  */
 static hammerParser_source_decl_impl_return
 source_decl_impl(phammerParser ctx)
-{   
+{
     hammerParser_source_decl_impl_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -4799,13 +4799,13 @@ source_decl_impl(phammerParser ctx)
 
             stream_target_features->add(stream_target_features, target_features56.tree, NULL);
 
-             
+
             /* AST REWRITE
              * elements          : target_path, target_name, target_features, public_tag
-             * token labels      : 
+             * token labels      :
              * rule labels       : retval
-             * token list labels : 
-             * rule list labels  : 
+             * token list labels :
+             * rule list labels  :
              */
             {
             	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -4839,7 +4839,7 @@ source_decl_impl(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -4866,13 +4866,13 @@ source_decl_impl(phammerParser ctx)
 }
 /* $ANTLR end source_decl_impl */
 
-/** 
+/**
  * $ANTLR start public_tag
  * hammer.g:84:1: public_tag : ( '@' -> PUBLIC_TAG | );
  */
 static hammerParser_public_tag_return
 public_tag(phammerParser ctx)
-{   
+{
     hammerParser_public_tag_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -4892,12 +4892,12 @@ public_tag(phammerParser ctx)
     retval.start = LT(1);
 
     char_literal57_tree   = NULL;
-    stream_36   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 36"); 
+    stream_36   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 36");
     retval.tree  = NULL;
     {
         {
             //  hammer.g:84:12: ( '@' -> PUBLIC_TAG | )
-            
+
             ANTLR3_UINT32 alt15;
 
             alt15=2;
@@ -4905,17 +4905,17 @@ public_tag(phammerParser ctx)
 
             {
                 int LA15_0 = LA(1);
-                if ( (LA15_0 == 36) ) 
+                if ( (LA15_0 == 36) )
                 {
                     alt15=1;
                 }
-                else if ( (LA15_0 == ID || LA15_0 == SLASH || LA15_0 == 32) ) 
+                else if ( (LA15_0 == ID || LA15_0 == SLASH || LA15_0 == 32) )
                 {
                     alt15=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -4926,27 +4926,27 @@ public_tag(phammerParser ctx)
                     goto rulepublic_tagEx;
                 }
             }
-            switch (alt15) 
+            switch (alt15)
             {
         	case 1:
         	    // hammer.g:84:14: '@'
         	    {
-        	        char_literal57 = (pANTLR3_COMMON_TOKEN) MATCHT(36, &FOLLOW_36_in_public_tag815); 
+        	        char_literal57 = (pANTLR3_COMMON_TOKEN) MATCHT(36, &FOLLOW_36_in_public_tag815);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepublic_tagEx;
         	        }
-        	         
+
         	        stream_36->add(stream_36, char_literal57, NULL);
 
 
-        	         
+
         	        /* AST REWRITE
-        	         * elements          : 
-        	         * token labels      : 
+        	         * elements          :
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -4969,7 +4969,7 @@ public_tag(phammerParser ctx)
         	    }
         	    break;
         	case 2:
-        	    // hammer.g:85:16: 
+        	    // hammer.g:85:16:
         	    {
         	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
@@ -4979,7 +4979,7 @@ public_tag(phammerParser ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -5003,13 +5003,13 @@ public_tag(phammerParser ctx)
 }
 /* $ANTLR end public_tag */
 
-/** 
+/**
  * $ANTLR start target_path
  * hammer.g:86:1: target_path : ( head_slash )? ID ( path_element )* ( trail_slash )? ;
  */
 static hammerParser_target_path_return
 target_path(phammerParser ctx)
-{   
+{
     hammerParser_target_path_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -5058,12 +5058,12 @@ target_path(phammerParser ctx)
                 int alt16=2;
                 {
                     int LA16_0 = LA(1);
-                    if ( (LA16_0 == SLASH) && (( is_head_slash(PARSER) ))) 
+                    if ( (LA16_0 == SLASH) && (( is_head_slash(PARSER) )))
                     {
                         alt16=1;
                     }
                 }
-                switch (alt16) 
+                switch (alt16)
                 {
             	case 1:
             	    // hammer.g:86:15: head_slash
@@ -5084,7 +5084,7 @@ target_path(phammerParser ctx)
 
                 }
             }
-            ID59 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_target_path845); 
+            ID59 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_target_path845);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_pathEx;
@@ -5103,19 +5103,19 @@ target_path(phammerParser ctx)
                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                     */
                     int LA17_0 = LA(1);
-                    if ( (LA17_0 == SLASH) ) 
+                    if ( (LA17_0 == SLASH) )
                     {
                         {
                            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                             */
                             int LA17_1 = LA(2);
-                            if ( (LA17_1 == ID) ) 
+                            if ( (LA17_1 == ID) )
                             {
                                 {
                                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                                     */
                                     int LA17_3 = LA(3);
-                                    if ( (( (( is_path_element(PARSER) )) && (( is_path_slash(PARSER) )) )) ) 
+                                    if ( (( (( is_path_element(PARSER) )) && (( is_path_slash(PARSER) )) )) )
                                     {
                                         alt17=1;
                                     }
@@ -5127,7 +5127,7 @@ target_path(phammerParser ctx)
                     }
 
                 }
-                switch (alt17) 
+                switch (alt17)
                 {
             	case 1:
             	    // hammer.g:86:30: path_element
@@ -5159,18 +5159,18 @@ target_path(phammerParser ctx)
                 int alt18=2;
                 {
                     int LA18_0 = LA(1);
-                    if ( (LA18_0 == SLASH) ) 
+                    if ( (LA18_0 == SLASH) )
                     {
                         {
                             int LA18_1 = LA(2);
-                            if ( (( is_trailing_slash(PARSER) )) ) 
+                            if ( (( is_trailing_slash(PARSER) )) )
                             {
                                 alt18=1;
                             }
                         }
                     }
                 }
-                switch (alt18) 
+                switch (alt18)
                 {
             	case 1:
             	    // hammer.g:86:44: trail_slash
@@ -5195,7 +5195,7 @@ target_path(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -5219,13 +5219,13 @@ target_path(phammerParser ctx)
 }
 /* $ANTLR end target_path */
 
-/** 
+/**
  * $ANTLR start target_name
  * hammer.g:87:1: target_name : ( path_slash path_slash ID -> ^( TARGET_NAME ID ) | -> ^( TARGET_NAME NULL_ARG ) );
  */
 static hammerParser_target_name_return
 target_name(phammerParser ctx)
-{   
+{
     hammerParser_target_name_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -5256,13 +5256,13 @@ target_name(phammerParser ctx)
     retval.start = LT(1);
 
     ID64_tree   = NULL;
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID"); 
+    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
     stream_path_slash=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule path_slash");
     retval.tree  = NULL;
     {
         {
             //  hammer.g:87:13: ( path_slash path_slash ID -> ^( TARGET_NAME ID ) | -> ^( TARGET_NAME NULL_ARG ) )
-            
+
             ANTLR3_UINT32 alt19;
 
             alt19=2;
@@ -5270,22 +5270,22 @@ target_name(phammerParser ctx)
 
             {
                 int LA19_0 = LA(1);
-                if ( (LA19_0 == SLASH) ) 
+                if ( (LA19_0 == SLASH) )
                 {
 
                     {
                         int LA19_1 = LA(2);
-                        if ( (LA19_1 == ID || LA19_1 == 32) ) 
+                        if ( (LA19_1 == ID || LA19_1 == 32) )
                         {
                             alt19=2;
                         }
-                        else if ( (LA19_1 == SLASH) && (( is_path_slash(PARSER) ))) 
+                        else if ( (LA19_1 == SLASH) && (( is_path_slash(PARSER) )))
                         {
                             alt19=1;
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -5297,13 +5297,13 @@ target_name(phammerParser ctx)
                         }
                     }
                 }
-                else if ( (((LA19_0 >= ID) && (LA19_0 <= COLON)) || ((LA19_0 >= 30) && (LA19_0 <= 32)) || ((LA19_0 >= 34) && (LA19_0 <= 36))) ) 
+                else if ( (((LA19_0 >= ID) && (LA19_0 <= COLON)) || ((LA19_0 >= 30) && (LA19_0 <= 32)) || ((LA19_0 >= 34) && (LA19_0 <= 36))) )
                 {
                     alt19=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -5314,7 +5314,7 @@ target_name(phammerParser ctx)
                     goto ruletarget_nameEx;
                 }
             }
-            switch (alt19) 
+            switch (alt19)
             {
         	case 1:
         	    // hammer.g:87:15: path_slash path_slash ID
@@ -5339,22 +5339,22 @@ target_name(phammerParser ctx)
         	        }
 
         	        stream_path_slash->add(stream_path_slash, path_slash63.tree, NULL);
-        	        ID64 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_target_name862); 
+        	        ID64 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_target_name862);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
         	        }
-        	         
+
         	        stream_ID->add(stream_ID, ID64, NULL);
 
 
-        	         
+
         	        /* AST REWRITE
         	         * elements          : ID
-        	         * token labels      : 
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -5385,15 +5385,15 @@ target_name(phammerParser ctx)
         	    }
         	    break;
         	case 2:
-        	    // hammer.g:88:15: 
+        	    // hammer.g:88:15:
         	    {
-        	         
+
         	        /* AST REWRITE
-        	         * elements          : 
-        	         * token labels      : 
+        	         * elements          :
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -5427,7 +5427,7 @@ target_name(phammerParser ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -5451,13 +5451,13 @@ target_name(phammerParser ctx)
 }
 /* $ANTLR end target_name */
 
-/** 
+/**
  * $ANTLR start path_element
  * hammer.g:89:1: path_element : {...}? => path_slash ID ;
  */
 static hammerParser_path_element_return
 path_element(phammerParser ctx)
-{   
+{
     hammerParser_path_element_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -5488,7 +5488,7 @@ path_element(phammerParser ctx)
         {
             root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-            if ( !(( is_path_element(PARSER) )) ) 
+            if ( !(( is_path_element(PARSER) )) )
             {
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -5507,7 +5507,7 @@ path_element(phammerParser ctx)
             }
 
             ADAPTOR->addChild(ADAPTOR, root_0, path_slash65.tree);
-            ID66 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_path_element904); 
+            ID66 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_path_element904);
             if  (HASEXCEPTION())
             {
                 goto rulepath_elementEx;
@@ -5520,7 +5520,7 @@ path_element(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -5544,13 +5544,13 @@ path_element(phammerParser ctx)
 }
 /* $ANTLR end path_element */
 
-/** 
+/**
  * $ANTLR start target_features
  * hammer.g:90:1: target_features : ( path_slash feature ( path_slash feature )* -> ^( FEATURE_SET ( feature )+ ) | -> ^( FEATURE_SET NULL_ARG ) );
  */
 static hammerParser_target_features_return
 target_features(phammerParser ctx)
-{   
+{
     hammerParser_target_features_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -5595,7 +5595,7 @@ target_features(phammerParser ctx)
     {
         {
             //  hammer.g:90:17: ( path_slash feature ( path_slash feature )* -> ^( FEATURE_SET ( feature )+ ) | -> ^( FEATURE_SET NULL_ARG ) )
-            
+
             ANTLR3_UINT32 alt21;
 
             alt21=2;
@@ -5606,7 +5606,7 @@ target_features(phammerParser ctx)
                 goto ruletarget_featuresEx;
             }
 
-            switch (alt21) 
+            switch (alt21)
             {
         	case 1:
         	    // hammer.g:90:19: path_slash feature ( path_slash feature )*
@@ -5641,13 +5641,13 @@ target_features(phammerParser ctx)
         	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
         	                */
         	                int LA20_0 = LA(1);
-        	                if ( (LA20_0 == SLASH) ) 
+        	                if ( (LA20_0 == SLASH) )
         	                {
         	                    {
         	                       /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
         	                        */
         	                        int LA20_2 = LA(2);
-        	                        if ( (( is_path_slash(PARSER) )) ) 
+        	                        if ( (( is_path_slash(PARSER) )) )
         	                        {
         	                            alt20=1;
         	                        }
@@ -5656,7 +5656,7 @@ target_features(phammerParser ctx)
         	                }
 
         	            }
-        	            switch (alt20) 
+        	            switch (alt20)
         	            {
         	        	case 1:
         	        	    // hammer.g:90:39: path_slash feature
@@ -5693,13 +5693,13 @@ target_features(phammerParser ctx)
         	        loop20: ; /* Jump out to here if this rule does not match */
 
 
-        	         
+
         	        /* AST REWRITE
         	         * elements          : feature
-        	         * token labels      : 
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -5715,7 +5715,7 @@ target_features(phammerParser ctx)
         	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, FEATURE_SET, (pANTLR3_UINT8)"FEATURE_SET"), root_1));
 
-        	        	        if ( !(stream_feature->hasNext(stream_feature)) ) 
+        	        	        if ( !(stream_feature->hasNext(stream_feature)) )
         	        	        {
         	        	            CONSTRUCTEX();
         	        	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
@@ -5743,15 +5743,15 @@ target_features(phammerParser ctx)
         	    }
         	    break;
         	case 2:
-        	    // hammer.g:91:19: 
+        	    // hammer.g:91:19:
         	    {
-        	         
+
         	        /* AST REWRITE
-        	         * elements          : 
-        	         * token labels      : 
+        	         * elements          :
+        	         * token labels      :
         	         * rule labels       : retval
-        	         * token list labels : 
-        	         * rule list labels  : 
+        	         * token list labels :
+        	         * rule list labels  :
         	         */
         	        {
         	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
@@ -5785,7 +5785,7 @@ target_features(phammerParser ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -5810,13 +5810,13 @@ target_features(phammerParser ctx)
 }
 /* $ANTLR end target_features */
 
-/** 
+/**
  * $ANTLR start path_slash
  * hammer.g:92:1: path_slash : {...}? => SLASH ;
  */
 static hammerParser_path_slash_return
 path_slash(phammerParser ctx)
-{   
+{
     hammerParser_path_slash_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -5842,7 +5842,7 @@ path_slash(phammerParser ctx)
         {
             root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-            if ( !(( is_path_slash(PARSER) )) ) 
+            if ( !(( is_path_slash(PARSER) )) )
             {
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -5851,7 +5851,7 @@ path_slash(phammerParser ctx)
 
 
             }
-            SLASH71 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_path_slash977); 
+            SLASH71 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_path_slash977);
             if  (HASEXCEPTION())
             {
                 goto rulepath_slashEx;
@@ -5864,7 +5864,7 @@ path_slash(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -5888,13 +5888,13 @@ path_slash(phammerParser ctx)
 }
 /* $ANTLR end path_slash */
 
-/** 
+/**
  * $ANTLR start trail_slash
  * hammer.g:93:1: trail_slash : {...}? => SLASH ;
  */
 static hammerParser_trail_slash_return
 trail_slash(phammerParser ctx)
-{   
+{
     hammerParser_trail_slash_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -5920,7 +5920,7 @@ trail_slash(phammerParser ctx)
         {
             root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-            if ( !(( is_trailing_slash(PARSER) )) ) 
+            if ( !(( is_trailing_slash(PARSER) )) )
             {
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -5929,7 +5929,7 @@ trail_slash(phammerParser ctx)
 
 
             }
-            SLASH72 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_trail_slash988); 
+            SLASH72 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_trail_slash988);
             if  (HASEXCEPTION())
             {
                 goto ruletrail_slashEx;
@@ -5942,7 +5942,7 @@ trail_slash(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -5966,13 +5966,13 @@ trail_slash(phammerParser ctx)
 }
 /* $ANTLR end trail_slash */
 
-/** 
+/**
  * $ANTLR start head_slash
  * hammer.g:94:1: head_slash : {...}? => SLASH ;
  */
 static hammerParser_head_slash_return
 head_slash(phammerParser ctx)
-{   
+{
     hammerParser_head_slash_return retval;
 
     pANTLR3_BASE_TREE root_0;
@@ -5998,7 +5998,7 @@ head_slash(phammerParser ctx)
         {
             root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-            if ( !(( is_head_slash(PARSER) )) ) 
+            if ( !(( is_head_slash(PARSER) )) )
             {
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
@@ -6007,7 +6007,7 @@ head_slash(phammerParser ctx)
 
 
             }
-            SLASH73 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_head_slash998); 
+            SLASH73 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_head_slash998);
             if  (HASEXCEPTION())
             {
                 goto rulehead_slashEx;
@@ -6020,7 +6020,7 @@ head_slash(phammerParser ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -6054,8 +6054,8 @@ head_slash(phammerParser ctx)
  * ==============================================
  */
 
- 
- 
+
+
 
 
 

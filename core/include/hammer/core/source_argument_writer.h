@@ -12,7 +12,7 @@ namespace hammer
       public:
          enum output_strategy{RELATIVE_TO_MAIN_TARGET, FULL_PATH, RELATIVE_TO_WORKING_DIR, WITHOUT_PATH};
 
-         source_argument_writer(const std::string& name, 
+         source_argument_writer(const std::string& name,
                                 const target_type& t,
                                 bool exact_type = true,
                                 output_strategy os = RELATIVE_TO_MAIN_TARGET,
@@ -22,7 +22,7 @@ namespace hammer
 
       protected:
          virtual void write_impl(std::ostream& output, const build_node& node, const build_environment& environment) const;
-         
+
          // return true if source type is accepted for output
          virtual bool accept(const basic_target& source) const;
 

@@ -3,7 +3,7 @@
 
 namespace hammer{
 
-targets_argument_writer::targets_argument_writer(const std::string& name, 
+targets_argument_writer::targets_argument_writer(const std::string& name,
                                                  const target_type& t)
    : argument_writer(name),
      source_type_(&t)

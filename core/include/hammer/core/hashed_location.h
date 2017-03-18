@@ -8,16 +8,16 @@ namespace hammer
    class hashed_location : private location_t
    {
       public:
-         hashed_location(const hashed_location& l) 
-            : location_t(l.location()), 
-              hash_(boost::hash_value(l.location().string())) 
+         hashed_location(const hashed_location& l)
+            : location_t(l.location()),
+              hash_(boost::hash_value(l.location().string()))
          {}
 
-         hashed_location(const location_t& l) 
-            : location_t(l), 
-              hash_(boost::hash_value(l.string())) 
+         hashed_location(const location_t& l)
+            : location_t(l),
+              hash_(boost::hash_value(l.string()))
          {}
-         
+
          hashed_location(const std::string& l)
             : location_t(l),
             hash_(boost::hash_value(l))

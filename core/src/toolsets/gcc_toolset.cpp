@@ -43,7 +43,7 @@ gcc_toolset::resolve_install_data(const location_t* toolset_home_, const std::st
    } else {
       install_data.compiler_ = toolset_home / ("g++-" + version_id);
       install_data.linker_ = toolset_home / ("g++-" + version_id);
-   } 
+   }
 
    install_data.librarian_ = toolset_home / "ar";
    if (!exists(install_data.librarian_))

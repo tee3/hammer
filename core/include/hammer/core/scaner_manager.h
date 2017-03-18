@@ -13,7 +13,7 @@ namespace hammer
    class scanner_manager : public boost::noncopyable
    {
       public:
-         scanner_manager(); 
+         scanner_manager();
          void register_scanner(const target_type& t, const boost::shared_ptr<scanner>& scanner);
          const scanner* find(const target_type& t) const;
          const scanner& get(const target_type& t) const;

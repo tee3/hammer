@@ -4,7 +4,7 @@
  *     -  From the grammar source file : hammer_sema.gt
  *     -                            On : 2016-11-27 09:56:01
  *     -           for the tree parser : hammer_semaTreeParser *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -50,7 +50,7 @@
  * confusing the reader of the generated output, who may not wish to know the gory
  * details of the interface inheritance.
  */
- 
+
 #define		CTX	ctx
 
 /* Aids in accessing scopes for grammar programmers
@@ -66,9 +66,9 @@
 
 /* Macros for accessing things in the parser
  */
- 
+
 #undef	    PARSER
-#undef	    RECOGNIZER		    
+#undef	    RECOGNIZER
 #undef	    HAVEPARSEDRULE
 #undef	    INPUT
 #undef	    STRSTREAM
@@ -95,12 +95,12 @@
 #undef	    RECOVERFROMMISMATCHEDELEMENT
 #undef	    BACKTRACKING
 #undef      ADAPTOR
-#undef	    RULEMEMO		
-#undef		SEEK    
+#undef	    RULEMEMO
+#undef		SEEK
 #undef		INDEX
 #undef		DBG
 
-#define	    PARSER							ctx->pTreeParser  
+#define	    PARSER							ctx->pTreeParser
 #define	    RECOGNIZER						PARSER->rec
 #define		PSRSTATE						RECOGNIZER->state
 #define	    HAVEPARSEDRULE(r)				RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
@@ -172,8 +172,8 @@ pANTLR3_UINT8   hammer_semaTokenNames[33+4]
      = {
         (pANTLR3_UINT8) "<invalid>",       /* String to print to indicate an invalid token */
         (pANTLR3_UINT8) "<EOR>",
-        (pANTLR3_UINT8) "<DOWN>", 
-        (pANTLR3_UINT8) "<UP>", 
+        (pANTLR3_UINT8) "<DOWN>",
+        (pANTLR3_UINT8) "<UP>",
         (pANTLR3_UINT8) "HAMFILE",
         (pANTLR3_UINT8) "TARGET_DECL_OR_RULE_CALL",
         (pANTLR3_UINT8) "TARGET_REF",
@@ -209,7 +209,7 @@ pANTLR3_UINT8   hammer_semaTokenNames[33+4]
         (pANTLR3_UINT8) "']'"
        };
 
-        
+
 
 // Forward declare the locally static matching functions we have generated.
 //
@@ -236,7 +236,7 @@ static const hammer::ast::path_like_seq*	path_like_seq    (phammer_sema ctx);
 static void	path_like_seq_impl    (phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds);
 static void	hammer_semaFree(phammer_sema ctx);
 /* For use in tree output where we are accumulating rule labels via label += ruleRef
- * we need a function that knows how to free a return scope when the list is destroyed. 
+ * we need a function that knows how to free a return scope when the list is destroyed.
  * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a macro.
  */
 static	void ANTLR3_CDECL freeScope(void * scope)
@@ -278,22 +278,22 @@ ANTLR3_API phammer_sema
 hammer_semaNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
     phammer_sema ctx;	    /* Context structure we will build and return   */
-    
+
     ctx	= (phammer_sema) ANTLR3_CALLOC(1, sizeof(hammer_sema));
-    
+
     if	(ctx == NULL)
     {
 		// Failed to allocate memory for parser context
 		//
         return  NULL;
     }
-    
+
     /* -------------------------------------------------------------------
      * Memory for basic structure is allocated, now to fill in
      * the base ANTLR3 structures. We initialize the function pointers
      * for the standard ANTLR3 parser function set, but upon return
      * from here, the programmer may set the pointers to provide custom
-     * implementations of each function. 
+     * implementations of each function.
      *
      * We don't use the macros defined in hammer_sema.h here, in order that you can get a sense
      * of what goes where.
@@ -327,19 +327,19 @@ hammer_semaNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZE
     ctx->path_like_seq_impl	= path_like_seq_impl;
     ctx->free			= hammer_semaFree;
     ctx->getGrammarFileName	= getGrammarFileName;
-    
+
     /* Install the scope pushing methods.
      */
 
-        
-    
 
-	
+
+
+
     /* Install the token table
      */
     PSRSTATE->tokenNames   = hammer_semaTokenNames;
-    
-    
+
+
     /* Return the newly built parser to the caller
      */
     return  ctx;
@@ -352,8 +352,8 @@ hammer_semaNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZE
  {
     /* Free any scope memory
      */
-    
-        
+
+
 	// Free this parser
 	//
     ctx->pTreeParser->free(ctx->pTreeParser);
@@ -363,20 +363,20 @@ hammer_semaNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZE
      */
     return;
  }
- 
+
 /** Return token names used by this tree parser
  *
- * The returned pointer is used as an index into the token names table (using the token 
+ * The returned pointer is used as an index into the token names table (using the token
  * number as the index).
- * 
+ *
  * \return Pointer to first char * in the table.
  */
-static pANTLR3_UINT8    *getTokenNames() 
+static pANTLR3_UINT8    *getTokenNames()
 {
-        return hammer_semaTokenNames; 
+        return hammer_semaTokenNames;
 }
 
-    
+
 /* Declare the bitsets
  */
 
@@ -563,32 +563,32 @@ static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl724	= { FOLLOW_ID_in_p
 /** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_path_like_seq_impl729  */
 static	ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl729_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
 static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl729	= { FOLLOW_ID_in_path_like_seq_impl729_bits, 1	};
-     
 
- 
- 
+
+
+
 /* ==============================================
  * Parsing rules
  */
-/** 
+/**
  * $ANTLR start hamfile
  * hammer_sema.gt:21:1: hamfile returns [const hammer::ast::hamfile* result] : ^( HAMFILE ( statement[&statements] )* ) ;
  */
 static const hammer::ast::hamfile*
 hamfile(phammer_sema ctx)
-{   
+{
     const hammer::ast::hamfile* result = NULL;
 
     /* Initialize rule variables
      */
 
 
-     DECLARE_TYPE(hammer::ast::statements_t, statements); 
+     DECLARE_TYPE(hammer::ast::statements_t, statements);
     {
         // hammer_sema.gt:23:9: ( ^( HAMFILE ( statement[&statements] )* ) )
         // hammer_sema.gt:23:11: ^( HAMFILE ( statement[&statements] )* )
         {
-             MATCHT(HAMFILE, &FOLLOW_HAMFILE_in_hamfile88); 
+             MATCHT(HAMFILE, &FOLLOW_HAMFILE_in_hamfile88);
             if  (HASEXCEPTION())
             {
                 goto rulehamfileEx;
@@ -596,7 +596,7 @@ hamfile(phammer_sema ctx)
 
 
             if ( LA(1)==ANTLR3_TOKEN_DOWN ) {
-                MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+                MATCHT(ANTLR3_TOKEN_DOWN, NULL);
                 if  (HASEXCEPTION())
                 {
                     goto rulehamfileEx;
@@ -612,13 +612,13 @@ hamfile(phammer_sema ctx)
                        /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                         */
                         int LA1_0 = LA(1);
-                        if ( (LA1_0 == TARGET_DECL_OR_RULE_CALL) ) 
+                        if ( (LA1_0 == TARGET_DECL_OR_RULE_CALL) )
                         {
                             alt1=1;
                         }
 
                     }
-                    switch (alt1) 
+                    switch (alt1)
                     {
                 	case 1:
                 	    // hammer_sema.gt:23:21: statement[&statements]
@@ -644,7 +644,7 @@ hamfile(phammer_sema ctx)
                 loop1: ; /* Jump out to here if this rule does not match */
 
 
-                MATCHT(ANTLR3_TOKEN_UP, NULL); 
+                MATCHT(ANTLR3_TOKEN_UP, NULL);
                 if  (HASEXCEPTION())
                 {
                     goto rulehamfileEx;
@@ -652,13 +652,13 @@ hamfile(phammer_sema ctx)
 
             }
             {
-                 result = SEMA->on_hamfile(statements); 
+                 result = SEMA->on_hamfile(statements);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -675,13 +675,13 @@ hamfile(phammer_sema ctx)
 }
 /* $ANTLR end hamfile */
 
-/** 
+/**
  * $ANTLR start statement
  * hammer_sema.gt:26:1: statement[hammer::ast::statements_t* statements] : target_def_or_rule_call EXP_END ;
  */
 static void
 statement(phammer_sema ctx, hammer::ast::statements_t* statements)
-{   
+{
     const hammer::ast::expression* target_def_or_rule_call1;
     #undef	RETURN_TYPE_target_def_or_rule_call1
     #define	RETURN_TYPE_target_def_or_rule_call1 const hammer::ast::expression*
@@ -705,20 +705,20 @@ statement(phammer_sema ctx, hammer::ast::statements_t* statements)
                 goto rulestatementEx;
             }
 
-             MATCHT(EXP_END, &FOLLOW_EXP_END_in_statement124); 
+             MATCHT(EXP_END, &FOLLOW_EXP_END_in_statement124);
             if  (HASEXCEPTION())
             {
                 goto rulestatementEx;
             }
 
             {
-                 statements->push_back(target_def_or_rule_call1); 
+                 statements->push_back(target_def_or_rule_call1);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -735,13 +735,13 @@ statement(phammer_sema ctx, hammer::ast::statements_t* statements)
 }
 /* $ANTLR end statement */
 
-/** 
+/**
  * $ANTLR start target_def_or_rule_call
  * hammer_sema.gt:30:1: target_def_or_rule_call returns [const hammer::ast::expression* result] : ^( TARGET_DECL_OR_RULE_CALL name= ID arguments[&args] ) ;
  */
 static const hammer::ast::expression*
 target_def_or_rule_call(phammer_sema ctx)
-{   
+{
     const hammer::ast::expression* result = NULL;
 
     pANTLR3_BASE_TREE    name;
@@ -750,27 +750,27 @@ target_def_or_rule_call(phammer_sema ctx)
      */
 
 
-     DECLARE_TYPE(hammer::ast::expressions_t, args); 
+     DECLARE_TYPE(hammer::ast::expressions_t, args);
     name       = NULL;
 
     {
         // hammer_sema.gt:32:2: ( ^( TARGET_DECL_OR_RULE_CALL name= ID arguments[&args] ) )
         // hammer_sema.gt:32:4: ^( TARGET_DECL_OR_RULE_CALL name= ID arguments[&args] )
         {
-             MATCHT(TARGET_DECL_OR_RULE_CALL, &FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146); 
+             MATCHT(TARGET_DECL_OR_RULE_CALL, &FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_def_or_rule_callEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_def_or_rule_callEx;
             }
 
-            name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_def_or_rule_call150); 
+            name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_def_or_rule_call150);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_def_or_rule_callEx;
@@ -786,20 +786,20 @@ target_def_or_rule_call(phammer_sema ctx)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_def_or_rule_callEx;
             }
 
             {
-                 result = SEMA->on_target_or_rule_call(name->getToken(name), args); 
+                 result = SEMA->on_target_or_rule_call(name->getToken(name), args);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -816,13 +816,13 @@ target_def_or_rule_call(phammer_sema ctx)
 }
 /* $ANTLR end target_def_or_rule_call */
 
-/** 
+/**
  * $ANTLR start arguments
  * hammer_sema.gt:35:1: arguments[hammer::ast::expressions_t* args] : ^( ARGUMENTS ( argument ( COLON )? )* ) ;
  */
 static void
 arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
-{   
+{
     const hammer::ast::expression* argument2;
     #undef	RETURN_TYPE_argument2
     #define	RETURN_TYPE_argument2 const hammer::ast::expression*
@@ -837,7 +837,7 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
         // hammer_sema.gt:36:9: ( ^( ARGUMENTS ( argument ( COLON )? )* ) )
         // hammer_sema.gt:36:11: ^( ARGUMENTS ( argument ( COLON )? )* )
         {
-             MATCHT(ARGUMENTS, &FOLLOW_ARGUMENTS_in_arguments177); 
+             MATCHT(ARGUMENTS, &FOLLOW_ARGUMENTS_in_arguments177);
             if  (HASEXCEPTION())
             {
                 goto ruleargumentsEx;
@@ -845,7 +845,7 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
 
 
             if ( LA(1)==ANTLR3_TOKEN_DOWN ) {
-                MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+                MATCHT(ANTLR3_TOKEN_DOWN, NULL);
                 if  (HASEXCEPTION())
                 {
                     goto ruleargumentsEx;
@@ -861,13 +861,13 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
                        /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                         */
                         int LA3_0 = LA(1);
-                        if ( (LA3_0 == NAMED_EXPRESSION || ((LA3_0 >= EMPTY_EXPRESSION) && (LA3_0 <= LIST_OF)) || LA3_0 == REQUIREMENT_SET) ) 
+                        if ( (LA3_0 == NAMED_EXPRESSION || ((LA3_0 >= EMPTY_EXPRESSION) && (LA3_0 <= LIST_OF)) || LA3_0 == REQUIREMENT_SET) )
                         {
                             alt3=1;
                         }
 
                     }
-                    switch (alt3) 
+                    switch (alt3)
                     {
                 	case 1:
                 	    // hammer_sema.gt:36:24: argument ( COLON )?
@@ -887,17 +887,17 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
                 	            int alt2=2;
                 	            {
                 	                int LA2_0 = LA(1);
-                	                if ( (LA2_0 == COLON) ) 
+                	                if ( (LA2_0 == COLON) )
                 	                {
                 	                    alt2=1;
                 	                }
                 	            }
-                	            switch (alt2) 
+                	            switch (alt2)
                 	            {
                 	        	case 1:
                 	        	    // hammer_sema.gt:36:33: COLON
                 	        	    {
-                	        	         MATCHT(COLON, &FOLLOW_COLON_in_arguments182); 
+                	        	         MATCHT(COLON, &FOLLOW_COLON_in_arguments182);
                 	        	        if  (HASEXCEPTION())
                 	        	        {
                 	        	            goto ruleargumentsEx;
@@ -910,7 +910,7 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
                 	            }
                 	        }
                 	        {
-                	             args->push_back(argument2); 
+                	             args->push_back(argument2);
                 	        }
 
                 	    }
@@ -924,7 +924,7 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
                 loop3: ; /* Jump out to here if this rule does not match */
 
 
-                MATCHT(ANTLR3_TOKEN_UP, NULL); 
+                MATCHT(ANTLR3_TOKEN_UP, NULL);
                 if  (HASEXCEPTION())
                 {
                     goto ruleargumentsEx;
@@ -935,7 +935,7 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -952,13 +952,13 @@ arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
 }
 /* $ANTLR end arguments */
 
-/** 
+/**
  * $ANTLR start argument
  * hammer_sema.gt:39:1: argument returns [const hammer::ast::expression* result] : ( expression | named_expression );
  */
 static const hammer::ast::expression*
 argument(phammer_sema ctx)
-{   
+{
     const hammer::ast::expression* result = NULL;
 
     const hammer::ast::expression* expression3;
@@ -979,7 +979,7 @@ argument(phammer_sema ctx)
     {
         {
             //  hammer_sema.gt:40:2: ( expression | named_expression )
-            
+
             ANTLR3_UINT32 alt4;
 
             alt4=2;
@@ -987,17 +987,17 @@ argument(phammer_sema ctx)
 
             {
                 int LA4_0 = LA(1);
-                if ( (((LA4_0 >= EMPTY_EXPRESSION) && (LA4_0 <= LIST_OF)) || LA4_0 == REQUIREMENT_SET) ) 
+                if ( (((LA4_0 >= EMPTY_EXPRESSION) && (LA4_0 <= LIST_OF)) || LA4_0 == REQUIREMENT_SET) )
                 {
                     alt4=1;
                 }
-                else if ( (LA4_0 == NAMED_EXPRESSION) ) 
+                else if ( (LA4_0 == NAMED_EXPRESSION) )
                 {
                     alt4=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -1008,7 +1008,7 @@ argument(phammer_sema ctx)
                     goto ruleargumentEx;
                 }
             }
-            switch (alt4) 
+            switch (alt4)
             {
         	case 1:
         	    // hammer_sema.gt:40:4: expression
@@ -1023,7 +1023,7 @@ argument(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = expression3; 
+        	             result = expression3;
         	        }
 
         	    }
@@ -1041,7 +1041,7 @@ argument(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = named_expression4; 
+        	             result = named_expression4;
         	        }
 
         	    }
@@ -1050,7 +1050,7 @@ argument(phammer_sema ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1067,13 +1067,13 @@ argument(phammer_sema ctx)
 }
 /* $ANTLR end argument */
 
-/** 
+/**
  * $ANTLR start named_expression
  * hammer_sema.gt:44:1: named_expression returns [const hammer::ast::expression* result] : ^( NAMED_EXPRESSION ID expression ) ;
  */
 static const hammer::ast::expression*
 named_expression(phammer_sema ctx)
-{   
+{
     const hammer::ast::expression* result = NULL;
 
     pANTLR3_BASE_TREE    ID5;
@@ -1092,20 +1092,20 @@ named_expression(phammer_sema ctx)
         // hammer_sema.gt:45:2: ( ^( NAMED_EXPRESSION ID expression ) )
         // hammer_sema.gt:45:4: ^( NAMED_EXPRESSION ID expression )
         {
-             MATCHT(NAMED_EXPRESSION, &FOLLOW_NAMED_EXPRESSION_in_named_expression234); 
+             MATCHT(NAMED_EXPRESSION, &FOLLOW_NAMED_EXPRESSION_in_named_expression234);
             if  (HASEXCEPTION())
             {
                 goto rulenamed_expressionEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulenamed_expressionEx;
             }
 
-            ID5 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_named_expression236); 
+            ID5 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_named_expression236);
             if  (HASEXCEPTION())
             {
                 goto rulenamed_expressionEx;
@@ -1121,10 +1121,10 @@ named_expression(phammer_sema ctx)
             }
 
             {
-                 result = SEMA->on_named_expr(ID5->getToken(ID5), expression6); 
+                 result = SEMA->on_named_expr(ID5->getToken(ID5), expression6);
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulenamed_expressionEx;
@@ -1134,7 +1134,7 @@ named_expression(phammer_sema ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1151,13 +1151,13 @@ named_expression(phammer_sema ctx)
 }
 /* $ANTLR end named_expression */
 
-/** 
+/**
  * $ANTLR start expression
  * hammer_sema.gt:48:1: expression returns [const hammer::ast::expression* result] : ( EMPTY_EXPRESSION | list_of[&args] | requirement_set );
  */
 static const hammer::ast::expression*
 expression(phammer_sema ctx)
-{   
+{
     const hammer::ast::expression* result = NULL;
 
     const hammer::ast::requirement_set* requirement_set7;
@@ -1168,18 +1168,18 @@ expression(phammer_sema ctx)
      */
 
 
-     DECLARE_TYPE(hammer::ast::expressions_t, args); 
+     DECLARE_TYPE(hammer::ast::expressions_t, args);
     requirement_set7 = NULL;
 
     {
         {
             //  hammer_sema.gt:50:2: ( EMPTY_EXPRESSION | list_of[&args] | requirement_set )
-            
+
             ANTLR3_UINT32 alt5;
 
             alt5=3;
 
-            switch ( LA(1) ) 
+            switch ( LA(1) )
             {
             case EMPTY_EXPRESSION:
             	{
@@ -1208,25 +1208,25 @@ expression(phammer_sema ctx)
                 goto ruleexpressionEx;
             }
 
-            switch (alt5) 
+            switch (alt5)
             {
         	case 1:
         	    // hammer_sema.gt:50:4: EMPTY_EXPRESSION
         	    {
-        	         MATCHT(EMPTY_EXPRESSION, &FOLLOW_EMPTY_EXPRESSION_in_expression264); 
+        	         MATCHT(EMPTY_EXPRESSION, &FOLLOW_EMPTY_EXPRESSION_in_expression264);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleexpressionEx;
         	        }
 
         	        {
-        	             
+
         	            		// next tokens will be COLON or UP UP EXP_END
         	            	   	if (LA(1) == COLON)
-        	            		   	result = SEMA->on_empty_expr(LT(1)->getToken(LT(1))); 
+        	            		   	result = SEMA->on_empty_expr(LT(1)->getToken(LT(1)));
         	            		else
         	            			result = SEMA->on_empty_expr(LT(3)->getToken(LT(3)));
-        	            	  
+
         	        }
 
         	    }
@@ -1244,7 +1244,7 @@ expression(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = SEMA->on_list_of(args); 
+        	             result = SEMA->on_list_of(args);
         	        }
 
         	    }
@@ -1262,7 +1262,7 @@ expression(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = requirement_set7; 
+        	             result = requirement_set7;
         	        }
 
         	    }
@@ -1271,7 +1271,7 @@ expression(phammer_sema ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1288,13 +1288,13 @@ expression(phammer_sema ctx)
 }
 /* $ANTLR end expression */
 
-/** 
+/**
  * $ANTLR start requirement_set
  * hammer_sema.gt:61:1: requirement_set returns [const hammer::ast::requirement_set* result] : ^( REQUIREMENT_SET ( requirement )+ ) ;
  */
 static const hammer::ast::requirement_set*
 requirement_set(phammer_sema ctx)
-{   
+{
     const hammer::ast::requirement_set* result = NULL;
 
     const hammer::ast::requirement* requirement8;
@@ -1305,21 +1305,21 @@ requirement_set(phammer_sema ctx)
      */
 
 
-     DECLARE_TYPE(hammer::ast::requirements_t, requirements); 
+     DECLARE_TYPE(hammer::ast::requirements_t, requirements);
     requirement8 = NULL;
 
     {
         // hammer_sema.gt:63:3: ( ^( REQUIREMENT_SET ( requirement )+ ) )
         // hammer_sema.gt:63:5: ^( REQUIREMENT_SET ( requirement )+ )
         {
-             MATCHT(REQUIREMENT_SET, &FOLLOW_REQUIREMENT_SET_in_requirement_set322); 
+             MATCHT(REQUIREMENT_SET, &FOLLOW_REQUIREMENT_SET_in_requirement_set322);
             if  (HASEXCEPTION())
             {
                 goto rulerequirement_setEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulerequirement_setEx;
@@ -1336,13 +1336,13 @@ requirement_set(phammer_sema ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA6_0 = LA(1);
-            	    if ( (LA6_0 == REQUIREMENT) ) 
+            	    if ( (LA6_0 == REQUIREMENT) )
             	    {
             	        alt6=1;
             	    }
 
             	}
-            	switch (alt6) 
+            	switch (alt6)
             	{
             	    case 1:
             	        // hammer_sema.gt:63:24: requirement
@@ -1357,14 +1357,14 @@ requirement_set(phammer_sema ctx)
             	            }
 
             	            {
-            	                 requirements.push_back(requirement8); 
+            	                 requirements.push_back(requirement8);
             	            }
 
             	        }
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt6 >= 1 )
             		{
             		    goto loop6;
@@ -1383,20 +1383,20 @@ requirement_set(phammer_sema ctx)
                 loop6: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulerequirement_setEx;
             }
 
             {
-                 result = SEMA->on_requirement_set(requirements); 
+                 result = SEMA->on_requirement_set(requirements);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1413,13 +1413,13 @@ requirement_set(phammer_sema ctx)
 }
 /* $ANTLR end requirement_set */
 
-/** 
+/**
  * $ANTLR start requirement
  * hammer_sema.gt:66:1: requirement returns [const hammer::ast::requirement* result] : ( simple_requirement | conditional_requirement );
  */
 static const hammer::ast::requirement*
 requirement(phammer_sema ctx)
-{   
+{
     const hammer::ast::requirement* result = NULL;
 
     const hammer::ast::requirement* simple_requirement9;
@@ -1440,7 +1440,7 @@ requirement(phammer_sema ctx)
     {
         {
             //  hammer_sema.gt:67:2: ( simple_requirement | conditional_requirement )
-            
+
             ANTLR3_UINT32 alt7;
 
             alt7=2;
@@ -1448,31 +1448,31 @@ requirement(phammer_sema ctx)
 
             {
                 int LA7_0 = LA(1);
-                if ( (LA7_0 == REQUIREMENT) ) 
+                if ( (LA7_0 == REQUIREMENT) )
                 {
 
                     {
                         int LA7_1 = LA(2);
-                        if ( (LA7_1 == DOWN) ) 
+                        if ( (LA7_1 == DOWN) )
                         {
-                            switch ( LA(3) ) 
+                            switch ( LA(3) )
                             {
                             case PUBLIC_TAG:
                             	{
 
                             		{
                             		    int LA7_3 = LA(4);
-                            		    if ( (LA7_3 == CONDITION) ) 
+                            		    if ( (LA7_3 == CONDITION) )
                             		    {
                             		        alt7=2;
                             		    }
-                            		    else if ( (LA7_3 == FEATURE) ) 
+                            		    else if ( (LA7_3 == FEATURE) )
                             		    {
                             		        alt7=1;
                             		    }
-                            		    else 
+                            		    else
                             		    {
-                            		    
+
                             		        CONSTRUCTEX();
                             		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             		        EXCEPTION->message      = (void *)"";
@@ -1508,9 +1508,9 @@ requirement(phammer_sema ctx)
                             }
 
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -1522,9 +1522,9 @@ requirement(phammer_sema ctx)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -1535,7 +1535,7 @@ requirement(phammer_sema ctx)
                     goto rulerequirementEx;
                 }
             }
-            switch (alt7) 
+            switch (alt7)
             {
         	case 1:
         	    // hammer_sema.gt:67:4: simple_requirement
@@ -1550,7 +1550,7 @@ requirement(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = simple_requirement9; 
+        	             result = simple_requirement9;
         	        }
 
         	    }
@@ -1568,7 +1568,7 @@ requirement(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = conditional_requirement10; 
+        	             result = conditional_requirement10;
         	        }
 
         	    }
@@ -1577,7 +1577,7 @@ requirement(phammer_sema ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1594,13 +1594,13 @@ requirement(phammer_sema ctx)
 }
 /* $ANTLR end requirement */
 
-/** 
+/**
  * $ANTLR start conditional_requirement
  * hammer_sema.gt:71:1: conditional_requirement returns [const hammer::ast::requirement* result] : ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION (con= feature )+ COLON ) res= feature ) ;
  */
 static const hammer::ast::requirement*
 conditional_requirement(phammer_sema ctx)
-{   
+{
     const hammer::ast::requirement* result = NULL;
 
     const hammer::ast::feature* con;
@@ -1615,7 +1615,7 @@ conditional_requirement(phammer_sema ctx)
      */
 
 
-     
+
        DECLARE_TYPE(hammer::ast::features_t, features);
        hammer::parscore::source_location tag_loc;
 
@@ -1626,14 +1626,14 @@ conditional_requirement(phammer_sema ctx)
         // hammer_sema.gt:76:2: ( ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION (con= feature )+ COLON ) res= feature ) )
         // hammer_sema.gt:76:4: ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION (con= feature )+ COLON ) res= feature )
         {
-             MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_conditional_requirement378); 
+             MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_conditional_requirement378);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_requirementEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_requirementEx;
@@ -1648,14 +1648,14 @@ conditional_requirement(phammer_sema ctx)
                 goto ruleconditional_requirementEx;
             }
 
-             MATCHT(CONDITION, &FOLLOW_CONDITION_in_conditional_requirement384); 
+             MATCHT(CONDITION, &FOLLOW_CONDITION_in_conditional_requirement384);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_requirementEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_requirementEx;
@@ -1672,13 +1672,13 @@ conditional_requirement(phammer_sema ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA8_0 = LA(1);
-            	    if ( (LA8_0 == FEATURE) ) 
+            	    if ( (LA8_0 == FEATURE) )
             	    {
             	        alt8=1;
             	    }
 
             	}
-            	switch (alt8) 
+            	switch (alt8)
             	{
             	    case 1:
             	        // hammer_sema.gt:76:52: con= feature
@@ -1693,14 +1693,14 @@ conditional_requirement(phammer_sema ctx)
             	            }
 
             	            {
-            	                 features.push_back(con); 
+            	                 features.push_back(con);
             	            }
 
             	        }
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt8 >= 1 )
             		{
             		    goto loop8;
@@ -1718,14 +1718,14 @@ conditional_requirement(phammer_sema ctx)
                 }
                 loop8: ;	/* Jump to here if this rule does not match */
             }
-             MATCHT(COLON, &FOLLOW_COLON_in_conditional_requirement395); 
+             MATCHT(COLON, &FOLLOW_COLON_in_conditional_requirement395);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_requirementEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_requirementEx;
@@ -1741,20 +1741,20 @@ conditional_requirement(phammer_sema ctx)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_requirementEx;
             }
 
             {
-                 result = SEMA->on_conditional_requirement(tag_loc, features, res); 
+                 result = SEMA->on_conditional_requirement(tag_loc, features, res);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1771,13 +1771,13 @@ conditional_requirement(phammer_sema ctx)
 }
 /* $ANTLR end conditional_requirement */
 
-/** 
+/**
  * $ANTLR start simple_requirement
  * hammer_sema.gt:79:1: simple_requirement returns [const hammer::ast::requirement* result] : ^( REQUIREMENT public_tag[&tag_loc] feature ) ;
  */
 static const hammer::ast::requirement*
 simple_requirement(phammer_sema ctx)
-{   
+{
     const hammer::ast::requirement* result = NULL;
 
     const hammer::ast::feature* feature11;
@@ -1788,21 +1788,21 @@ simple_requirement(phammer_sema ctx)
      */
 
 
-     hammer::parscore::source_location tag_loc; 
+     hammer::parscore::source_location tag_loc;
     feature11 = NULL;
 
     {
         // hammer_sema.gt:81:2: ( ^( REQUIREMENT public_tag[&tag_loc] feature ) )
         // hammer_sema.gt:81:4: ^( REQUIREMENT public_tag[&tag_loc] feature )
         {
-             MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_simple_requirement424); 
+             MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_simple_requirement424);
             if  (HASEXCEPTION())
             {
                 goto rulesimple_requirementEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulesimple_requirementEx;
@@ -1827,20 +1827,20 @@ simple_requirement(phammer_sema ctx)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulesimple_requirementEx;
             }
 
             {
-                 result = SEMA->on_simple_requirement(tag_loc, feature11); 
+                 result = SEMA->on_simple_requirement(tag_loc, feature11);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1857,13 +1857,13 @@ simple_requirement(phammer_sema ctx)
 }
 /* $ANTLR end simple_requirement */
 
-/** 
+/**
  * $ANTLR start feature
  * hammer_sema.gt:84:1: feature returns [const hammer::ast::feature* result] : ^( FEATURE ID feature_value ) ;
  */
 static const hammer::ast::feature*
 feature(phammer_sema ctx)
-{   
+{
     const hammer::ast::feature* result = NULL;
 
     pANTLR3_BASE_TREE    ID12;
@@ -1882,20 +1882,20 @@ feature(phammer_sema ctx)
         // hammer_sema.gt:85:2: ( ^( FEATURE ID feature_value ) )
         // hammer_sema.gt:85:4: ^( FEATURE ID feature_value )
         {
-             MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature447); 
+             MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature447);
             if  (HASEXCEPTION())
             {
                 goto rulefeatureEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeatureEx;
             }
 
-            ID12 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature449); 
+            ID12 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature449);
             if  (HASEXCEPTION())
             {
                 goto rulefeatureEx;
@@ -1911,20 +1911,20 @@ feature(phammer_sema ctx)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeatureEx;
             }
 
             {
-                 result = SEMA->on_feature(ID12->getToken(ID12), feature_value13); 
+                 result = SEMA->on_feature(ID12->getToken(ID12), feature_value13);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1941,13 +1941,13 @@ feature(phammer_sema ctx)
 }
 /* $ANTLR end feature */
 
-/** 
+/**
  * $ANTLR start feature_value
  * hammer_sema.gt:88:1: feature_value returns [const hammer::ast::expression* result] : ( path_like_seq | target_ref );
  */
 static const hammer::ast::expression*
 feature_value(phammer_sema ctx)
-{   
+{
     const hammer::ast::expression* result = NULL;
 
     const hammer::ast::path_like_seq* path_like_seq14;
@@ -1968,7 +1968,7 @@ feature_value(phammer_sema ctx)
     {
         {
             //  hammer_sema.gt:89:2: ( path_like_seq | target_ref )
-            
+
             ANTLR3_UINT32 alt9;
 
             alt9=2;
@@ -1976,17 +1976,17 @@ feature_value(phammer_sema ctx)
 
             {
                 int LA9_0 = LA(1);
-                if ( (LA9_0 == PATH_LIKE_SEQ) ) 
+                if ( (LA9_0 == PATH_LIKE_SEQ) )
                 {
                     alt9=1;
                 }
-                else if ( (LA9_0 == TARGET_REF) ) 
+                else if ( (LA9_0 == TARGET_REF) )
                 {
                     alt9=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -1997,7 +1997,7 @@ feature_value(phammer_sema ctx)
                     goto rulefeature_valueEx;
                 }
             }
-            switch (alt9) 
+            switch (alt9)
             {
         	case 1:
         	    // hammer_sema.gt:89:4: path_like_seq
@@ -2012,7 +2012,7 @@ feature_value(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = path_like_seq14; 
+        	             result = path_like_seq14;
         	        }
 
         	    }
@@ -2030,7 +2030,7 @@ feature_value(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = target_ref15; 
+        	             result = target_ref15;
         	        }
 
         	    }
@@ -2039,7 +2039,7 @@ feature_value(phammer_sema ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2056,13 +2056,13 @@ feature_value(phammer_sema ctx)
 }
 /* $ANTLR end feature_value */
 
-/** 
+/**
  * $ANTLR start list_of
  * hammer_sema.gt:93:1: list_of[hammer::ast::expressions_t* args] : ^( LIST_OF ( list_of_impl )+ ) ;
  */
 static void
 list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
-{   
+{
     const hammer::ast::expression* list_of_impl16;
     #undef	RETURN_TYPE_list_of_impl16
     #define	RETURN_TYPE_list_of_impl16 const hammer::ast::expression*
@@ -2077,14 +2077,14 @@ list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
         // hammer_sema.gt:94:2: ( ^( LIST_OF ( list_of_impl )+ ) )
         // hammer_sema.gt:94:4: ^( LIST_OF ( list_of_impl )+ )
         {
-             MATCHT(LIST_OF, &FOLLOW_LIST_OF_in_list_of491); 
+             MATCHT(LIST_OF, &FOLLOW_LIST_OF_in_list_of491);
             if  (HASEXCEPTION())
             {
                 goto rulelist_ofEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulelist_ofEx;
@@ -2101,13 +2101,13 @@ list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA10_0 = LA(1);
-            	    if ( (((LA10_0 >= TARGET_DECL_OR_RULE_CALL) && (LA10_0 <= TARGET_REF)) || LA10_0 == PATH_LIKE_SEQ) ) 
+            	    if ( (((LA10_0 >= TARGET_DECL_OR_RULE_CALL) && (LA10_0 <= TARGET_REF)) || LA10_0 == PATH_LIKE_SEQ) )
             	    {
             	        alt10=1;
             	    }
 
             	}
-            	switch (alt10) 
+            	switch (alt10)
             	{
             	    case 1:
             	        // hammer_sema.gt:94:15: list_of_impl
@@ -2122,14 +2122,14 @@ list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
             	            }
 
             	            {
-            	                 args->push_back(list_of_impl16); 
+            	                 args->push_back(list_of_impl16);
             	            }
 
             	        }
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt10 >= 1 )
             		{
             		    goto loop10;
@@ -2148,7 +2148,7 @@ list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
                 loop10: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulelist_ofEx;
@@ -2158,7 +2158,7 @@ list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2175,13 +2175,13 @@ list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
 }
 /* $ANTLR end list_of */
 
-/** 
+/**
  * $ANTLR start list_of_impl
  * hammer_sema.gt:97:1: list_of_impl returns [const hammer::ast::expression* result ] : ( path_like_seq | target_def_or_rule_call | target_ref );
  */
 static const hammer::ast::expression*
 list_of_impl(phammer_sema ctx)
-{   
+{
     const hammer::ast::expression* result = NULL;
 
     const hammer::ast::path_like_seq* path_like_seq17;
@@ -2207,12 +2207,12 @@ list_of_impl(phammer_sema ctx)
     {
         {
             //  hammer_sema.gt:98:2: ( path_like_seq | target_def_or_rule_call | target_ref )
-            
+
             ANTLR3_UINT32 alt11;
 
             alt11=3;
 
-            switch ( LA(1) ) 
+            switch ( LA(1) )
             {
             case PATH_LIKE_SEQ:
             	{
@@ -2241,7 +2241,7 @@ list_of_impl(phammer_sema ctx)
                 goto rulelist_of_implEx;
             }
 
-            switch (alt11) 
+            switch (alt11)
             {
         	case 1:
         	    // hammer_sema.gt:98:4: path_like_seq
@@ -2256,7 +2256,7 @@ list_of_impl(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = path_like_seq17; 
+        	             result = path_like_seq17;
         	        }
 
         	    }
@@ -2274,7 +2274,7 @@ list_of_impl(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = target_def_or_rule_call18; 
+        	             result = target_def_or_rule_call18;
         	        }
 
         	    }
@@ -2292,7 +2292,7 @@ list_of_impl(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = target_ref19; 
+        	             result = target_ref19;
         	        }
 
         	    }
@@ -2301,7 +2301,7 @@ list_of_impl(phammer_sema ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2318,13 +2318,13 @@ list_of_impl(phammer_sema ctx)
 }
 /* $ANTLR end list_of_impl */
 
-/** 
+/**
  * $ANTLR start target_ref
  * hammer_sema.gt:103:1: target_ref returns [const hammer::ast::expression* result] : ^( TARGET_REF public_tag[&public_tag_loc] path_like_seq target_ref_name[&name] target_ref_requirements ) ;
  */
 static const hammer::ast::expression*
 target_ref(phammer_sema ctx)
-{   
+{
     const hammer::ast::expression* result = NULL;
 
     const hammer::ast::path_like_seq* path_like_seq20;
@@ -2339,7 +2339,7 @@ target_ref(phammer_sema ctx)
      */
 
 
-     
+
        hammer::parscore::identifier name;
        hammer::parscore::source_location public_tag_loc;
 
@@ -2350,14 +2350,14 @@ target_ref(phammer_sema ctx)
         // hammer_sema.gt:109:2: ( ^( TARGET_REF public_tag[&public_tag_loc] path_like_seq target_ref_name[&name] target_ref_requirements ) )
         // hammer_sema.gt:109:4: ^( TARGET_REF public_tag[&public_tag_loc] path_like_seq target_ref_name[&name] target_ref_requirements )
         {
-             MATCHT(TARGET_REF, &FOLLOW_TARGET_REF_in_target_ref564); 
+             MATCHT(TARGET_REF, &FOLLOW_TARGET_REF_in_target_ref564);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_refEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_refEx;
@@ -2400,20 +2400,20 @@ target_ref(phammer_sema ctx)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_refEx;
             }
 
             {
-                 result = SEMA->on_target_ref(public_tag_loc, path_like_seq20, name, target_ref_requirements21); 
+                 result = SEMA->on_target_ref(public_tag_loc, path_like_seq20, name, target_ref_requirements21);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2430,13 +2430,13 @@ target_ref(phammer_sema ctx)
 }
 /* $ANTLR end target_ref */
 
-/** 
+/**
  * $ANTLR start public_tag
  * hammer_sema.gt:113:1: public_tag[hammer::parscore::source_location* tag_loc] : ( PUBLIC_TAG | );
  */
 static void
 public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc)
-{   
+{
     pANTLR3_BASE_TREE    PUBLIC_TAG22;
 
     /* Initialize rule variables
@@ -2448,7 +2448,7 @@ public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc)
     {
         {
             //  hammer_sema.gt:114:2: ( PUBLIC_TAG | )
-            
+
             ANTLR3_UINT32 alt12;
 
             alt12=2;
@@ -2456,17 +2456,17 @@ public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc)
 
             {
                 int LA12_0 = LA(1);
-                if ( (LA12_0 == PUBLIC_TAG) ) 
+                if ( (LA12_0 == PUBLIC_TAG) )
                 {
                     alt12=1;
                 }
-                else if ( (LA12_0 == PATH_LIKE_SEQ || ((LA12_0 >= CONDITION) && (LA12_0 <= FEATURE))) ) 
+                else if ( (LA12_0 == PATH_LIKE_SEQ || ((LA12_0 >= CONDITION) && (LA12_0 <= FEATURE))) )
                 {
                     alt12=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2477,25 +2477,25 @@ public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc)
                     goto rulepublic_tagEx;
                 }
             }
-            switch (alt12) 
+            switch (alt12)
             {
         	case 1:
         	    // hammer_sema.gt:114:4: PUBLIC_TAG
         	    {
-        	        PUBLIC_TAG22 = (pANTLR3_BASE_TREE) MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_public_tag593); 
+        	        PUBLIC_TAG22 = (pANTLR3_BASE_TREE) MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_public_tag593);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepublic_tagEx;
         	        }
 
         	        {
-        	             *tag_loc = hammer::parscore::source_location(PUBLIC_TAG22->getToken(PUBLIC_TAG22)); 
+        	             *tag_loc = hammer::parscore::source_location(PUBLIC_TAG22->getToken(PUBLIC_TAG22));
         	        }
 
         	    }
         	    break;
         	case 2:
-        	    // hammer_sema.gt:116:2: 
+        	    // hammer_sema.gt:116:2:
         	    {
         	    }
         	    break;
@@ -2503,7 +2503,7 @@ public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2520,13 +2520,13 @@ public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc)
 }
 /* $ANTLR end public_tag */
 
-/** 
+/**
  * $ANTLR start target_ref_name
  * hammer_sema.gt:118:1: target_ref_name[hammer::parscore::identifier* name] : ( ^( TARGET_NAME EMPTY_TARGET_NAME ) | ^( TARGET_NAME ID ) | );
  */
 static void
 target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
-{   
+{
     pANTLR3_BASE_TREE    ID23;
 
     /* Initialize rule variables
@@ -2538,7 +2538,7 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
     {
         {
             //  hammer_sema.gt:119:2: ( ^( TARGET_NAME EMPTY_TARGET_NAME ) | ^( TARGET_NAME ID ) | )
-            
+
             ANTLR3_UINT32 alt13;
 
             alt13=3;
@@ -2546,27 +2546,27 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
 
             {
                 int LA13_0 = LA(1);
-                if ( (LA13_0 == TARGET_NAME) ) 
+                if ( (LA13_0 == TARGET_NAME) )
                 {
 
                     {
                         int LA13_1 = LA(2);
-                        if ( (LA13_1 == DOWN) ) 
+                        if ( (LA13_1 == DOWN) )
                         {
 
                             {
                                 int LA13_3 = LA(3);
-                                if ( (LA13_3 == EMPTY_TARGET_NAME) ) 
+                                if ( (LA13_3 == EMPTY_TARGET_NAME) )
                                 {
                                     alt13=1;
                                 }
-                                else if ( (LA13_3 == ID) ) 
+                                else if ( (LA13_3 == ID) )
                                 {
                                     alt13=2;
                                 }
-                                else 
+                                else
                                 {
-                                
+
                                     CONSTRUCTEX();
                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                     EXCEPTION->message      = (void *)"";
@@ -2578,9 +2578,9 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
                                 }
                             }
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -2592,13 +2592,13 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
                         }
                     }
                 }
-                else if ( (LA13_0 == UP || LA13_0 == REQUIREMENT_SET) ) 
+                else if ( (LA13_0 == UP || LA13_0 == REQUIREMENT_SET) )
                 {
                     alt13=3;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2609,32 +2609,32 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
                     goto ruletarget_ref_nameEx;
                 }
             }
-            switch (alt13) 
+            switch (alt13)
             {
         	case 1:
         	    // hammer_sema.gt:119:4: ^( TARGET_NAME EMPTY_TARGET_NAME )
         	    {
-        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name613); 
+        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name613);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
         	        }
 
-        	         MATCHT(EMPTY_TARGET_NAME, &FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615); 
+        	         MATCHT(EMPTY_TARGET_NAME, &FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
@@ -2646,40 +2646,40 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
         	case 2:
         	    // hammer_sema.gt:120:4: ^( TARGET_NAME ID )
         	    {
-        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name622); 
+        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name622);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
         	        }
 
-        	        ID23 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_ref_name624); 
+        	        ID23 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_ref_name624);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_ref_nameEx;
         	        }
 
         	        {
-        	             *name = hammer::parscore::identifier(ID23->getToken(ID23)); 
+        	             *name = hammer::parscore::identifier(ID23->getToken(ID23));
         	        }
 
         	    }
         	    break;
         	case 3:
-        	    // hammer_sema.gt:122:2: 
+        	    // hammer_sema.gt:122:2:
         	    {
         	    }
         	    break;
@@ -2687,7 +2687,7 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2704,13 +2704,13 @@ target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
 }
 /* $ANTLR end target_ref_name */
 
-/** 
+/**
  * $ANTLR start target_ref_requirements
  * hammer_sema.gt:124:1: target_ref_requirements returns [const hammer::ast::requirement_set* result] : ( requirement_set | );
  */
 static const hammer::ast::requirement_set*
 target_ref_requirements(phammer_sema ctx)
-{   
+{
     const hammer::ast::requirement_set* result = NULL;
 
     const hammer::ast::requirement_set* requirement_set24;
@@ -2726,7 +2726,7 @@ target_ref_requirements(phammer_sema ctx)
     {
         {
             //  hammer_sema.gt:125:2: ( requirement_set | )
-            
+
             ANTLR3_UINT32 alt14;
 
             alt14=2;
@@ -2734,17 +2734,17 @@ target_ref_requirements(phammer_sema ctx)
 
             {
                 int LA14_0 = LA(1);
-                if ( (LA14_0 == REQUIREMENT_SET) ) 
+                if ( (LA14_0 == REQUIREMENT_SET) )
                 {
                     alt14=1;
                 }
-                else if ( (LA14_0 == UP) ) 
+                else if ( (LA14_0 == UP) )
                 {
                     alt14=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2755,7 +2755,7 @@ target_ref_requirements(phammer_sema ctx)
                     goto ruletarget_ref_requirementsEx;
                 }
             }
-            switch (alt14) 
+            switch (alt14)
             {
         	case 1:
         	    // hammer_sema.gt:125:4: requirement_set
@@ -2770,16 +2770,16 @@ target_ref_requirements(phammer_sema ctx)
         	        }
 
         	        {
-        	             result = requirement_set24; 
+        	             result = requirement_set24;
         	        }
 
         	    }
         	    break;
         	case 2:
-        	    // hammer_sema.gt:126:4: 
+        	    // hammer_sema.gt:126:4:
         	    {
         	        {
-        	             result = NULL; 
+        	             result = NULL;
         	        }
 
         	    }
@@ -2788,7 +2788,7 @@ target_ref_requirements(phammer_sema ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2805,13 +2805,13 @@ target_ref_requirements(phammer_sema ctx)
 }
 /* $ANTLR end target_ref_requirements */
 
-/** 
+/**
  * $ANTLR start path_like_seq
  * hammer_sema.gt:129:1: path_like_seq returns [const hammer::ast::path_like_seq* result] : ( ^( PATH_LIKE_SEQ SLASH path_like_seq_impl[&bounds] ) | ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds] ) );
  */
 static const hammer::ast::path_like_seq*
 path_like_seq(phammer_sema ctx)
-{   
+{
     const hammer::ast::path_like_seq* result = NULL;
 
     pANTLR3_BASE_TREE    SLASH25;
@@ -2820,13 +2820,13 @@ path_like_seq(phammer_sema ctx)
      */
 
 
-     std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN> bounds; 
+     std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN> bounds;
     SLASH25       = NULL;
 
     {
         {
             //  hammer_sema.gt:131:2: ( ^( PATH_LIKE_SEQ SLASH path_like_seq_impl[&bounds] ) | ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds] ) )
-            
+
             ANTLR3_UINT32 alt15;
 
             alt15=2;
@@ -2834,27 +2834,27 @@ path_like_seq(phammer_sema ctx)
 
             {
                 int LA15_0 = LA(1);
-                if ( (LA15_0 == PATH_LIKE_SEQ) ) 
+                if ( (LA15_0 == PATH_LIKE_SEQ) )
                 {
 
                     {
                         int LA15_1 = LA(2);
-                        if ( (LA15_1 == DOWN) ) 
+                        if ( (LA15_1 == DOWN) )
                         {
 
                             {
                                 int LA15_2 = LA(3);
-                                if ( (LA15_2 == SLASH) ) 
+                                if ( (LA15_2 == SLASH) )
                                 {
                                     alt15=1;
                                 }
-                                else if ( (LA15_2 == ID) ) 
+                                else if ( (LA15_2 == ID) )
                                 {
                                     alt15=2;
                                 }
-                                else 
+                                else
                                 {
-                                
+
                                     CONSTRUCTEX();
                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                     EXCEPTION->message      = (void *)"";
@@ -2866,9 +2866,9 @@ path_like_seq(phammer_sema ctx)
                                 }
                             }
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -2880,9 +2880,9 @@ path_like_seq(phammer_sema ctx)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2893,25 +2893,25 @@ path_like_seq(phammer_sema ctx)
                     goto rulepath_like_seqEx;
                 }
             }
-            switch (alt15) 
+            switch (alt15)
             {
         	case 1:
         	    // hammer_sema.gt:131:4: ^( PATH_LIKE_SEQ SLASH path_like_seq_impl[&bounds] )
         	    {
-        	         MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673); 
+        	         MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seqEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seqEx;
         	        }
 
-        	        SLASH25 = (pANTLR3_BASE_TREE) MATCHT(SLASH, &FOLLOW_SLASH_in_path_like_seq675); 
+        	        SLASH25 = (pANTLR3_BASE_TREE) MATCHT(SLASH, &FOLLOW_SLASH_in_path_like_seq675);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seqEx;
@@ -2927,14 +2927,14 @@ path_like_seq(phammer_sema ctx)
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seqEx;
         	        }
 
         	        {
-        	             result = SEMA->on_path_like_seq(SLASH25->getToken(SLASH25), bounds.second); 
+        	             result = SEMA->on_path_like_seq(SLASH25->getToken(SLASH25), bounds.second);
         	        }
 
         	    }
@@ -2942,14 +2942,14 @@ path_like_seq(phammer_sema ctx)
         	case 2:
         	    // hammer_sema.gt:132:4: ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds] )
         	    {
-        	         MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687); 
+        	         MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seqEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seqEx;
@@ -2965,14 +2965,14 @@ path_like_seq(phammer_sema ctx)
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seqEx;
         	        }
 
         	        {
-        	             result = SEMA->on_path_like_seq(bounds.first, bounds.second); 
+        	             result = SEMA->on_path_like_seq(bounds.first, bounds.second);
         	        }
 
         	    }
@@ -2981,7 +2981,7 @@ path_like_seq(phammer_sema ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2998,13 +2998,13 @@ path_like_seq(phammer_sema ctx)
 }
 /* $ANTLR end path_like_seq */
 
-/** 
+/**
  * $ANTLR start path_like_seq_impl
  * hammer_sema.gt:135:1: path_like_seq_impl[std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds] : ( ID | first= ID ( ID )* last= ID );
  */
 static void
 path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds)
-{   
+{
     pANTLR3_BASE_TREE    first;
     pANTLR3_BASE_TREE    last;
     pANTLR3_BASE_TREE    ID26;
@@ -3020,7 +3020,7 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
     {
         {
             //  hammer_sema.gt:136:2: ( ID | first= ID ( ID )* last= ID )
-            
+
             ANTLR3_UINT32 alt17;
 
             alt17=2;
@@ -3028,22 +3028,22 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
 
             {
                 int LA17_0 = LA(1);
-                if ( (LA17_0 == ID) ) 
+                if ( (LA17_0 == ID) )
                 {
 
                     {
                         int LA17_1 = LA(2);
-                        if ( (LA17_1 == UP) ) 
+                        if ( (LA17_1 == UP) )
                         {
                             alt17=1;
                         }
-                        else if ( (LA17_1 == ID) ) 
+                        else if ( (LA17_1 == ID) )
                         {
                             alt17=2;
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -3055,9 +3055,9 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -3068,19 +3068,19 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
                     goto rulepath_like_seq_implEx;
                 }
             }
-            switch (alt17) 
+            switch (alt17)
             {
         	case 1:
         	    // hammer_sema.gt:136:4: ID
         	    {
-        	        ID26 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl713); 
+        	        ID26 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl713);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seq_implEx;
         	        }
 
         	        {
-        	             bounds->first = bounds->second = ID26->getToken(ID26); 
+        	             bounds->first = bounds->second = ID26->getToken(ID26);
         	        }
 
         	    }
@@ -3088,7 +3088,7 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
         	case 2:
         	    // hammer_sema.gt:137:4: first= ID ( ID )* last= ID
         	    {
-        	        first = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl722); 
+        	        first = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl722);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seq_implEx;
@@ -3104,13 +3104,13 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
         	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
         	                */
         	                int LA16_0 = LA(1);
-        	                if ( (LA16_0 == ID) ) 
+        	                if ( (LA16_0 == ID) )
         	                {
         	                    {
         	                       /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
         	                        */
         	                        int LA16_1 = LA(2);
-        	                        if ( (LA16_1 == ID) ) 
+        	                        if ( (LA16_1 == ID) )
         	                        {
         	                            alt16=1;
         	                        }
@@ -3119,12 +3119,12 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
         	                }
 
         	            }
-        	            switch (alt16) 
+        	            switch (alt16)
         	            {
         	        	case 1:
         	        	    // hammer_sema.gt:137:13: ID
         	        	    {
-        	        	         MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl724); 
+        	        	         MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl724);
         	        	        if  (HASEXCEPTION())
         	        	        {
         	        	            goto rulepath_like_seq_implEx;
@@ -3141,14 +3141,14 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
         	        }
         	        loop16: ; /* Jump out to here if this rule does not match */
 
-        	        last = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl729); 
+        	        last = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl729);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulepath_like_seq_implEx;
         	        }
 
         	        {
-        	             bounds->first = first->getToken(first); bounds->second = last->getToken(last); 
+        	             bounds->first = first->getToken(first); bounds->second = last->getToken(last);
         	        }
 
         	    }
@@ -3157,7 +3157,7 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3184,8 +3184,8 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
  * ==============================================
  */
 
- 
- 
+
+
 
 
 

@@ -66,7 +66,7 @@ void check_type(void* e, void *t, const char* type_id)
    const basic_target* bt = static_cast<const basic_target*>(t);
    engine* eng = static_cast<engine*>(e);
    const target_type* et = 0;
-   
+
    et = eng->get_type_registry().find(type_tag(type_id));
    if (et == 0)
    {
@@ -99,10 +99,10 @@ void check_feature(void* e, void* t, void* features, const pANTLR3_COMMON_TOKEN 
    engine* eng = static_cast<engine*>(e);
    const feature_def* global_def = eng->feature_registry().find_def(name);
    const feature_def* local_def = bt->get_project()->local_feature_registry().find_def(name);
-   const feature_def& fd = global_def != NULL 
-                              ? *global_def 
+   const feature_def& fd = global_def != NULL
+                              ? *global_def
                               : bt->get_project()->local_feature_registry().get_def(name);;
-   
+
    if (fd.attributes().path)
    {
       feature_set::const_iterator f = fs->find(name);
@@ -124,7 +124,7 @@ void check_feature(void* e, void* t, void* features, const pANTLR3_COMMON_TOKEN 
       p.normalize();
       location_t expected_path(value);
       expected_path.normalize();
-      if (p != expected_path)      
+      if (p != expected_path)
          BOOST_CHECK_MESSAGE(false, format("%s(%d) : Expected feature '%s' with value '%s' but found value '%s'")
                                        % reinterpret_cast<const char*>(name_token->input->fileName->chars)
                                        % name_token->line
@@ -145,7 +145,7 @@ void check_feature(void* e, void* t, void* features, const pANTLR3_COMMON_TOKEN 
                                     % bt->name());
       return;
    }
-} 
+}
 
 void check_not_feature(void* e, void* t, void* features, const char* name, const char* value)
 {

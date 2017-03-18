@@ -4,16 +4,16 @@
 feature.feature all-static : on : propagated composite no-defaults ;
 feature.compose <all-static>on : <link>static ;
 
-lib lib5 
-    : lib5.cpp 
+lib lib5
+    : lib5.cpp
     :
     :
     : <link>shared:<define>LIB5_SHARED
       <link>static:<define>LIB5_STATIC
     ;
 
-lib lib4 
-    : lib4.cpp 
+lib lib4
+    : lib4.cpp
     :
     :
     : <link>shared:<define>LIB4_SHARED

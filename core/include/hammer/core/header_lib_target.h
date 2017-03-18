@@ -12,7 +12,7 @@ namespace hammer
                            const target_type* t, const feature_set* f);
          virtual const location_t& location() const { return empty_location_; }
          virtual std::vector<boost::intrusive_ptr<build_node> > generate() const;
-      
+
       protected:
          location_t empty_location_;
          virtual void timestamp_info_impl() const;

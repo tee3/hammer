@@ -48,7 +48,7 @@ class context
 }}
 
 inline void *operator new(std::size_t bytes,
-                          hammer::ast::context& c) throw () 
+                          hammer::ast::context& c) throw ()
 {
    return c.allocate(bytes, 0);
 }

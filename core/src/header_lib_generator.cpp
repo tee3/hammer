@@ -15,7 +15,7 @@ header_lib_generator::header_lib_generator(hammer::engine& e,
                                            const producable_types_t& target_types,
                                            const feature_set* c)
    :
-    generator(e, name, source_types, 
+    generator(e, name, source_types,
               target_types, true, c),
     header_type_(e.get_type_registry().get(types::H))
 {
@@ -23,7 +23,7 @@ header_lib_generator::header_lib_generator(hammer::engine& e,
 }
 
 build_nodes_t
-header_lib_generator::construct(const target_type& type_to_construct, 
+header_lib_generator::construct(const target_type& type_to_construct,
                                 const feature_set& props,
                                 const std::vector<boost::intrusive_ptr<build_node> >& sources,
                                 const basic_target* t,

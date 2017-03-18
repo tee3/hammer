@@ -32,7 +32,7 @@ actions_impl::actions_impl(ast::context& ctx)
 {
 }
 
-const ast::hamfile* 
+const ast::hamfile*
 actions_impl::on_hamfile(const ast::statements_t& statements) const
 {
    if (!statements.empty() &&
@@ -45,27 +45,27 @@ actions_impl::on_hamfile(const ast::statements_t& statements) const
       return new (ctx_) ast::hamfile(nullptr, statements);
 }
 
-const ast::expression* 
+const ast::expression*
 actions_impl::on_empty_expr(const parscore::identifier& next_token) const
 {
    return new (ctx_) ast::empty_expr(next_token);
 }
 
-const ast::expression* 
+const ast::expression*
 actions_impl::on_named_expr(const parscore::identifier& name,
                             const ast::expression* value) const
 {
    return new(ctx_) ast::named_expr(name, value);
 }
 
-const ast::expression* 
+const ast::expression*
 actions_impl::on_list_of(const ast::expressions_t& e) const
 {
    return new (ctx_) ast::list_of(e);
 }
 
-const ast::path_like_seq* 
-actions_impl::on_path_like_seq(const parscore::identifier& first, 
+const ast::path_like_seq*
+actions_impl::on_path_like_seq(const parscore::identifier& first,
                                const parscore::identifier& last) const
 {
    return new (ctx_) ast::path_like_seq(first, last);
@@ -89,7 +89,7 @@ process_identifier_arg(const rule_argument& ra, const expression* arg, context& 
          if (const ast::path_like_seq* pls = as<ast::path_like_seq>(list->values().front()))
             if (pls->is_simple())
                return new (ctx) id_expr(pls->to_identifier());
-   
+
    ctx.diag_.error(arg->start_loc(), "Argument '%s': must be simple identifier") << ra.name();
    return new (ctx) error_expression(arg);
 }
@@ -129,13 +129,13 @@ process_path_like_seq_arg(const rule_argument& ra, const expression* arg, contex
    return new (ctx) error_expression(arg);
 }
 
-static const expression* 
+static const expression*
 process_one_arg(const rule_argument& ra, const expression* arg, ast::context& ctx)
 {
    if (!ra.is_optional() && is_a<empty_expr>(arg))
    {
       ctx.diag_.error(arg->start_loc(), "Required argument '%s' expected before '%s'")
-         << ra.name() 
+         << ra.name()
          << as<empty_expr>(arg)->next_token();
 
       return new (ctx) error_expression(arg->start_loc());
@@ -170,7 +170,7 @@ process_one_arg(const rule_argument& ra, const expression* arg, ast::context& ct
 
 static
 expressions_t process_arguments(const parscore::identifier& rule_name,
-                                const rule_declaration& rule_decl, 
+                                const rule_declaration& rule_decl,
                                 const ast::expressions_t& arguments,
                                 ast::context& ctx)
 {
@@ -189,9 +189,9 @@ expressions_t process_arguments(const parscore::identifier& rule_name,
          rule_declaration::const_iterator r = rule_decl.find(arg_name);
          if (r == rule_decl.end())
          {
-            ctx.diag_.error(arg_name.start_lok(), "%s '%s' does not have named argument '%s'") 
-               << (rule_decl.is_target() ? "Target" : "Rule") 
-               << rule_name 
+            ctx.diag_.error(arg_name.start_lok(), "%s '%s' does not have named argument '%s'")
+               << (rule_decl.is_target() ? "Target" : "Rule")
+               << rule_name
                << arg_name;
 
             result.push_back(new (ctx) error_expression((**i).start_loc()));
@@ -200,14 +200,14 @@ expressions_t process_arguments(const parscore::identifier& rule_name,
          {
             if (used_named_args.find(&*r) != used_named_args.end())
             {
-               ctx.diag_.error(arg_name.start_lok(), "%s '%s': named argument '%s' used more than once") 
-                  << (rule_decl.is_target() ? "Target" : "Rule") 
-                  << rule_name 
+               ctx.diag_.error(arg_name.start_lok(), "%s '%s': named argument '%s' used more than once")
+                  << (rule_decl.is_target() ? "Target" : "Rule")
+                  << rule_name
                   << arg_name;
-               
+
                result.push_back(new (ctx) error_expression((**i).start_loc()));
             }
-            else 
+            else
             {
                used_named_args.insert(&*r);
                if (!r->is_optional())
@@ -233,7 +233,7 @@ expressions_t process_arguments(const parscore::identifier& rule_name,
          {
             if (!ra->is_optional())
                ++required_argument_used;
-            
+
             result.push_back(*i);
          }
          else
@@ -254,7 +254,7 @@ expressions_t process_arguments(const parscore::identifier& rule_name,
       if (ra != rule_decl.end())
          ++ra;
    }
-   
+
    int rac = required_argument_count(rule_decl);
    if (rac > required_argument_used)
    {
@@ -271,8 +271,8 @@ expressions_t process_arguments(const parscore::identifier& rule_name,
    return result;
 }
 
-const ast::expression* 
-actions_impl::on_target_or_rule_call(const parscore::identifier& rule_name, 
+const ast::expression*
+actions_impl::on_target_or_rule_call(const parscore::identifier& rule_name,
                                      const ast::expressions_t& arguments) const
 {
    rule_manager::const_iterator i = ctx_.rule_manager_.find(rule_name);
@@ -292,7 +292,7 @@ actions_impl::on_target_or_rule_call(const parscore::identifier& rule_name,
    return new (ctx_) ast::rule_invocation(rule_name, arguments);
 }
 
-const ast::requirement_set* 
+const ast::requirement_set*
 actions_impl::on_requirement_set(const ast::requirements_t& requirements) const
 {
    return new (ctx_) ast::requirement_set(requirements);
@@ -312,7 +312,7 @@ actions_impl::on_simple_requirement(parscore::source_location public_tag_loc,
    return new (ctx_) ast::simple_requirement(public_tag_loc, value);
 }
 
-const ast::requirement* 
+const ast::requirement*
 actions_impl::on_conditional_requirement(parscore::source_location public_tag_loc,
                                          const ast::features_t& features,
                                          const ast::feature* value) const

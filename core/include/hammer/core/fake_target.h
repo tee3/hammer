@@ -11,14 +11,14 @@ namespace hammer
          fake_target(const main_target* mt,
                      const build_node::sources_t& sources,
                      const std::string& name,
-                     const target_type* t, 
+                     const target_type* t,
                      const feature_set* f);
          virtual const location_t& location() const;
          virtual build_nodes_t generate() const;
-      
+
       protected:
          virtual void timestamp_info_impl() const;
-      
+
       private:
          build_node::sources_t sources_;
    };

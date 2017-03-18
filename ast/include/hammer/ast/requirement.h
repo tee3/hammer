@@ -14,7 +14,7 @@ class requirement : public expression
       requirement(parscore::source_location public_tag)
          : public_tag_(public_tag)
       {}
-      
+
       parscore::source_location public_tag() const { return public_tag_; }
       bool is_public() const { return public_tag().valid(); }
 
@@ -42,14 +42,14 @@ class simple_requirement : public requirement
 class conditional_requirement : public requirement
 {
    public:
-      conditional_requirement(parscore::source_location public_tag_loc, 
+      conditional_requirement(parscore::source_location public_tag_loc,
                               const features_t& condition,
                               const feature* value)
         : requirement(public_tag_loc),
           condition_(condition),
           value_(value)
       {}
-      
+
       const features_t& condition() const { return condition_; }
       const feature* value() const { return value_; }
       parscore::source_location start_loc() const override;

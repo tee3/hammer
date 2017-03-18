@@ -1,5 +1,5 @@
-obj c_as_cpp_files 
-   :     
+obj c_as_cpp_files
+   :
     [ glob ../src/*.c ]
    :
     <toolset>msvc:<cxxflags>/TP

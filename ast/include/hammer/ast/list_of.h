@@ -16,7 +16,7 @@ class list_of : public expression
       parscore::source_location start_loc() const override { return values_.front()->start_loc(); }
       bool accept(visitor& v) const override;
       const expressions_t& values() const { return values_; }
-   
+
    private:
       expressions_t values_;
 };

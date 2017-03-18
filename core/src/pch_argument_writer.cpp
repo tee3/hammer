@@ -15,7 +15,7 @@ void pch_argument_writer::write_impl(std::ostream& output, const build_node& nod
    feature_set::const_iterator pch_iter = build_request.find("pch");
    if (pch_iter == build_request.end() || (**pch_iter).value() == "off")
       return;
- 
+
    switch(part_)
    {
       case part::header:

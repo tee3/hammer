@@ -17,7 +17,7 @@ bool is_a(const node* n)
 template<typename T>
 const T& as(const node&);
 
-// return NULL if types are unrelated 
+// return NULL if types are unrelated
 template<typename T>
 const T* as(const node* n);
 

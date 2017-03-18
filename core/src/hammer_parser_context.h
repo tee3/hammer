@@ -13,7 +13,7 @@ namespace hammer
    class engine;
    namespace details
    {
-      
+
       struct non_buffered_token_stream;
       struct hammer_parser_context
       {
@@ -25,7 +25,7 @@ namespace hammer
 
          struct rule_context
          {
-            rule_context() : arg_(0), 
+            rule_context() : arg_(0),
                              in_feature_feature_rule_(false),
                              new_feature_(NULL)
             {}
@@ -35,7 +35,7 @@ namespace hammer
             bool in_feature_feature_rule_;
             feature_info* new_feature_;
          };
-         
+
          typedef std::map<std::string, feature_info> new_features_t;
 
          hammer_parser_context() : error_count_(0) {}
@@ -45,7 +45,7 @@ namespace hammer
          std::stack<rule_context> rule_contexts_;
          non_buffered_token_stream* token_stream_;
          new_features_t new_features_;
-         
+
          void (*base_displayRecognitionError)(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * tokenNames);
       };
 

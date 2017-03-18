@@ -9,8 +9,8 @@ namespace hammer{
 
 struct requirements_decl::impl_t
 {
-   impl_t() : ref_counter_(1) {}   
-   
+   impl_t() : ref_counter_(1) {}
+
    typedef boost::ptr_vector<requirement_base> requirements_t;
    typedef requirements_t::const_iterator const_iterator;
    typedef requirements_t::iterator iterator;
@@ -77,7 +77,7 @@ requirements_decl::~requirements_decl()
       delete impl_;
 }
 
-void requirements_decl::eval(const feature_set& build_request, 
+void requirements_decl::eval(const feature_set& build_request,
                              feature_set* result,
                              feature_set* public_result) const
 {
@@ -127,7 +127,7 @@ void just_feature_requirement::eval(const feature_set& build_request,
                                     feature_set* public_result) const
 {
    result->join(f_);
-   
+
    if (is_public() && public_result != NULL)
       public_result->join(f_);
 }

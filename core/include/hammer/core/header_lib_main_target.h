@@ -12,7 +12,7 @@ namespace hammer
                                 const std::string& name,
                                 const target_type* t,
                                 const feature_set* props);
-      
+
       protected:
          virtual void add_additional_dependencies(hammer::build_node& generated_node) const {}
    };

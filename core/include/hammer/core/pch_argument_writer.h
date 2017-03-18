@@ -21,7 +21,7 @@ namespace hammer
 
          virtual pch_argument_writer* clone() const { return new pch_argument_writer(*this); }
 
-      protected:   
+      protected:
          virtual void write_impl(std::ostream& output, const build_node& node, const build_environment& environment) const;
 
          part::value part_;

@@ -24,34 +24,34 @@ class rule_argument_type
 {
    public:
       enum value {VOID, IDENTIFIER, FEATURE_SET, SOURCES_DECL, REQUIREMENTS_DECL, PATH_LIKE_SEQ};
-      
-      static rule_argument_type::value 
+
+      static rule_argument_type::value
       type(const hammer::parscore::identifier*) { return IDENTIFIER; }
 
-      static rule_argument_type::value 
+      static rule_argument_type::value
       type(const feature_set*) { return FEATURE_SET; }
 
-      static rule_argument_type::value 
+      static rule_argument_type::value
       type(const sources_decl*) { return SOURCES_DECL; }
 
-      static rule_argument_type::value 
+      static rule_argument_type::value
       type(const requirements_decl*) { return REQUIREMENTS_DECL; }
 
-      static rule_argument_type::value 
+      static rule_argument_type::value
       type(const path_like_seq*) { return PATH_LIKE_SEQ; }
 };
 
 class rule_argument
 {
-   public:   
+   public:
       rule_argument(rule_argument_type::value type,
                     const parscore::identifier& name,
-                    bool optional) 
-         : type_(type), 
+                    bool optional)
+         : type_(type),
            name_(name),
            optional_(optional)
       {}
-      
+
       rule_argument_type::value type() const { return type_; }
       const parscore::identifier& name() const { return name_; }
       bool is_optional() const { return optional_; }
@@ -72,7 +72,7 @@ class rule_declaration
       rule_declaration(parscore::identifier name,
                 const rule_arguments& args,
                 const rule_argument& result,
-                bool is_target) 
+                bool is_target)
          : name_(name),
            args_(args),
            result_(result),
@@ -86,7 +86,7 @@ class rule_declaration
       const_iterator end() const { return args_.end(); }
       const_iterator find(const parscore::identifier& arg_name) const;
       bool is_target() const { return is_target_; }
-      
+
 
    private:
       parscore::identifier name_;
@@ -101,8 +101,8 @@ namespace details{
    {
       typedef typename boost::remove_pointer<T>::type not_a_pointer_arg_t;
       typedef typename boost::remove_reference<not_a_pointer_arg_t>::type pure_arg_t;
-      
-      return rule_argument(rule_argument_type::type(static_cast<const pure_arg_t*>(NULL)), 
+
+      return rule_argument(rule_argument_type::type(static_cast<const pure_arg_t*>(NULL)),
                            arg_name,
                            boost::mpl::bool_<boost::is_pointer<T>::value>());
    }
@@ -112,20 +112,20 @@ namespace details{
     {
        return rule_argument(rule_argument_type::VOID, arg_name, false);
     }
-   
+
    template<typename T>
-   void push_arg_impl(std::vector<rule_argument>* args, 
+   void push_arg_impl(std::vector<rule_argument>* args,
                       const std::vector<parscore::identifier>& arg_names,
                       boost::mpl::int_<-1>)
    {}
 
    template<typename T, int idx>
-   void push_arg_impl(std::vector<rule_argument>* args, 
+   void push_arg_impl(std::vector<rule_argument>* args,
                       const std::vector<parscore::identifier>& arg_names,
                       boost::mpl::int_<idx>)
    {
       typedef typename boost::mpl::at_c<typename boost::function_types::parameter_types<T>::type, idx>::type arg_t;
-      
+
       args->insert(args->begin(), make_one_arg<arg_t>(arg_names[idx]));
       push_arg_impl<T>(args, arg_names, boost::mpl::int_<idx - 1>());
    }
@@ -153,7 +153,7 @@ class rule_manager
       }
 
       template<typename T>
-      void add_target(const parscore::identifier& id, 
+      void add_target(const parscore::identifier& id,
                       boost::function<T> f,
                       const std::vector<parscore::identifier>& arg_names)
       {
@@ -161,7 +161,7 @@ class rule_manager
       }
 
       template<typename T>
-      void add_rule(const parscore::identifier& id, 
+      void add_rule(const parscore::identifier& id,
                     boost::function<T> f,
                     const std::vector<parscore::identifier>& arg_names)
       {
@@ -172,19 +172,19 @@ class rule_manager
       rules_t rules_;
 
       template<typename T>
-      void add_impl(const parscore::identifier& id, 
-                   boost::function<T> f, 
+      void add_impl(const parscore::identifier& id,
+                   boost::function<T> f,
                    const std::vector<parscore::identifier>& arg_names,
                    bool is_target)
       {
          typedef typename boost::function_types::result_type<T>::type result_type;
-         
+
          if (arg_names.size() != boost::function_types::function_arity<T>::value)
             throw std::runtime_error("[hammer.rule_manager] Not enought argument names");
 
-         rule_declaration decl(id, 
-                               details::make_args<T>(arg_names), 
-                               details::make_one_arg<result_type>(parscore::identifier()), 
+         rule_declaration decl(id,
+                               details::make_args<T>(arg_names),
+                               details::make_one_arg<result_type>(parscore::identifier()),
                                is_target);
 
          if (!rules_.insert(std::make_pair(id, decl)).second)

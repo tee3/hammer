@@ -8,9 +8,9 @@ namespace hammer{
 
 main_target* typed_meta_target::construct_main_target(const main_target* owner, const feature_set* properties) const
 {
-   main_target* mt = new main_target(this, 
-                                     name(), 
-                                     type_, 
+   main_target* mt = new main_target(this,
+                                     name(),
+                                     type_,
                                      properties);
    return mt;
 }

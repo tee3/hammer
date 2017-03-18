@@ -17,7 +17,7 @@ std::string source_location::full_source_name() const
 {
    assert(antlr_token_);
 
-   return std::string(reinterpret_cast<const char*>(antlr_token_->input->fileName->chars), 
+   return std::string(reinterpret_cast<const char*>(antlr_token_->input->fileName->chars),
                       reinterpret_cast<const char*>(antlr_token_->input->fileName->chars) + antlr_token_->input->fileName->len);
 }
 

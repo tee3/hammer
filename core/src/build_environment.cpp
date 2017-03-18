@@ -8,8 +8,8 @@ namespace hammer{
 struct build_environment::impl_t
 {
    typedef boost::ptr_unordered_map<std::ostream*, std::ostream> streams_t;
-   
-   impl_t() : should_buffer_(false) {}   
+
+   impl_t() : should_buffer_(false) {}
 
    boost::mutex m_;
    bool should_buffer_;

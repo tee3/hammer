@@ -139,7 +139,7 @@ void remove_dups(build_node::nodes_t& nodes)
    typedef container_t::nth_index<0>::type idx_0_t;
    for(idx_0_t::const_reverse_iterator i = c.get<0>().rbegin(), last = c.get<0>().rend(); i != last; ++i)
       result.push_back(*i);
-   
+
    nodes.swap(result);
 }
 

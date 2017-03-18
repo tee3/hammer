@@ -10,9 +10,9 @@ namespace hammer{
 obj_main_target::obj_main_target(const basic_meta_target* mt,
                                  const main_target& owner,
                                  const std::string& name,
-                                 const target_type* t, 
+                                 const target_type* t,
                                  const feature_set* props)
-                                : 
+                                :
                                  main_target(mt, name, t, props),
                                  owner_(owner)
 {

@@ -12,7 +12,7 @@ namespace hammer{
    {
 
    }
-   
+
    type_registry::~type_registry()
    {
 
@@ -27,8 +27,8 @@ namespace hammer{
       const char* where_last = &*(where.end() - 1);
       const char* what_first = what.c_str();
       const char* what_last = what.c_str() + what.size() - 1;
-      
-      while(where_first <= where_last && 
+
+      while(where_first <= where_last &&
             what_first <= what_last)
       {
          if (*where_last != *what_last)
@@ -50,11 +50,11 @@ namespace hammer{
          // skip types with empty suffix
          if (i->second->suffixes().empty())
             continue;
-         
+
          for(target_type::suffixes_t::const_iterator j = i->second->suffixes().begin(), j_last = i->second->suffixes().end(); j != j_last; ++j)
          {
             string::size_type p = rfind(name, j->suffix_);//s_name.rfind(j->c_str());
-            if (p != string::npos && 
+            if (p != string::npos &&
                 p + j->suffix_.size() == name.size())
                return i->second;
          }
@@ -76,7 +76,7 @@ namespace hammer{
       const target_type* t = resolve_from_target_name(name);
       if (t == NULL)
          throw std::runtime_error("Can't resolve type from target name '" + name + "'.");
-      
+
       return *t;
    }
 

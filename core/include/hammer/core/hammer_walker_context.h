@@ -12,7 +12,7 @@ namespace hammer
    struct hammer_walker_context
    {
       hammer_walker_context() : project_(0) {}
-      
+
       engine* engine_;
       call_resolver* call_resolver_;
       boost::filesystem::path location_;

@@ -6,4 +6,3 @@ lib lib.unconstrained-lib
     <link>shared:<define>UNCONSTRAINED_LIB_EXPORTS
     @<link>static:<define>UNCONSTRAINED_LIB_STATIC_LIB
    ;
-    

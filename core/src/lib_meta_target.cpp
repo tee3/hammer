@@ -11,11 +11,11 @@
 
 namespace hammer{
 
-lib_meta_target::lib_meta_target(hammer::project* p, 
+lib_meta_target::lib_meta_target(hammer::project* p,
                                  const std::string& name,
                                  const requirements_decl& req,
-                                 const requirements_decl& usage_req) 
-                                : 
+                                 const requirements_decl& usage_req)
+                                :
                                  meta_target(p, name, req, usage_req)
 {
 }
@@ -30,9 +30,9 @@ main_target* lib_meta_target::construct_main_target(const main_target* owner, co
    else
       target_type = &get_engine()->get_type_registry().get(types::SHARED_LIB);
 
-   result = new main_target(this, 
-                            name(), 
-                            target_type, 
+   result = new main_target(this,
+                            name(),
+                            target_type,
                             properties);
 
    return result;

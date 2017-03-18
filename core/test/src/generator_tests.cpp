@@ -34,14 +34,14 @@ static void compare_files(const fs::path& lhs, const fs::path& rhs, const fs::pa
       BOOST_CHECK_MESSAGE(file_size(lhs) == file_size(rhs), lhs.string() + " != " + rhs.string());
       return;
    }
-   
+
    bool result = std::equal(istreambuf_iterator<char>(lhs_f), istreambuf_iterator<char>(),
                             istreambuf_iterator<char>(rhs_f));
-   
+
    if (!result)
    {
       ostringstream s;
-      s << "File '" << relative_path(lhs, test_root) 
+      s << "File '" << relative_path(lhs, test_root)
        << "' is not equal to '" << relative_path(rhs, test_root) << "'.";
       BOOST_CHECK_MESSAGE(result, s.str());
    }
@@ -59,7 +59,7 @@ static bool less_target(const basic_target* lhs, const basic_target* rhs)
 
 namespace hammer{
 
-static bool operator < (const build_node::source_t& lhs, 
+static bool operator < (const build_node::source_t& lhs,
                         const build_node::source_t& rhs)
 {
    return less_target(lhs.source_target_, rhs.source_target_);
@@ -72,7 +72,7 @@ namespace
    class test_msvc_solution : public hammer::project_generators::msvc_solution
    {
       public:
-         test_msvc_solution(const project& source_project, const location_t& output_location, 
+         test_msvc_solution(const project& source_project, const location_t& output_location,
                             generation_mode::value mode) : msvc_solution(source_project, output_location, mode)
          {
             fill(id_, id_ + 16, 0);
@@ -84,7 +84,7 @@ namespace
             ++id_[15];
             return boost::guid(&id_[0], &id_[16]);
          }
-      
+
       private:
          mutable unsigned char id_[16];
    };
@@ -99,7 +99,7 @@ static int compare_sources(const build_node::sources_t& lhs,
       location_t rhs_id = i_r->source_target_->location() / i_r->source_target_->name();
       lhs_id.normalize();
       rhs_id.normalize();
-      
+
       if (lhs_id != rhs_id)
          return lhs_id < rhs_id ? 1 : -1;
    }
@@ -119,13 +119,13 @@ static int compare_products(const build_node::targets_t& lhs,
 
       if (lhs_id != rhs_id)
          return lhs_id < rhs_id ? 1 : -1;
-   }   
+   }
 
    return 0;
 }
 
 static
-bool less_node(const boost::intrusive_ptr<build_node>& lhs, 
+bool less_node(const boost::intrusive_ptr<build_node>& lhs,
                const boost::intrusive_ptr<build_node>& rhs);
 
 static int compare_dependencies(const build_node::nodes_t& lhs,
@@ -140,7 +140,7 @@ static int compare_dependencies(const build_node::nodes_t& lhs,
    return 0;
 }
 
-static bool less_node(const boost::intrusive_ptr<build_node>& lhs, 
+static bool less_node(const boost::intrusive_ptr<build_node>& lhs,
                       const boost::intrusive_ptr<build_node>& rhs)
 {
    if (lhs->sources_.size() == rhs->sources_.size())
@@ -150,7 +150,7 @@ static bool less_node(const boost::intrusive_ptr<build_node>& lhs,
    }
    else
       return lhs->sources_.size() < rhs->sources_.size();
-   
+
    if (lhs->products_.size() == rhs->products_.size())
    {
       if (int res = compare_products(lhs->products_, rhs->products_))
@@ -164,7 +164,7 @@ static bool less_node(const boost::intrusive_ptr<build_node>& lhs,
       if (int res = compare_dependencies(lhs->dependencies_, rhs->dependencies_))
          return res == 1 ? true : false;
    }
-   
+
    return false;
 }
 
@@ -182,7 +182,7 @@ struct generator_tests : setuped_engine
       fs::recursive_directory_iterator i_etalon_files(etalon_files_path);
       fs::recursive_directory_iterator i_generated_files(generated_files_path);
       set<fs::path> etalon_files, generated_files;
-      
+
       // gather files
       for(fs::recursive_directory_iterator last_etalon_files; i_etalon_files != last_etalon_files; ++i_etalon_files)
       {
@@ -209,7 +209,7 @@ struct generator_tests : setuped_engine
 
       set<fs::path> unexpected_generated;
       set_difference(generated_files.begin(), generated_files.end(),
-                     etalon_files.begin(), etalon_files.end(), 
+                     etalon_files.begin(), etalon_files.end(),
                      insert_iterator<set<fs::path> >(unexpected_generated, unexpected_generated.end()));
 
       for(set<fs::path>::const_iterator i = unexpected_generated.begin(), last = unexpected_generated.end(); i != last; ++i)
@@ -226,16 +226,16 @@ struct generator_tests : setuped_engine
                      insert_iterator<set<fs::path> >(tmp, tmp.end()));
       tmp.swap(generated_files);
 
-      // checking 
-      set<fs::path>::const_iterator 
+      // checking
+      set<fs::path>::const_iterator
          c_etalon_files = etalon_files.begin(), c_last_etalon_files = etalon_files.end(),
          c_generated_files = generated_files.begin(), c_last_generated_files = generated_files.end();
-                        
+
       for(; c_etalon_files != c_last_etalon_files; ++c_etalon_files)
       {
          if (*c_etalon_files == *c_generated_files)
          {
-            compare_files(etalon_files_path / *c_etalon_files, 
+            compare_files(etalon_files_path / *c_etalon_files,
                           generated_files_path / *c_generated_files,
                           generated_files_path);
             ++c_generated_files;
@@ -268,7 +268,7 @@ struct generator_tests : setuped_engine
          checker_.walk(itargets_, &engine_);
       }
    }
-   
+
    void sort_node(build_node& node)
    {
       std::sort(node.sources_.begin(), node.sources_.end());
@@ -306,13 +306,13 @@ struct generator_tests : setuped_engine
       options opts(test_data_path / "hamfile");
       if (opts.exists("skip"))
          return;
-     
+
       if (opts.exists("output_dir"))
          generators_output_dir_name_ = opts["output_dir"];
 
       if (opts.exists("local"))
-         mode = msvc_solution::generation_mode::LOCAL;   
-      
+         mode = msvc_solution::generation_mode::LOCAL;
+
       if (opts.exists("target"))
          testing_target_name = opts["target"];
 

@@ -15,7 +15,7 @@
 namespace hammer{namespace ast{
 
 ast_xml_printer::ast_xml_printer(std::ostream& os,
-                                 bool write_header) 
+                                 bool write_header)
    : os_(os), indent_(0)
 {
    if (write_header)
@@ -35,11 +35,11 @@ bool ast_xml_printer::visit(const hamfile& v)
 
    os_ << "</hamfile>\n";
 
-   return true; 
+   return true;
 }
 
 bool ast_xml_printer::visit(const rule_invocation& v)
-{ 
+{
    os_ << std::setw(indent_) << ' ' << "<rule_invocation name=\"" << v.name() << "\">\n";
 
    indent_ += 3;
@@ -55,7 +55,7 @@ bool ast_xml_printer::visit(const rule_invocation& v)
 
    os_ << std::setw(indent_) << ' ' << "</rule_invocation>\n";
 
-   return true; 
+   return true;
 }
 
 bool ast_xml_printer::visit(const list_of& v)
@@ -69,7 +69,7 @@ bool ast_xml_printer::visit(const list_of& v)
 
    os_ << std::setw(indent_) << ' ' << "</list_of>\n";
 
-   return true; 
+   return true;
 }
 
 bool ast_xml_printer::visit(const empty_expr& v)
@@ -80,7 +80,7 @@ bool ast_xml_printer::visit(const empty_expr& v)
 }
 
 bool ast_xml_printer::visit(const id_expr& v)
-{ 
+{
    os_ << std::setw(indent_) << ' ' << "<id_expr value=\"" << v.id().to_string() << "\"/>\n";
 
    return true;
@@ -96,7 +96,7 @@ bool ast_xml_printer::visit(const named_expr& v)
 
    os_ << std::setw(indent_) << ' ' << "</named_expr>\n";
 
-   return true;   
+   return true;
 }
 
 bool ast_xml_printer::visit(const path_like_seq& v)
@@ -117,7 +117,7 @@ bool ast_xml_printer::visit(const requirement_set& v)
 
    os_ << std::setw(indent_) << ' ' << "</requirement_set>\n";
 
-   return true; 
+   return true;
 }
 
 bool ast_xml_printer::visit(const error_expression& v)

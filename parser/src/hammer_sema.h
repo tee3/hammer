@@ -4,7 +4,7 @@
  *     -  From the grammar source file : hammer_sema.gt
  *     -                            On : 2016-11-27 09:56:01
  *     -           for the tree parser : hammer_semaTreeParser *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -13,7 +13,7 @@
  * which will invoke the code for the associated rule in the source grammar
  * assuming that the input stream is pointing to a token/text stream that could begin
  * this rule.
- * 
+ *
  * For instance if you call the first (topmost) rule in a parser grammar, you will
  * get the results of a full parse, but calling a rule half way through the grammar will
  * allow you to pass part of a full token stream to the parser, such as for syntax checking
@@ -59,7 +59,7 @@
 /* End of standard antlr 3 runtime definitions
  * =============================================================================
  */
- 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -89,7 +89,7 @@ typedef struct hammer_sema_Ctx_struct hammer_sema, * phammer_sema;
 //          constant conditional,							- ANTLR realizes that a prediction is always true (synpred usually)
 //          initialized but unused variable					- tree rewrite variables declared but not needed
 //          Unreferenced local variable						- lexer rule declares but does not always use _type
-//          potentially unitialized variable used			- retval always returned from a rule 
+//          potentially unitialized variable used			- retval always returned from a rule
 //			unreferenced local function has been removed	- susually getTokenNames or freeScope, they can go without warnigns
 //
 // These are only really displayed at warning level /W4 but that is the code ideal I am aiming at
@@ -139,7 +139,7 @@ struct hammer_sema_Ctx_struct
     // Delegated rules
     const char * (*getGrammarFileName)();
     void	    (*free)   (struct hammer_sema_Ctx_struct * ctx);
-        
+
 };
 
 // Function protoypes for the constructor functions that external translation units
@@ -161,7 +161,7 @@ ANTLR3_API phammer_sema hammer_semaNewSSD      (pANTLR3_COMMON_TREE_NODE_STREAM 
 #endif
 #ifdef	Tokens
 #undef	Tokens
-#endif 
+#endif
 #define EMPTY_EXPRESSION      12
 #define COMMENT      27
 #define T__33      33

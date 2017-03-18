@@ -9,7 +9,7 @@ feature_base::feature_base(const feature_def* def,
    : definition_(def),
      value_(value)
 {
-   assert(def && "Definition cannot be NULL");   
+   assert(def && "Definition cannot be NULL");
 }
 
 }

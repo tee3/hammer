@@ -15,15 +15,15 @@ namespace hammer{
 alias_meta_target::alias_meta_target(hammer::project* p, const std::string& name,
                                      const sources_decl& sources,
                                      const requirements_decl& req,
-                                     const requirements_decl& usage_req) 
+                                     const requirements_decl& usage_req)
                                      : basic_meta_target(p, name, req, usage_req)
 {
    this->sources(sources);
 }
-   
-void alias_meta_target::instantiate_impl(const main_target* owner, 
+
+void alias_meta_target::instantiate_impl(const main_target* owner,
                                          const feature_set& build_request,
-                                         std::vector<basic_target*>* result, 
+                                         std::vector<basic_target*>* result,
                                          feature_set* usage_requirements) const
 {
    if (owner != NULL) {

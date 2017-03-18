@@ -4,7 +4,7 @@
  *     -  From the grammar source file : jcf.g
  *     -                            On : 2017-01-01 21:44:35
  *     -                for the parser : jcfParserParser *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -13,7 +13,7 @@
  * which will invoke the code for the associated rule in the source grammar
  * assuming that the input stream is pointing to a token/text stream that could begin
  * this rule.
- * 
+ *
  * For instance if you call the first (topmost) rule in a parser grammar, you will
  * get the results of a full parse, but calling a rule half way through the grammar will
  * allow you to pass part of a full token stream to the parser, such as for syntax checking
@@ -49,7 +49,7 @@
 /* End of standard antlr 3 runtime definitions
  * =============================================================================
  */
- 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -68,7 +68,7 @@ typedef struct jcfParser_Ctx_struct jcfParser, * pjcfParser;
 //          constant conditional,							- ANTLR realizes that a prediction is always true (synpred usually)
 //          initialized but unused variable					- tree rewrite variables declared but not needed
 //          Unreferenced local variable						- lexer rule declares but does not always use _type
-//          potentially unitialized variable used			- retval always returned from a rule 
+//          potentially unitialized variable used			- retval always returned from a rule
 //			unreferenced local function has been removed	- susually getTokenNames or freeScope, they can go without warnigns
 //
 // These are only really displayed at warning level /W4 but that is the code ideal I am aiming at
@@ -89,7 +89,7 @@ typedef struct jcfParser_jsf_file_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_jsf_file_return;
 
@@ -100,7 +100,7 @@ typedef struct jcfParser_targets_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_targets_return;
 
@@ -111,7 +111,7 @@ typedef struct jcfParser_target_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_target_return;
 
@@ -122,7 +122,7 @@ typedef struct jcfParser_attributes_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_attributes_return;
 
@@ -133,7 +133,7 @@ typedef struct jcfParser_attribute_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_attribute_return;
 
@@ -144,7 +144,7 @@ typedef struct jcfParser_type_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_type_return;
 
@@ -155,7 +155,7 @@ typedef struct jcfParser_features_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_features_return;
 
@@ -166,7 +166,7 @@ typedef struct jcfParser_feature_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_feature_return;
 
@@ -177,7 +177,7 @@ typedef struct jcfParser_location_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_location_return;
 
@@ -188,7 +188,7 @@ typedef struct jcfParser_number_of_sources_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_number_of_sources_return;
 
@@ -199,7 +199,7 @@ typedef struct jcfParser_sources_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     jcfParser_sources_return;
 
@@ -255,7 +255,7 @@ ANTLR3_API pjcfParser jcfParserNewSSD      (pANTLR3_COMMON_TOKEN_STREAM instream
 #endif
 #ifdef	Tokens
 #undef	Tokens
-#endif 
+#endif
 #define TARGET      4
 #define ATTRIBUTES      5
 #define NOT_FEATURE      10

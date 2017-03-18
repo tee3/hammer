@@ -75,8 +75,8 @@ generator_registry::find_viable_generators(const target_type& t,
       return find_viable_generators(t, allow_composite, build_properties, /*full_match=*/false);
 }
 
-generator_registry::viable_generators_t 
-generator_registry::find_viable_generators(const target_type& t, 
+generator_registry::viable_generators_t
+generator_registry::find_viable_generators(const target_type& t,
                                            bool allow_composite,
                                            const feature_set& build_properties,
                                            bool full_match) const
@@ -85,7 +85,7 @@ generator_registry::find_viable_generators(const target_type& t,
    int rank = 0; // rank show as the weight of generator (the more rank the more generator suitable for generation this type of targets)
    for(generators_t::const_iterator i = generators_.begin(), last = generators_.end(); i != last; ++i)
    {
-      if ((i->second->is_composite() && !allow_composite) || 
+      if ((i->second->is_composite() && !allow_composite) ||
           (!i->second->is_composite() && allow_composite))
       {
          continue;

@@ -7,7 +7,7 @@
 namespace hammer
 {
    class build_node;
-   class build_environment; 
+   class build_environment;
 
    class argument_writer
    {
@@ -24,10 +24,10 @@ namespace hammer
 
          virtual argument_writer* clone() const = 0;
          virtual ~argument_writer() {}
-      
-      protected:   
+
+      protected:
          virtual void write_impl(std::ostream& output, const build_node& node, const build_environment& environment) const = 0;
-      
+
       private:
          std::string name_;
    };

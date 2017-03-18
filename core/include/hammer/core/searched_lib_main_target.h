@@ -14,7 +14,7 @@ namespace hammer
                                   const feature_set* props,
                                   const target_type& t);
          virtual std::vector<boost::intrusive_ptr<hammer::build_node> > generate() const;
-      
+
       private:
          const target_type* type_;
          const std::string lib_name_;

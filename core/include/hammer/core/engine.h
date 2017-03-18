@@ -53,16 +53,16 @@ namespace hammer
          ~engine();
 
       private:
-         typedef boost::unordered_map<const location_t, 
+         typedef boost::unordered_map<const location_t,
                                       boost::shared_ptr<project>,
                                       boost::hash<location_t>,
                                       location_equal_to> projects_t;
          struct project_alias_node;
-         typedef boost::unordered_map<location_t, 
+         typedef boost::unordered_map<location_t,
                                       boost::shared_ptr<project_alias_node>,
                                       boost::hash<location_t>,
                                       location_equal_to>  global_project_links_t;
-         
+
          struct project_alias_data
          {
             location_t location_;
@@ -70,26 +70,26 @@ namespace hammer
          };
 
          // map filesystem path on global alias node for a project
-         typedef boost::unordered_map<location_t, 
+         typedef boost::unordered_map<location_t,
                                       project_alias_data,
                                       boost::hash<location_t>,
                                       location_equal_to> reversed_global_project_links_t;
-         
+
          struct project_alias_node
          {
             typedef std::vector<project_alias_data> aliases_data_t;
 
-            // mapping associated with this node. One project symlink path such as /foo/bar 
+            // mapping associated with this node. One project symlink path such as /foo/bar
             // can be mapped on many different filesystem paths
-            aliases_data_t aliases_data_; 
-            
+            aliases_data_t aliases_data_;
+
             global_project_links_t project_symlinks_;
          };
 
          struct resolved_project_symlink_t
          {
-            resolved_project_symlink_t(const location_t& tail, 
-                                       const project_alias_node::aliases_data_t& symlinks_data) 
+            resolved_project_symlink_t(const location_t& tail,
+                                       const project_alias_node::aliases_data_t& symlinks_data)
                                        : tail_(tail),
                                          symlinks_data_(&symlinks_data)
             {
@@ -101,8 +101,8 @@ namespace hammer
          };
          typedef std::vector<resolved_project_symlink_t> resolved_project_symlinks_t;
 
-         typedef std::map<const project*, 
-                          boost::unordered_map<location_t /* alias */, 
+         typedef std::map<const project*,
+                          boost::unordered_map<location_t /* alias */,
                                                std::string /* map to */,
                                                boost::hash<location_t>,
                                                location_equal_to> > use_project_data_t;
@@ -110,7 +110,7 @@ namespace hammer
          projects_t projects_;
          global_project_links_t global_project_links_;
          reversed_global_project_links_t reversed_global_project_links_;
-         
+
          boost::shared_ptr<type_registry> type_registry_;
          hammer::feature_registry* feature_registry_;
          hammer::call_resolver resolver_;
@@ -144,10 +144,10 @@ namespace hammer
          void prebuilt_lib_rule(project* p, std::string& name,
                                 sources_decl* sources, std::string& lib_filename,
                                 requirements_decl* requirements, requirements_decl* usage_requirements);
-         void file_rule(project* p, 
+         void file_rule(project* p,
                         std::vector<std::string>& name,
                         std::string& filename,
-                        requirements_decl* requirements, 
+                        requirements_decl* requirements,
                         requirements_decl* usage_requirements);
          void header_lib_rule(project* p, std::vector<std::string>& name, sources_decl* sources,
                               requirements_decl* fs, feature_set* default_build, requirements_decl* usage_requirements);
@@ -157,11 +157,11 @@ namespace hammer
                        feature_set* default_build, requirements_decl* usage_requirements);
          void pch_rule(project* p, std::string& name, sources_decl& sources, requirements_decl* fs,
                        feature_set* default_build, requirements_decl* usage_requirements);
-         void alias_rule(project* p, 
+         void alias_rule(project* p,
                          std::string& name,
-                         sources_decl* sources, 
-                         requirements_decl* fs, 
-                         feature_set* default_build, 
+                         sources_decl* sources,
+                         requirements_decl* fs,
+                         feature_set* default_build,
                          requirements_decl* usage_requirements);
          void version_alias_rule(project* p,
                                  std::string& name,
@@ -173,10 +173,10 @@ namespace hammer
                                         const std::string* target_path);
          void test_suite_rule(project* p,
                               std::string& name,
-                              sources_decl& sources, 
+                              sources_decl& sources,
                               sources_decl* propagated_sources);
-         sources_decl testing_run_rule(project* p, 
-                                       sources_decl* sources, 
+         sources_decl testing_run_rule(project* p,
+                                       sources_decl* sources,
                                        std::vector<std::string>* args,
                                        std::vector<std::string>* input_files,
                                        requirements_decl* requirements,
@@ -225,7 +225,7 @@ namespace hammer
          const_iterator end() const { return projects_.end(); }
          project& front() const { return *projects_.front(); }
          bool is_single() const { return projects_.size() == 1; }
-         loaded_projects_t& operator +=(const loaded_projects_t& rhs) 
+         loaded_projects_t& operator +=(const loaded_projects_t& rhs)
          {
             projects_.insert(projects_.end(), rhs.projects_.begin(), rhs.projects_.end());
             return *this;
@@ -235,7 +235,7 @@ namespace hammer
          feature_set* resolve_undefined_features(const feature_set& s);
          bool empty() const { return projects_.empty(); }
 
-      private:      
+      private:
          projects_t projects_;
 
          loaded_projects_t() {};

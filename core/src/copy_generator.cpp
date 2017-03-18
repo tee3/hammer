@@ -21,11 +21,11 @@ using namespace boost::assign;
 
 namespace hammer{
 namespace{
-   
+
    class copy_action : public build_action
    {
       public:
-         copy_action(const target_type& tag_type) 
+         copy_action(const target_type& tag_type)
             : build_action("copy file"),
               tag_writer_("", tag_type)
          {}
@@ -35,7 +35,7 @@ namespace{
       protected:
          virtual bool execute_impl(const build_node& node, const build_environment& environment) const;
          virtual void clean_on_fail(const build_node& node, const build_environment& environment) const;
-      
+
       private:
          product_argument_writer tag_writer_;
    };
@@ -52,13 +52,13 @@ namespace{
       assert(node.products_.size() == 1);
       assert(node.sources_.size() == 1);
 
-      location_t destination = node.products_.front()->location() / 
+      location_t destination = node.products_.front()->location() /
                                node.products_.front()->name();
-      location_t source = node.sources_.front().source_target_->location() / 
+      location_t source = node.sources_.front().source_target_->location() /
                           node.sources_.front().source_target_->name();
       destination.normalize();
       source.normalize();
-      
+
       if (exists(destination))
          environment.remove(destination);
 
@@ -86,7 +86,7 @@ typedef std::vector<boost::intrusive_ptr<build_node> > nodes_t;
 typedef std::set<const build_node*> visited_nodes_t;
 
 build_nodes_t
-copy_generator::construct(const target_type& type_to_construct, 
+copy_generator::construct(const target_type& type_to_construct,
                           const feature_set& props,
                           const nodes_t& sources,
                           const basic_target* t,
@@ -97,11 +97,11 @@ copy_generator::construct(const target_type& type_to_construct,
    assert(composite_target_name);
 
    const copy_main_target& true_owner = static_cast<const copy_main_target&>(owner);
-   
+
    nodes_t result;
    build_node::sources_t collected_nodes;
    visited_nodes_t visited_nodes;
-   collect_nodes(collected_nodes, visited_nodes, sources, 
+   collect_nodes(collected_nodes, visited_nodes, sources,
                  true_owner.types_to_copy(), true_owner.recursive());
 
    result.reserve(collected_nodes.size());

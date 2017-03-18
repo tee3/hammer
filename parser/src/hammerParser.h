@@ -4,7 +4,7 @@
  *     -  From the grammar source file : hammer.g
  *     -                            On : 2016-11-27 09:55:58
  *     -                for the parser : hammerParserParser *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -13,7 +13,7 @@
  * which will invoke the code for the associated rule in the source grammar
  * assuming that the input stream is pointing to a token/text stream that could begin
  * this rule.
- * 
+ *
  * For instance if you call the first (topmost) rule in a parser grammar, you will
  * get the results of a full parse, but calling a rule half way through the grammar will
  * allow you to pass part of a full token stream to the parser, such as for syntax checking
@@ -51,12 +51,12 @@
  *  - hammerParser_list_of_return      phammerParser->list_of(phammerParser)
  *  - hammerParser_list_of_impl_return      phammerParser->list_of_impl(phammerParser)
  *  - hammerParser_public_tag_return      phammerParser->public_tag(phammerParser)
- * 
- * 
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
+ *
+ *
  *
  * The return type for any particular rule is of course determined by the source
  * grammar file.
@@ -73,7 +73,7 @@
 /* End of standard antlr 3 runtime definitions
  * =============================================================================
  */
- 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -92,7 +92,7 @@ typedef struct hammerParser_Ctx_struct hammerParser, * phammerParser;
 //          constant conditional,							- ANTLR realizes that a prediction is always true (synpred usually)
 //          initialized but unused variable					- tree rewrite variables declared but not needed
 //          Unreferenced local variable						- lexer rule declares but does not always use _type
-//          potentially unitialized variable used			- retval always returned from a rule 
+//          potentially unitialized variable used			- retval always returned from a rule
 //			unreferenced local function has been removed	- susually getTokenNames or freeScope, they can go without warnigns
 //
 // These are only really displayed at warning level /W4 but that is the code ideal I am aiming at
@@ -118,7 +118,7 @@ typedef struct hammerParser_hamfile_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_hamfile_return;
 
@@ -129,7 +129,7 @@ typedef struct hammerParser_target_decl_or_rule_call_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_target_decl_or_rule_call_return;
 
@@ -140,7 +140,7 @@ typedef struct hammerParser_target_decl_or_rule_call_impl_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_target_decl_or_rule_call_impl_return;
 
@@ -151,7 +151,7 @@ typedef struct hammerParser_arguments_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_arguments_return;
 
@@ -162,7 +162,7 @@ typedef struct hammerParser_args_leaf_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_args_leaf_return;
 
@@ -173,7 +173,7 @@ typedef struct hammerParser_non_empty_argument_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_non_empty_argument_return;
 
@@ -184,7 +184,7 @@ typedef struct hammerParser_named_argument_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_named_argument_return;
 
@@ -195,7 +195,7 @@ typedef struct hammerParser_named_argument_expression_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_named_argument_expression_return;
 
@@ -206,7 +206,7 @@ typedef struct hammerParser_argument_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_argument_return;
 
@@ -217,7 +217,7 @@ typedef struct hammerParser_argument_name_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_argument_name_return;
 
@@ -228,7 +228,7 @@ typedef struct hammerParser_expression_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_expression_return;
 
@@ -239,7 +239,7 @@ typedef struct hammerParser_feature_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_feature_return;
 
@@ -250,7 +250,7 @@ typedef struct hammerParser_feature_value_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_feature_value_return;
 
@@ -261,7 +261,7 @@ typedef struct hammerParser_requirement_set_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_requirement_set_return;
 
@@ -272,7 +272,7 @@ typedef struct hammerParser_requirement_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_requirement_return;
 
@@ -283,7 +283,7 @@ typedef struct hammerParser_requirement_impl_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_requirement_impl_return;
 
@@ -294,7 +294,7 @@ typedef struct hammerParser_conditional_requirement_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_conditional_requirement_return;
 
@@ -305,7 +305,7 @@ typedef struct hammerParser_condition_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_condition_return;
 
@@ -316,7 +316,7 @@ typedef struct hammerParser_path_like_seq_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_path_like_seq_return;
 
@@ -327,7 +327,7 @@ typedef struct hammerParser_path_like_seq_impl_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_path_like_seq_impl_return;
 
@@ -338,7 +338,7 @@ typedef struct hammerParser_target_ref_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_target_ref_return;
 
@@ -349,7 +349,7 @@ typedef struct hammerParser_target_ref_impl_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_target_ref_impl_return;
 
@@ -360,7 +360,7 @@ typedef struct hammerParser_target_name_seq_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_target_name_seq_return;
 
@@ -371,7 +371,7 @@ typedef struct hammerParser_target_requirements_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_target_requirements_return;
 
@@ -382,7 +382,7 @@ typedef struct hammerParser_list_of_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_list_of_return;
 
@@ -393,7 +393,7 @@ typedef struct hammerParser_list_of_impl_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_list_of_impl_return;
 
@@ -404,7 +404,7 @@ typedef struct hammerParser_public_tag_return_struct
     pANTLR3_COMMON_TOKEN    start;
     pANTLR3_COMMON_TOKEN    stop;
     pANTLR3_BASE_TREE	tree;
-   
+
 }
     hammerParser_public_tag_return;
 
@@ -482,7 +482,7 @@ ANTLR3_API phammerParser hammerParserNewSSD      (pANTLR3_COMMON_TOKEN_STREAM in
 #endif
 #ifdef	Tokens
 #undef	Tokens
-#endif 
+#endif
 #define EMPTY_EXPRESSION      12
 #define COMMENT      27
 #define T__33      33

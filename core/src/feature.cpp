@@ -10,11 +10,11 @@ namespace hammer{
 
 feature::feature(const feature_def* def,
                  const string& value)
-                : 
+                :
                  feature_base(def, value)
 {
-   if (!attributes().free && 
-       !attributes().no_checks && 
+   if (!attributes().free &&
+       !attributes().no_checks &&
        !def->is_legal_value(value))
    {
       throw std::runtime_error("Value '" + value + "' is not legal for feature '" + name() + "'");
@@ -24,7 +24,7 @@ feature::feature(const feature_def* def,
 feature::feature(const feature_def* def,
                  const string& value,
                  const subfeatures_t& subfeatures)
-                : 
+                :
                  feature_base(def, value),
                  subfeatures_(subfeatures)
 {
@@ -134,7 +134,7 @@ const subfeature* feature::find_subfeature(const std::string& v) const
    for(subfeatures_t::const_iterator i = subfeatures_.begin(), last = subfeatures_.end(); i != last; ++i)
       if ((**i).name() == v)
          return *i;
-   
+
    return NULL;
 }
 

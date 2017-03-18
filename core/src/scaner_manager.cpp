@@ -8,7 +8,7 @@ namespace hammer{
 
 struct scanner_manager::impl_t
 {
-   typedef boost::unordered_map<const target_type*, 
+   typedef boost::unordered_map<const target_type*,
                                 boost::shared_ptr<scanner> > scanners_t;
    scanners_t scanners_;
 };

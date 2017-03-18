@@ -54,9 +54,9 @@ struct c_scanner_context : public scanner_context
    struct included_file
    {
       included_file() {}
-      included_file(const hashed_location* path_part, 
+      included_file(const hashed_location* path_part,
                     const file_node* file,
-                    bool quoted) 
+                    bool quoted)
          : path_part_(path_part),
            file_(file),
            quoted_(quoted)
@@ -66,9 +66,9 @@ struct c_scanner_context : public scanner_context
       const file_node* file_;
       bool quoted_;
    };
-   
+
    typedef std::vector<included_file> included_files_t;
-   typedef boost::unordered_map<std::pair<const hashed_location*, const hashed_location*>, 
+   typedef boost::unordered_map<std::pair<const hashed_location*, const hashed_location*>,
                                 included_files_t> included_files_cache_t;
    struct file_node
    {
@@ -82,8 +82,8 @@ struct c_scanner_context : public scanner_context
       struct file_info
       {
          file_info() : included_files_(NULL) {}
-         file_info(const ptime& timestamp) 
-            : included_files_(NULL), 
+         file_info(const ptime& timestamp)
+            : included_files_(NULL),
               timestamp_(timestamp)
          {}
 
@@ -94,7 +94,7 @@ struct c_scanner_context : public scanner_context
       };
 
       typedef boost::unordered_map<const hashed_location*, file_info> file_infos_t;
-      
+
       file_node() : filename_(NULL) {}
 
       const hashed_location* filename_;
@@ -118,10 +118,10 @@ struct c_scanner_context : public scanner_context
    typedef boost::unordered_set<const hashed_location*> suffixes_dirs_t;
    typedef boost::unordered_set<const hashed_location*> bad_suffixes_t;
    typedef boost::unordered_set<const hashed_location*> public_dirs_t;
-   typedef boost::unordered_map<std::pair<const hashed_location*, 
-                                          const hashed_location*>, 
+   typedef boost::unordered_map<std::pair<const hashed_location*,
+                                          const hashed_location*>,
                                 const hashed_location*> normalization_cache_t;
-   
+
    struct suffix_node;
    typedef boost::ptr_unordered_map<const hashed_location* /* path_element */ , suffix_node> suffix_nodes_t;
    typedef boost::ptr_vector<dir_node_t> all_dir_nodes_t;
@@ -142,8 +142,8 @@ struct c_scanner_context : public scanner_context
    };
 
    c_scanner_context(const c_scanner& owner,
-                     const build_environment& env) 
-      : owner_(owner), 
+                     const build_environment& env)
+      : owner_(owner),
         pattern_("^\\s*#\\s*include\\s*(?:(?:\"([^\"]+)\")|(?:<([^>]+)>))"),
         env_(env),
         cache_is_valid_(false)
@@ -151,7 +151,7 @@ struct c_scanner_context : public scanner_context
        if (env.cache_directory() != NULL)
           try_load_cache();
    }
-   
+
    ~c_scanner_context()
    {
       if (env_.cache_directory() != NULL && cache_is_valid_ == false)
@@ -177,24 +177,24 @@ struct c_scanner_context : public scanner_context
    bool load_directory(const hashed_location& dir, dir_node_t& cur_dir_node, suffix_node* cur_suffix_node) const;
    void load_directory(const hashed_location& dir) const;
    void preload_for_suffix(const hashed_location& path_part) const;
-   void load_directories_with_suffix(location_t::const_iterator first, 
-                                     location_t::const_iterator last, 
+   void load_directories_with_suffix(location_t::const_iterator first,
+                                     location_t::const_iterator last,
                                      dir_node_t& d_node) const;
    void load_directories_with_suffix(const hashed_location& suffix, bool bad_suffix) const;
    void load_directory_using_suffixes(const hashed_location& dir) const;
-   void add_new_suffix_to_tree(location_t::const_iterator first, 
-                               location_t::const_iterator last, 
+   void add_new_suffix_to_tree(location_t::const_iterator first,
+                               location_t::const_iterator last,
                                suffix_node& s_node) const;
    const included_files_t& extract_includes(const hashed_location& file_dir,
                                             const hashed_location& fileName) const;
    included_file make_included_file(const location_t& include_path, bool quoted) const;
 
-   ptime calculate_timestamp(const hashed_location& origin_dir, 
-                             const hashed_location& relative_file_path, 
+   ptime calculate_timestamp(const hashed_location& origin_dir,
+                             const hashed_location& relative_file_path,
                              const directories_t& include_dirs,
                              visited_nodes_t& visited_nodes);
-   ptime calculate_timestamp_for_known_file(const hashed_location& origin_dir, 
-                                            const file_node::file_info& file, 
+   ptime calculate_timestamp_for_known_file(const hashed_location& origin_dir,
+                                            const file_node::file_info& file,
                                             const directories_t& include_dirs,
                                             visited_nodes_t& visited_nodes);
 
@@ -215,7 +215,7 @@ struct c_scanner_context : public scanner_context
    mutable all_dir_nodes_t all_dir_nodes_;
    mutable dir_node_t public_dirs_tree_;
    mutable suffix_node suffixes_tree_;
-       
+
    mutable bool cache_is_valid_;
 };
 
@@ -323,7 +323,7 @@ bool c_scanner_context::load_directory(const hashed_location& dir, dir_node_t& c
             cur_dir_node.nodes_.insert(make_pair(element, boost::ref(*new_dir_node)));
             ldr.directory_content_.insert(make_pair(element, boost::ref(*new_dir_node)));
             all_dir_nodes_.push_back(new_dir_node);
-            
+
             if (cur_suffix_node != NULL)
             {
                suffix_nodes_t::iterator r = cur_suffix_node->nodes_.find(element);
@@ -337,7 +337,7 @@ bool c_scanner_context::load_directory(const hashed_location& dir, dir_node_t& c
          if (!is_directory(st))
          {
             const hashed_location* filename = get_cached_location(i->path().filename()).first;
-            
+
             file_node& file = file_nodes_[filename];
             if (file.filename_ == NULL)
                file.filename_ = filename;
@@ -381,8 +381,8 @@ static bool is_bad_suffix(const location_t& suffix)
    return false;
 }
 
-void c_scanner_context::add_new_suffix_to_tree(location_t::const_iterator first, 
-                                               location_t::const_iterator last, 
+void c_scanner_context::add_new_suffix_to_tree(location_t::const_iterator first,
+                                               location_t::const_iterator last,
                                                suffix_node& s_node) const
 {
    if (first == last)
@@ -396,12 +396,12 @@ void c_scanner_context::add_new_suffix_to_tree(location_t::const_iterator first,
       new_node->path_element_ = element;
       i = s_node.nodes_.insert(element, new_node).first;
    }
-   
+
    add_new_suffix_to_tree(++first, last, *i->second);
 }
 
-void c_scanner_context::load_directories_with_suffix(location_t::const_iterator first, 
-                                                     location_t::const_iterator last, 
+void c_scanner_context::load_directories_with_suffix(location_t::const_iterator first,
+                                                     location_t::const_iterator last,
                                                      dir_node_t& d_node) const
 {
    const hashed_location* cur_element = get_cached_location(*first).first;
@@ -411,7 +411,7 @@ void c_scanner_context::load_directories_with_suffix(location_t::const_iterator 
       if (!i->second.get().loaded_)
          load_directory(*i->second.get().full_dir_path_, i->second, NULL);
    }
-   
+
    ++first;
    if (first == last)
       return;
@@ -449,7 +449,7 @@ void c_scanner_context::load_directory_using_suffixes(const hashed_location& dir
    // good suffixes already processed by load_directory
 }
 
-static bool find_timestamp(ptime& result, 
+static bool find_timestamp(ptime& result,
                            const c_scanner_context::file_node::file_infos_t& file_infos,
                            const hashed_location& dir)
 {
@@ -463,8 +463,8 @@ static bool find_timestamp(ptime& result,
       return false;
 }
 
-ptime c_scanner_context::calculate_timestamp_for_known_file(const hashed_location& file_dir, 
-                                                            const file_node::file_info& file, 
+ptime c_scanner_context::calculate_timestamp_for_known_file(const hashed_location& file_dir,
+                                                            const file_node::file_info& file,
                                                             const directories_t& include_dirs,
                                                             visited_nodes_t& visited_nodes)
 {
@@ -487,8 +487,8 @@ ptime c_scanner_context::calculate_timestamp_for_known_file(const hashed_locatio
          const hashed_location& included_file_dir = add_and_normalize(file_dir, *i->path_part_);
          if (find_timestamp(result, i->file_->file_infos_, included_file_dir))
          {
-            result = (std::max)(result, calculate_timestamp(included_file_dir, 
-                                                            *i->file_->filename_, 
+            result = (std::max)(result, calculate_timestamp(included_file_dir,
+                                                            *i->file_->filename_,
                                                             include_dirs,
                                                             visited_nodes));
             continue;
@@ -509,12 +509,12 @@ ptime c_scanner_context::calculate_timestamp_for_known_file(const hashed_locatio
                // add trailing dot
                if (s.size() > 1 && *s.rbegin() == '/')
                   s += '.';
-               
+
                const hashed_location* l = get_cached_location(s).first;
                if (find(include_dirs.begin(), include_dirs.end(), l) != include_dirs.end())
                {
-                  result = (std::max)(result, calculate_timestamp(*i->file_->file_infos_.begin()->first, 
-                                                                  *i->file_->filename_, 
+                  result = (std::max)(result, calculate_timestamp(*i->file_->file_infos_.begin()->first,
+                                                                  *i->file_->filename_,
                                                                   include_dirs,
                                                                   visited_nodes));
                   continue;
@@ -529,8 +529,8 @@ ptime c_scanner_context::calculate_timestamp_for_known_file(const hashed_locatio
 
          if (find_timestamp(result, i->file_->file_infos_, included_file_dir))
          {
-            result = (std::max)(result, calculate_timestamp(included_file_dir, 
-                                                            *i->file_->filename_, 
+            result = (std::max)(result, calculate_timestamp(included_file_dir,
+                                                            *i->file_->filename_,
                                                             include_dirs,
                                                             visited_nodes));
             break;
@@ -543,8 +543,8 @@ ptime c_scanner_context::calculate_timestamp_for_known_file(const hashed_locatio
    return result;
 }
 
-ptime c_scanner_context::calculate_timestamp(const hashed_location& file_dir, 
-                                             const hashed_location& filename, 
+ptime c_scanner_context::calculate_timestamp(const hashed_location& file_dir,
+                                             const hashed_location& filename,
                                              const directories_t& include_dirs,
                                              visited_nodes_t& visited_nodes)
 {
@@ -556,7 +556,7 @@ ptime c_scanner_context::calculate_timestamp(const hashed_location& file_dir,
       if (fi != file.file_infos_.end())
       {
          //file_node::file_info& fi_ref = fi->second; // unused variable
-         if (fi->second.included_files_ == NULL || 
+         if (fi->second.included_files_ == NULL ||
              fi->second.timestamp_ != fi->second.cached_timestamp_)
          {
             fi->second.included_files_ = &extract_includes(file_dir, filename);
@@ -616,7 +616,7 @@ static location_t get_parent(const location_t& l)
       return parent / ".";
 }
 
-const c_scanner_context::directories_t& 
+const c_scanner_context::directories_t&
 c_scanner_context::get_include_dirs(const feature_set& properties)
 {
    features_2_dirs_t::const_iterator i = features_2_dirs_.find(&properties);
@@ -631,7 +631,7 @@ c_scanner_context::get_include_dirs(const feature_set& properties)
          l.normalize();
          pair<const hashed_location*, bool> r = get_cached_location(l);
          load_directory(*r.first);
-         
+
          result.push_back(r.first);
       }
 
@@ -639,7 +639,7 @@ c_scanner_context::get_include_dirs(const feature_set& properties)
    }
 }
 
-boost::posix_time::ptime c_scanner::process(const basic_target& t, 
+boost::posix_time::ptime c_scanner::process(const basic_target& t,
                                             scanner_context& context_outer) const
 {
    c_scanner_context& context = static_cast<c_scanner_context&>(context_outer);
@@ -651,8 +651,8 @@ boost::posix_time::ptime c_scanner::process(const basic_target& t,
    const hashed_location& file_dir = *context.get_cached_location(get_parent(target_path)).first;
    context.load_directory(file_dir);
    c_scanner_context::visited_nodes_t visited_nodes;
-   ptime result = context.calculate_timestamp(file_dir, 
-                                              *context.get_cached_location(target_path.filename()).first, 
+   ptime result = context.calculate_timestamp(file_dir,
+                                              *context.get_cached_location(target_path.filename()).first,
                                               include_files_dirs,
                                               visited_nodes);
    // Since our scanner is not perfect we just not report 'something not founded' errors
@@ -664,7 +664,7 @@ boost::posix_time::ptime c_scanner::process(const basic_target& t,
 
 boost::shared_ptr<scanner_context> c_scanner::create_context(const build_environment& env) const
 {
-   boost::shared_ptr<scanner_context> result = context_.lock();   
+   boost::shared_ptr<scanner_context> result = context_.lock();
    if (!result)
    {
       result.reset(new c_scanner_context(*this, env));
@@ -686,7 +686,7 @@ void c_scanner_context::preload_for_suffix(const hashed_location& path_part) con
          load_directories_with_suffix(path_part, false);
 }
 
-c_scanner_context::included_file 
+c_scanner_context::included_file
 c_scanner_context::make_included_file(const location_t& include_path, bool quoted) const
 {
    const hashed_location* path_part = get_cached_location(get_parent(include_path)).first;
@@ -697,12 +697,12 @@ c_scanner_context::make_included_file(const location_t& include_path, bool quote
    if (file.filename_ == NULL)
       file.filename_ = filename;
 
-   return included_file(path_part, 
+   return included_file(path_part,
                         &file,
                         quoted);
 }
 
-const c_scanner_context::included_files_t& 
+const c_scanner_context::included_files_t&
 c_scanner_context::extract_includes(const hashed_location& file_dir,
                                     const hashed_location& filename) const
 {
@@ -724,7 +724,7 @@ c_scanner_context::extract_includes(const hashed_location& file_dir,
 			  result.push_back(make_included_file(l, false));
 		  }
       }
-      
+
       cache_is_valid_ = false;
       return result;
    }
@@ -735,13 +735,13 @@ c_scanner_context::extract_includes(const hashed_location& file_dir,
 template<class Archive>
 void c_scanner_context::save(Archive& ar, const unsigned int version) const
 {
-   typedef boost::unordered_set<const hashed_location*> reduced_locations_t;   
+   typedef boost::unordered_set<const hashed_location*> reduced_locations_t;
    reduced_locations_t reduced_locations;
 
    for(included_files_cache_t::const_iterator i = included_files_cache_.begin(), last = included_files_cache_.end(); i != last; ++i)
    {
-      reduced_locations.insert(i->first.first); 
-      reduced_locations.insert(i->first.second); 
+      reduced_locations.insert(i->first.first);
+      reduced_locations.insert(i->first.second);
 
       for(included_files_t::const_iterator j = i->second.begin(), j_last = i->second.end(); j != j_last; ++j)
       {
@@ -778,9 +778,9 @@ void c_scanner_context::save(Archive& ar, const unsigned int version) const
    {
       size = i->second.size();
 
-      ar & size 
-         & location_remapper[i->first.first] 
-         & location_remapper[i->first.second] 
+      ar & size
+         & location_remapper[i->first.first]
+         & location_remapper[i->first.second]
          & file_nodes_[i->first.second].file_infos_[i->first.first].timestamp_;
 
       for(included_files_t::const_iterator j = i->second.begin(), j_last = i->second.end(); j != j_last; ++j)
@@ -802,7 +802,7 @@ void c_scanner_context::load(Archive & ar, const unsigned int version)
    string tmp_location;
    for(size_t i = 0; i < size; ++i)
    {
-      ar & tmp_location;   
+      ar & tmp_location;
       locations_index[i] = &*locations_.insert(tmp_location).first;
    }
 
@@ -825,15 +825,15 @@ void c_scanner_context::load(Archive & ar, const unsigned int version)
 
       ar & j_size & file_dir_idx & filename_idx & cached_timestamp;
 
-      included_files_t& included_files = included_files_cache_[make_pair(locations_index[file_dir_idx], 
+      included_files_t& included_files = included_files_cache_[make_pair(locations_index[file_dir_idx],
                                                                          locations_index[filename_idx])];
       included_files.resize(j_size);
       for(size_t j = 0; j < j_size; ++j)
       {
          unsigned long include_prefix_idx, file_idx;
-         
+
          ar & include_prefix_idx & file_idx & included_files[j].quoted_;
-         
+
          preload_for_suffix(*locations_index[include_prefix_idx]);
 
          included_files[j].path_part_ = locations_index[include_prefix_idx];
@@ -847,7 +847,7 @@ void c_scanner_context::load(Archive & ar, const unsigned int version)
       file_node::file_info& fi = file.file_infos_[locations_index[file_dir_idx]];
       fi.included_files_ = &included_files;
       fi.cached_timestamp_ = cached_timestamp;
-      
+
       assert(fi.cached_timestamp_ != not_a_date_time);
    }
 }

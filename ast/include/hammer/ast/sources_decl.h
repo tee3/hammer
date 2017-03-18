@@ -9,9 +9,9 @@ class sources_decl : public expression
 {
    public:
       sources_decl(const expression* sources)
-         : sources_(sources) 
+         : sources_(sources)
       {}
-      
+
       const expression* sources() const { return sources_; }
       parscore::source_location start_loc() const override { return sources_->start_loc(); }
       bool accept(visitor& v) const override;

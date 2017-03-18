@@ -8,9 +8,9 @@ namespace hammer
    class obj_meta_target : public typed_meta_target
    {
       public:
-         obj_meta_target(hammer::project* p, 
+         obj_meta_target(hammer::project* p,
                          const std::string& name,
-                         const requirements_decl& req, 
+                         const requirements_decl& req,
                          const requirements_decl& usage_req);
       protected:
          virtual main_target* construct_main_target(const main_target* owner, const feature_set* properties) const;

@@ -5,7 +5,7 @@
 
 namespace hammer{
 
-searched_lib_meta_target::searched_lib_meta_target(hammer::project* p, 
+searched_lib_meta_target::searched_lib_meta_target(hammer::project* p,
                                                    const std::string& name,
                                                    const std::string& lib_name,
                                                    const requirements_decl& props,
@@ -16,11 +16,11 @@ searched_lib_meta_target::searched_lib_meta_target(hammer::project* p,
     lib_name_(lib_name)
  {}
 
-main_target* 
-searched_lib_meta_target::construct_main_target(const main_target* owner, 
+main_target*
+searched_lib_meta_target::construct_main_target(const main_target* owner,
                                                 const feature_set* properties) const
 {
-   main_target* mt = new searched_lib_main_target(this, 
+   main_target* mt = new searched_lib_main_target(this,
                                                   name(),
                                                   lib_name_,
                                                   properties,

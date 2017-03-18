@@ -4,7 +4,7 @@
  *     -  From the grammar source file : hammer.g
  *     -                            On : 2016-11-27 09:55:58
  *     -                 for the lexer : hammerLexerLexer *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -41,7 +41,7 @@ static ANTLR3_UCHAR	lit_2[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
  * confusing the reader of the generated output, who may not wish to know the gory
  * details of the interface inheritance.
  */
- 
+
 #define		CTX	ctx
 
 /* Aids in accessing scopes for grammar programmers
@@ -55,12 +55,12 @@ static ANTLR3_UCHAR	lit_2[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
 #define	SCOPE_SIZE(scope)			(ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
 #define SCOPE_INSTANCE(scope, i)	(ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope),i))
 
- 
+
 /* Macros for accessing things in a lexer
  */
 #undef	    LEXER
-#undef	    RECOGNIZER		    
-#undef	    RULEMEMO		    
+#undef	    RECOGNIZER
+#undef	    RULEMEMO
 #undef	    GETCHARINDEX
 #undef	    GETLINE
 #undef	    GETCHARPOSITIONINLINE
@@ -157,7 +157,7 @@ static ANTLR3_UCHAR	lit_2[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
 
 # else
 
-#  define	    NEXTCHAR			((pANTLR3_UINT16)(INPUT->nextChar)) 
+#  define	    NEXTCHAR			((pANTLR3_UINT16)(INPUT->nextChar))
 #  define	    DATAP				((pANTLR3_UINT16)(INPUT->data))
 
 # endif
@@ -248,7 +248,7 @@ static void
 hammerLexerFree  (phammerLexer ctx)
 {
     LEXER->free(LEXER);
-    
+
     ANTLR3_FREE(ctx);
 }
 
@@ -266,11 +266,11 @@ static const char * getGrammarFileName()
 /** \brief Create a new lexer called hammerLexer
  *
  * \param[in]    instream Pointer to an initialized input stream
- * \return 
+ * \return
  *     - Success phammerLexer initialized for the lex start
  *     - Fail NULL
  */
-ANTLR3_API phammerLexer hammerLexerNew         
+ANTLR3_API phammerLexer hammerLexerNew
 (pANTLR3_INPUT_STREAM instream)
 {
 	// See if we can create a new lexer with the standard constructor
@@ -282,11 +282,11 @@ ANTLR3_API phammerLexer hammerLexerNew
  *
  * \param[in]    instream Pointer to an initialized input stream
  * \param[state] state Previously created shared recognizer stat
- * \return 
+ * \return
  *     - Success phammerLexer initialized for the lex start
  *     - Fail NULL
  */
-ANTLR3_API phammerLexer hammerLexerNewSSD         
+ANTLR3_API phammerLexer hammerLexerNewSSD
 (pANTLR3_INPUT_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
     phammerLexer ctx; // Context structure we will build and return
@@ -304,16 +304,16 @@ ANTLR3_API phammerLexer hammerLexerNewSSD
      * in base ANTLR3 structures. We initialize the function pointers
      * for the standard ANTLR3 lexer function set, but upon return
      * from here, the programmer may set the pointers to provide custom
-     * implementations of each function. 
+     * implementations of each function.
      *
      * We don't use the macros defined in hammerLexer.h here so you can get a sense
      * of what goes where.
      */
-    
+
     /* Create a base lexer, using the supplied input stream
      */
     ctx->pLexer	= antlr3LexerNewStream(ANTLR3_SIZE_HINT, instream, state);
-    
+
     /* Check that we allocated the memory correctly
      */
     if	(ctx->pLexer == NULL)
@@ -342,22 +342,22 @@ ANTLR3_API phammerLexer hammerLexerNewSSD
     ctx->mCOMMENT	= mCOMMENT;
     ctx->mWS	= mWS;
     ctx->mTokens	= mTokens;
-    
+
     /** When the nextToken() call is made to this lexer's pANTLR3_TOKEN_SOURCE
      *  it will call mTokens() in this generated code, and will pass it the ctx
      * pointer of this lexer, not the context of the base lexer, so store that now.
      */
     ctx->pLexer->ctx	    = ctx;
-    
+
     /**Install the token matching function
      */
     ctx->pLexer->mTokens = (void (*) (void *))(mTokens);
-    
+
     ctx->getGrammarFileName	= getGrammarFileName;
     ctx->free		= hammerLexerFree;
 
-    
-    
+
+
 
 
     /* Return the newly built lexer to the caller
@@ -392,7 +392,7 @@ static const ANTLR3_INT32 dfa6_accept[18] =
 	-1, 1, 2, 3, 4, 5, 6, -1, 8, 9, 11, 12, 13, 14, 15, 16, 7, 10
     };
 static const ANTLR3_INT32 dfa6_special[18] =
-    {	
+    {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
     };
 
@@ -401,12 +401,12 @@ static const ANTLR3_INT32 dfa6_special[18] =
 
 static const ANTLR3_INT32 dfa6_T0[] =
     {
-	15, -1, -1, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-	-1, -1, -1, -1, 15, -1, 11, 14, -1, -1, -1, -1, 4, 5, 11, -1, 6, 11, 11, 
-	7, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 13, 2, 1, 3, -1, 10, 11, 
-	11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 
-	11, 11, 11, 11, 11, 11, 11, 8, -1, 9, -1, 11, -1, 11, 11, 11, 11, 11, 11, 
-	11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 
+	15, -1, -1, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, 15, -1, 11, 14, -1, -1, -1, -1, 4, 5, 11, -1, 6, 11, 11,
+	7, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 13, 2, 1, 3, -1, 10, 11,
+	11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+	11, 11, 11, 11, 11, 11, 11, 8, -1, 9, -1, 11, -1, 11, 11, 11, 11, 11, 11,
+	11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
 	11, 11
     };static const ANTLR3_INT32 dfa6_T1[] =
     {
@@ -418,10 +418,10 @@ static const ANTLR3_INT32 dfa6_T0[] =
  */
 static const ANTLR3_INT32 * const dfa6_transitions[] =
 {
-    dfa6_T0, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, 
-    dfa6_T_empty, dfa6_T1, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, 
-    dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, 
-    dfa6_T_empty	
+    dfa6_T0, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
+    dfa6_T_empty, dfa6_T1, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
+    dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
+    dfa6_T_empty
 };
 
 
@@ -432,7 +432,7 @@ ANTLR3_CYCLIC_DFA cdfa6
     =	{
 	    6,		    /* Decision number of this dfa	    */
 	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"1:1: Tokens : ( T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | SLASH | PUBLIC_TAG | ID | COLON | EXP_END | COMMENT | WS );",	
+	    (const pANTLR3_UCHAR)"1:1: Tokens : ( T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | SLASH | PUBLIC_TAG | ID | COLON | EXP_END | COMMENT | WS );",
 	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
 	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
 	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
@@ -444,13 +444,13 @@ ANTLR3_CYCLIC_DFA cdfa6
 	    dfa6_special,	/* Special transition states	    */
 	    dfa6_transitions	/* Table of transition tables	    */
 
-	};	    
+	};
 /* End of Cyclic DFA 6
  * ---------------------
- */ 
+ */
 /* =========================================================================
  * End of DFA tables for the lexer
- */ 
+ */
 
 /* =========================================================================
  * Functions to match the lexer grammar defined tokens from the input stream
@@ -473,14 +473,14 @@ void mT__28(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__28;
-       
-    
+
+
     // hammer.g:7:7: ( '=' )
     // hammer.g:7:9: '='
     {
-        MATCHC('='); 
+        MATCHC('=');
         if  (HASEXCEPTION())
         {
             goto ruleT__28Ex;
@@ -516,14 +516,14 @@ void mT__29(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__29;
-       
-    
+
+
     // hammer.g:8:7: ( '<' )
     // hammer.g:8:9: '<'
     {
-        MATCHC('<'); 
+        MATCHC('<');
         if  (HASEXCEPTION())
         {
             goto ruleT__29Ex;
@@ -559,14 +559,14 @@ void mT__30(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__30;
-       
-    
+
+
     // hammer.g:9:7: ( '>' )
     // hammer.g:9:9: '>'
     {
-        MATCHC('>'); 
+        MATCHC('>');
         if  (HASEXCEPTION())
         {
             goto ruleT__30Ex;
@@ -602,14 +602,14 @@ void mT__31(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__31;
-       
-    
+
+
     // hammer.g:10:7: ( '(' )
     // hammer.g:10:9: '('
     {
-        MATCHC('('); 
+        MATCHC('(');
         if  (HASEXCEPTION())
         {
             goto ruleT__31Ex;
@@ -645,14 +645,14 @@ void mT__32(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__32;
-       
-    
+
+
     // hammer.g:11:7: ( ')' )
     // hammer.g:11:9: ')'
     {
-        MATCHC(')'); 
+        MATCHC(')');
         if  (HASEXCEPTION())
         {
             goto ruleT__32Ex;
@@ -688,14 +688,14 @@ void mT__33(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__33;
-       
-    
+
+
     // hammer.g:12:7: ( ',' )
     // hammer.g:12:9: ','
     {
-        MATCHC(','); 
+        MATCHC(',');
         if  (HASEXCEPTION())
         {
             goto ruleT__33Ex;
@@ -731,14 +731,14 @@ void mT__34(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__34;
-       
-    
+
+
     // hammer.g:13:7: ( '//' )
     // hammer.g:13:9: '//'
     {
-        MATCHS(lit_1); 
+        MATCHS(lit_1);
         if  (HASEXCEPTION())
         {
             goto ruleT__34Ex;
@@ -775,14 +775,14 @@ void mT__35(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__35;
-       
-    
+
+
     // hammer.g:14:7: ( '[' )
     // hammer.g:14:9: '['
     {
-        MATCHC('['); 
+        MATCHC('[');
         if  (HASEXCEPTION())
         {
             goto ruleT__35Ex;
@@ -818,14 +818,14 @@ void mT__36(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = T__36;
-       
-    
+
+
     // hammer.g:15:7: ( ']' )
     // hammer.g:15:9: ']'
     {
-        MATCHC(']'); 
+        MATCHC(']');
         if  (HASEXCEPTION())
         {
             goto ruleT__36Ex;
@@ -861,14 +861,14 @@ void mSLASH(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = SLASH;
-       
-    
+
+
     // hammer.g:83:7: ( '/' )
     // hammer.g:83:9: '/'
     {
-        MATCHC('/'); 
+        MATCHC('/');
         if  (HASEXCEPTION())
         {
             goto ruleSLASHEx;
@@ -904,14 +904,14 @@ void mPUBLIC_TAG(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = PUBLIC_TAG;
-       
-    
+
+
     // hammer.g:84:12: ( '@' )
     // hammer.g:84:14: '@'
     {
-        MATCHC('@'); 
+        MATCHC('@');
         if  (HASEXCEPTION())
         {
             goto rulePUBLIC_TAGEx;
@@ -947,13 +947,13 @@ void mID(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = ID;
-       
-    
+
+
     {
         //  hammer.g:85:4: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '_' | '*' )+ | STRING )
-        
+
         ANTLR3_UINT32 alt2;
 
         alt2=2;
@@ -961,17 +961,17 @@ void mID(phammerLexer ctx)
 
         {
             int LA2_0 = LA(1);
-            if ( (LA2_0 == '*' || ((LA2_0 >= '-') && (LA2_0 <= '.')) || ((LA2_0 >= '0') && (LA2_0 <= '9')) || ((LA2_0 >= 'A') && (LA2_0 <= 'Z')) || LA2_0 == '_' || ((LA2_0 >= 'a') && (LA2_0 <= 'z'))) ) 
+            if ( (LA2_0 == '*' || ((LA2_0 >= '-') && (LA2_0 <= '.')) || ((LA2_0 >= '0') && (LA2_0 <= '9')) || ((LA2_0 >= 'A') && (LA2_0 <= 'Z')) || LA2_0 == '_' || ((LA2_0 >= 'a') && (LA2_0 <= 'z'))) )
             {
                 alt2=1;
             }
-            else if ( (LA2_0 == '"') ) 
+            else if ( (LA2_0 == '"') )
             {
                 alt2=2;
             }
-            else 
+            else
             {
-            
+
                 CONSTRUCTEX();
                 EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                 EXCEPTION->message      = (void *)"";
@@ -982,7 +982,7 @@ void mID(phammerLexer ctx)
                 goto ruleIDEx;
             }
         }
-        switch (alt2) 
+        switch (alt2)
         {
     	case 1:
     	    // hammer.g:85:6: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '_' | '*' )+
@@ -998,13 +998,13 @@ void mID(phammerLexer ctx)
     	        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
     	        	    */
     	        	    int LA1_0 = LA(1);
-    	        	    if ( (LA1_0 == '*' || ((LA1_0 >= '-') && (LA1_0 <= '.')) || ((LA1_0 >= '0') && (LA1_0 <= '9')) || ((LA1_0 >= 'A') && (LA1_0 <= 'Z')) || LA1_0 == '_' || ((LA1_0 >= 'a') && (LA1_0 <= 'z'))) ) 
+    	        	    if ( (LA1_0 == '*' || ((LA1_0 >= '-') && (LA1_0 <= '.')) || ((LA1_0 >= '0') && (LA1_0 <= '9')) || ((LA1_0 >= 'A') && (LA1_0 <= 'Z')) || LA1_0 == '_' || ((LA1_0 >= 'a') && (LA1_0 <= 'z'))) )
     	        	    {
     	        	        alt1=1;
     	        	    }
 
     	        	}
-    	        	switch (alt1) 
+    	        	switch (alt1)
     	        	{
     	        	    case 1:
     	        	        // hammer.g:
@@ -1014,7 +1014,7 @@ void mID(phammerLexer ctx)
     	        	                CONSUME();
 
     	        	            }
-    	        	            else 
+    	        	            else
     	        	            {
     	        	                CONSTRUCTEX();
     	        	                EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1028,7 +1028,7 @@ void mID(phammerLexer ctx)
     	        	        break;
 
     	        	    default:
-    	        	    
+
     	        		if ( cnt1 >= 1 )
     	        		{
     	        		    goto loop1;
@@ -1053,7 +1053,7 @@ void mID(phammerLexer ctx)
     	    // hammer.g:86:10: STRING
     	    {
     	        /* 86:10: STRING */
-    	        mSTRING(ctx ); 
+    	        mSTRING(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleIDEx;
@@ -1092,14 +1092,14 @@ void mCOLON(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = COLON;
-       
-    
+
+
     // hammer.g:87:7: ( ':' )
     // hammer.g:87:9: ':'
     {
-        MATCHC(':'); 
+        MATCHC(':');
         if  (HASEXCEPTION())
         {
             goto ruleCOLONEx;
@@ -1135,14 +1135,14 @@ void mEXP_END(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = EXP_END;
-       
-    
+
+
     // hammer.g:88:9: ( ';' )
     // hammer.g:88:11: ';'
     {
-        MATCHC(';'); 
+        MATCHC(';');
         if  (HASEXCEPTION())
         {
             goto ruleEXP_ENDEx;
@@ -1178,24 +1178,24 @@ void mSTRING(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-        
+
     // hammer.g:91:8: ( '\"' STRING_ID '\"' )
     // hammer.g:91:10: '\"' STRING_ID '\"'
     {
-        MATCHC('"'); 
+        MATCHC('"');
         if  (HASEXCEPTION())
         {
             goto ruleSTRINGEx;
         }
 
         /* 91:10: '\"' STRING_ID '\"' */
-        mSTRING_ID(ctx ); 
+        mSTRING_ID(ctx );
         if  (HASEXCEPTION())
         {
             goto ruleSTRINGEx;
         }
 
-        MATCHC('"'); 
+        MATCHC('"');
         if  (HASEXCEPTION())
         {
             goto ruleSTRINGEx;
@@ -1231,7 +1231,7 @@ void mSTRING_ID(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-        
+
     // hammer.g:93:11: ( ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )* )
     // hammer.g:93:13: ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )*
     {
@@ -1245,37 +1245,37 @@ void mSTRING_ID(phammerLexer ctx)
                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                 */
                 int LA3_0 = LA(1);
-                if ( (LA3_0 == '\\') ) 
+                if ( (LA3_0 == '\\') )
                 {
                     {
                        /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                         */
                         int LA3_2 = LA(2);
-                        if ( (LA3_2 == '"') ) 
+                        if ( (LA3_2 == '"') )
                         {
                             alt3=1;
                         }
 
-                        
-                        else 
+
+                        else
                         {
                     	alt3=2;
                         }
 
                     }
                 }
-                else if ( (((LA3_0 >= 0x0000) && (LA3_0 <= '\t')) || ((LA3_0 >= 0x000B) && (LA3_0 <= '\f')) || ((LA3_0 >= 0x000E) && (LA3_0 <= '!')) || ((LA3_0 >= '#') && (LA3_0 <= '[')) || ((LA3_0 >= ']') && (LA3_0 <= 0xFFFF))) ) 
+                else if ( (((LA3_0 >= 0x0000) && (LA3_0 <= '\t')) || ((LA3_0 >= 0x000B) && (LA3_0 <= '\f')) || ((LA3_0 >= 0x000E) && (LA3_0 <= '!')) || ((LA3_0 >= '#') && (LA3_0 <= '[')) || ((LA3_0 >= ']') && (LA3_0 <= 0xFFFF))) )
                 {
                     alt3=2;
                 }
 
             }
-            switch (alt3) 
+            switch (alt3)
             {
         	case 1:
         	    // hammer.g:93:14: '\\\\\"'
         	    {
-        	        MATCHS(lit_2); 
+        	        MATCHS(lit_2);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleSTRING_IDEx;
@@ -1293,7 +1293,7 @@ void mSTRING_ID(phammerLexer ctx)
         	            CONSUME();
 
         	        }
-        	        else 
+        	        else
         	        {
         	            CONSTRUCTEX();
         	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1343,14 +1343,14 @@ void mCOMMENT(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = COMMENT;
-       
-    
+
+
     // hammer.g:95:9: ( '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )? )
     // hammer.g:95:11: '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )?
     {
-        MATCHC('#'); 
+        MATCHC('#');
         if  (HASEXCEPTION())
         {
             goto ruleCOMMENTEx;
@@ -1366,13 +1366,13 @@ void mCOMMENT(phammerLexer ctx)
                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                 */
                 int LA4_0 = LA(1);
-                if ( (((LA4_0 >= 0x0000) && (LA4_0 <= '\t')) || ((LA4_0 >= 0x000B) && (LA4_0 <= '\f')) || ((LA4_0 >= 0x000E) && (LA4_0 <= 0xFFFF))) ) 
+                if ( (((LA4_0 >= 0x0000) && (LA4_0 <= '\t')) || ((LA4_0 >= 0x000B) && (LA4_0 <= '\f')) || ((LA4_0 >= 0x000E) && (LA4_0 <= 0xFFFF))) )
                 {
                     alt4=1;
                 }
 
             }
-            switch (alt4) 
+            switch (alt4)
             {
         	case 1:
         	    // hammer.g:95:16: ~ ( '\\n' | '\\r' )
@@ -1382,7 +1382,7 @@ void mCOMMENT(phammerLexer ctx)
         	            CONSUME();
 
         	        }
-        	        else 
+        	        else
         	        {
         	            CONSTRUCTEX();
         	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1408,12 +1408,12 @@ void mCOMMENT(phammerLexer ctx)
             int alt5=2;
             {
                 int LA5_0 = LA(1);
-                if ( (LA5_0 == '\n' || LA5_0 == '\r') ) 
+                if ( (LA5_0 == '\n' || LA5_0 == '\r') )
                 {
                     alt5=1;
                 }
             }
-            switch (alt5) 
+            switch (alt5)
             {
         	case 1:
         	    // hammer.g:
@@ -1423,7 +1423,7 @@ void mCOMMENT(phammerLexer ctx)
         	            CONSUME();
 
         	        }
-        	        else 
+        	        else
         	        {
         	            CONSTRUCTEX();
         	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1439,7 +1439,7 @@ void mCOMMENT(phammerLexer ctx)
             }
         }
         {
-             LEXSTATE->channel = HIDDEN; 
+             LEXSTATE->channel = HIDDEN;
         }
 
     }
@@ -1471,10 +1471,10 @@ void mWS(phammerLexer ctx)
 {
 	ANTLR3_UINT32	_type;
 
-   
+
     _type	    = WS;
-       
-    
+
+
     // hammer.g:97:4: ( ( ' ' | '\\n' | '\\r' ) )
     // hammer.g:97:6: ( ' ' | '\\n' | '\\r' )
     {
@@ -1483,7 +1483,7 @@ void mWS(phammerLexer ctx)
             CONSUME();
 
         }
-        else 
+        else
         {
             CONSTRUCTEX();
             EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
@@ -1508,12 +1508,12 @@ void mWS(phammerLexer ctx)
 /** This is the entry point in to the lexer from an object that
  *  wants to generate the next token, such as a pCOMMON_TOKEN_STREAM
  */
-static void 
+static void
 mTokens(phammerLexer ctx)
 {
     {
         //  hammer.g:1:8: ( T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | SLASH | PUBLIC_TAG | ID | COLON | EXP_END | COMMENT | WS )
-        
+
         ANTLR3_UINT32 alt6;
 
         alt6=16;
@@ -1524,13 +1524,13 @@ mTokens(phammerLexer ctx)
             goto ruleTokensEx;
         }
 
-        switch (alt6) 
+        switch (alt6)
         {
     	case 1:
     	    // hammer.g:1:10: T__28
     	    {
     	        /* 1:10: T__28 */
-    	        mT__28(ctx ); 
+    	        mT__28(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1543,7 +1543,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:16: T__29
     	    {
     	        /* 1:16: T__29 */
-    	        mT__29(ctx ); 
+    	        mT__29(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1556,7 +1556,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:22: T__30
     	    {
     	        /* 1:22: T__30 */
-    	        mT__30(ctx ); 
+    	        mT__30(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1569,7 +1569,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:28: T__31
     	    {
     	        /* 1:28: T__31 */
-    	        mT__31(ctx ); 
+    	        mT__31(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1582,7 +1582,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:34: T__32
     	    {
     	        /* 1:34: T__32 */
-    	        mT__32(ctx ); 
+    	        mT__32(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1595,7 +1595,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:40: T__33
     	    {
     	        /* 1:40: T__33 */
-    	        mT__33(ctx ); 
+    	        mT__33(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1608,7 +1608,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:46: T__34
     	    {
     	        /* 1:46: T__34 */
-    	        mT__34(ctx ); 
+    	        mT__34(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1621,7 +1621,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:52: T__35
     	    {
     	        /* 1:52: T__35 */
-    	        mT__35(ctx ); 
+    	        mT__35(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1634,7 +1634,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:58: T__36
     	    {
     	        /* 1:58: T__36 */
-    	        mT__36(ctx ); 
+    	        mT__36(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1647,7 +1647,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:64: SLASH
     	    {
     	        /* 1:64: SLASH */
-    	        mSLASH(ctx ); 
+    	        mSLASH(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1660,7 +1660,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:70: PUBLIC_TAG
     	    {
     	        /* 1:70: PUBLIC_TAG */
-    	        mPUBLIC_TAG(ctx ); 
+    	        mPUBLIC_TAG(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1673,7 +1673,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:81: ID
     	    {
     	        /* 1:81: ID */
-    	        mID(ctx ); 
+    	        mID(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1686,7 +1686,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:84: COLON
     	    {
     	        /* 1:84: COLON */
-    	        mCOLON(ctx ); 
+    	        mCOLON(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1699,7 +1699,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:90: EXP_END
     	    {
     	        /* 1:90: EXP_END */
-    	        mEXP_END(ctx ); 
+    	        mEXP_END(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1712,7 +1712,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:98: COMMENT
     	    {
     	        /* 1:98: COMMENT */
-    	        mCOMMENT(ctx ); 
+    	        mCOMMENT(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1725,7 +1725,7 @@ mTokens(phammerLexer ctx)
     	    // hammer.g:1:106: WS
     	    {
     	        /* 1:106: WS */
-    	        mWS(ctx ); 
+    	        mWS(ctx );
     	        if  (HASEXCEPTION())
     	        {
     	            goto ruleTokensEx;
@@ -1738,7 +1738,7 @@ mTokens(phammerLexer ctx)
         }
     }
 
-    
+
     goto ruleTokensEx; /* Prevent compiler warnings */
 ruleTokensEx: ;
 }
@@ -1750,7 +1750,7 @@ ruleTokensEx: ;
 /* End of Lexer code
  * ================================================
  * ================================================
- */ 
+ */
 
 
 /* End of code

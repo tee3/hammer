@@ -9,8 +9,8 @@
 
 namespace hammer{
 
-void output_dir_argument_writer::write_impl(std::ostream& output, 
-                                            const build_node& node, 
+void output_dir_argument_writer::write_impl(std::ostream& output,
+                                            const build_node& node,
                                             const build_environment& environment) const
 {
    if (node.products_.empty())

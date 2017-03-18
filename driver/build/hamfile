@@ -1,4 +1,4 @@
-exe hammer : 
+exe hammer :
              [ glob ../src/*.cpp ]
              [ glob ../src/*.h ]
              /boost/program_options/<version>1.58.0+1
@@ -6,6 +6,6 @@ exe hammer :
              /boost/format/<version>1.58.0+1
              /boost/regex/<version>1.58.0+1
              /hammer/core
-           : 
+           :
              <toolset>gcc,<variant>debug:<name>dhammer
            ;

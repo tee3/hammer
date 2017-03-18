@@ -13,7 +13,7 @@ class identifier
 {
    public:
       identifier(source_location lok,
-                 unsigned int length) 
+                 unsigned int length)
          : lok_(lok),
            v_(NULL),
            length_(length),
@@ -30,7 +30,7 @@ class identifier
       const char* end() const;
       std::string to_string() const;
       // FIXME: posible bug if no_lok_ == true
-      source_location start_lok() const { return lok_; } 
+      source_location start_lok() const { return lok_; }
       bool valid() const { return (no_lok_ && v_) || lok_.valid(); }
 
    private:
@@ -40,7 +40,7 @@ class identifier
       const char* v_;
 
       unsigned int length_:31;
-      bool no_lok_ : 1; 
+      bool no_lok_ : 1;
 };
 
 std::ostream& operator << (std::ostream& os, const identifier& v);

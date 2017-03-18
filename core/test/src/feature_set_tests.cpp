@@ -9,7 +9,7 @@ using namespace hammer;
 using namespace std;
 using namespace boost::assign;
 
-namespace 
+namespace
 {
    struct enviroment
    {
@@ -59,7 +59,7 @@ namespace
       }
 
       feature_registry fr_;
-   }; 
+   };
 }
 
 BOOST_FIXTURE_TEST_CASE(join_free, enviroment)

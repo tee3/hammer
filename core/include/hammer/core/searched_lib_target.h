@@ -9,10 +9,10 @@ namespace hammer
    {
       public:
          searched_lib_target(const main_target* mt, const std::string& name,
-                             const target_type* t, const feature_set* f) : file_target(mt, name, t, f) 
+                             const target_type* t, const feature_set* f) : file_target(mt, name, t, f)
          {
          }
-         
+
          virtual const location_t& location() const { return empty_location_; }
 
       protected:

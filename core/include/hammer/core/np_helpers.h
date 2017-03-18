@@ -5,7 +5,7 @@
 
 namespace hammer
 {
-   class target_type;   
+   class target_type;
    class feature_set;
    class main_target;
    class basic_target;

@@ -7,7 +7,7 @@
 
 namespace boost
 {
-   class guid; 
+   class guid;
 }
 
 namespace hammer
@@ -27,12 +27,12 @@ namespace hammer
                enum value {NON_LOCAL, LOCAL};
             };
 
-            msvc_solution(const project& source_project, const location_t& output_path, 
+            msvc_solution(const project& source_project, const location_t& output_path,
                           generation_mode::value mode = generation_mode::NON_LOCAL);
             void add_target(boost::intrusive_ptr<const build_node> node);
             void write() const;
             ~msvc_solution();
-         
+
          protected:
             // used for testing now
             virtual boost::guid generate_id() const;

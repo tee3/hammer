@@ -6,10 +6,10 @@
 
 namespace hammer{
 
-file_meta_target::file_meta_target(hammer::project* p, 
+file_meta_target::file_meta_target(hammer::project* p,
                                    const std::string& name,
                                    const std::string& filename,
-                                   const requirements_decl& req, 
+                                   const requirements_decl& req,
                                    const requirements_decl& usage_req)
    :
     meta_target(p, name, req, usage_req),
@@ -17,12 +17,12 @@ file_meta_target::file_meta_target(hammer::project* p,
 {
 }
 
-main_target* 
-file_meta_target::construct_main_target(const main_target* owner, 
+main_target*
+file_meta_target::construct_main_target(const main_target* owner,
                                         const feature_set* properties) const
 {
-   main_target* mt = new file_main_target(this, 
-                                          name(), 
+   main_target* mt = new file_main_target(this,
+                                          name(),
                                           filename_,
                                           properties,
                                           get_engine()->get_type_registry().soft_resolve_from_target_name(filename_));

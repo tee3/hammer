@@ -70,13 +70,13 @@ main_target::generate() const
    }
 }
 
-build_node_ptr 
+build_node_ptr
 main_target::create_intermediate_dir_dependency() const
 {
    build_node_ptr int_dir_node(new hammer::build_node(*this, false));
    int_dir_node->products_.push_back(new directory_target(this, intermediate_dir()));
    int_dir_node->action(static_cast<const directory_target*>(int_dir_node->products_.front())->action());
-   
+
    return int_dir_node;
 }
 
@@ -91,11 +91,11 @@ void main_target::add_hamfile_dependency(hammer::build_node& node,
 {
    boost::intrusive_ptr<hammer::build_node> signature_node(new hammer::build_node(*this, false));
    signature_node->products_.push_back(
-      new signature_target(this, 
+      new signature_target(this,
                            name() + ".target.sig",
                            &get_engine()->get_type_registry().get(types::UNKNOWN),
                            &properties()));
-   
+
    signature_node->action(mksig_action_.get());
    signature_node->dependencies_.push_back(intermediate_dir_node);
 

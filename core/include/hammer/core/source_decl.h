@@ -17,7 +17,7 @@ namespace hammer
          source_decl() : type_(NULL), properties_(NULL), public_(false) {}
          source_decl(const std::string& target_path,
                      const std::string& target_name,
-                     const target_type* t, 
+                     const target_type* t,
                      feature_set* props)
                     :
 			            target_path_(target_path),
@@ -26,7 +26,7 @@ namespace hammer
                      properties_(props),
                      public_(false)
              {}
-			
+
          void target_path(const std::string& v, const target_type* t) { target_path_ = v; type_ = t; }
          void target_name(const std::string& v) { target_name_ = v; }
          void set_public(bool v) { public_ = v; }
@@ -59,17 +59,17 @@ namespace hammer
 
 			bool operator == (const source_decl& rhs) const
 			{
-				return target_path_ == rhs.target_path_ && 
+				return target_path_ == rhs.target_path_ &&
 					   target_name_ == rhs.target_name_;
 			}
 
          bool operator != (const source_decl& rhs) const { return !(*this == rhs); }
-         
+
       private:
          std::string target_path_;
          std::string target_name_;
          const target_type* type_;
-         
+
          feature_set* properties_;
          bool public_;
    };

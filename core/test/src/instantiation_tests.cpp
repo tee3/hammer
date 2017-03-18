@@ -20,7 +20,7 @@ struct instantiation_tests : public setuped_engine
    instantiation_tests()
    {
    }
-   
+
    void run_test(const fs::path& test_data_path)
    {
       options opts(test_data_path / "hamfile");
@@ -29,7 +29,7 @@ struct instantiation_tests : public setuped_engine
 
       project& p = engine_.load_project(test_data_path);
 
-      // if instantiation.jcf presents that run checker 
+      // if instantiation.jcf presents that run checker
       // FIXME: else we just parse project for now
       if (opts.exists("should-fail") || exists(test_data_path / "instantiation.jcf")) {
          feature_set* build_request = engine_.feature_registry().make_set();
@@ -64,4 +64,4 @@ void init_instantiation_tests(const fs::path& test_data_path)
 
    framework::master_test_suite().add(ts);
 }
-             
+

@@ -8,7 +8,7 @@ namespace hammer{ namespace ast{
 class feature : public expression
 {
    public:
-      feature(const parscore::identifier& name, 
+      feature(const parscore::identifier& name,
               const expression* value)
          : name_(name),
            value_(value)

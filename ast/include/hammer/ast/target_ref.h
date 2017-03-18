@@ -12,7 +12,7 @@ class requirement_set;
 class target_ref : public expression
 {
    public:
-      target_ref(parscore::source_location public_tag, 
+      target_ref(parscore::source_location public_tag,
                  const path_like_seq* head,
                  const parscore::identifier& target_name,
                  const requirement_set* requirements);
@@ -24,7 +24,7 @@ class target_ref : public expression
 
       bool has_target_name() const;
       bool is_public() const { return public_tag_.valid(); }
-      
+
       parscore::source_location start_loc() const override;
       bool accept(visitor& v) const override;
 

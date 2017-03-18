@@ -4,7 +4,7 @@
  *     -  From the grammar source file : hammer_walker.g
  *     -                            On : 2017-01-06 16:25:11
  *     -           for the tree parser : hammer_walkerTreeParser *
- * Editing it, at least manually, is not wise. 
+ * Editing it, at least manually, is not wise.
  *
  * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
  *
@@ -42,7 +42,7 @@
  * confusing the reader of the generated output, who may not wish to know the gory
  * details of the interface inheritance.
  */
- 
+
 #define		CTX	ctx
 
 /* Aids in accessing scopes for grammar programmers
@@ -58,9 +58,9 @@
 
 /* Macros for accessing things in the parser
  */
- 
+
 #undef	    PARSER
-#undef	    RECOGNIZER		    
+#undef	    RECOGNIZER
 #undef	    HAVEPARSEDRULE
 #undef	    INPUT
 #undef	    STRSTREAM
@@ -87,12 +87,12 @@
 #undef	    RECOVERFROMMISMATCHEDELEMENT
 #undef	    BACKTRACKING
 #undef      ADAPTOR
-#undef	    RULEMEMO		
-#undef		SEEK    
+#undef	    RULEMEMO
+#undef		SEEK
 #undef		INDEX
 #undef		DBG
 
-#define	    PARSER							ctx->pTreeParser  
+#define	    PARSER							ctx->pTreeParser
 #define	    RECOGNIZER						PARSER->rec
 #define		PSRSTATE						RECOGNIZER->state
 #define	    HAVEPARSEDRULE(r)				RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
@@ -164,8 +164,8 @@ pANTLR3_UINT8   hammer_walkerTokenNames[33+4]
      = {
         (pANTLR3_UINT8) "<invalid>",       /* String to print to indicate an invalid token */
         (pANTLR3_UINT8) "<EOR>",
-        (pANTLR3_UINT8) "<DOWN>", 
-        (pANTLR3_UINT8) "<UP>", 
+        (pANTLR3_UINT8) "<DOWN>",
+        (pANTLR3_UINT8) "<UP>",
         (pANTLR3_UINT8) "RULE_CALL",
         (pANTLR3_UINT8) "NULL_ARG",
         (pANTLR3_UINT8) "STRING_ARG",
@@ -201,7 +201,7 @@ pANTLR3_UINT8   hammer_walkerTokenNames[33+4]
         (pANTLR3_UINT8) "'@'"
        };
 
-        
+
 
 // Forward declare the locally static matching functions we have generated.
 //
@@ -231,7 +231,7 @@ static void*	feature_set    (phammer_walker ctx);
 static void	sources_decl_rule_invoke    (phammer_walker ctx, void* sources);
 static void	hammer_walkerFree(phammer_walker ctx);
 /* For use in tree output where we are accumulating rule labels via label += ruleRef
- * we need a function that knows how to free a return scope when the list is destroyed. 
+ * we need a function that knows how to free a return scope when the list is destroyed.
  * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a macro.
  */
 static	void ANTLR3_CDECL freeScope(void * scope)
@@ -273,22 +273,22 @@ ANTLR3_API phammer_walker
 hammer_walkerNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
     phammer_walker ctx;	    /* Context structure we will build and return   */
-    
+
     ctx	= (phammer_walker) ANTLR3_CALLOC(1, sizeof(hammer_walker));
-    
+
     if	(ctx == NULL)
     {
 		// Failed to allocate memory for parser context
 		//
         return  NULL;
     }
-    
+
     /* -------------------------------------------------------------------
      * Memory for basic structure is allocated, now to fill in
      * the base ANTLR3 structures. We initialize the function pointers
      * for the standard ANTLR3 parser function set, but upon return
      * from here, the programmer may set the pointers to provide custom
-     * implementations of each function. 
+     * implementations of each function.
      *
      * We don't use the macros defined in hammer_walker.h here, in order that you can get a sense
      * of what goes where.
@@ -325,19 +325,19 @@ hammer_walkerNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNI
     ctx->sources_decl_rule_invoke	= sources_decl_rule_invoke;
     ctx->free			= hammer_walkerFree;
     ctx->getGrammarFileName	= getGrammarFileName;
-    
+
     /* Install the scope pushing methods.
      */
 
-        
-    
 
-	
+
+
+
     /* Install the token table
      */
     PSRSTATE->tokenNames   = hammer_walkerTokenNames;
-    
-    
+
+
     /* Return the newly built parser to the caller
      */
     return  ctx;
@@ -350,8 +350,8 @@ hammer_walkerNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNI
  {
     /* Free any scope memory
      */
-    
-        
+
+
 	// Free this parser
 	//
     ctx->pTreeParser->free(ctx->pTreeParser);
@@ -361,20 +361,20 @@ hammer_walkerNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNI
      */
     return;
  }
- 
+
 /** Return token names used by this tree parser
  *
- * The returned pointer is used as an index into the token names table (using the token 
+ * The returned pointer is used as an index into the token names table (using the token
  * number as the index).
- * 
+ *
  * \return Pointer to first char * in the table.
  */
-static pANTLR3_UINT8    *getTokenNames() 
+static pANTLR3_UINT8    *getTokenNames()
 {
-        return hammer_walkerTokenNames; 
+        return hammer_walkerTokenNames;
 }
 
-    
+
 /* Declare the bitsets
  */
 
@@ -585,20 +585,20 @@ static  ANTLR3_BITSET_LIST FOLLOW_feature_in_feature_set1174	= { FOLLOW_feature_
 /** Bitset defining follow set for error recovery in rule state: FOLLOW_rule_in_sources_decl_rule_invoke1225  */
 static	ANTLR3_BITWORD FOLLOW_rule_in_sources_decl_rule_invoke1225_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
 static  ANTLR3_BITSET_LIST FOLLOW_rule_in_sources_decl_rule_invoke1225	= { FOLLOW_rule_in_sources_decl_rule_invoke1225_bits, 1	};
-     
 
- 
- 
+
+
+
 /* ==============================================
  * Parsing rules
  */
-/** 
+/**
  * $ANTLR start project
  * hammer_walker.g:15:1: project : rules ;
  */
 static void
 project(phammer_walker ctx)
-{   
+{
     /* Initialize rule variables
      */
 
@@ -620,7 +620,7 @@ project(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -637,13 +637,13 @@ project(phammer_walker ctx)
 }
 /* $ANTLR end project */
 
-/** 
+/**
  * $ANTLR start rules
  * hammer_walker.g:16:1: rules : ( rule )* ;
  */
 static void
 rules(phammer_walker ctx)
-{   
+{
     void* rule1;
     #undef	RETURN_TYPE_rule1
     #define	RETURN_TYPE_rule1 void*
@@ -668,13 +668,13 @@ rules(phammer_walker ctx)
                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
                     */
                     int LA1_0 = LA(1);
-                    if ( (LA1_0 == RULE_CALL) ) 
+                    if ( (LA1_0 == RULE_CALL) )
                     {
                         alt1=1;
                     }
 
                 }
-                switch (alt1) 
+                switch (alt1)
                 {
             	case 1:
             	    // hammer_walker.g:16:10: rule
@@ -689,7 +689,7 @@ rules(phammer_walker ctx)
             	        }
 
             	        {
-            	             hammer_delete_rule_result(rule1); 
+            	             hammer_delete_rule_result(rule1);
             	        }
 
             	    }
@@ -706,7 +706,7 @@ rules(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -723,13 +723,13 @@ rules(phammer_walker ctx)
 }
 /* $ANTLR end rules */
 
-/** 
+/**
  * $ANTLR start rule
  * hammer_walker.g:18:1: rule returns [void* result] : ( ^( RULE_CALL ID LOCAL ( args[args_list] )* ) | ^( RULE_CALL ID ( args[args_list] )* ) );
  */
 static void*
 rule(phammer_walker ctx)
-{   
+{
     void* result = NULL;
 
     pANTLR3_BASE_TREE    ID2;
@@ -739,14 +739,14 @@ rule(phammer_walker ctx)
      */
 
 
-     void * args_list = hammer_make_args_list(PARSER->super); 
+     void * args_list = hammer_make_args_list(PARSER->super);
     ID2       = NULL;
     ID3       = NULL;
 
     {
         {
             //  hammer_walker.g:20:1: ( ^( RULE_CALL ID LOCAL ( args[args_list] )* ) | ^( RULE_CALL ID ( args[args_list] )* ) )
-            
+
             ANTLR3_UINT32 alt4;
 
             alt4=2;
@@ -754,32 +754,32 @@ rule(phammer_walker ctx)
 
             {
                 int LA4_0 = LA(1);
-                if ( (LA4_0 == RULE_CALL) ) 
+                if ( (LA4_0 == RULE_CALL) )
                 {
 
                     {
                         int LA4_1 = LA(2);
-                        if ( (LA4_1 == DOWN) ) 
+                        if ( (LA4_1 == DOWN) )
                         {
 
                             {
                                 int LA4_2 = LA(3);
-                                if ( (LA4_2 == ID) ) 
+                                if ( (LA4_2 == ID) )
                                 {
 
                                     {
                                         int LA4_3 = LA(4);
-                                        if ( (LA4_3 == LOCAL) ) 
+                                        if ( (LA4_3 == LOCAL) )
                                         {
                                             alt4=1;
                                         }
-                                        else if ( (LA4_3 == UP || ((LA4_3 >= NULL_ARG) && (LA4_3 <= STRING_LIST)) || LA4_3 == FEATURE_SET_ARG || ((LA4_3 >= FEATURE_ARG) && (LA4_3 <= REQUIREMENTS_DECL)) || ((LA4_3 >= PROJECT_REQUIREMENTS) && (LA4_3 <= SOURCES_DECL))) ) 
+                                        else if ( (LA4_3 == UP || ((LA4_3 >= NULL_ARG) && (LA4_3 <= STRING_LIST)) || LA4_3 == FEATURE_SET_ARG || ((LA4_3 >= FEATURE_ARG) && (LA4_3 <= REQUIREMENTS_DECL)) || ((LA4_3 >= PROJECT_REQUIREMENTS) && (LA4_3 <= SOURCES_DECL))) )
                                         {
                                             alt4=2;
                                         }
-                                        else 
+                                        else
                                         {
-                                        
+
                                             CONSTRUCTEX();
                                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                             EXCEPTION->message      = (void *)"";
@@ -791,9 +791,9 @@ rule(phammer_walker ctx)
                                         }
                                     }
                                 }
-                                else 
+                                else
                                 {
-                                
+
                                     CONSTRUCTEX();
                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                     EXCEPTION->message      = (void *)"";
@@ -805,9 +805,9 @@ rule(phammer_walker ctx)
                                 }
                             }
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -819,9 +819,9 @@ rule(phammer_walker ctx)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -832,31 +832,31 @@ rule(phammer_walker ctx)
                     goto ruleruleEx;
                 }
             }
-            switch (alt4) 
+            switch (alt4)
             {
         	case 1:
         	    // hammer_walker.g:20:3: ^( RULE_CALL ID LOCAL ( args[args_list] )* )
         	    {
-        	         MATCHT(RULE_CALL, &FOLLOW_RULE_CALL_in_rule107); 
+        	         MATCHT(RULE_CALL, &FOLLOW_RULE_CALL_in_rule107);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
         	        }
 
-        	        ID2 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_rule109); 
+        	        ID2 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_rule109);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
         	        }
 
-        	         MATCHT(LOCAL, &FOLLOW_LOCAL_in_rule111); 
+        	         MATCHT(LOCAL, &FOLLOW_LOCAL_in_rule111);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
@@ -872,13 +872,13 @@ rule(phammer_walker ctx)
         	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
         	                */
         	                int LA2_0 = LA(1);
-        	                if ( (((LA2_0 >= NULL_ARG) && (LA2_0 <= STRING_LIST)) || LA2_0 == FEATURE_SET_ARG || ((LA2_0 >= FEATURE_ARG) && (LA2_0 <= REQUIREMENTS_DECL)) || ((LA2_0 >= PROJECT_REQUIREMENTS) && (LA2_0 <= SOURCES_DECL))) ) 
+        	                if ( (((LA2_0 >= NULL_ARG) && (LA2_0 <= STRING_LIST)) || LA2_0 == FEATURE_SET_ARG || ((LA2_0 >= FEATURE_ARG) && (LA2_0 <= REQUIREMENTS_DECL)) || ((LA2_0 >= PROJECT_REQUIREMENTS) && (LA2_0 <= SOURCES_DECL))) )
         	                {
         	                    alt2=1;
         	                }
 
         	            }
-        	            switch (alt2) 
+        	            switch (alt2)
         	            {
         	        	case 1:
         	        	    // hammer_walker.g:20:24: args[args_list]
@@ -904,14 +904,14 @@ rule(phammer_walker ctx)
         	        loop2: ; /* Jump out to here if this rule does not match */
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
         	        }
 
         	        {
-        	             result = hammer_rule_call(PARSER->super, (ID2 != NULL ? ID2->getText(ID2) : NULL)->chars, 1, args_list); 
+        	             result = hammer_rule_call(PARSER->super, (ID2 != NULL ? ID2->getText(ID2) : NULL)->chars, 1, args_list);
         	        }
 
         	    }
@@ -919,20 +919,20 @@ rule(phammer_walker ctx)
         	case 2:
         	    // hammer_walker.g:21:3: ^( RULE_CALL ID ( args[args_list] )* )
         	    {
-        	         MATCHT(RULE_CALL, &FOLLOW_RULE_CALL_in_rule123); 
+        	         MATCHT(RULE_CALL, &FOLLOW_RULE_CALL_in_rule123);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
         	        }
 
-        	        ID3 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_rule125); 
+        	        ID3 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_rule125);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
@@ -948,13 +948,13 @@ rule(phammer_walker ctx)
         	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
         	                */
         	                int LA3_0 = LA(1);
-        	                if ( (((LA3_0 >= NULL_ARG) && (LA3_0 <= STRING_LIST)) || LA3_0 == FEATURE_SET_ARG || ((LA3_0 >= FEATURE_ARG) && (LA3_0 <= REQUIREMENTS_DECL)) || ((LA3_0 >= PROJECT_REQUIREMENTS) && (LA3_0 <= SOURCES_DECL))) ) 
+        	                if ( (((LA3_0 >= NULL_ARG) && (LA3_0 <= STRING_LIST)) || LA3_0 == FEATURE_SET_ARG || ((LA3_0 >= FEATURE_ARG) && (LA3_0 <= REQUIREMENTS_DECL)) || ((LA3_0 >= PROJECT_REQUIREMENTS) && (LA3_0 <= SOURCES_DECL))) )
         	                {
         	                    alt3=1;
         	                }
 
         	            }
-        	            switch (alt3) 
+        	            switch (alt3)
         	            {
         	        	case 1:
         	        	    // hammer_walker.g:21:18: args[args_list]
@@ -980,14 +980,14 @@ rule(phammer_walker ctx)
         	        loop3: ; /* Jump out to here if this rule does not match */
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruleruleEx;
         	        }
 
         	        {
-        	             result = hammer_rule_call(PARSER->super, (ID3 != NULL ? ID3->getText(ID3) : NULL)->chars, 0, args_list); 
+        	             result = hammer_rule_call(PARSER->super, (ID3 != NULL ? ID3->getText(ID3) : NULL)->chars, 0, args_list);
         	        }
 
         	    }
@@ -996,7 +996,7 @@ rule(phammer_walker ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1013,13 +1013,13 @@ rule(phammer_walker ctx)
 }
 /* $ANTLR end rule */
 
-/** 
+/**
  * $ANTLR start args
  * hammer_walker.g:23:1: args[void* args_list] : ( string_list[args_list] | feature_set_arg[args_list] | null_arg[args_list] | string_arg[args_list] | feature_arg[args_list] | requirements | project_requirements | sources_decl );
  */
 static void
 args(phammer_walker ctx, void* args_list)
-{   
+{
     void* requirements4;
     #undef	RETURN_TYPE_requirements4
     #define	RETURN_TYPE_requirements4 void*
@@ -1043,12 +1043,12 @@ args(phammer_walker ctx, void* args_list)
     {
         {
             //  hammer_walker.g:23:23: ( string_list[args_list] | feature_set_arg[args_list] | null_arg[args_list] | string_arg[args_list] | feature_arg[args_list] | requirements | project_requirements | sources_decl )
-            
+
             ANTLR3_UINT32 alt5;
 
             alt5=8;
 
-            switch ( LA(1) ) 
+            switch ( LA(1) )
             {
             case STRING_LIST:
             	{
@@ -1102,7 +1102,7 @@ args(phammer_walker ctx, void* args_list)
                 goto ruleargsEx;
             }
 
-            switch (alt5) 
+            switch (alt5)
             {
         	case 1:
         	    // hammer_walker.g:23:25: string_list[args_list]
@@ -1192,7 +1192,7 @@ args(phammer_walker ctx, void* args_list)
         	        }
 
         	        {
-        	             hammer_add_arg_to_args_list(args_list, hammer_make_requirements_decl_arg(requirements4)); 
+        	             hammer_add_arg_to_args_list(args_list, hammer_make_requirements_decl_arg(requirements4));
         	        }
 
         	    }
@@ -1210,7 +1210,7 @@ args(phammer_walker ctx, void* args_list)
         	        }
 
         	        {
-        	             hammer_add_arg_to_args_list(args_list, hammer_make_project_requirements_decl_arg(project_requirements5)); 
+        	             hammer_add_arg_to_args_list(args_list, hammer_make_project_requirements_decl_arg(project_requirements5));
         	        }
 
         	    }
@@ -1228,7 +1228,7 @@ args(phammer_walker ctx, void* args_list)
         	        }
 
         	        {
-        	             hammer_add_arg_to_args_list(args_list, hammer_make_sources_decl_arg(sources_decl6)); 
+        	             hammer_add_arg_to_args_list(args_list, hammer_make_sources_decl_arg(sources_decl6));
         	        }
 
         	    }
@@ -1237,7 +1237,7 @@ args(phammer_walker ctx, void* args_list)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1254,13 +1254,13 @@ args(phammer_walker ctx, void* args_list)
 }
 /* $ANTLR end args */
 
-/** 
+/**
  * $ANTLR start feature_set_arg
  * hammer_walker.g:32:1: feature_set_arg[void* args_list] : ^( FEATURE_SET_ARG feature_set ) ;
  */
 static void
 feature_set_arg(phammer_walker ctx, void* args_list)
-{   
+{
     void* feature_set7;
     #undef	RETURN_TYPE_feature_set7
     #define	RETURN_TYPE_feature_set7 void*
@@ -1275,14 +1275,14 @@ feature_set_arg(phammer_walker ctx, void* args_list)
         // hammer_walker.g:32:34: ( ^( FEATURE_SET_ARG feature_set ) )
         // hammer_walker.g:32:36: ^( FEATURE_SET_ARG feature_set )
         {
-             MATCHT(FEATURE_SET_ARG, &FOLLOW_FEATURE_SET_ARG_in_feature_set_arg348); 
+             MATCHT(FEATURE_SET_ARG, &FOLLOW_FEATURE_SET_ARG_in_feature_set_arg348);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_set_argEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_set_argEx;
@@ -1298,20 +1298,20 @@ feature_set_arg(phammer_walker ctx, void* args_list)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_set_argEx;
             }
 
             {
-                 hammer_add_arg_to_args_list(args_list, hammer_make_feature_set_arg(feature_set7)); 
+                 hammer_add_arg_to_args_list(args_list, hammer_make_feature_set_arg(feature_set7));
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1328,13 +1328,13 @@ feature_set_arg(phammer_walker ctx, void* args_list)
 }
 /* $ANTLR end feature_set_arg */
 
-/** 
+/**
  * $ANTLR start feature_arg
  * hammer_walker.g:33:1: feature_arg[void* args_list] : ^( FEATURE_ARG feature ) ;
  */
 static void
 feature_arg(phammer_walker ctx, void* args_list)
-{   
+{
     void* feature8;
     #undef	RETURN_TYPE_feature8
     #define	RETURN_TYPE_feature8 void*
@@ -1349,14 +1349,14 @@ feature_arg(phammer_walker ctx, void* args_list)
         // hammer_walker.g:33:30: ( ^( FEATURE_ARG feature ) )
         // hammer_walker.g:33:32: ^( FEATURE_ARG feature )
         {
-             MATCHT(FEATURE_ARG, &FOLLOW_FEATURE_ARG_in_feature_arg362); 
+             MATCHT(FEATURE_ARG, &FOLLOW_FEATURE_ARG_in_feature_arg362);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_argEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_argEx;
@@ -1372,20 +1372,20 @@ feature_arg(phammer_walker ctx, void* args_list)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_argEx;
             }
 
             {
-                 hammer_add_arg_to_args_list(args_list, hammer_make_feature_arg(feature8)); 
+                 hammer_add_arg_to_args_list(args_list, hammer_make_feature_arg(feature8));
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1402,13 +1402,13 @@ feature_arg(phammer_walker ctx, void* args_list)
 }
 /* $ANTLR end feature_arg */
 
-/** 
+/**
  * $ANTLR start string_arg
  * hammer_walker.g:34:1: string_arg[void* args_list] : ^( STRING_ARG ID ) ;
  */
 static void
 string_arg(phammer_walker ctx, void* args_list)
-{   
+{
     pANTLR3_BASE_TREE    ID9;
 
     /* Initialize rule variables
@@ -1421,40 +1421,40 @@ string_arg(phammer_walker ctx, void* args_list)
         // hammer_walker.g:34:29: ( ^( STRING_ARG ID ) )
         // hammer_walker.g:34:31: ^( STRING_ARG ID )
         {
-             MATCHT(STRING_ARG, &FOLLOW_STRING_ARG_in_string_arg376); 
+             MATCHT(STRING_ARG, &FOLLOW_STRING_ARG_in_string_arg376);
             if  (HASEXCEPTION())
             {
                 goto rulestring_argEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulestring_argEx;
             }
 
-            ID9 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_string_arg378); 
+            ID9 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_string_arg378);
             if  (HASEXCEPTION())
             {
                 goto rulestring_argEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulestring_argEx;
             }
 
             {
-                 hammer_add_string_arg_to_args_list(PARSER->super, args_list, (ID9 != NULL ? ID9->getText(ID9) : NULL)->chars); 
+                 hammer_add_string_arg_to_args_list(PARSER->super, args_list, (ID9 != NULL ? ID9->getText(ID9) : NULL)->chars);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1471,30 +1471,30 @@ string_arg(phammer_walker ctx, void* args_list)
 }
 /* $ANTLR end string_arg */
 
-/** 
+/**
  * $ANTLR start string_list
  * hammer_walker.g:35:1: string_list[void* args_list] : ^( STRING_LIST ( string_list_id[arg] )+ ) ;
  */
 static void
 string_list(phammer_walker ctx, void* args_list)
-{   
+{
     /* Initialize rule variables
      */
 
 
-     void* arg = hammer_make_string_list(); 
+     void* arg = hammer_make_string_list();
     {
         // hammer_walker.g:37:9: ( ^( STRING_LIST ( string_list_id[arg] )+ ) )
         // hammer_walker.g:37:11: ^( STRING_LIST ( string_list_id[arg] )+ )
         {
-             MATCHT(STRING_LIST, &FOLLOW_STRING_LIST_in_string_list402); 
+             MATCHT(STRING_LIST, &FOLLOW_STRING_LIST_in_string_list402);
             if  (HASEXCEPTION())
             {
                 goto rulestring_listEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulestring_listEx;
@@ -1511,13 +1511,13 @@ string_list(phammer_walker ctx, void* args_list)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA6_0 = LA(1);
-            	    if ( (LA6_0 == ID) ) 
+            	    if ( (LA6_0 == ID) )
             	    {
             	        alt6=1;
             	    }
 
             	}
-            	switch (alt6) 
+            	switch (alt6)
             	{
             	    case 1:
             	        // hammer_walker.g:37:25: string_list_id[arg]
@@ -1536,7 +1536,7 @@ string_list(phammer_walker ctx, void* args_list)
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt6 >= 1 )
             		{
             		    goto loop6;
@@ -1555,20 +1555,20 @@ string_list(phammer_walker ctx, void* args_list)
                 loop6: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulestring_listEx;
             }
 
             {
-                 hammer_add_arg_to_args_list(args_list, arg); 
+                 hammer_add_arg_to_args_list(args_list, arg);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1585,13 +1585,13 @@ string_list(phammer_walker ctx, void* args_list)
 }
 /* $ANTLR end string_list */
 
-/** 
+/**
  * $ANTLR start string_list_id
  * hammer_walker.g:39:1: string_list_id[void* list] : ID ;
  */
 static void
 string_list_id(phammer_walker ctx, void* list)
-{   
+{
     pANTLR3_BASE_TREE    ID10;
 
     /* Initialize rule variables
@@ -1604,20 +1604,20 @@ string_list_id(phammer_walker ctx, void* list)
         // hammer_walker.g:40:9: ( ID )
         // hammer_walker.g:40:11: ID
         {
-            ID10 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_string_list_id443); 
+            ID10 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_string_list_id443);
             if  (HASEXCEPTION())
             {
                 goto rulestring_list_idEx;
             }
 
             {
-                 hammer_add_id_to_string_list(PARSER->super, list, (ID10 != NULL ? ID10->getText(ID10) : NULL)->chars); 
+                 hammer_add_id_to_string_list(PARSER->super, list, (ID10 != NULL ? ID10->getText(ID10) : NULL)->chars);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1634,36 +1634,36 @@ string_list_id(phammer_walker ctx, void* list)
 }
 /* $ANTLR end string_list_id */
 
-/** 
+/**
  * $ANTLR start null_arg
  * hammer_walker.g:42:1: null_arg[void* args_list] : NULL_ARG ;
  */
 static void
 null_arg(phammer_walker ctx, void* args_list)
-{   
+{
     /* Initialize rule variables
      */
 
 
-     void* arg = hammer_make_null_arg(); 
+     void* arg = hammer_make_null_arg();
     {
         // hammer_walker.g:44:9: ( NULL_ARG )
         // hammer_walker.g:44:11: NULL_ARG
         {
-             MATCHT(NULL_ARG, &FOLLOW_NULL_ARG_in_null_arg475); 
+             MATCHT(NULL_ARG, &FOLLOW_NULL_ARG_in_null_arg475);
             if  (HASEXCEPTION())
             {
                 goto rulenull_argEx;
             }
 
             {
-                 hammer_add_arg_to_args_list(args_list, arg); 
+                 hammer_add_arg_to_args_list(args_list, arg);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1680,13 +1680,13 @@ null_arg(phammer_walker ctx, void* args_list)
 }
 /* $ANTLR end null_arg */
 
-/** 
+/**
  * $ANTLR start project_requirements
  * hammer_walker.g:45:1: project_requirements returns [void* result] : ^( PROJECT_REQUIREMENTS ID requirements ) ;
  */
 static void*
 project_requirements(phammer_walker ctx)
-{   
+{
     void* result = NULL;
 
     pANTLR3_BASE_TREE    ID11;
@@ -1705,20 +1705,20 @@ project_requirements(phammer_walker ctx)
         // hammer_walker.g:46:9: ( ^( PROJECT_REQUIREMENTS ID requirements ) )
         // hammer_walker.g:46:11: ^( PROJECT_REQUIREMENTS ID requirements )
         {
-             MATCHT(PROJECT_REQUIREMENTS, &FOLLOW_PROJECT_REQUIREMENTS_in_project_requirements509); 
+             MATCHT(PROJECT_REQUIREMENTS, &FOLLOW_PROJECT_REQUIREMENTS_in_project_requirements509);
             if  (HASEXCEPTION())
             {
                 goto ruleproject_requirementsEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleproject_requirementsEx;
             }
 
-            ID11 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_project_requirements511); 
+            ID11 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_project_requirements511);
             if  (HASEXCEPTION())
             {
                 goto ruleproject_requirementsEx;
@@ -1734,20 +1734,20 @@ project_requirements(phammer_walker ctx)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleproject_requirementsEx;
             }
 
             {
-                result = hammer_make_project_requirements_decl((ID11 != NULL ? ID11->getText(ID11) : NULL)->chars, requirements12); 
+                result = hammer_make_project_requirements_decl((ID11 != NULL ? ID11->getText(ID11) : NULL)->chars, requirements12);
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1764,13 +1764,13 @@ project_requirements(phammer_walker ctx)
 }
 /* $ANTLR end project_requirements */
 
-/** 
+/**
  * $ANTLR start requirements
  * hammer_walker.g:47:1: requirements returns [void* result] : ^( REQUIREMENTS_DECL ( requirements_public_tag[&is_public] ( conditional_features | feature ) )+ ) ;
  */
 static void*
 requirements(phammer_walker ctx)
-{   
+{
     void* result = NULL;
 
     void* conditional_features13;
@@ -1786,8 +1786,8 @@ requirements(phammer_walker ctx)
 
 
      char is_public = 0;
-            result = hammer_make_requirements_decl(); 
-          
+            result = hammer_make_requirements_decl();
+
     conditional_features13 = NULL;
     feature14 = NULL;
 
@@ -1795,14 +1795,14 @@ requirements(phammer_walker ctx)
         // hammer_walker.g:51:9: ( ^( REQUIREMENTS_DECL ( requirements_public_tag[&is_public] ( conditional_features | feature ) )+ ) )
         // hammer_walker.g:51:11: ^( REQUIREMENTS_DECL ( requirements_public_tag[&is_public] ( conditional_features | feature ) )+ )
         {
-             MATCHT(REQUIREMENTS_DECL, &FOLLOW_REQUIREMENTS_DECL_in_requirements541); 
+             MATCHT(REQUIREMENTS_DECL, &FOLLOW_REQUIREMENTS_DECL_in_requirements541);
             if  (HASEXCEPTION())
             {
                 goto rulerequirementsEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulerequirementsEx;
@@ -1819,13 +1819,13 @@ requirements(phammer_walker ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA8_0 = LA(1);
-            	    if ( (LA8_0 == FEATURE || LA8_0 == CONDITIONAL_FEATURES || LA8_0 == PUBLIC_TAG) ) 
+            	    if ( (LA8_0 == FEATURE || LA8_0 == CONDITIONAL_FEATURES || LA8_0 == PUBLIC_TAG) )
             	    {
             	        alt8=1;
             	    }
 
             	}
-            	switch (alt8) 
+            	switch (alt8)
             	{
             	    case 1:
             	        // hammer_walker.g:51:33: requirements_public_tag[&is_public] ( conditional_features | feature )
@@ -1846,17 +1846,17 @@ requirements(phammer_walker ctx)
 
             	                {
             	                    int LA7_0 = LA(1);
-            	                    if ( (LA7_0 == CONDITIONAL_FEATURES) ) 
+            	                    if ( (LA7_0 == CONDITIONAL_FEATURES) )
             	                    {
             	                        alt7=1;
             	                    }
-            	                    else if ( (LA7_0 == FEATURE) ) 
+            	                    else if ( (LA7_0 == FEATURE) )
             	                    {
             	                        alt7=2;
             	                    }
-            	                    else 
+            	                    else
             	                    {
-            	                    
+
             	                        CONSTRUCTEX();
             	                        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
             	                        EXCEPTION->message      = (void *)"";
@@ -1867,7 +1867,7 @@ requirements(phammer_walker ctx)
             	                        goto rulerequirementsEx;
             	                    }
             	                }
-            	                switch (alt7) 
+            	                switch (alt7)
             	                {
             	            	case 1:
             	            	    // hammer_walker.g:51:70: conditional_features
@@ -1882,7 +1882,7 @@ requirements(phammer_walker ctx)
             	            	        }
 
             	            	        {
-            	            	             hammer_add_conditional_to_rdecl(conditional_features13, is_public, result); 
+            	            	             hammer_add_conditional_to_rdecl(conditional_features13, is_public, result);
             	            	        }
 
             	            	    }
@@ -1900,7 +1900,7 @@ requirements(phammer_walker ctx)
             	            	        }
 
             	            	        {
-            	            	             hammer_add_feature_to_rdecl(feature14, is_public, result); 
+            	            	             hammer_add_feature_to_rdecl(feature14, is_public, result);
             	            	        }
 
             	            	    }
@@ -1913,7 +1913,7 @@ requirements(phammer_walker ctx)
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt8 >= 1 )
             		{
             		    goto loop8;
@@ -1932,7 +1932,7 @@ requirements(phammer_walker ctx)
                 loop8: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulerequirementsEx;
@@ -1942,7 +1942,7 @@ requirements(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -1959,13 +1959,13 @@ requirements(phammer_walker ctx)
 }
 /* $ANTLR end requirements */
 
-/** 
+/**
  * $ANTLR start requirements_public_tag
  * hammer_walker.g:54:1: requirements_public_tag[char* flag] : ( PUBLIC_TAG | );
  */
 static void
 requirements_public_tag(phammer_walker ctx, char* flag)
-{   
+{
     /* Initialize rule variables
      */
 
@@ -1973,7 +1973,7 @@ requirements_public_tag(phammer_walker ctx, char* flag)
     {
         {
             //  hammer_walker.g:54:37: ( PUBLIC_TAG | )
-            
+
             ANTLR3_UINT32 alt9;
 
             alt9=2;
@@ -1981,17 +1981,17 @@ requirements_public_tag(phammer_walker ctx, char* flag)
 
             {
                 int LA9_0 = LA(1);
-                if ( (LA9_0 == PUBLIC_TAG) ) 
+                if ( (LA9_0 == PUBLIC_TAG) )
                 {
                     alt9=1;
                 }
-                else if ( (LA9_0 == FEATURE || LA9_0 == CONDITIONAL_FEATURES) ) 
+                else if ( (LA9_0 == FEATURE || LA9_0 == CONDITIONAL_FEATURES) )
                 {
                     alt9=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2002,28 +2002,28 @@ requirements_public_tag(phammer_walker ctx, char* flag)
                     goto rulerequirements_public_tagEx;
                 }
             }
-            switch (alt9) 
+            switch (alt9)
             {
         	case 1:
         	    // hammer_walker.g:54:39: PUBLIC_TAG
         	    {
-        	         MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_requirements_public_tag651); 
+        	         MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_requirements_public_tag651);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulerequirements_public_tagEx;
         	        }
 
         	        {
-        	             *flag = 1; 
+        	             *flag = 1;
         	        }
 
         	    }
         	    break;
         	case 2:
-        	    // hammer_walker.g:55:27: 
+        	    // hammer_walker.g:55:27:
         	    {
         	        {
-        	             *flag = 0; 
+        	             *flag = 0;
         	        }
 
         	    }
@@ -2032,7 +2032,7 @@ requirements_public_tag(phammer_walker ctx, char* flag)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2049,13 +2049,13 @@ requirements_public_tag(phammer_walker ctx, char* flag)
 }
 /* $ANTLR end requirements_public_tag */
 
-/** 
+/**
  * $ANTLR start conditional_features
  * hammer_walker.g:56:1: conditional_features returns [void* c] : ^( CONDITIONAL_FEATURES condition[c] COLON feature ) ;
  */
 static void*
 conditional_features(phammer_walker ctx)
-{   
+{
     void* c = NULL;
 
     void* feature15;
@@ -2066,21 +2066,21 @@ conditional_features(phammer_walker ctx)
      */
 
 
-     c = hammer_make_requirements_condition(); 
+     c = hammer_make_requirements_condition();
     feature15 = NULL;
 
     {
         // hammer_walker.g:58:9: ( ^( CONDITIONAL_FEATURES condition[c] COLON feature ) )
         // hammer_walker.g:58:11: ^( CONDITIONAL_FEATURES condition[c] COLON feature )
         {
-             MATCHT(CONDITIONAL_FEATURES, &FOLLOW_CONDITIONAL_FEATURES_in_conditional_features706); 
+             MATCHT(CONDITIONAL_FEATURES, &FOLLOW_CONDITIONAL_FEATURES_in_conditional_features706);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_featuresEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_featuresEx;
@@ -2095,7 +2095,7 @@ conditional_features(phammer_walker ctx)
                 goto ruleconditional_featuresEx;
             }
 
-             MATCHT(COLON, &FOLLOW_COLON_in_conditional_features711); 
+             MATCHT(COLON, &FOLLOW_COLON_in_conditional_features711);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_featuresEx;
@@ -2111,10 +2111,10 @@ conditional_features(phammer_walker ctx)
             }
 
             {
-                 hammer_set_condition_result(c, feature15); 
+                 hammer_set_condition_result(c, feature15);
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditional_featuresEx;
@@ -2124,7 +2124,7 @@ conditional_features(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2141,13 +2141,13 @@ conditional_features(phammer_walker ctx)
 }
 /* $ANTLR end conditional_features */
 
-/** 
+/**
  * $ANTLR start condition
  * hammer_walker.g:59:1: condition[void* c] : ^( CONDITION ( feature )+ ) ;
  */
 static void
 condition(phammer_walker ctx, void* c)
-{   
+{
     void* feature16;
     #undef	RETURN_TYPE_feature16
     #define	RETURN_TYPE_feature16 void*
@@ -2162,14 +2162,14 @@ condition(phammer_walker ctx, void* c)
         // hammer_walker.g:60:9: ( ^( CONDITION ( feature )+ ) )
         // hammer_walker.g:60:11: ^( CONDITION ( feature )+ )
         {
-             MATCHT(CONDITION, &FOLLOW_CONDITION_in_condition733); 
+             MATCHT(CONDITION, &FOLLOW_CONDITION_in_condition733);
             if  (HASEXCEPTION())
             {
                 goto ruleconditionEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditionEx;
@@ -2186,13 +2186,13 @@ condition(phammer_walker ctx, void* c)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA10_0 = LA(1);
-            	    if ( (LA10_0 == FEATURE) ) 
+            	    if ( (LA10_0 == FEATURE) )
             	    {
             	        alt10=1;
             	    }
 
             	}
-            	switch (alt10) 
+            	switch (alt10)
             	{
             	    case 1:
             	        // hammer_walker.g:60:24: feature
@@ -2207,14 +2207,14 @@ condition(phammer_walker ctx, void* c)
             	            }
 
             	            {
-            	                 hammer_add_feature_to_condition(feature16, c); 
+            	                 hammer_add_feature_to_condition(feature16, c);
             	            }
 
             	        }
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt10 >= 1 )
             		{
             		    goto loop10;
@@ -2233,7 +2233,7 @@ condition(phammer_walker ctx, void* c)
                 loop10: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruleconditionEx;
@@ -2243,7 +2243,7 @@ condition(phammer_walker ctx, void* c)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2260,13 +2260,13 @@ condition(phammer_walker ctx, void* c)
 }
 /* $ANTLR end condition */
 
-/** 
+/**
  * $ANTLR start feature
  * hammer_walker.g:61:1: feature returns [void* feature] : ( ^( FEATURE feature_name= ID feature_value= ID ) | ^( FEATURE feature_name= ID source_decl ) );
  */
 static void*
 feature(phammer_walker ctx)
-{   
+{
     void* feature = NULL;
 
     pANTLR3_BASE_TREE    feature_name;
@@ -2286,7 +2286,7 @@ feature(phammer_walker ctx)
     {
         {
             //  hammer_walker.g:62:9: ( ^( FEATURE feature_name= ID feature_value= ID ) | ^( FEATURE feature_name= ID source_decl ) )
-            
+
             ANTLR3_UINT32 alt11;
 
             alt11=2;
@@ -2294,32 +2294,32 @@ feature(phammer_walker ctx)
 
             {
                 int LA11_0 = LA(1);
-                if ( (LA11_0 == FEATURE) ) 
+                if ( (LA11_0 == FEATURE) )
                 {
 
                     {
                         int LA11_1 = LA(2);
-                        if ( (LA11_1 == DOWN) ) 
+                        if ( (LA11_1 == DOWN) )
                         {
 
                             {
                                 int LA11_2 = LA(3);
-                                if ( (LA11_2 == ID) ) 
+                                if ( (LA11_2 == ID) )
                                 {
 
                                     {
                                         int LA11_3 = LA(4);
-                                        if ( (LA11_3 == ID) ) 
+                                        if ( (LA11_3 == ID) )
                                         {
                                             alt11=1;
                                         }
-                                        else if ( (LA11_3 == SOURCE_DECL) ) 
+                                        else if ( (LA11_3 == SOURCE_DECL) )
                                         {
                                             alt11=2;
                                         }
-                                        else 
+                                        else
                                         {
-                                        
+
                                             CONSTRUCTEX();
                                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                             EXCEPTION->message      = (void *)"";
@@ -2331,9 +2331,9 @@ feature(phammer_walker ctx)
                                         }
                                     }
                                 }
-                                else 
+                                else
                                 {
-                                
+
                                     CONSTRUCTEX();
                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                     EXCEPTION->message      = (void *)"";
@@ -2345,9 +2345,9 @@ feature(phammer_walker ctx)
                                 }
                             }
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -2359,9 +2359,9 @@ feature(phammer_walker ctx)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2372,45 +2372,45 @@ feature(phammer_walker ctx)
                     goto rulefeatureEx;
                 }
             }
-            switch (alt11) 
+            switch (alt11)
             {
         	case 1:
         	    // hammer_walker.g:62:11: ^( FEATURE feature_name= ID feature_value= ID )
         	    {
-        	         MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature760); 
+        	         MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature760);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
-        	        feature_name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature764); 
+        	        feature_name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature764);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
-        	        feature_value = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature768); 
+        	        feature_value = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature768);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
         	        {
-        	             feature = hammer_create_feature(PARSER->super, (feature_name != NULL ? feature_name->getText(feature_name) : NULL)->chars, (feature_value != NULL ? feature_value->getText(feature_value) : NULL)->chars); 
+        	             feature = hammer_create_feature(PARSER->super, (feature_name != NULL ? feature_name->getText(feature_name) : NULL)->chars, (feature_value != NULL ? feature_value->getText(feature_value) : NULL)->chars);
         	        }
 
         	    }
@@ -2418,20 +2418,20 @@ feature(phammer_walker ctx)
         	case 2:
         	    // hammer_walker.g:63:11: ^( FEATURE feature_name= ID source_decl )
         	    {
-        	         MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature784); 
+        	         MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature784);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
-        	        feature_name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature788); 
+        	        feature_name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature788);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
@@ -2447,14 +2447,14 @@ feature(phammer_walker ctx)
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulefeatureEx;
         	        }
 
         	        {
-        	             feature = hammer_create_feature(PARSER->super, (feature_name != NULL ? feature_name->getText(feature_name) : NULL)->chars, NULL); hammer_feature_set_dependency_data(feature, source_decl17); 
+        	             feature = hammer_create_feature(PARSER->super, (feature_name != NULL ? feature_name->getText(feature_name) : NULL)->chars, NULL); hammer_feature_set_dependency_data(feature, source_decl17);
         	        }
 
         	    }
@@ -2463,7 +2463,7 @@ feature(phammer_walker ctx)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2480,13 +2480,13 @@ feature(phammer_walker ctx)
 }
 /* $ANTLR end feature */
 
-/** 
+/**
  * $ANTLR start sources_decl
  * hammer_walker.g:65:1: sources_decl returns [void* sources] : ^( SOURCES_DECL ( source_decl | sources_decl_rule_invoke[sources] )+ ) ;
  */
 static void*
 sources_decl(phammer_walker ctx)
-{   
+{
     void* sources = NULL;
 
     void* source_decl18;
@@ -2497,21 +2497,21 @@ sources_decl(phammer_walker ctx)
      */
 
 
-     sources = hammer_make_sources_decl(); 
+     sources = hammer_make_sources_decl();
     source_decl18 = NULL;
 
     {
         // hammer_walker.g:69:9: ( ^( SOURCES_DECL ( source_decl | sources_decl_rule_invoke[sources] )+ ) )
         // hammer_walker.g:69:12: ^( SOURCES_DECL ( source_decl | sources_decl_rule_invoke[sources] )+ )
         {
-             MATCHT(SOURCES_DECL, &FOLLOW_SOURCES_DECL_in_sources_decl830); 
+             MATCHT(SOURCES_DECL, &FOLLOW_SOURCES_DECL_in_sources_decl830);
             if  (HASEXCEPTION())
             {
                 goto rulesources_declEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulesources_declEx;
@@ -2528,17 +2528,17 @@ sources_decl(phammer_walker ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA12_0 = LA(1);
-            	    if ( (LA12_0 == SOURCE_DECL) ) 
+            	    if ( (LA12_0 == SOURCE_DECL) )
             	    {
             	        alt12=1;
             	    }
-            	    else if ( (LA12_0 == RULE_CALL) ) 
+            	    else if ( (LA12_0 == RULE_CALL) )
             	    {
             	        alt12=2;
             	    }
 
             	}
-            	switch (alt12) 
+            	switch (alt12)
             	{
             	    case 1:
             	        // hammer_walker.g:69:28: source_decl
@@ -2553,7 +2553,7 @@ sources_decl(phammer_walker ctx)
             	            }
 
             	            {
-            	                 hammer_add_source_to_sources_decl(sources, source_decl18); 
+            	                 hammer_add_source_to_sources_decl(sources, source_decl18);
             	            }
 
             	        }
@@ -2575,7 +2575,7 @@ sources_decl(phammer_walker ctx)
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt12 >= 1 )
             		{
             		    goto loop12;
@@ -2594,7 +2594,7 @@ sources_decl(phammer_walker ctx)
                 loop12: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulesources_declEx;
@@ -2604,7 +2604,7 @@ sources_decl(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2621,13 +2621,13 @@ sources_decl(phammer_walker ctx)
 }
 /* $ANTLR end sources_decl */
 
-/** 
+/**
  * $ANTLR start source_decl
  * hammer_walker.g:71:1: source_decl returns [void* sd] : ^( SOURCE_DECL source_public_tag[sd] target_path target_name[sd] target_features[sd] ) ;
  */
 static void*
 source_decl(phammer_walker ctx)
-{   
+{
     void* sd = NULL;
 
     void* target_path19;
@@ -2638,21 +2638,21 @@ source_decl(phammer_walker ctx)
      */
 
 
-     sd = hammer_make_source_decl(PARSER->super); 
+     sd = hammer_make_source_decl(PARSER->super);
     target_path19 = NULL;
 
     {
         // hammer_walker.g:73:9: ( ^( SOURCE_DECL source_public_tag[sd] target_path target_name[sd] target_features[sd] ) )
         // hammer_walker.g:73:11: ^( SOURCE_DECL source_public_tag[sd] target_path target_name[sd] target_features[sd] )
         {
-             MATCHT(SOURCE_DECL, &FOLLOW_SOURCE_DECL_in_source_decl870); 
+             MATCHT(SOURCE_DECL, &FOLLOW_SOURCE_DECL_in_source_decl870);
             if  (HASEXCEPTION())
             {
                 goto rulesource_declEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulesource_declEx;
@@ -2677,7 +2677,7 @@ source_decl(phammer_walker ctx)
             }
 
             {
-                 hammer_source_decl_set_target_path(PARSER->super, sd, target_path19); 
+                 hammer_source_decl_set_target_path(PARSER->super, sd, target_path19);
             }
             FOLLOWPUSH(FOLLOW_target_name_in_source_decl928);
             target_name(ctx, sd);
@@ -2698,7 +2698,7 @@ source_decl(phammer_walker ctx)
             }
 
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulesource_declEx;
@@ -2708,7 +2708,7 @@ source_decl(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2725,13 +2725,13 @@ source_decl(phammer_walker ctx)
 }
 /* $ANTLR end source_decl */
 
-/** 
+/**
  * $ANTLR start source_public_tag
  * hammer_walker.g:77:1: source_public_tag[void* sd] : ( PUBLIC_TAG | );
  */
 static void
 source_public_tag(phammer_walker ctx, void* sd)
-{   
+{
     /* Initialize rule variables
      */
 
@@ -2739,7 +2739,7 @@ source_public_tag(phammer_walker ctx, void* sd)
     {
         {
             //  hammer_walker.g:77:29: ( PUBLIC_TAG | )
-            
+
             ANTLR3_UINT32 alt13;
 
             alt13=2;
@@ -2747,17 +2747,17 @@ source_public_tag(phammer_walker ctx, void* sd)
 
             {
                 int LA13_0 = LA(1);
-                if ( (LA13_0 == PUBLIC_TAG) ) 
+                if ( (LA13_0 == PUBLIC_TAG) )
                 {
                     alt13=1;
                 }
-                else if ( (LA13_0 == TARGET_PATH) ) 
+                else if ( (LA13_0 == TARGET_PATH) )
                 {
                     alt13=2;
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -2768,25 +2768,25 @@ source_public_tag(phammer_walker ctx, void* sd)
                     goto rulesource_public_tagEx;
                 }
             }
-            switch (alt13) 
+            switch (alt13)
             {
         	case 1:
         	    // hammer_walker.g:77:31: PUBLIC_TAG
         	    {
-        	         MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_source_public_tag966); 
+        	         MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_source_public_tag966);
         	        if  (HASEXCEPTION())
         	        {
         	            goto rulesource_public_tagEx;
         	        }
 
         	        {
-        	             hammer_source_decl_set_public(sd); 
+        	             hammer_source_decl_set_public(sd);
         	        }
 
         	    }
         	    break;
         	case 2:
-        	    // hammer_walker.g:78:30: 
+        	    // hammer_walker.g:78:30:
         	    {
         	    }
         	    break;
@@ -2794,7 +2794,7 @@ source_public_tag(phammer_walker ctx, void* sd)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2811,13 +2811,13 @@ source_public_tag(phammer_walker ctx, void* sd)
 }
 /* $ANTLR end source_public_tag */
 
-/** 
+/**
  * $ANTLR start target_path
  * hammer_walker.g:79:1: target_path returns [void* tp] : ^( TARGET_PATH ( ID | SLASH )+ ) ;
  */
 static void*
 target_path(phammer_walker ctx)
-{   
+{
     void* tp = NULL;
 
     pANTLR3_BASE_TREE    ID20;
@@ -2827,7 +2827,7 @@ target_path(phammer_walker ctx)
      */
 
 
-     tp = hammer_make_target_path(); 
+     tp = hammer_make_target_path();
     ID20       = NULL;
     SLASH21       = NULL;
 
@@ -2835,14 +2835,14 @@ target_path(phammer_walker ctx)
         // hammer_walker.g:81:9: ( ^( TARGET_PATH ( ID | SLASH )+ ) )
         // hammer_walker.g:81:11: ^( TARGET_PATH ( ID | SLASH )+ )
         {
-             MATCHT(TARGET_PATH, &FOLLOW_TARGET_PATH_in_target_path1023); 
+             MATCHT(TARGET_PATH, &FOLLOW_TARGET_PATH_in_target_path1023);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_pathEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_pathEx;
@@ -2859,29 +2859,29 @@ target_path(phammer_walker ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA14_0 = LA(1);
-            	    if ( (LA14_0 == ID) ) 
+            	    if ( (LA14_0 == ID) )
             	    {
             	        alt14=1;
             	    }
-            	    else if ( (LA14_0 == SLASH) ) 
+            	    else if ( (LA14_0 == SLASH) )
             	    {
             	        alt14=2;
             	    }
 
             	}
-            	switch (alt14) 
+            	switch (alt14)
             	{
             	    case 1:
             	        // hammer_walker.g:81:26: ID
             	        {
-            	            ID20 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_path1026); 
+            	            ID20 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_path1026);
             	            if  (HASEXCEPTION())
             	            {
             	                goto ruletarget_pathEx;
             	            }
 
             	            {
-            	                 hammer_add_to_target_path(PARSER->super, tp, ID20); 
+            	                 hammer_add_to_target_path(PARSER->super, tp, ID20);
             	            }
 
             	        }
@@ -2889,21 +2889,21 @@ target_path(phammer_walker ctx)
             	    case 2:
             	        // hammer_walker.g:81:86: SLASH
             	        {
-            	            SLASH21 = (pANTLR3_BASE_TREE) MATCHT(SLASH, &FOLLOW_SLASH_in_target_path1032); 
+            	            SLASH21 = (pANTLR3_BASE_TREE) MATCHT(SLASH, &FOLLOW_SLASH_in_target_path1032);
             	            if  (HASEXCEPTION())
             	            {
             	                goto ruletarget_pathEx;
             	            }
 
             	            {
-            	                 hammer_add_to_target_path(PARSER->super, tp, SLASH21); 
+            	                 hammer_add_to_target_path(PARSER->super, tp, SLASH21);
             	            }
 
             	        }
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt14 >= 1 )
             		{
             		    goto loop14;
@@ -2922,7 +2922,7 @@ target_path(phammer_walker ctx)
                 loop14: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto ruletarget_pathEx;
@@ -2932,7 +2932,7 @@ target_path(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -2949,13 +2949,13 @@ target_path(phammer_walker ctx)
 }
 /* $ANTLR end target_path */
 
-/** 
+/**
  * $ANTLR start target_name
  * hammer_walker.g:82:1: target_name[void* sd] : ( ^( TARGET_NAME ID ) | ^( TARGET_NAME NULL_ARG ) );
  */
 static void
 target_name(phammer_walker ctx, void* sd)
-{   
+{
     pANTLR3_BASE_TREE    ID22;
 
     /* Initialize rule variables
@@ -2967,7 +2967,7 @@ target_name(phammer_walker ctx, void* sd)
     {
         {
             //  hammer_walker.g:82:23: ( ^( TARGET_NAME ID ) | ^( TARGET_NAME NULL_ARG ) )
-            
+
             ANTLR3_UINT32 alt15;
 
             alt15=2;
@@ -2975,27 +2975,27 @@ target_name(phammer_walker ctx, void* sd)
 
             {
                 int LA15_0 = LA(1);
-                if ( (LA15_0 == TARGET_NAME) ) 
+                if ( (LA15_0 == TARGET_NAME) )
                 {
 
                     {
                         int LA15_1 = LA(2);
-                        if ( (LA15_1 == DOWN) ) 
+                        if ( (LA15_1 == DOWN) )
                         {
 
                             {
                                 int LA15_2 = LA(3);
-                                if ( (LA15_2 == ID) ) 
+                                if ( (LA15_2 == ID) )
                                 {
                                     alt15=1;
                                 }
-                                else if ( (LA15_2 == NULL_ARG) ) 
+                                else if ( (LA15_2 == NULL_ARG) )
                                 {
                                     alt15=2;
                                 }
-                                else 
+                                else
                                 {
-                                
+
                                     CONSTRUCTEX();
                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                     EXCEPTION->message      = (void *)"";
@@ -3007,9 +3007,9 @@ target_name(phammer_walker ctx, void* sd)
                                 }
                             }
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -3021,9 +3021,9 @@ target_name(phammer_walker ctx, void* sd)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -3034,35 +3034,35 @@ target_name(phammer_walker ctx, void* sd)
                     goto ruletarget_nameEx;
                 }
             }
-            switch (alt15) 
+            switch (alt15)
             {
         	case 1:
         	    // hammer_walker.g:82:25: ^( TARGET_NAME ID )
         	    {
-        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_name1046); 
+        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_name1046);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
         	        }
 
-        	        ID22 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_name1048); 
+        	        ID22 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_name1048);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
         	        }
 
         	        {
-        	             hammer_source_decl_set_target_name(PARSER->super, sd, (ID22 != NULL ? ID22->getText(ID22) : NULL)->chars); 
+        	             hammer_source_decl_set_target_name(PARSER->super, sd, (ID22 != NULL ? ID22->getText(ID22) : NULL)->chars);
         	        }
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
@@ -3074,30 +3074,30 @@ target_name(phammer_walker ctx, void* sd)
         	case 2:
         	    // hammer_walker.g:83:25: ^( TARGET_NAME NULL_ARG )
         	    {
-        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_name1079); 
+        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_name1079);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
         	        }
 
-        	         MATCHT(NULL_ARG, &FOLLOW_NULL_ARG_in_target_name1081); 
+        	         MATCHT(NULL_ARG, &FOLLOW_NULL_ARG_in_target_name1081);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
         	        }
 
         	        {
-        	             hammer_source_decl_set_target_name(PARSER->super, sd, NULL); 
+        	             hammer_source_decl_set_target_name(PARSER->super, sd, NULL);
         	        }
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_nameEx;
@@ -3110,7 +3110,7 @@ target_name(phammer_walker ctx, void* sd)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3127,13 +3127,13 @@ target_name(phammer_walker ctx, void* sd)
 }
 /* $ANTLR end target_name */
 
-/** 
+/**
  * $ANTLR start target_features
  * hammer_walker.g:84:1: target_features[void* sd] : ( feature_set | ^( FEATURE_SET NULL_ARG ) );
  */
 static void
 target_features(phammer_walker ctx, void* sd)
-{   
+{
     void* feature_set23;
     #undef	RETURN_TYPE_feature_set23
     #define	RETURN_TYPE_feature_set23 void*
@@ -3147,7 +3147,7 @@ target_features(phammer_walker ctx, void* sd)
     {
         {
             //  hammer_walker.g:84:27: ( feature_set | ^( FEATURE_SET NULL_ARG ) )
-            
+
             ANTLR3_UINT32 alt16;
 
             alt16=2;
@@ -3155,27 +3155,27 @@ target_features(phammer_walker ctx, void* sd)
 
             {
                 int LA16_0 = LA(1);
-                if ( (LA16_0 == FEATURE_SET) ) 
+                if ( (LA16_0 == FEATURE_SET) )
                 {
 
                     {
                         int LA16_1 = LA(2);
-                        if ( (LA16_1 == DOWN) ) 
+                        if ( (LA16_1 == DOWN) )
                         {
 
                             {
                                 int LA16_2 = LA(3);
-                                if ( (LA16_2 == NULL_ARG) ) 
+                                if ( (LA16_2 == NULL_ARG) )
                                 {
                                     alt16=2;
                                 }
-                                else if ( (LA16_2 == FEATURE) ) 
+                                else if ( (LA16_2 == FEATURE) )
                                 {
                                     alt16=1;
                                 }
-                                else 
+                                else
                                 {
-                                
+
                                     CONSTRUCTEX();
                                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                                     EXCEPTION->message      = (void *)"";
@@ -3187,9 +3187,9 @@ target_features(phammer_walker ctx, void* sd)
                                 }
                             }
                         }
-                        else 
+                        else
                         {
-                        
+
                             CONSTRUCTEX();
                             EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                             EXCEPTION->message      = (void *)"";
@@ -3201,9 +3201,9 @@ target_features(phammer_walker ctx, void* sd)
                         }
                     }
                 }
-                else 
+                else
                 {
-                
+
                     CONSTRUCTEX();
                     EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
                     EXCEPTION->message      = (void *)"";
@@ -3214,7 +3214,7 @@ target_features(phammer_walker ctx, void* sd)
                     goto ruletarget_featuresEx;
                 }
             }
-            switch (alt16) 
+            switch (alt16)
             {
         	case 1:
         	    // hammer_walker.g:84:29: feature_set
@@ -3237,27 +3237,27 @@ target_features(phammer_walker ctx, void* sd)
         	case 2:
         	    // hammer_walker.g:85:29: ^( FEATURE_SET NULL_ARG )
         	    {
-        	         MATCHT(FEATURE_SET, &FOLLOW_FEATURE_SET_in_target_features1127); 
+        	         MATCHT(FEATURE_SET, &FOLLOW_FEATURE_SET_in_target_features1127);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_featuresEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_featuresEx;
         	        }
 
-        	         MATCHT(NULL_ARG, &FOLLOW_NULL_ARG_in_target_features1129); 
+        	         MATCHT(NULL_ARG, &FOLLOW_NULL_ARG_in_target_features1129);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_featuresEx;
         	        }
 
 
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL); 
+        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
         	        if  (HASEXCEPTION())
         	        {
         	            goto ruletarget_featuresEx;
@@ -3270,7 +3270,7 @@ target_features(phammer_walker ctx, void* sd)
             }
         }
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3287,13 +3287,13 @@ target_features(phammer_walker ctx, void* sd)
 }
 /* $ANTLR end target_features */
 
-/** 
+/**
  * $ANTLR start feature_set
  * hammer_walker.g:86:1: feature_set returns [void* fs] : ^( FEATURE_SET ( feature )+ ) ;
  */
 static void*
 feature_set(phammer_walker ctx)
-{   
+{
     void* fs = NULL;
 
     void* feature24;
@@ -3304,21 +3304,21 @@ feature_set(phammer_walker ctx)
      */
 
 
-     fs = hammer_make_feature_set(PARSER->super); 
+     fs = hammer_make_feature_set(PARSER->super);
     feature24 = NULL;
 
     {
         // hammer_walker.g:88:25: ( ^( FEATURE_SET ( feature )+ ) )
         // hammer_walker.g:88:27: ^( FEATURE_SET ( feature )+ )
         {
-             MATCHT(FEATURE_SET, &FOLLOW_FEATURE_SET_in_feature_set1171); 
+             MATCHT(FEATURE_SET, &FOLLOW_FEATURE_SET_in_feature_set1171);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_setEx;
             }
 
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL); 
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_setEx;
@@ -3335,13 +3335,13 @@ feature_set(phammer_walker ctx)
             	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
             	    */
             	    int LA17_0 = LA(1);
-            	    if ( (LA17_0 == FEATURE) ) 
+            	    if ( (LA17_0 == FEATURE) )
             	    {
             	        alt17=1;
             	    }
 
             	}
-            	switch (alt17) 
+            	switch (alt17)
             	{
             	    case 1:
             	        // hammer_walker.g:88:42: feature
@@ -3356,14 +3356,14 @@ feature_set(phammer_walker ctx)
             	            }
 
             	            {
-            	                 hammer_add_feature_to_feature_set(fs, feature24); 
+            	                 hammer_add_feature_to_feature_set(fs, feature24);
             	            }
 
             	        }
             	        break;
 
             	    default:
-            	    
+
             		if ( cnt17 >= 1 )
             		{
             		    goto loop17;
@@ -3382,7 +3382,7 @@ feature_set(phammer_walker ctx)
                 loop17: ;	/* Jump to here if this rule does not match */
             }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL); 
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
             if  (HASEXCEPTION())
             {
                 goto rulefeature_setEx;
@@ -3392,7 +3392,7 @@ feature_set(phammer_walker ctx)
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3409,13 +3409,13 @@ feature_set(phammer_walker ctx)
 }
 /* $ANTLR end feature_set */
 
-/** 
+/**
  * $ANTLR start sources_decl_rule_invoke
  * hammer_walker.g:90:1: sources_decl_rule_invoke[void* sources] : rule ;
  */
 static void
 sources_decl_rule_invoke(phammer_walker ctx, void* sources)
-{   
+{
     void* rule25;
     #undef	RETURN_TYPE_rule25
     #define	RETURN_TYPE_rule25 void*
@@ -3431,7 +3431,7 @@ sources_decl_rule_invoke(phammer_walker ctx, void* sources)
         // hammer_walker.g:91:4: rule
         {
             {
-                 hammer_on_nested_rule_enter(PARSER->super); 
+                 hammer_on_nested_rule_enter(PARSER->super);
             }
             FOLLOWPUSH(FOLLOW_rule_in_sources_decl_rule_invoke1225);
             rule25=rule(ctx);
@@ -3443,17 +3443,17 @@ sources_decl_rule_invoke(phammer_walker ctx, void* sources)
             }
 
             {
-                 
-                     hammer_add_rule_result_to_source_decl(rule25, sources); 
-                     hammer_delete_rule_result(rule25); 
+
+                     hammer_add_rule_result_to_source_decl(rule25, sources);
+                     hammer_delete_rule_result(rule25);
                      hammer_on_nested_rule_leave(PARSER->super);
-                   
+
             }
 
         }
 
     }
-    
+
 
     // This is where rules clean up and exit
     //
@@ -3480,8 +3480,8 @@ sources_decl_rule_invoke(phammer_walker ctx, void* sources)
  * ==============================================
  */
 
- 
- 
+
+
 
 
 

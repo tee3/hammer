@@ -17,11 +17,11 @@ namespace hammer
       unsigned no_defaults : 1;
       unsigned no_checks   : 1;
       // if feature has some generated target info
-      unsigned generated   : 1; 
+      unsigned generated   : 1;
       // when parser sees feature that was not been defined
       // features with this bit on can be placed only in sources properties
       // also such features don't used in alternative selections
-      unsigned undefined_   : 1; 
+      unsigned undefined_   : 1;
    };
 }
 

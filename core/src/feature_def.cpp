@@ -11,7 +11,7 @@ using namespace std;
 namespace hammer
 {
 
-feature_def::feature_def(const std::string& name, 
+feature_def::feature_def(const std::string& name,
                          const legal_values_t& legal_values,
                          feature_attributes attributes)
    : name_(name),
@@ -70,7 +70,7 @@ void feature_def::expand_composites(const std::string value, feature_set* fs) co
 subfeature_def&
 feature_def::add_subfeature(const std::string& subfeature_name)
 {
-   if (attributes().free || 
+   if (attributes().free ||
        attributes().dependency ||
        attributes().path ||
        attributes().generated)

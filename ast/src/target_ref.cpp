@@ -5,7 +5,7 @@
 
 namespace hammer{namespace ast{
 
-target_ref::target_ref(parscore::source_location public_tag, 
+target_ref::target_ref(parscore::source_location public_tag,
                        const path_like_seq* head,
                        const parscore::identifier& target_name,
                        const requirement_set* requirements)

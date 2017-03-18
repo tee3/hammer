@@ -17,7 +17,7 @@ namespace hammer{
 
    struct parser::impl_t
    {
-      impl_t(engine* e) 
+      impl_t(engine* e)
          : engine_(e), input_(0), lexer_(0),
            tstream_(0), parser_(0)
       {
@@ -35,7 +35,7 @@ namespace hammer{
 
    static void displayRecognitionError(pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_UINT8 * tokenNames)
    {
-      
+
       details::hammer_parser_context* ctx = static_cast<details::hammer_parser_context*>(static_cast<pANTLR3_PARSER>(recognizer->super)->super);
       ++ctx->error_count_;
       ctx->base_displayRecognitionError(recognizer, tokenNames);
@@ -44,7 +44,7 @@ namespace hammer{
    parser::parser(engine* e) : impl_(new impl_t(e))
    {
    }
-   
+
    parser::~parser()
    {
       reset();
@@ -97,7 +97,7 @@ namespace hammer{
 ////      pANTLR3_STRING s = langAST_.tree->toStringTree(langAST_.tree);
 //      return ctx.error_count_ == 0;
    }
-   
+
    void parser::reset()
    {
       if (impl_->parser_)
@@ -112,7 +112,7 @@ namespace hammer{
       if (impl_->input_)
          impl_->input_->close(impl_->input_);
       impl_->input_ = 0;
-   }                 
+   }
 
    void parser::walk(hammer_walker_context* ctx)
    {
@@ -127,7 +127,7 @@ namespace hammer{
       hammer_walker = hammer_walkerNew(nodes);
       hammer_walker->pTreeParser->super = ctx;
       hammer_walker->project(hammer_walker);
-      
+
       hammer_walker->free(hammer_walker);
       nodes->free(nodes);
    }

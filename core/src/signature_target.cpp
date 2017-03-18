@@ -13,9 +13,9 @@ void signature_target::timestamp_info_impl() const
    std::string signature = dump_for_hash(get_main_target()->properties(), true);
    location_t l = location() / name();
    l.normalize();
-   
+
    std::ifstream f(l.string().c_str());
-   
+
    if (!f)
       timestamp_info_.timestamp_ = boost::date_time::neg_infin;
    else

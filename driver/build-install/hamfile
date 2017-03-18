@@ -3,7 +3,7 @@ feature.compose <all-static>on : <link>static <runtime-link>static ;
 feature.feature all-static-nix : on : propagated composite no-defaults ;
 feature.compose <all-static-nix>on : <link>static ;
 
-copy install 
+copy install
    :
     ../build/<all-static>on/<variant>release
    :
@@ -12,7 +12,7 @@ copy install
     <host-os>windows
    ;
 
-copy install 
+copy install
    :
     ../build/<all-static-nix>on/<variant>release
    :

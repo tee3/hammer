@@ -8,9 +8,9 @@
 
 namespace hammer{
 
-testing_intermediate_meta_target::testing_intermediate_meta_target(hammer::project* p, 
+testing_intermediate_meta_target::testing_intermediate_meta_target(hammer::project* p,
                                                                    const std::string& name,
-                                                                   const requirements_decl& req, 
+                                                                   const requirements_decl& req,
                                                                    const requirements_decl& usage_req,
                                                                    const hammer::target_type& t)
    : typed_meta_target(p, name, req, usage_req, t)
@@ -18,7 +18,7 @@ testing_intermediate_meta_target::testing_intermediate_meta_target(hammer::proje
 
 }
 
-sources_decl 
+sources_decl
 testing_intermediate_meta_target::compute_additional_sources(const main_target& owner) const
 {
    sources_decl result;

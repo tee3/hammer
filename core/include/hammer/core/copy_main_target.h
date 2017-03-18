@@ -22,7 +22,7 @@ namespace hammer
 
       private:
          location_t destination_;
-         types_t types_to_copy_; 
+         types_t types_to_copy_;
          bool recursive_;
    };
 }

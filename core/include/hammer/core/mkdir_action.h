@@ -14,7 +14,7 @@ namespace hammer
 
       protected:
          virtual bool execute_impl(const build_node& node, const build_environment& environment) const;
-      
+
       private:
          location_t dir_to_create_;
    };

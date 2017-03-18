@@ -14,9 +14,9 @@ namespace hammer
 pch_main_target::pch_main_target(const basic_meta_target* mt,
                                  const main_target& owner,
                                  const std::string& name,
-                                 const target_type* t, 
+                                 const target_type* t,
                                  const feature_set* props)
-                                : 
+                                :
                                  main_target(mt, name, t, props),
                                  owner_(owner),
                                  pch_header_(NULL),
@@ -24,16 +24,16 @@ pch_main_target::pch_main_target(const basic_meta_target* mt,
                                  pch_product_(NULL)
 {
 }
-   
-build_nodes_t 
+
+build_nodes_t
 pch_main_target::generate() const
 {
    const hammer::target_type& cpp_type = get_engine()->get_type_registry().get(types::CPP);
    const hammer::target_type& c_type = get_engine()->get_type_registry().get(types::C);
    const hammer::target_type& h_type = get_engine()->get_type_registry().get(types::H);
    const hammer::target_type& pch_type = get_engine()->get_type_registry().get(types::PCH);
-   
-   typedef std::vector<boost::intrusive_ptr<hammer::build_node> > result_t; 
+
+   typedef std::vector<boost::intrusive_ptr<hammer::build_node> > result_t;
 
    // PCH generator consume CPP || C + H and produce OBJ + PCH
    result_t result(main_target::generate());

@@ -23,7 +23,7 @@ namespace hammer
          struct consumable_type
          {
             consumable_type(const target_type& t, unsigned int f = 0, const feature_set* fs = 0) : type_(&t), flags_(f), features_(fs) {}
-            
+
             const target_type* type_;
             unsigned int flags_;
             const feature_set* features_;
@@ -39,7 +39,7 @@ namespace hammer
 
          typedef std::vector<consumable_type> consumable_types_t;
          typedef std::vector<produced_type> producable_types_t;
-         
+
          generator(engine& e,
                    const std::string& name,
                    const consumable_types_t& source_types,
@@ -54,9 +54,9 @@ namespace hammer
          const consumable_types_t& consumable_types() const { return source_types_; }
          const producable_types_t& producable_types() const { return target_types_; }
          const feature_set* constraints() const { return constraints_; }
- 
+
          virtual build_nodes_t
-         construct(const target_type& type_to_construct, 
+         construct(const target_type& type_to_construct,
                    const feature_set& props,
                    const build_nodes_t& sources,
                    const basic_target* source_target,
@@ -65,18 +65,18 @@ namespace hammer
 
          bool is_consumable(const target_type& t) const;
          bool is_composite() const { return composite_; }
-         bool include_composite_generators() const { return include_composite_generators_; } 
+         bool include_composite_generators() const { return include_composite_generators_; }
          void include_composite_generators(bool v) { include_composite_generators_ = v; }
 
          template <typename T>
          void action(std::unique_ptr<T> a) { action_ = std::move(a); }
-         const build_action* action() const { return action_.get(); } 
+         const build_action* action() const { return action_.get(); }
 
       protected:
-         virtual basic_target* create_target(const main_target* mt, 
+         virtual basic_target* create_target(const main_target* mt,
                                              const build_node::sources_t& sources,
                                              const std::string& n,
-                                             const target_type* t, 
+                                             const target_type* t,
                                              const feature_set* f) const;
 
       private:

@@ -13,8 +13,8 @@ mksig_action::mksig_action() : build_action("mksig")
 {
 }
 
-std::string 
-mksig_action::target_tag(const build_node& node, 
+std::string
+mksig_action::target_tag(const build_node& node,
                          const build_environment& environment) const
 {
    assert(node.products_.size() == 1);
@@ -29,7 +29,7 @@ bool mksig_action::execute_impl(const build_node& node, const build_environment&
 {
    location_t target_file_name = node.products_.front()->location() / node.products_.front()->name();
    target_file_name.normalize();
-   
+
    std::unique_ptr<std::ostream> f =
       environment.create_output_file(target_file_name.string().c_str(),
                                      std::ios_base::trunc | std::ios_base::out);

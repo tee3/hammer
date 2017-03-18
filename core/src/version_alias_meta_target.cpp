@@ -6,7 +6,7 @@
 #include <hammer/core/feature_set.h>
 
 namespace hammer{
-   
+
 static
 source_decl make_default_source(const std::string& version)
 {

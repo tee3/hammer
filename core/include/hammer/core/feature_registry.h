@@ -23,8 +23,8 @@ namespace hammer
          feature_set* make_set();
          const feature_set& singleton() const;
          feature* create_feature(const std::string& name, const std::string& value);
-         feature* create_feature(const feature& f, 
-                                 const std::string& subfeature_name, 
+         feature* create_feature(const feature& f,
+                                 const std::string& subfeature_name,
                                  const std::string& subfeature_value);
          feature* clone_feature(const feature& f);
 

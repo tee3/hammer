@@ -12,7 +12,7 @@ namespace hammer
 
    class source_target : public file_target
    {
-      public:  
+      public:
          source_target(const main_target* mt,
                        const location_t& l,
                        const std::string& name,

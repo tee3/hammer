@@ -26,7 +26,7 @@ namespace hammer
       protected:
          virtual bool execute_impl(const build_node& node, const build_environment& environment) const = 0;
          virtual void clean_on_fail(const build_node& node, const build_environment& environment) const;
-      
+
       private:
          std::string name_;
          boost::shared_ptr<build_action> batched_action_;
