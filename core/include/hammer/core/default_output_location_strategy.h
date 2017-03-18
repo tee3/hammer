@@ -3,13 +3,12 @@
 
 #include "output_location_strategy.h"
 
-namespace hammer
+namespace hammer {
+class default_output_location_strategy : public output_location_strategy
 {
-   class default_output_location_strategy : public output_location_strategy
-   {
-      public:
-         virtual location_t compute_output_location(const main_target& mt) const;
-   };
+public:
+  virtual location_t compute_output_location(const main_target& mt) const;
+};
 }
 
-#endif //h_3f4d4eb2_0937_473e_9959_58d62b583039
+#endif // h_3f4d4eb2_0937_473e_9959_58d62b583039

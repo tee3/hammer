@@ -4,28 +4,32 @@
 #include <hammer/ast/expression.h>
 #include <hammer/ast/types.h>
 
-namespace hammer{ namespace ast{
+namespace hammer {
+namespace ast {
 
 class path_like_seq : public expression
 {
-   public:
-      path_like_seq(const parscore::identifier& first,
-                    const parscore::identifier& last)
-         : first_(first),
-           last_(last)
-      {
-      }
+public:
+  path_like_seq(const parscore::identifier& first,
+                const parscore::identifier& last)
+    : first_(first)
+    , last_(last)
+  {
+  }
 
-      parscore::identifier to_identifier() const;
-      bool is_simple() const;
-      parscore::source_location start_loc() const override { return first_.start_lok(); }
-      bool accept(visitor& v) const override;
+  parscore::identifier to_identifier() const;
+  bool is_simple() const;
+  parscore::source_location start_loc() const override
+  {
+    return first_.start_lok();
+  }
+  bool accept(visitor& v) const override;
 
-   private:
-      parscore::identifier first_;
-      parscore::identifier last_;
+private:
+  parscore::identifier first_;
+  parscore::identifier last_;
 };
-
-}}
+}
+}
 
 #endif

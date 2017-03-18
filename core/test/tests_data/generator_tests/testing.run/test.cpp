@@ -1,8 +1,9 @@
 #include <iostream>
 
-int main()
+int
+main()
 {
-   std::cout << "Hellow world!\n";
+  std::cout << "Hellow world!\n";
 
-   return 0;
+  return 0;
 }

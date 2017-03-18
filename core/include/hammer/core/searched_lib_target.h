@@ -3,22 +3,24 @@
 
 #include "file_target.h"
 
-namespace hammer
+namespace hammer {
+class searched_lib_target : public file_target
 {
-   class searched_lib_target : public file_target
-   {
-      public:
-         searched_lib_target(const main_target* mt, const std::string& name,
-                             const target_type* t, const feature_set* f) : file_target(mt, name, t, f)
-         {
-         }
+public:
+  searched_lib_target(const main_target* mt,
+                      const std::string& name,
+                      const target_type* t,
+                      const feature_set* f)
+    : file_target(mt, name, t, f)
+  {
+  }
 
-         virtual const location_t& location() const { return empty_location_; }
+  virtual const location_t& location() const { return empty_location_; }
 
-      protected:
-         location_t empty_location_;
-         virtual void timestamp_info_impl() const;
-   };
+protected:
+  location_t empty_location_;
+  virtual void timestamp_info_impl() const;
+};
 }
 
-#endif //h_6321a33a_7df3_44b9_8861_dc2ce5a7690c
+#endif // h_6321a33a_7df3_44b9_8861_dc2ce5a7690c

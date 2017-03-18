@@ -6,138 +6,146 @@
  *     -                 for the lexer : hammerLexerLexer *
  * Editing it, at least manually, is not wise.
  *
- * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
+ * C language generator and runtime by Jim Idle,
+ * jimi|hereisanat|idle|dotgoeshere|ws.
  *
  *
 */
 /* -----------------------------------------
  * Include the ANTLR3 generated header file.
  */
-#include    "hammerLexer.h"
+#include "hammerLexer.h"
 /* ----------------------------------------- */
 
-
-/** String literals used by hammerLexer that we must do things like MATCHS() with.
+/** String literals used by hammerLexer that we must do things like MATCHS()
+ * with.
  *  C will normally just lay down 8 bit characters, and you can use L"xxx" to
  *  get wchar_t, but wchar_t is 16 bits on Windows, which is not UTF32 and so
  *  we perform this little trick of defining the literals as arrays of UINT32
  *  and passing in the address of these.
  */
-static ANTLR3_UCHAR	lit_1[]  = { 0x6C, 0x6F, 0x63, 0x61, 0x6C,  ANTLR3_STRING_TERMINATOR};
-static ANTLR3_UCHAR	lit_2[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
-
-
-
+static ANTLR3_UCHAR lit_1[] = { 0x6C, 0x6F, 0x63,
+                                0x61, 0x6C, ANTLR3_STRING_TERMINATOR };
+static ANTLR3_UCHAR lit_2[] = { 0x5C, 0x22, ANTLR3_STRING_TERMINATOR };
 
 /* MACROS that hide the C interface implementations from the
  * generated code, which makes it a little more understandable to the human eye.
- * I am very much against using C pre-processor macros for function calls and bits
+ * I am very much against using C pre-processor macros for function calls and
+ * bits
  * of code as you cannot see what is happening when single stepping in debuggers
- * and so on. The exception (in my book at least) is for generated code, where you are
- * not maintaining it, but may wish to read and understand it. If you single step it, you know that input()
- * hides some indirect calls, but is always referring to the input stream. This is
- * probably more readable than ctx->input->istream->input(snarfle0->blarg) and allows me to rejig
+ * and so on. The exception (in my book at least) is for generated code, where
+ * you are
+ * not maintaining it, but may wish to read and understand it. If you single
+ * step it, you know that input()
+ * hides some indirect calls, but is always referring to the input stream. This
+ * is
+ * probably more readable than ctx->input->istream->input(snarfle0->blarg) and
+ * allows me to rejig
  * the runtime interfaces without changing the generated code too often, without
- * confusing the reader of the generated output, who may not wish to know the gory
+ * confusing the reader of the generated output, who may not wish to know the
+ * gory
  * details of the interface inheritance.
  */
 
-#define		CTX	ctx
+#define CTX ctx
 
 /* Aids in accessing scopes for grammar programmers
  */
-#undef	SCOPE_TYPE
-#undef	SCOPE_STACK
-#undef	SCOPE_TOP
-#define	SCOPE_TYPE(scope)   phammerLexer_##scope##_SCOPE
-#define SCOPE_STACK(scope)  phammerLexer_##scope##Stack
-#define	SCOPE_TOP(scope)    ctx->phammerLexer_##scope##Top
-#define	SCOPE_SIZE(scope)			(ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
-#define SCOPE_INSTANCE(scope, i)	(ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope),i))
-
+#undef SCOPE_TYPE
+#undef SCOPE_STACK
+#undef SCOPE_TOP
+#define SCOPE_TYPE(scope) phammerLexer_##scope##_SCOPE
+#define SCOPE_STACK(scope) phammerLexer_##scope##Stack
+#define SCOPE_TOP(scope) ctx->phammerLexer_##scope##Top
+#define SCOPE_SIZE(scope)                                                      \
+  (ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
+#define SCOPE_INSTANCE(scope, i)                                               \
+  (ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope), i))
 
 /* Macros for accessing things in a lexer
  */
-#undef	    LEXER
-#undef	    RECOGNIZER
-#undef	    RULEMEMO
-#undef	    GETCHARINDEX
-#undef	    GETLINE
-#undef	    GETCHARPOSITIONINLINE
-#undef	    EMIT
-#undef	    EMITNEW
-#undef	    MATCHC
-#undef	    MATCHS
-#undef	    MATCHRANGE
-#undef	    LTOKEN
-#undef	    HASFAILED
-#undef	    FAILEDFLAG
-#undef	    INPUT
-#undef	    STRSTREAM
-#undef	    LA
-#undef	    HASEXCEPTION
-#undef	    EXCEPTION
-#undef	    CONSTRUCTEX
-#undef	    CONSUME
-#undef	    LRECOVER
-#undef	    MARK
-#undef	    REWIND
-#undef	    REWINDLAST
-#undef	    BACKTRACKING
-#undef		MATCHANY
-#undef		MEMOIZE
-#undef		HAVEPARSEDRULE
-#undef		GETTEXT
-#undef		INDEX
-#undef		SEEK
-#undef		PUSHSTREAM
-#undef		POPSTREAM
-#undef		SETTEXT
-#undef		SETTEXT8
+#undef LEXER
+#undef RECOGNIZER
+#undef RULEMEMO
+#undef GETCHARINDEX
+#undef GETLINE
+#undef GETCHARPOSITIONINLINE
+#undef EMIT
+#undef EMITNEW
+#undef MATCHC
+#undef MATCHS
+#undef MATCHRANGE
+#undef LTOKEN
+#undef HASFAILED
+#undef FAILEDFLAG
+#undef INPUT
+#undef STRSTREAM
+#undef LA
+#undef HASEXCEPTION
+#undef EXCEPTION
+#undef CONSTRUCTEX
+#undef CONSUME
+#undef LRECOVER
+#undef MARK
+#undef REWIND
+#undef REWINDLAST
+#undef BACKTRACKING
+#undef MATCHANY
+#undef MEMOIZE
+#undef HAVEPARSEDRULE
+#undef GETTEXT
+#undef INDEX
+#undef SEEK
+#undef PUSHSTREAM
+#undef POPSTREAM
+#undef SETTEXT
+#undef SETTEXT8
 
-#define	    LEXER					ctx->pLexer
-#define	    RECOGNIZER			    LEXER->rec
-#define		LEXSTATE				RECOGNIZER->state
-#define		TOKSOURCE				LEXSTATE->tokSource
-#define	    GETCHARINDEX()			LEXER->getCharIndex(LEXER)
-#define	    GETLINE()				LEXER->getLine(LEXER)
-#define	    GETTEXT()				LEXER->getText(LEXER)
-#define	    GETCHARPOSITIONINLINE() LEXER->getCharPositionInLine(LEXER)
-#define	    EMIT()					LEXSTATE->type = _type; LEXER->emit(LEXER)
-#define	    EMITNEW(t)				LEXER->emitNew(LEXER, t)
-#define	    MATCHC(c)				LEXER->matchc(LEXER, c)
-#define	    MATCHS(s)				LEXER->matchs(LEXER, s)
-#define	    MATCHRANGE(c1,c2)	    LEXER->matchRange(LEXER, c1, c2)
-#define	    MATCHANY()				LEXER->matchAny(LEXER)
-#define	    LTOKEN  				LEXSTATE->token
-#define	    HASFAILED()				(LEXSTATE->failed == ANTLR3_TRUE)
-#define	    BACKTRACKING			LEXSTATE->backtracking
-#define	    FAILEDFLAG				LEXSTATE->failed
-#define	    INPUT					LEXER->input
-#define	    STRSTREAM				INPUT
-#define		ISTREAM					INPUT->istream
-#define		INDEX()					ISTREAM->index(ISTREAM)
-#define		SEEK(n)					ISTREAM->seek(ISTREAM, n)
-#define	    EOF_TOKEN				&(LEXSTATE->tokSource->eofToken)
-#define	    HASEXCEPTION()			(LEXSTATE->error == ANTLR3_TRUE)
-#define	    EXCEPTION				LEXSTATE->exception
-#define	    CONSTRUCTEX()			RECOGNIZER->exConstruct(RECOGNIZER)
-#define	    LRECOVER()				LEXER->recover(LEXER)
-#define	    MARK()					ISTREAM->mark(ISTREAM)
-#define	    REWIND(m)				ISTREAM->rewind(ISTREAM, m)
-#define	    REWINDLAST()			ISTREAM->rewindLast(ISTREAM)
-#define		MEMOIZE(ri,si)			RECOGNIZER->memoize(RECOGNIZER, ri, si)
-#define		HAVEPARSEDRULE(r)		RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
-#define		PUSHSTREAM(str)			LEXER->pushCharStream(LEXER, str)
-#define		POPSTREAM()				LEXER->popCharStream(LEXER)
-#define		SETTEXT(str)			LEXSTATE->text = str
-#define		SKIP()					LEXSTATE->token = &(TOKSOURCE->skipToken)
-#define		USER1					LEXSTATE->user1
-#define		USER2					LEXSTATE->user2
-#define		USER3					LEXSTATE->user3
-#define		CUSTOM					LEXSTATE->custom
-#define		RULEMEMO				LEXSTATE->ruleMemo
-#define		DBG						RECOGNIZER->debugger
+#define LEXER ctx->pLexer
+#define RECOGNIZER LEXER->rec
+#define LEXSTATE RECOGNIZER->state
+#define TOKSOURCE LEXSTATE->tokSource
+#define GETCHARINDEX() LEXER->getCharIndex(LEXER)
+#define GETLINE() LEXER->getLine(LEXER)
+#define GETTEXT() LEXER->getText(LEXER)
+#define GETCHARPOSITIONINLINE() LEXER->getCharPositionInLine(LEXER)
+#define EMIT()                                                                 \
+  LEXSTATE->type = _type;                                                      \
+  LEXER->emit(LEXER)
+#define EMITNEW(t) LEXER->emitNew(LEXER, t)
+#define MATCHC(c) LEXER->matchc(LEXER, c)
+#define MATCHS(s) LEXER->matchs(LEXER, s)
+#define MATCHRANGE(c1, c2) LEXER->matchRange(LEXER, c1, c2)
+#define MATCHANY() LEXER->matchAny(LEXER)
+#define LTOKEN LEXSTATE->token
+#define HASFAILED() (LEXSTATE->failed == ANTLR3_TRUE)
+#define BACKTRACKING LEXSTATE->backtracking
+#define FAILEDFLAG LEXSTATE->failed
+#define INPUT LEXER->input
+#define STRSTREAM INPUT
+#define ISTREAM INPUT->istream
+#define INDEX() ISTREAM->index(ISTREAM)
+#define SEEK(n) ISTREAM->seek(ISTREAM, n)
+#define EOF_TOKEN &(LEXSTATE->tokSource->eofToken)
+#define HASEXCEPTION() (LEXSTATE->error == ANTLR3_TRUE)
+#define EXCEPTION LEXSTATE->exception
+#define CONSTRUCTEX() RECOGNIZER->exConstruct(RECOGNIZER)
+#define LRECOVER() LEXER->recover(LEXER)
+#define MARK() ISTREAM->mark(ISTREAM)
+#define REWIND(m) ISTREAM->rewind(ISTREAM, m)
+#define REWINDLAST() ISTREAM->rewindLast(ISTREAM)
+#define MEMOIZE(ri, si) RECOGNIZER->memoize(RECOGNIZER, ri, si)
+#define HAVEPARSEDRULE(r) RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
+#define PUSHSTREAM(str) LEXER->pushCharStream(LEXER, str)
+#define POPSTREAM() LEXER->popCharStream(LEXER)
+#define SETTEXT(str) LEXSTATE->text = str
+#define SKIP() LEXSTATE->token = &(TOKSOURCE->skipToken)
+#define USER1 LEXSTATE->user1
+#define USER2 LEXSTATE->user2
+#define USER3 LEXSTATE->user3
+#define CUSTOM LEXSTATE->custom
+#define RULEMEMO LEXSTATE->ruleMemo
+#define DBG RECOGNIZER->debugger
 
 /* If we have been told we can rely on the standard 8 bit or 16 bit input
  * stream, then we can define our macros to use the direct pointers
@@ -146,107 +154,126 @@ static ANTLR3_UCHAR	lit_2[]  = { 0x5C, 0x22,  ANTLR3_STRING_TERMINATOR};
  * do not place LA(1) in a temporary at the moment) and even then
  * only if there is a lot of input (order of say 1M or so).
  */
-#if	defined(ANTLR3_INLINE_INPUT_ASCII) || defined(ANTLR3_INLINE_INPUT_UTF16)
+#if defined(ANTLR3_INLINE_INPUT_ASCII) || defined(ANTLR3_INLINE_INPUT_UTF16)
 
-# ifdef	ANTLR3_INLINE_INPUT_ASCII
+#ifdef ANTLR3_INLINE_INPUT_ASCII
 
 /* 8 bit "ASCII" (actually any 8 bit character set) */
 
-#  define	    NEXTCHAR			((pANTLR3_UINT8)(INPUT->nextChar))
-#  define	    DATAP				((pANTLR3_UINT8)(INPUT->data))
+#define NEXTCHAR ((pANTLR3_UINT8)(INPUT->nextChar))
+#define DATAP ((pANTLR3_UINT8)(INPUT->data))
 
-# else
+#else
 
-#  define	    NEXTCHAR			((pANTLR3_UINT16)(INPUT->nextChar))
-#  define	    DATAP				((pANTLR3_UINT16)(INPUT->data))
+#define NEXTCHAR ((pANTLR3_UINT16)(INPUT->nextChar))
+#define DATAP ((pANTLR3_UINT16)(INPUT->data))
 
-# endif
+#endif
 
-# define	    LA(n) ((NEXTCHAR + n) > (DATAP + INPUT->sizeBuf) ? ANTLR3_CHARSTREAM_EOF : (ANTLR3_UCHAR)(*(NEXTCHAR + n - 1)))
-# define	    CONSUME()											\
-{																	\
-    if	(NEXTCHAR < (DATAP + INPUT->sizeBuf))						\
-    {																\
-		INPUT->charPositionInLine++;								\
-		if  ((ANTLR3_UCHAR)(*NEXTCHAR) == INPUT->newlineChar)		\
-		{															\
-			INPUT->line++;											\
-			INPUT->charPositionInLine	= 0;						\
-			INPUT->currentLine		= (void *)(NEXTCHAR + 1);		\
-		}															\
-		INPUT->nextChar = (void *)(NEXTCHAR + 1);					\
-    }																\
-}
+#define LA(n)                                                                  \
+  ((NEXTCHAR + n) > (DATAP + INPUT->sizeBuf)                                   \
+     ? ANTLR3_CHARSTREAM_EOF                                                   \
+     : (ANTLR3_UCHAR)(*(NEXTCHAR + n - 1)))
+#define CONSUME()                                                              \
+  {                                                                            \
+    if (NEXTCHAR < (DATAP + INPUT->sizeBuf)) {                                 \
+      INPUT->charPositionInLine++;                                             \
+      if ((ANTLR3_UCHAR)(*NEXTCHAR) == INPUT->newlineChar) {                   \
+        INPUT->line++;                                                         \
+        INPUT->charPositionInLine = 0;                                         \
+        INPUT->currentLine = (void*)(NEXTCHAR + 1);                            \
+      }                                                                        \
+      INPUT->nextChar = (void*)(NEXTCHAR + 1);                                 \
+    }                                                                          \
+  }
 
 #else
 
 // Pick up the input character by calling the input stream implementation.
 //
-#define	    CONSUME()				INPUT->istream->consume(INPUT->istream)
-#define	    LA(n)					INPUT->istream->_LA(INPUT->istream, n)
+#define CONSUME() INPUT->istream->consume(INPUT->istream)
+#define LA(n) INPUT->istream->_LA(INPUT->istream, n)
 
 #endif
-#define		TOKTEXT(tok, txt)				tok, (pANTLR3_UINT8)txt
+#define TOKTEXT(tok, txt) tok, (pANTLR3_UINT8)txt
 
-/* The 4 tokens defined below may well clash with your own #defines or token types. If so
- * then for the present you must use different names for your defines as these are hard coded
- * in the code generator. It would be better not to use such names internally, and maybe
- * we can change this in a forthcoming release. I deliberately do not #undef these
- * here as this will at least give you a redefined error somewhere if they clash.
+/* The 4 tokens defined below may well clash with your own #defines or token
+ * types. If so
+ * then for the present you must use different names for your defines as these
+ * are hard coded
+ * in the code generator. It would be better not to use such names internally,
+ * and maybe
+ * we can change this in a forthcoming release. I deliberately do not #undef
+ * these
+ * here as this will at least give you a redefined error somewhere if they
+ * clash.
  */
-#define	    UP	    ANTLR3_TOKEN_UP
-#define	    DOWN    ANTLR3_TOKEN_DOWN
-#define	    EOR	    ANTLR3_TOKEN_EOR
-#define	    INVALID ANTLR3_TOKEN_INVALID
-
+#define UP ANTLR3_TOKEN_UP
+#define DOWN ANTLR3_TOKEN_DOWN
+#define EOR ANTLR3_TOKEN_EOR
+#define INVALID ANTLR3_TOKEN_INVALID
 
 /* =============================================================================
  * Functions to create and destroy scopes. First come the rule scopes, followed
  * by the global declared scopes.
  */
 
-
-
-/* ============================================================================= */
+/* =============================================================================
+ */
 
 /* =============================================================================
  * Start of recognizer
  */
 
-
-/* Forward declare the locally static matching functions we have generated and any predicate functions.
+/* Forward declare the locally static matching functions we have generated and
+ * any predicate functions.
  */
-static ANTLR3_INLINE  void	mT__30    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mT__31    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mT__32    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mT__33    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mT__34    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mT__35    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mT__36    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mLOCAL    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mSLASH    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mID    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mCOLON    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mSTRING    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mSTRING_ID    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mCOMMENT    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mWS    (phammerLexer ctx);
-static ANTLR3_INLINE  void	mTokens    (phammerLexer ctx);
-static void	hammerLexerFree(phammerLexer ctx);
+static ANTLR3_INLINE void
+mT__30(phammerLexer ctx);
+static ANTLR3_INLINE void
+mT__31(phammerLexer ctx);
+static ANTLR3_INLINE void
+mT__32(phammerLexer ctx);
+static ANTLR3_INLINE void
+mT__33(phammerLexer ctx);
+static ANTLR3_INLINE void
+mT__34(phammerLexer ctx);
+static ANTLR3_INLINE void
+mT__35(phammerLexer ctx);
+static ANTLR3_INLINE void
+mT__36(phammerLexer ctx);
+static ANTLR3_INLINE void
+mLOCAL(phammerLexer ctx);
+static ANTLR3_INLINE void
+mSLASH(phammerLexer ctx);
+static ANTLR3_INLINE void
+mID(phammerLexer ctx);
+static ANTLR3_INLINE void
+mCOLON(phammerLexer ctx);
+static ANTLR3_INLINE void
+mSTRING(phammerLexer ctx);
+static ANTLR3_INLINE void
+mSTRING_ID(phammerLexer ctx);
+static ANTLR3_INLINE void
+mCOMMENT(phammerLexer ctx);
+static ANTLR3_INLINE void
+mWS(phammerLexer ctx);
+static ANTLR3_INLINE void
+mTokens(phammerLexer ctx);
+static void
+hammerLexerFree(phammerLexer ctx);
 
 /* =========================================================================
  * Lexer matching rules end.
  * =========================================================================
  */
 
-
-
 static void
-hammerLexerFree  (phammerLexer ctx)
+hammerLexerFree(phammerLexer ctx)
 {
-    LEXER->free(LEXER);
+  LEXER->free(LEXER);
 
-    ANTLR3_FREE(ctx);
+  ANTLR3_FREE(ctx);
 }
 
 /** \brief Name of the grammar file that generated this code
@@ -255,9 +282,10 @@ static const char fileName[] = "hammer.g";
 
 /** \brief Return the name of the grammar file that generated this code.
  */
-static const char * getGrammarFileName()
+static const char*
+getGrammarFileName()
 {
-	return fileName;
+  return fileName;
 }
 
 /** \brief Create a new lexer called hammerLexer
@@ -267,12 +295,12 @@ static const char * getGrammarFileName()
  *     - Success phammerLexer initialized for the lex start
  *     - Fail NULL
  */
-ANTLR3_API phammerLexer hammerLexerNew
-(pANTLR3_INPUT_STREAM instream)
+ANTLR3_API phammerLexer
+hammerLexerNew(pANTLR3_INPUT_STREAM instream)
 {
-	// See if we can create a new lexer with the standard constructor
-	//
-	return hammerLexerNewSSD(instream, NULL);
+  // See if we can create a new lexer with the standard constructor
+  //
+  return hammerLexerNewSSD(instream, NULL);
 }
 
 /** \brief Create a new lexer called hammerLexer
@@ -283,535 +311,487 @@ ANTLR3_API phammerLexer hammerLexerNew
  *     - Success phammerLexer initialized for the lex start
  *     - Fail NULL
  */
-ANTLR3_API phammerLexer hammerLexerNewSSD
-(pANTLR3_INPUT_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
+ANTLR3_API phammerLexer
+hammerLexerNewSSD(pANTLR3_INPUT_STREAM instream,
+                  pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
-    phammerLexer ctx; // Context structure we will build and return
+  phammerLexer ctx; // Context structure we will build and return
 
-    ctx = (phammerLexer) ANTLR3_CALLOC(1, sizeof(hammerLexer));
+  ctx = (phammerLexer)ANTLR3_CALLOC(1, sizeof(hammerLexer));
 
-    if  (ctx == NULL)
-    {
-        // Failed to allocate memory for lexer context
-        return  NULL;
-    }
+  if (ctx == NULL) {
+    // Failed to allocate memory for lexer context
+    return NULL;
+  }
 
-    /* -------------------------------------------------------------------
-     * Memory for basic structure is allocated, now to fill in
-     * in base ANTLR3 structures. We initialize the function pointers
-     * for the standard ANTLR3 lexer function set, but upon return
-     * from here, the programmer may set the pointers to provide custom
-     * implementations of each function.
-     *
-     * We don't use the macros defined in hammerLexer.h here so you can get a sense
-     * of what goes where.
-     */
+  /* -------------------------------------------------------------------
+ * Memory for basic structure is allocated, now to fill in
+ * in base ANTLR3 structures. We initialize the function pointers
+ * for the standard ANTLR3 lexer function set, but upon return
+ * from here, the programmer may set the pointers to provide custom
+ * implementations of each function.
+ *
+ * We don't use the macros defined in hammerLexer.h here so you can get a
+ * sense
+ * of what goes where.
+ */
 
-    /* Create a base lexer, using the supplied input stream
-     */
-    ctx->pLexer	= antlr3LexerNewStream(ANTLR3_SIZE_HINT, instream, state);
+  /* Create a base lexer, using the supplied input stream
+ */
+  ctx->pLexer = antlr3LexerNewStream(ANTLR3_SIZE_HINT, instream, state);
 
-    /* Check that we allocated the memory correctly
-     */
-    if	(ctx->pLexer == NULL)
-    {
-		ANTLR3_FREE(ctx);
-		return  NULL;
-    }
-    /* Install the implementation of our hammerLexer interface
-     */
-    ctx->mT__30	= mT__30;
-    ctx->mT__31	= mT__31;
-    ctx->mT__32	= mT__32;
-    ctx->mT__33	= mT__33;
-    ctx->mT__34	= mT__34;
-    ctx->mT__35	= mT__35;
-    ctx->mT__36	= mT__36;
-    ctx->mLOCAL	= mLOCAL;
-    ctx->mSLASH	= mSLASH;
-    ctx->mID	= mID;
-    ctx->mCOLON	= mCOLON;
-    ctx->mSTRING	= mSTRING;
-    ctx->mSTRING_ID	= mSTRING_ID;
-    ctx->mCOMMENT	= mCOMMENT;
-    ctx->mWS	= mWS;
-    ctx->mTokens	= mTokens;
+  /* Check that we allocated the memory correctly
+ */
+  if (ctx->pLexer == NULL) {
+    ANTLR3_FREE(ctx);
+    return NULL;
+  }
+  /* Install the implementation of our hammerLexer interface
+ */
+  ctx->mT__30 = mT__30;
+  ctx->mT__31 = mT__31;
+  ctx->mT__32 = mT__32;
+  ctx->mT__33 = mT__33;
+  ctx->mT__34 = mT__34;
+  ctx->mT__35 = mT__35;
+  ctx->mT__36 = mT__36;
+  ctx->mLOCAL = mLOCAL;
+  ctx->mSLASH = mSLASH;
+  ctx->mID = mID;
+  ctx->mCOLON = mCOLON;
+  ctx->mSTRING = mSTRING;
+  ctx->mSTRING_ID = mSTRING_ID;
+  ctx->mCOMMENT = mCOMMENT;
+  ctx->mWS = mWS;
+  ctx->mTokens = mTokens;
 
-    /** When the nextToken() call is made to this lexer's pANTLR3_TOKEN_SOURCE
-     *  it will call mTokens() in this generated code, and will pass it the ctx
-     * pointer of this lexer, not the context of the base lexer, so store that now.
-     */
-    ctx->pLexer->ctx	    = ctx;
+  /** When the nextToken() call is made to this lexer's pANTLR3_TOKEN_SOURCE
+ *  it will call mTokens() in this generated code, and will pass it the ctx
+ * pointer of this lexer, not the context of the base lexer, so store that
+ * now.
+ */
+  ctx->pLexer->ctx = ctx;
 
-    /**Install the token matching function
-     */
-    ctx->pLexer->mTokens = (void (*) (void *))(mTokens);
+  /**Install the token matching function
+ */
+  ctx->pLexer->mTokens = (void (*)(void*))(mTokens);
 
-    ctx->getGrammarFileName	= getGrammarFileName;
-    ctx->free		= hammerLexerFree;
+  ctx->getGrammarFileName = getGrammarFileName;
+  ctx->free = hammerLexerFree;
 
-
-
-
-
-    /* Return the newly built lexer to the caller
-     */
-    return  ctx;
+  /* Return the newly built lexer to the caller
+ */
+  return ctx;
 }
 
 /* =========================================================================
  * DFA tables for the lexer
  */
 /** Static dfa state tables for Cyclic dfa:
- *    ()+ loopback of 97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+
+ *    ()+ loopback of 97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-'
+ * | '+' | {...}? => '/' | '_' | '=' | '*' )+
  */
-static const ANTLR3_INT32 dfa1_eot[12] =
-    {
-	1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa1_eof[12] =
-    {
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa1_min[12] =
-    {
-	42, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa1_max[12] =
-    {
-	122, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa1_accept[12] =
-    {
-	-1, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-    };
-static const ANTLR3_INT32 dfa1_special[12] =
-    {
-	0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
+static const ANTLR3_INT32 dfa1_eot[12] = { 1,  -1, -1, -1, -1, -1,
+                                           -1, -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa1_eof[12] = { -1, -1, -1, -1, -1, -1,
+                                           -1, -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa1_min[12] = { 42, -1, -1, -1, -1, -1,
+                                           -1, -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa1_max[12] = { 122, -1, -1, -1, -1, -1,
+                                           -1,  -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa1_accept[12] = { -1, 11, 1, 2, 3, 4,
+                                              5,  6,  7, 8, 9, 10 };
+static const ANTLR3_INT32 dfa1_special[12] = { 0,  -1, -1, -1, -1, -1,
+                                               -1, -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa1_T_empty	    NULL
+#define dfa1_T_empty NULL
 
-static const ANTLR3_INT32 dfa1_T0[] =
-    {
-	11, 7, -1, 6, 5, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, -1, -1, -1, 10, -1, -1,
-	-1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, -1, -1, -1, -1, 9, -1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-	2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
-    };
+static const ANTLR3_INT32 dfa1_T0[] = {
+  11, 7,  -1, 6, 5, 8, 4, 4,  4,  4,  4,  4, 4,  4, 4, 4, -1, -1, -1, 10, -1,
+  -1, -1, 3,  3, 3, 3, 3, 3,  3,  3,  3,  3, 3,  3, 3, 3, 3,  3,  3,  3,  3,
+  3,  3,  3,  3, 3, 3, 3, -1, -1, -1, -1, 9, -1, 2, 2, 2, 2,  2,  2,  2,  2,
+  2,  2,  2,  2, 2, 2, 2, 2,  2,  2,  2,  2, 2,  2, 2, 2, 2,  2
+};
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa1_transitions[] =
-{
-    dfa1_T0, dfa1_T_empty, dfa1_T_empty, dfa1_T_empty, dfa1_T_empty, dfa1_T_empty,
-    dfa1_T_empty, dfa1_T_empty, dfa1_T_empty, dfa1_T_empty, dfa1_T_empty,
-    dfa1_T_empty
+static const ANTLR3_INT32* const dfa1_transitions[] = {
+  dfa1_T0,      dfa1_T_empty, dfa1_T_empty, dfa1_T_empty,
+  dfa1_T_empty, dfa1_T_empty, dfa1_T_empty, dfa1_T_empty,
+  dfa1_T_empty, dfa1_T_empty, dfa1_T_empty, dfa1_T_empty
 };
 
-static ANTLR3_INT32 dfa1_sst(phammerLexer ctx, pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_INT_STREAM is, pANTLR3_CYCLIC_DFA dfa, ANTLR3_INT32 s)
+static ANTLR3_INT32
+dfa1_sst(phammerLexer ctx,
+         pANTLR3_BASE_RECOGNIZER recognizer,
+         pANTLR3_INT_STREAM is,
+         pANTLR3_CYCLIC_DFA dfa,
+         ANTLR3_INT32 s)
 {
-    ANTLR3_INT32    _s;
+  ANTLR3_INT32 _s;
 
-    _s	    = s;
-    switch  (s)
+  _s = s;
+  switch (s) {
+    case 0:
+
     {
-        case 0:
+      ANTLR3_UINT32 LA1_0;
 
-    	{
-    	    ANTLR3_UINT32 LA1_0;
+      ANTLR3_MARKER index1_0;
 
-    	    ANTLR3_MARKER index1_0;
+      LA1_0 = LA(1);
 
+      index1_0 = INDEX();
 
-    		LA1_0 = LA(1);
+      REWINDLAST();
 
+      s = -1;
+      if ((((LA1_0 >= 'a') && (LA1_0 <= 'z')))) {
+        s = 2;
+      }
 
-    	    index1_0 = INDEX();
+      else if ((((LA1_0 >= 'A') && (LA1_0 <= 'Z')))) {
+        s = 3;
+      }
 
-    	    REWINDLAST();
+      else if ((((LA1_0 >= '0') && (LA1_0 <= '9')))) {
+        s = 4;
+      }
 
-    	    s = -1;
-    	    if ( (((LA1_0 >= 'a') && (LA1_0 <= 'z'))) )
-    	    {
-    	        s = 2;
-    	    }
+      else if ((LA1_0 == '.')) {
+        s = 5;
+      }
 
-    	    else if ( (((LA1_0 >= 'A') && (LA1_0 <= 'Z'))) )
-    	    {
-    	        s = 3;
-    	    }
+      else if ((LA1_0 == '-')) {
+        s = 6;
+      }
 
-    	    else if ( (((LA1_0 >= '0') && (LA1_0 <= '9'))) )
-    	    {
-    	        s = 4;
-    	    }
+      else if ((LA1_0 == '+')) {
+        s = 7;
+      }
 
-    	    else if ( (LA1_0 == '.') )
-    	    {
-    	        s = 5;
-    	    }
+      else if ((LA1_0 == '/') && ((!is_lexing_sources_decl(LEXER)))) {
+        s = 8;
+      }
 
-    	    else if ( (LA1_0 == '-') )
-    	    {
-    	        s = 6;
-    	    }
+      else if ((LA1_0 == '_')) {
+        s = 9;
+      }
 
-    	    else if ( (LA1_0 == '+') )
-    	    {
-    	        s = 7;
-    	    }
+      else if ((LA1_0 == '=')) {
+        s = 10;
+      }
 
-    	    else if ( (LA1_0 == '/') && (( !is_lexing_sources_decl(LEXER) )))
-    	    {
-    	        s = 8;
-    	    }
+      else if ((LA1_0 == '*')) {
+        s = 11;
+      }
 
-    	    else if ( (LA1_0 == '_') )
-    	    {
-    	        s = 9;
-    	    }
+      else
+        s = 1;
 
-    	    else if ( (LA1_0 == '=') )
-    	    {
-    	        s = 10;
-    	    }
+      SEEK(index1_0);
 
-    	    else if ( (LA1_0 == '*') )
-    	    {
-    	        s = 11;
-    	    }
+      if (s >= 0) {
+        return s;
+      }
+    } break;
+  }
 
-    	    else  s = 1;
-
-
-    		SEEK(index1_0);
-
-    	    if ( s>=0 )
-    	    {
-    		return s;
-    	    }
-    	}
-    	break;
-    }
-
-    CONSTRUCTEX();
-    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-    EXCEPTION->message      = (void *)"()+ loopback of 97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+";
-    EXCEPTION->decisionNum  = 1;
-    EXCEPTION->state        = _s;
-    return -1;
+  CONSTRUCTEX();
+  EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+  EXCEPTION->message =
+    (void*)"()+ loopback of 97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | "
+           "'.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+";
+  EXCEPTION->decisionNum = 1;
+  EXCEPTION->state = _s;
+  return -1;
 }
 
 /* Declare tracking structure for Cyclic DFA 1
  */
-static
-ANTLR3_CYCLIC_DFA cdfa1
-    =	{
-	    1,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"()+ loopback of 97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+",
-	    (CDFA_SPECIAL_FUNC) dfa1_sst,
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa1_eot,	    /* EOT table			    */
-	    dfa1_eof,	    /* EOF table			    */
-	    dfa1_min,	    /* Minimum tokens for each state    */
-	    dfa1_max,	    /* Maximum tokens for each state    */
-	    dfa1_accept,	/* Accept table			    */
-	    dfa1_special,	/* Special transition states	    */
-	    dfa1_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa1 = {
+  1, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "()+ loopback of 97:17: ( 'a' .. 'z' | 'A' .. 'Z' | "
+                        "'0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' "
+                        "| '=' | '*' )+",
+  (CDFA_SPECIAL_FUNC)dfa1_sst,
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa1_eot,                   /* EOT table			    */
+  dfa1_eof,                   /* EOF table			    */
+  dfa1_min,                   /* Minimum tokens for each state    */
+  dfa1_max,                   /* Maximum tokens for each state    */
+  dfa1_accept,                /* Accept table			    */
+  dfa1_special,               /* Special transition states	    */
+  dfa1_transitions            /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 1
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    1:1: Tokens : ( T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | LOCAL | SLASH | ID | COLON | COMMENT | WS );
- */
-static const ANTLR3_INT32 dfa6_eot[23] =
-    {
-	-1, -1, -1, -1, -1, -1, -1, -1, 10, 15, -1, -1, -1, -1, 18, -1, -1, 18,
-	-1, -1, 18, 22, -1
-    };
-static const ANTLR3_INT32 dfa6_eof[23] =
-    {
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa6_min[23] =
-    {
-	10, -1, -1, -1, -1, -1, -1, -1, 111, 42, -1, -1, -1, -1, 97, 0, -1, 97,
-	-1, -1, 97, 42, -1
-    };
-static const ANTLR3_INT32 dfa6_max[23] =
-    {
-	122, -1, -1, -1, -1, -1, -1, -1, 111, 122, -1, -1, -1, -1, 122, 0, -1,
-	122, -1, -1, 122, 122, -1
-    };
-static const ANTLR3_INT32 dfa6_accept[23] =
-    {
-	-1, 1, 2, 3, 4, 5, 6, 7, -1, -1, 10, 11, 12, 13, -1, -1, 10, -1, 10, 9,
-	-1, -1, 8
-    };
-static const ANTLR3_INT32 dfa6_special[23] =
-    {
-	0, -1, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, -1, -1, 1, -1, -1, -1,
-	-1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                 *    1:1: Tokens : (
+                                                              * T__30 | T__31 |
+                                                                                 * T__32 | T__33 |
+                                           * T__34
+                                                                                                 * | T__35 | T__36 |
+                                                              * LOCAL | SLASH |
+                        * ID |
+                                                                                 * COLON | COMMENT
+                                           * |
+                                                                                                 * WS );
+                                                                                                 */
+static const ANTLR3_INT32 dfa6_eot[23] = { -1, -1, -1, -1, -1, -1, -1, -1,
+                                           10, 15, -1, -1, -1, -1, 18, -1,
+                                           -1, 18, -1, -1, 18, 22, -1 };
+static const ANTLR3_INT32 dfa6_eof[23] = { -1, -1, -1, -1, -1, -1, -1, -1,
+                                           -1, -1, -1, -1, -1, -1, -1, -1,
+                                           -1, -1, -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa6_min[23] = { 10,  -1, -1, -1, -1, -1, -1, -1,
+                                           111, 42, -1, -1, -1, -1, 97, 0,
+                                           -1,  97, -1, -1, 97, 42, -1 };
+static const ANTLR3_INT32 dfa6_max[23] = { 122, -1,  -1, -1, -1,  -1,  -1,  -1,
+                                           111, 122, -1, -1, -1,  -1,  122, 0,
+                                           -1,  122, -1, -1, 122, 122, -1 };
+static const ANTLR3_INT32 dfa6_accept[23] = { -1, 1,  2,  3,  4,  5,  6,  7,
+                                              -1, -1, 10, 11, 12, 13, -1, -1,
+                                              10, -1, 10, 9,  -1, -1, 8 };
+static const ANTLR3_INT32 dfa6_special[23] = { 0,  -1, -1, -1, -1, -1, -1, -1,
+                                               -1, 2,  -1, -1, -1, -1, -1, 1,
+                                               -1, -1, -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa6_T_empty	    NULL
+#define dfa6_T_empty NULL
 
-static const ANTLR3_INT32 dfa6_T0[] =
-    {
-	13, -1, -1, 13, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, 13, -1, 10, 12, -1, -1, -1, -1, -1, -1, 10, 10, 2, 10,
-	10, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 1, 3, 10, 4, -1, 7,
-	10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-	10, 10, 10, 10, 10, 10, 10, 10, 5, -1, 6, -1, 10, -1, 10, 10, 10, 10, 10,
-	10, 10, 10, 10, 10, 10, 8, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-	10, 10, 10
-    };static const ANTLR3_INT32 dfa6_T1[] =
-    {
-	14
-    };static const ANTLR3_INT32 dfa6_T2[] =
-    {
-	10, 10, 17, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-	10, 10, 10, 10, 10, 10, 10, 10
-    };static const ANTLR3_INT32 dfa6_T3[] =
-    {
-	20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-	10, 10, 10, 10, 10, 10, 10, 10
-    };static const ANTLR3_INT32 dfa6_T4[] =
-    {
-	10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 21, 10, 10, 10, 10, 10, 10,
-	10, 10, 10, 10, 10, 10, 10, 10
-    };static const ANTLR3_INT32 dfa6_T5[] =
-    {
-	-1
-    };static const ANTLR3_INT32 dfa6_T6[] =
-    {
-	16, 16, -1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, -1, -1,
-	-1, 16, -1, -1, -1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, -1, -1, -1, -1, 16,
-	-1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-	16, 16, 16, 16, 16, 16, 16, 16, 16
-    };static const ANTLR3_INT32 dfa6_T7[] =
-    {
-	18, 18, -1, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, -1, -1,
-	-1, 18, -1, -1, -1, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-	18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, -1, -1, -1, -1, 18,
-	-1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-	10, 10, 10, 10, 10, 10, 10, 10, 10
-    };
+static const ANTLR3_INT32 dfa6_T0[] = {
+  13, -1, -1, 13, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, 13, -1, 10, 12, -1, -1, -1, -1, -1, -1, 10, 10, 2,  10, 10, 9,
+  10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 1,  3,  10, 4,  -1, 7,  10, 10,
+  10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  10, 10, 10, 10, 10, 5,  -1, 6,  -1, 10, -1, 10, 10, 10, 10, 10, 10, 10, 10,
+  10, 10, 10, 8,  10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10
+};
+static const ANTLR3_INT32 dfa6_T1[] = { 14 };
+static const ANTLR3_INT32 dfa6_T2[] = { 10, 10, 17, 10, 10, 10, 10, 10, 10,
+                                        10, 10, 10, 10, 10, 10, 10, 10, 10,
+                                        10, 10, 10, 10, 10, 10, 10, 10 };
+static const ANTLR3_INT32 dfa6_T3[] = { 20, 10, 10, 10, 10, 10, 10, 10, 10,
+                                        10, 10, 10, 10, 10, 10, 10, 10, 10,
+                                        10, 10, 10, 10, 10, 10, 10, 10 };
+static const ANTLR3_INT32 dfa6_T4[] = { 10, 10, 10, 10, 10, 10, 10, 10, 10,
+                                        10, 10, 21, 10, 10, 10, 10, 10, 10,
+                                        10, 10, 10, 10, 10, 10, 10, 10 };
+static const ANTLR3_INT32 dfa6_T5[] = { -1 };
+static const ANTLR3_INT32 dfa6_T6[] = {
+  16, 16, -1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, -1,
+  -1, -1, 16, -1, -1, -1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+  16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, -1, -1,
+  -1, -1, 16, -1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+  16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16
+};
+static const ANTLR3_INT32 dfa6_T7[] = {
+  18, 18, -1, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, -1,
+  -1, -1, 18, -1, -1, -1, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
+  18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, -1, -1,
+  -1, -1, 18, -1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10
+};
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa6_transitions[] =
-{
-    dfa6_T0, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
-    dfa6_T_empty, dfa6_T_empty, dfa6_T1, dfa6_T6, dfa6_T_empty, dfa6_T_empty,
-    dfa6_T_empty, dfa6_T_empty, dfa6_T2, dfa6_T5, dfa6_T_empty, dfa6_T3,
-    dfa6_T_empty, dfa6_T_empty, dfa6_T4, dfa6_T7, dfa6_T_empty
+static const ANTLR3_INT32* const dfa6_transitions[] = {
+  dfa6_T0,      dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty,
+  dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T1,      dfa6_T6,
+  dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T_empty, dfa6_T2,
+  dfa6_T5,      dfa6_T_empty, dfa6_T3,      dfa6_T_empty, dfa6_T_empty,
+  dfa6_T4,      dfa6_T7,      dfa6_T_empty
 };
 
-static ANTLR3_INT32 dfa6_sst(phammerLexer ctx, pANTLR3_BASE_RECOGNIZER recognizer, pANTLR3_INT_STREAM is, pANTLR3_CYCLIC_DFA dfa, ANTLR3_INT32 s)
+static ANTLR3_INT32
+dfa6_sst(phammerLexer ctx,
+         pANTLR3_BASE_RECOGNIZER recognizer,
+         pANTLR3_INT_STREAM is,
+         pANTLR3_CYCLIC_DFA dfa,
+         ANTLR3_INT32 s)
 {
-    ANTLR3_INT32    _s;
+  ANTLR3_INT32 _s;
 
-    _s	    = s;
-    switch  (s)
+  _s = s;
+  switch (s) {
+    case 0:
+
     {
-        case 0:
+      ANTLR3_UINT32 LA6_0;
 
-    	{
-    	    ANTLR3_UINT32 LA6_0;
+      ANTLR3_MARKER index6_0;
 
-    	    ANTLR3_MARKER index6_0;
+      LA6_0 = LA(1);
 
+      index6_0 = INDEX();
 
-    		LA6_0 = LA(1);
+      REWINDLAST();
 
+      s = -1;
+      if ((LA6_0 == ';')) {
+        s = 1;
+      }
 
-    	    index6_0 = INDEX();
+      else if ((LA6_0 == ',')) {
+        s = 2;
+      }
 
-    	    REWINDLAST();
+      else if ((LA6_0 == '<')) {
+        s = 3;
+      }
 
-    	    s = -1;
-    	    if ( (LA6_0 == ';') )
-    	    {
-    	        s = 1;
-    	    }
+      else if ((LA6_0 == '>')) {
+        s = 4;
+      }
 
-    	    else if ( (LA6_0 == ',') )
-    	    {
-    	        s = 2;
-    	    }
+      else if ((LA6_0 == '[')) {
+        s = 5;
+      }
 
-    	    else if ( (LA6_0 == '<') )
-    	    {
-    	        s = 3;
-    	    }
+      else if ((LA6_0 == ']')) {
+        s = 6;
+      }
 
-    	    else if ( (LA6_0 == '>') )
-    	    {
-    	        s = 4;
-    	    }
+      else if ((LA6_0 == '@')) {
+        s = 7;
+      }
 
-    	    else if ( (LA6_0 == '[') )
-    	    {
-    	        s = 5;
-    	    }
+      else if ((LA6_0 == 'l')) {
+        s = 8;
+      }
 
-    	    else if ( (LA6_0 == ']') )
-    	    {
-    	        s = 6;
-    	    }
+      else if ((LA6_0 == '/') && ((((!is_lexing_sources_decl(LEXER))) ||
+                                   ((is_lexing_sources_decl(LEXER)))))) {
+        s = 9;
+      }
 
-    	    else if ( (LA6_0 == '@') )
-    	    {
-    	        s = 7;
-    	    }
+      else if ((LA6_0 == '"' || ((LA6_0 >= '*') && (LA6_0 <= '+')) ||
+                ((LA6_0 >= '-') && (LA6_0 <= '.')) ||
+                ((LA6_0 >= '0') && (LA6_0 <= '9')) || LA6_0 == '=' ||
+                ((LA6_0 >= 'A') && (LA6_0 <= 'Z')) || LA6_0 == '_' ||
+                ((LA6_0 >= 'a') && (LA6_0 <= 'k')) ||
+                ((LA6_0 >= 'm') && (LA6_0 <= 'z')))) {
+        s = 10;
+      }
 
-    	    else if ( (LA6_0 == 'l') )
-    	    {
-    	        s = 8;
-    	    }
+      else if ((LA6_0 == ':')) {
+        s = 11;
+      }
 
-    	    else if ( (LA6_0 == '/') && (((( !is_lexing_sources_decl(LEXER) ))||(( is_lexing_sources_decl(LEXER) )))))
-    	    {
-    	        s = 9;
-    	    }
+      else if ((LA6_0 == '#')) {
+        s = 12;
+      }
 
-    	    else if ( (LA6_0 == '"' || ((LA6_0 >= '*') && (LA6_0 <= '+')) || ((LA6_0 >= '-') && (LA6_0 <= '.')) || ((LA6_0 >= '0') && (LA6_0 <= '9')) || LA6_0 == '=' || ((LA6_0 >= 'A') && (LA6_0 <= 'Z')) || LA6_0 == '_' || ((LA6_0 >= 'a') && (LA6_0 <= 'k')) || ((LA6_0 >= 'm') && (LA6_0 <= 'z'))) )
-    	    {
-    	        s = 10;
-    	    }
+      else if ((LA6_0 == '\n' || LA6_0 == '\r' || LA6_0 == ' ')) {
+        s = 13;
+      }
 
-    	    else if ( (LA6_0 == ':') )
-    	    {
-    	        s = 11;
-    	    }
+      SEEK(index6_0);
 
-    	    else if ( (LA6_0 == '#') )
-    	    {
-    	        s = 12;
-    	    }
+      if (s >= 0) {
+        return s;
+      }
+    } break;
+    case 1:
 
-    	    else if ( (LA6_0 == '\n' || LA6_0 == '\r' || LA6_0 == ' ') )
-    	    {
-    	        s = 13;
-    	    }
+    {
+      ANTLR3_UINT32 LA6_15;
 
+      ANTLR3_MARKER index6_15;
 
-    		SEEK(index6_0);
+      LA6_15 = LA(1);
 
-    	    if ( s>=0 )
-    	    {
-    		return s;
-    	    }
-    	}
-    	break;
-        case 1:
+      index6_15 = INDEX();
 
-    	{
-    	    ANTLR3_UINT32 LA6_15;
+      REWINDLAST();
 
-    	    ANTLR3_MARKER index6_15;
+      s = -1;
+      if (((is_lexing_sources_decl(LEXER)))) {
+        s = 19;
+      }
 
+      else if (((!is_lexing_sources_decl(LEXER)))) {
+        s = 18;
+      }
 
-    		LA6_15 = LA(1);
+      SEEK(index6_15);
 
+      if (s >= 0) {
+        return s;
+      }
+    } break;
+    case 2:
 
-    	    index6_15 = INDEX();
+    {
+      ANTLR3_UINT32 LA6_9;
 
-    	    REWINDLAST();
+      ANTLR3_MARKER index6_9;
 
-    	    s = -1;
-    	    if ( (( is_lexing_sources_decl(LEXER) )) )
-    	    {
-    	        s = 19;
-    	    }
+      LA6_9 = LA(1);
 
-    	    else if ( (( !is_lexing_sources_decl(LEXER) )) )
-    	    {
-    	        s = 18;
-    	    }
+      index6_9 = INDEX();
 
+      REWINDLAST();
 
-    		SEEK(index6_15);
+      s = -1;
+      if ((((LA6_9 >= '*') && (LA6_9 <= '+')) ||
+           ((LA6_9 >= '-') && (LA6_9 <= '9')) || LA6_9 == '=' ||
+           ((LA6_9 >= 'A') && (LA6_9 <= 'Z')) || LA6_9 == '_' ||
+           ((LA6_9 >= 'a') && (LA6_9 <= 'z'))) &&
+          ((!is_lexing_sources_decl(LEXER)))) {
+        s = 16;
+      }
 
-    	    if ( s>=0 )
-    	    {
-    		return s;
-    	    }
-    	}
-    	break;
-        case 2:
+      else
+        s = 15;
 
-    	{
-    	    ANTLR3_UINT32 LA6_9;
+      SEEK(index6_9);
 
-    	    ANTLR3_MARKER index6_9;
+      if (s >= 0) {
+        return s;
+      }
+    } break;
+  }
 
-
-    		LA6_9 = LA(1);
-
-
-    	    index6_9 = INDEX();
-
-    	    REWINDLAST();
-
-    	    s = -1;
-    	    if ( (((LA6_9 >= '*') && (LA6_9 <= '+')) || ((LA6_9 >= '-') && (LA6_9 <= '9')) || LA6_9 == '=' || ((LA6_9 >= 'A') && (LA6_9 <= 'Z')) || LA6_9 == '_' || ((LA6_9 >= 'a') && (LA6_9 <= 'z'))) && (( !is_lexing_sources_decl(LEXER) )))
-    	    {
-    	        s = 16;
-    	    }
-
-    	    else  s = 15;
-
-
-    		SEEK(index6_9);
-
-    	    if ( s>=0 )
-    	    {
-    		return s;
-    	    }
-    	}
-    	break;
-    }
-
-    CONSTRUCTEX();
-    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-    EXCEPTION->message      = (void *)"1:1: Tokens : ( T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | LOCAL | SLASH | ID | COLON | COMMENT | WS );";
-    EXCEPTION->decisionNum  = 6;
-    EXCEPTION->state        = _s;
-    return -1;
+  CONSTRUCTEX();
+  EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+  EXCEPTION->message =
+    (void*)"1:1: Tokens : ( T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | "
+           "T__36 | LOCAL | SLASH | ID | COLON | COMMENT | WS );";
+  EXCEPTION->decisionNum = 6;
+  EXCEPTION->state = _s;
+  return -1;
 }
 
 /* Declare tracking structure for Cyclic DFA 6
  */
-static
-ANTLR3_CYCLIC_DFA cdfa6
-    =	{
-	    6,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"1:1: Tokens : ( T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | LOCAL | SLASH | ID | COLON | COMMENT | WS );",
-	    (CDFA_SPECIAL_FUNC) dfa6_sst,
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa6_eot,	    /* EOT table			    */
-	    dfa6_eof,	    /* EOF table			    */
-	    dfa6_min,	    /* Minimum tokens for each state    */
-	    dfa6_max,	    /* Maximum tokens for each state    */
-	    dfa6_accept,	/* Accept table			    */
-	    dfa6_special,	/* Special transition states	    */
-	    dfa6_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa6 = {
+  6, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "1:1: Tokens : ( T__30 | T__31 | T__32 | T__33 | "
+                        "T__34 | T__35 | T__36 | LOCAL | SLASH | ID | COLON "
+                        "| COMMENT | WS );",
+  (CDFA_SPECIAL_FUNC)dfa6_sst,
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa6_eot,                   /* EOT table			    */
+  dfa6_eof,                   /* EOF table			    */
+  dfa6_min,                   /* Minimum tokens for each state    */
+  dfa6_max,                   /* Maximum tokens for each state    */
+  dfa6_accept,                /* Accept table			    */
+  dfa6_special,               /* Special transition states	    */
+  dfa6_transitions            /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 6
  * ---------------------
  */
@@ -835,34 +815,28 @@ ANTLR3_CYCLIC_DFA cdfa6
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mT__30(phammerLexer ctx)
+static ANTLR3_INLINE void
+mT__30(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = T__30;
 
-    _type	    = T__30;
-
-
-    // hammer.g:12:7: ( ';' )
-    // hammer.g:12:9: ';'
-    {
-        MATCHC(';');
-        if  (HASEXCEPTION())
-        {
-            goto ruleT__30Ex;
-        }
-
-
+  // hammer.g:12:7: ( ';' )
+  // hammer.g:12:9: ';'
+  {
+    MATCHC(';');
+    if (HASEXCEPTION()) {
+      goto ruleT__30Ex;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleT__30Ex; /* Prevent compiler warnings */
-    ruleT__30Ex: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleT__30Ex; /* Prevent compiler warnings */
+ruleT__30Ex:;
 }
 // $ANTLR end T__30
 
@@ -878,34 +852,28 @@ void mT__30(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mT__31(phammerLexer ctx)
+static ANTLR3_INLINE void
+mT__31(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = T__31;
 
-    _type	    = T__31;
-
-
-    // hammer.g:13:7: ( ',' )
-    // hammer.g:13:9: ','
-    {
-        MATCHC(',');
-        if  (HASEXCEPTION())
-        {
-            goto ruleT__31Ex;
-        }
-
-
+  // hammer.g:13:7: ( ',' )
+  // hammer.g:13:9: ','
+  {
+    MATCHC(',');
+    if (HASEXCEPTION()) {
+      goto ruleT__31Ex;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleT__31Ex; /* Prevent compiler warnings */
-    ruleT__31Ex: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleT__31Ex; /* Prevent compiler warnings */
+ruleT__31Ex:;
 }
 // $ANTLR end T__31
 
@@ -921,34 +889,28 @@ void mT__31(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mT__32(phammerLexer ctx)
+static ANTLR3_INLINE void
+mT__32(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = T__32;
 
-    _type	    = T__32;
-
-
-    // hammer.g:14:7: ( '<' )
-    // hammer.g:14:9: '<'
-    {
-        MATCHC('<');
-        if  (HASEXCEPTION())
-        {
-            goto ruleT__32Ex;
-        }
-
-
+  // hammer.g:14:7: ( '<' )
+  // hammer.g:14:9: '<'
+  {
+    MATCHC('<');
+    if (HASEXCEPTION()) {
+      goto ruleT__32Ex;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleT__32Ex; /* Prevent compiler warnings */
-    ruleT__32Ex: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleT__32Ex; /* Prevent compiler warnings */
+ruleT__32Ex:;
 }
 // $ANTLR end T__32
 
@@ -964,34 +926,28 @@ void mT__32(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mT__33(phammerLexer ctx)
+static ANTLR3_INLINE void
+mT__33(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = T__33;
 
-    _type	    = T__33;
-
-
-    // hammer.g:15:7: ( '>' )
-    // hammer.g:15:9: '>'
-    {
-        MATCHC('>');
-        if  (HASEXCEPTION())
-        {
-            goto ruleT__33Ex;
-        }
-
-
+  // hammer.g:15:7: ( '>' )
+  // hammer.g:15:9: '>'
+  {
+    MATCHC('>');
+    if (HASEXCEPTION()) {
+      goto ruleT__33Ex;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleT__33Ex; /* Prevent compiler warnings */
-    ruleT__33Ex: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleT__33Ex; /* Prevent compiler warnings */
+ruleT__33Ex:;
 }
 // $ANTLR end T__33
 
@@ -1007,34 +963,28 @@ void mT__33(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mT__34(phammerLexer ctx)
+static ANTLR3_INLINE void
+mT__34(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = T__34;
 
-    _type	    = T__34;
-
-
-    // hammer.g:16:7: ( '[' )
-    // hammer.g:16:9: '['
-    {
-        MATCHC('[');
-        if  (HASEXCEPTION())
-        {
-            goto ruleT__34Ex;
-        }
-
-
+  // hammer.g:16:7: ( '[' )
+  // hammer.g:16:9: '['
+  {
+    MATCHC('[');
+    if (HASEXCEPTION()) {
+      goto ruleT__34Ex;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleT__34Ex; /* Prevent compiler warnings */
-    ruleT__34Ex: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleT__34Ex; /* Prevent compiler warnings */
+ruleT__34Ex:;
 }
 // $ANTLR end T__34
 
@@ -1050,34 +1000,28 @@ void mT__34(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mT__35(phammerLexer ctx)
+static ANTLR3_INLINE void
+mT__35(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = T__35;
 
-    _type	    = T__35;
-
-
-    // hammer.g:17:7: ( ']' )
-    // hammer.g:17:9: ']'
-    {
-        MATCHC(']');
-        if  (HASEXCEPTION())
-        {
-            goto ruleT__35Ex;
-        }
-
-
+  // hammer.g:17:7: ( ']' )
+  // hammer.g:17:9: ']'
+  {
+    MATCHC(']');
+    if (HASEXCEPTION()) {
+      goto ruleT__35Ex;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleT__35Ex; /* Prevent compiler warnings */
-    ruleT__35Ex: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleT__35Ex; /* Prevent compiler warnings */
+ruleT__35Ex:;
 }
 // $ANTLR end T__35
 
@@ -1093,34 +1037,28 @@ void mT__35(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mT__36(phammerLexer ctx)
+static ANTLR3_INLINE void
+mT__36(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = T__36;
 
-    _type	    = T__36;
-
-
-    // hammer.g:18:7: ( '@' )
-    // hammer.g:18:9: '@'
-    {
-        MATCHC('@');
-        if  (HASEXCEPTION())
-        {
-            goto ruleT__36Ex;
-        }
-
-
+  // hammer.g:18:7: ( '@' )
+  // hammer.g:18:9: '@'
+  {
+    MATCHC('@');
+    if (HASEXCEPTION()) {
+      goto ruleT__36Ex;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleT__36Ex; /* Prevent compiler warnings */
-    ruleT__36Ex: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleT__36Ex; /* Prevent compiler warnings */
+ruleT__36Ex:;
 }
 // $ANTLR end T__36
 
@@ -1136,35 +1074,28 @@ void mT__36(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mLOCAL(phammerLexer ctx)
+static ANTLR3_INLINE void
+mLOCAL(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = LOCAL;
 
-    _type	    = LOCAL;
-
-
-    // hammer.g:95:7: ( 'local' )
-    // hammer.g:95:9: 'local'
-    {
-        MATCHS(lit_1);
-        if  (HASEXCEPTION())
-        {
-            goto ruleLOCALEx;
-        }
-
-
-
+  // hammer.g:95:7: ( 'local' )
+  // hammer.g:95:9: 'local'
+  {
+    MATCHS(lit_1);
+    if (HASEXCEPTION()) {
+      goto ruleLOCALEx;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleLOCALEx; /* Prevent compiler warnings */
-    ruleLOCALEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleLOCALEx; /* Prevent compiler warnings */
+ruleLOCALEx:;
 }
 // $ANTLR end LOCAL
 
@@ -1180,47 +1111,39 @@ void mLOCAL(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mSLASH(phammerLexer ctx)
+static ANTLR3_INLINE void
+mSLASH(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = SLASH;
 
-    _type	    = SLASH;
-
-
-    // hammer.g:96:7: ({...}? => '/' )
-    // hammer.g:96:9: {...}? => '/'
-    {
-        if ( !(( is_lexing_sources_decl(LEXER) )) )
-        {
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
-                EXCEPTION->message      = (void *)" is_lexing_sources_decl(LEXER) ";
-                EXCEPTION->ruleName	 = (void *)"SLASH";
-
-
-        }
-        MATCHC('/');
-        if  (HASEXCEPTION())
-        {
-            goto ruleSLASHEx;
-        }
-
-
+  // hammer.g:96:7: ({...}? => '/' )
+  // hammer.g:96:9: {...}? => '/'
+  {
+    if (!((is_lexing_sources_decl(LEXER)))) {
+      CONSTRUCTEX();
+      EXCEPTION->type = ANTLR3_FAILED_PREDICATE_EXCEPTION;
+      EXCEPTION->message = (void*)" is_lexing_sources_decl(LEXER) ";
+      EXCEPTION->ruleName = (void*)"SLASH";
     }
+    MATCHC('/');
+    if (HASEXCEPTION()) {
+      goto ruleSLASHEx;
+    }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleSLASHEx; /* Prevent compiler warnings */
-    ruleSLASHEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleSLASHEx; /* Prevent compiler warnings */
+ruleSLASHEx:;
 }
 // $ANTLR end SLASH
 
-//   Comes from: 97:15: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+ | STRING )
+//   Comes from: 97:15: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' |
+//   '+' | {...}? => '/' | '_' | '=' | '*' )+ | STRING )
 /** \brief Lexer rule generated by ANTLR3
  *
  * $ANTLR start ID
@@ -1232,252 +1155,207 @@ void mSLASH(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mID(phammerLexer ctx)
+static ANTLR3_INLINE void
+mID(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = ID;
 
-    _type	    = ID;
+  {
+    //  hammer.g:97:15: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' |
+    //  '+' | {...}? => '/' | '_' | '=' | '*' )+ | STRING )
 
+    ANTLR3_UINT32 alt2;
+
+    alt2 = 2;
 
     {
-        //  hammer.g:97:15: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+ | STRING )
+      int LA2_0 = LA(1);
+      if ((LA2_0 == '+' || ((LA2_0 >= '-') && (LA2_0 <= '.')) ||
+           ((LA2_0 >= '0') && (LA2_0 <= '9')) ||
+           ((LA2_0 >= 'A') && (LA2_0 <= 'Z')) ||
+           ((LA2_0 >= 'a') && (LA2_0 <= 'z')))) {
+        alt2 = 1;
+      } else if ((LA2_0 == '/') && ((!is_lexing_sources_decl(LEXER)))) {
+        alt2 = 1;
+      } else if ((LA2_0 == '*' || LA2_0 == '=' || LA2_0 == '_')) {
+        alt2 = 1;
+      } else if ((LA2_0 == '"')) {
+        alt2 = 2;
+      } else {
+        CONSTRUCTEX();
+        EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+        EXCEPTION->message = (void*)"";
+        EXCEPTION->decisionNum = 2;
+        EXCEPTION->state = 0;
 
-        ANTLR3_UINT32 alt2;
-
-        alt2=2;
-
-
-        {
-            int LA2_0 = LA(1);
-            if ( (LA2_0 == '+' || ((LA2_0 >= '-') && (LA2_0 <= '.')) || ((LA2_0 >= '0') && (LA2_0 <= '9')) || ((LA2_0 >= 'A') && (LA2_0 <= 'Z')) || ((LA2_0 >= 'a') && (LA2_0 <= 'z'))) )
-            {
-                alt2=1;
-            }
-            else if ( (LA2_0 == '/') && (( !is_lexing_sources_decl(LEXER) )))
-            {
-                alt2=1;
-            }
-            else if ( (LA2_0 == '*' || LA2_0 == '=' || LA2_0 == '_') )
-            {
-                alt2=1;
-            }
-            else if ( (LA2_0 == '"') )
-            {
-                alt2=2;
-            }
-            else
-            {
-
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 2;
-                EXCEPTION->state        = 0;
-
-
-                goto ruleIDEx;
-            }
-        }
-        switch (alt2)
-        {
-    	case 1:
-    	    // hammer.g:97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+
-    	    {
-    	        // hammer.g:97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '+' | {...}? => '/' | '_' | '=' | '*' )+
-    	        {
-    	            int cnt1=0;
-
-    	            for (;;)
-    	            {
-    	                int alt1=11;
-    	        	alt1 = cdfa1.predict(ctx, RECOGNIZER, ISTREAM, &cdfa1);
-    	        	if  (HASEXCEPTION())
-    	        	{
-    	        	    goto ruleIDEx;
-    	        	}
-
-    	        	switch (alt1)
-    	        	{
-    	        	    case 1:
-    	        	        // hammer.g:97:18: 'a' .. 'z'
-    	        	        {
-    	        	            MATCHRANGE('a', 'z');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 2:
-    	        	        // hammer.g:97:29: 'A' .. 'Z'
-    	        	        {
-    	        	            MATCHRANGE('A', 'Z');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 3:
-    	        	        // hammer.g:97:40: '0' .. '9'
-    	        	        {
-    	        	            MATCHRANGE('0', '9');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 4:
-    	        	        // hammer.g:97:51: '.'
-    	        	        {
-    	        	            MATCHC('.');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 5:
-    	        	        // hammer.g:97:57: '-'
-    	        	        {
-    	        	            MATCHC('-');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 6:
-    	        	        // hammer.g:97:63: '+'
-    	        	        {
-    	        	            MATCHC('+');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 7:
-    	        	        // hammer.g:97:69: {...}? => '/'
-    	        	        {
-    	        	            if ( !(( !is_lexing_sources_decl(LEXER) )) )
-    	        	            {
-    	        	                    CONSTRUCTEX();
-    	        	                    EXCEPTION->type         = ANTLR3_FAILED_PREDICATE_EXCEPTION;
-    	        	                    EXCEPTION->message      = (void *)" !is_lexing_sources_decl(LEXER) ";
-    	        	                    EXCEPTION->ruleName	 = (void *)"ID";
-
-
-    	        	            }
-    	        	            MATCHC('/');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 8:
-    	        	        // hammer.g:97:113: '_'
-    	        	        {
-    	        	            MATCHC('_');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 9:
-    	        	        // hammer.g:97:118: '='
-    	        	        {
-    	        	            MATCHC('=');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-    	        	    case 10:
-    	        	        // hammer.g:97:124: '*'
-    	        	        {
-    	        	            MATCHC('*');
-    	        	            if  (HASEXCEPTION())
-    	        	            {
-    	        	                goto ruleIDEx;
-    	        	            }
-
-
-    	        	        }
-    	        	        break;
-
-    	        	    default:
-
-    	        		if ( cnt1 >= 1 )
-    	        		{
-    	        		    goto loop1;
-    	        		}
-    	        		/* mismatchedSetEx()
-    	        		 */
-    	        		CONSTRUCTEX();
-    	        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-    	        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-    	        		goto ruleIDEx;
-    	        	}
-    	        	cnt1++;
-    	            }
-    	            loop1: ;	/* Jump to here if this rule does not match */
-    	        }
-
-    	    }
-    	    break;
-    	case 2:
-    	    // hammer.g:98:10: STRING
-    	    {
-    	        /* 98:10: STRING */
-    	        mSTRING(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleIDEx;
-    	        }
-
-    	        {
-    	             LEXSTATE->type = _type; {pANTLR3_COMMON_TOKEN t = LEXER->emit(LEXER); ++t->start, --t->stop; t->type = _type;}
-    	        }
-
-    	    }
-    	    break;
-
-        }
+        goto ruleIDEx;
+      }
     }
-	LEXSTATE->type = _type;
+    switch (alt2) {
+      case 1:
+        // hammer.g:97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' |
+        // '+' | {...}? => '/' | '_' | '=' | '*' )+
+        {
+          // hammer.g:97:17: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-'
+          // |
+          // '+' | {...}? => '/' | '_' | '=' | '*' )+
+          {
+            int cnt1 = 0;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleIDEx; /* Prevent compiler warnings */
-    ruleIDEx: ;
+            for (;;) {
+              int alt1 = 11;
+              alt1 = cdfa1.predict(ctx, RECOGNIZER, ISTREAM, &cdfa1);
+              if (HASEXCEPTION()) {
+                goto ruleIDEx;
+              }
 
+              switch (alt1) {
+                case 1:
+                  // hammer.g:97:18: 'a' .. 'z'
+                  {
+                    MATCHRANGE('a', 'z');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 2:
+                  // hammer.g:97:29: 'A' .. 'Z'
+                  {
+                    MATCHRANGE('A', 'Z');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 3:
+                  // hammer.g:97:40: '0' .. '9'
+                  {
+                    MATCHRANGE('0', '9');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 4:
+                  // hammer.g:97:51: '.'
+                  {
+                    MATCHC('.');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 5:
+                  // hammer.g:97:57: '-'
+                  {
+                    MATCHC('-');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 6:
+                  // hammer.g:97:63: '+'
+                  {
+                    MATCHC('+');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 7:
+                  // hammer.g:97:69: {...}? => '/'
+                  {
+                    if (!((!is_lexing_sources_decl(LEXER)))) {
+                      CONSTRUCTEX();
+                      EXCEPTION->type = ANTLR3_FAILED_PREDICATE_EXCEPTION;
+                      EXCEPTION->message =
+                        (void*)" !is_lexing_sources_decl(LEXER) ";
+                      EXCEPTION->ruleName = (void*)"ID";
+                    }
+                    MATCHC('/');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 8:
+                  // hammer.g:97:113: '_'
+                  {
+                    MATCHC('_');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 9:
+                  // hammer.g:97:118: '='
+                  {
+                    MATCHC('=');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+                case 10:
+                  // hammer.g:97:124: '*'
+                  {
+                    MATCHC('*');
+                    if (HASEXCEPTION()) {
+                      goto ruleIDEx;
+                    }
+                  }
+                  break;
+
+                default:
+
+                  if (cnt1 >= 1) {
+                    goto loop1;
+                  }
+                  /* mismatchedSetEx()
+         */
+                  CONSTRUCTEX();
+                  EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+                  EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+                  goto ruleIDEx;
+              }
+              cnt1++;
+            }
+          loop1:; /* Jump to here if this rule does not match */
+          }
+        }
+        break;
+      case 2:
+        // hammer.g:98:10: STRING
+        {
+          /* 98:10: STRING */
+          mSTRING(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleIDEx;
+          }
+
+          {
+            LEXSTATE->type = _type;
+            {
+              pANTLR3_COMMON_TOKEN t = LEXER->emit(LEXER);
+              ++t->start, --t->stop;
+              t->type = _type;
+            }
+          }
+        }
+        break;
+    }
+  }
+  LEXSTATE->type = _type;
+
+  // This is where rules clean up and exit
+  //
+  goto ruleIDEx; /* Prevent compiler warnings */
+ruleIDEx:;
 }
 // $ANTLR end ID
 
@@ -1493,34 +1371,28 @@ void mID(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mCOLON(phammerLexer ctx)
+static ANTLR3_INLINE void
+mCOLON(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = COLON;
 
-    _type	    = COLON;
-
-
-    // hammer.g:99:9: ( ':' )
-    // hammer.g:99:11: ':'
-    {
-        MATCHC(':');
-        if  (HASEXCEPTION())
-        {
-            goto ruleCOLONEx;
-        }
-
-
+  // hammer.g:99:9: ( ':' )
+  // hammer.g:99:11: ':'
+  {
+    MATCHC(':');
+    if (HASEXCEPTION()) {
+      goto ruleCOLONEx;
     }
+  }
 
-	LEXSTATE->type = _type;
+  LEXSTATE->type = _type;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleCOLONEx; /* Prevent compiler warnings */
-    ruleCOLONEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleCOLONEx; /* Prevent compiler warnings */
+ruleCOLONEx:;
 }
 // $ANTLR end COLON
 
@@ -1536,44 +1408,35 @@ void mCOLON(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mSTRING(phammerLexer ctx)
+static ANTLR3_INLINE void
+mSTRING(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
-
-    // hammer.g:101:9: ( '\"' STRING_ID '\"' )
-    // hammer.g:101:11: '\"' STRING_ID '\"'
-    {
-        MATCHC('"');
-        if  (HASEXCEPTION())
-        {
-            goto ruleSTRINGEx;
-        }
-
-        /* 101:11: '\"' STRING_ID '\"' */
-        mSTRING_ID(ctx );
-        if  (HASEXCEPTION())
-        {
-            goto ruleSTRINGEx;
-        }
-
-        MATCHC('"');
-        if  (HASEXCEPTION())
-        {
-            goto ruleSTRINGEx;
-        }
-
-
+  // hammer.g:101:9: ( '\"' STRING_ID '\"' )
+  // hammer.g:101:11: '\"' STRING_ID '\"'
+  {
+    MATCHC('"');
+    if (HASEXCEPTION()) {
+      goto ruleSTRINGEx;
     }
 
+    /* 101:11: '\"' STRING_ID '\"' */
+    mSTRING_ID(ctx);
+    if (HASEXCEPTION()) {
+      goto ruleSTRINGEx;
+    }
 
+    MATCHC('"');
+    if (HASEXCEPTION()) {
+      goto ruleSTRINGEx;
+    }
+  }
 
-    // This is where rules clean up and exit
-    //
-    goto ruleSTRINGEx; /* Prevent compiler warnings */
-    ruleSTRINGEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleSTRINGEx; /* Prevent compiler warnings */
+ruleSTRINGEx:;
 }
 // $ANTLR end STRING
 
@@ -1589,103 +1452,85 @@ void mSTRING(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mSTRING_ID(phammerLexer ctx)
+static ANTLR3_INLINE void
+mSTRING_ID(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
-
-    // hammer.g:103:11: ( ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )* )
+  // hammer.g:103:11: ( ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )* )
+  // hammer.g:103:13: ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )*
+  {
     // hammer.g:103:13: ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )*
-    {
 
-        // hammer.g:103:13: ( '\\\\\"' | ~ ( '\"' | '\\n' | '\\r' ) )*
-
-        for (;;)
-        {
-            int alt3=3;
-            {
-               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                */
-                int LA3_0 = LA(1);
-                if ( (LA3_0 == '\\') )
-                {
-                    {
-                       /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                        */
-                        int LA3_2 = LA(2);
-                        if ( (LA3_2 == '"') )
-                        {
-                            alt3=1;
-                        }
-
-
-                        else
-                        {
-                    	alt3=2;
-                        }
-
-                    }
-                }
-                else if ( (((LA3_0 >= 0x0000) && (LA3_0 <= '\t')) || ((LA3_0 >= 0x000B) && (LA3_0 <= '\f')) || ((LA3_0 >= 0x000E) && (LA3_0 <= '!')) || ((LA3_0 >= '#') && (LA3_0 <= '[')) || ((LA3_0 >= ']') && (LA3_0 <= 0xFFFF))) )
-                {
-                    alt3=2;
-                }
-
+    for (;;) {
+      int alt3 = 3;
+      {
+        /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+        int LA3_0 = LA(1);
+        if ((LA3_0 == '\\')) {
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA3_2 = LA(2);
+            if ((LA3_2 == '"')) {
+              alt3 = 1;
             }
-            switch (alt3)
-            {
-        	case 1:
-        	    // hammer.g:103:14: '\\\\\"'
-        	    {
-        	        MATCHS(lit_2);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleSTRING_IDEx;
-        	        }
 
-
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:103:22: ~ ( '\"' | '\\n' | '\\r' )
-        	    {
-        	        if ( ((LA(1) >= 0x0000) && (LA(1) <= '\t')) || ((LA(1) >= 0x000B) && (LA(1) <= '\f')) || ((LA(1) >= 0x000E) && (LA(1) <= '!')) || ((LA(1) >= '#') && (LA(1) <= 0xFFFF)) )
-        	        {
-        	            CONSUME();
-
-        	        }
-        	        else
-        	        {
-        	            CONSTRUCTEX();
-        	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
-        	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-
-        	            LRECOVER();    goto ruleSTRING_IDEx;
-        	        }
-
-
-        	    }
-        	    break;
-
-        	default:
-        	    goto loop3;	/* break out of the loop */
-        	    break;
+            else {
+              alt3 = 2;
             }
+          }
+        } else if ((((LA3_0 >= 0x0000) && (LA3_0 <= '\t')) ||
+                    ((LA3_0 >= 0x000B) && (LA3_0 <= '\f')) ||
+                    ((LA3_0 >= 0x000E) && (LA3_0 <= '!')) ||
+                    ((LA3_0 >= '#') && (LA3_0 <= '[')) ||
+                    ((LA3_0 >= ']') && (LA3_0 <= 0xFFFF)))) {
+          alt3 = 2;
         }
-        loop3: ; /* Jump out to here if this rule does not match */
+      }
+      switch (alt3) {
+        case 1:
+          // hammer.g:103:14: '\\\\\"'
+          {
+            MATCHS(lit_2);
+            if (HASEXCEPTION()) {
+              goto ruleSTRING_IDEx;
+            }
+          }
+          break;
+        case 2:
+          // hammer.g:103:22: ~ ( '\"' | '\\n' | '\\r' )
+          {
+            if (((LA(1) >= 0x0000) && (LA(1) <= '\t')) ||
+                ((LA(1) >= 0x000B) && (LA(1) <= '\f')) ||
+                ((LA(1) >= 0x000E) && (LA(1) <= '!')) ||
+                ((LA(1) >= '#') && (LA(1) <= 0xFFFF))) {
+              CONSUME();
 
+            } else {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_MISMATCHED_SET_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_MISMATCHED_SET_NAME;
 
+              LRECOVER();
+              goto ruleSTRING_IDEx;
+            }
+          }
+          break;
+
+        default:
+          goto loop3; /* break out of the loop */
+          break;
+      }
     }
+  loop3:; /* Jump out to here if this rule does not match */
+  }
 
-
-
-    // This is where rules clean up and exit
-    //
-    goto ruleSTRING_IDEx; /* Prevent compiler warnings */
-    ruleSTRING_IDEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto ruleSTRING_IDEx; /* Prevent compiler warnings */
+ruleSTRING_IDEx:;
 }
 // $ANTLR end STRING_ID
 
@@ -1701,119 +1546,101 @@ void mSTRING_ID(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mCOMMENT(phammerLexer ctx)
+static ANTLR3_INLINE void
+mCOMMENT(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = COMMENT;
 
-    _type	    = COMMENT;
-
-
-    // hammer.g:105:9: ( '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )? )
-    // hammer.g:105:11: '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )?
-    {
-        MATCHC('#');
-        if  (HASEXCEPTION())
-        {
-            goto ruleCOMMENTEx;
-        }
-
-
-        // hammer.g:105:15: (~ ( '\\n' | '\\r' ) )*
-
-        for (;;)
-        {
-            int alt4=2;
-            {
-               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                */
-                int LA4_0 = LA(1);
-                if ( (((LA4_0 >= 0x0000) && (LA4_0 <= '\t')) || ((LA4_0 >= 0x000B) && (LA4_0 <= '\f')) || ((LA4_0 >= 0x000E) && (LA4_0 <= 0xFFFF))) )
-                {
-                    alt4=1;
-                }
-
-            }
-            switch (alt4)
-            {
-        	case 1:
-        	    // hammer.g:105:16: ~ ( '\\n' | '\\r' )
-        	    {
-        	        if ( ((LA(1) >= 0x0000) && (LA(1) <= '\t')) || ((LA(1) >= 0x000B) && (LA(1) <= '\f')) || ((LA(1) >= 0x000E) && (LA(1) <= 0xFFFF)) )
-        	        {
-        	            CONSUME();
-
-        	        }
-        	        else
-        	        {
-        	            CONSTRUCTEX();
-        	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
-        	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-
-        	            LRECOVER();    goto ruleCOMMENTEx;
-        	        }
-
-
-        	    }
-        	    break;
-
-        	default:
-        	    goto loop4;	/* break out of the loop */
-        	    break;
-            }
-        }
-        loop4: ; /* Jump out to here if this rule does not match */
-
-
-        // hammer.g:105:33: ( '\\n' | '\\r' )?
-        {
-            int alt5=2;
-            {
-                int LA5_0 = LA(1);
-                if ( (LA5_0 == '\n' || LA5_0 == '\r') )
-                {
-                    alt5=1;
-                }
-            }
-            switch (alt5)
-            {
-        	case 1:
-        	    // hammer.g:
-        	    {
-        	        if ( LA(1) == '\n' || LA(1) == '\r' )
-        	        {
-        	            CONSUME();
-
-        	        }
-        	        else
-        	        {
-        	            CONSTRUCTEX();
-        	            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
-        	            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-
-        	            LRECOVER();    goto ruleCOMMENTEx;
-        	        }
-
-
-        	    }
-        	    break;
-
-            }
-        }
-        {
-             LEXSTATE->channel = HIDDEN;
-        }
-
+  // hammer.g:105:9: ( '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )? )
+  // hammer.g:105:11: '#' (~ ( '\\n' | '\\r' ) )* ( '\\n' | '\\r' )?
+  {
+    MATCHC('#');
+    if (HASEXCEPTION()) {
+      goto ruleCOMMENTEx;
     }
 
-	LEXSTATE->type = _type;
+    // hammer.g:105:15: (~ ( '\\n' | '\\r' ) )*
 
-    // This is where rules clean up and exit
-    //
-    goto ruleCOMMENTEx; /* Prevent compiler warnings */
-    ruleCOMMENTEx: ;
+    for (;;) {
+      int alt4 = 2;
+      {
+        /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+        int LA4_0 = LA(1);
+        if ((((LA4_0 >= 0x0000) && (LA4_0 <= '\t')) ||
+             ((LA4_0 >= 0x000B) && (LA4_0 <= '\f')) ||
+             ((LA4_0 >= 0x000E) && (LA4_0 <= 0xFFFF)))) {
+          alt4 = 1;
+        }
+      }
+      switch (alt4) {
+        case 1:
+          // hammer.g:105:16: ~ ( '\\n' | '\\r' )
+          {
+            if (((LA(1) >= 0x0000) && (LA(1) <= '\t')) ||
+                ((LA(1) >= 0x000B) && (LA(1) <= '\f')) ||
+                ((LA(1) >= 0x000E) && (LA(1) <= 0xFFFF))) {
+              CONSUME();
 
+            } else {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_MISMATCHED_SET_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_MISMATCHED_SET_NAME;
+
+              LRECOVER();
+              goto ruleCOMMENTEx;
+            }
+          }
+          break;
+
+        default:
+          goto loop4; /* break out of the loop */
+          break;
+      }
+    }
+  loop4:; /* Jump out to here if this rule does not match */
+
+    // hammer.g:105:33: ( '\\n' | '\\r' )?
+    {
+      int alt5 = 2;
+      {
+        int LA5_0 = LA(1);
+        if ((LA5_0 == '\n' || LA5_0 == '\r')) {
+          alt5 = 1;
+        }
+      }
+      switch (alt5) {
+        case 1:
+          // hammer.g:
+          {
+            if (LA(1) == '\n' || LA(1) == '\r') {
+              CONSUME();
+
+            } else {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_MISMATCHED_SET_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_MISMATCHED_SET_NAME;
+
+              LRECOVER();
+              goto ruleCOMMENTEx;
+            }
+          }
+          break;
+      }
+    }
+    {
+      LEXSTATE->channel = HIDDEN;
+    }
+  }
+
+  LEXSTATE->type = _type;
+
+  // This is where rules clean up and exit
+  //
+  goto ruleCOMMENTEx; /* Prevent compiler warnings */
+ruleCOMMENTEx:;
 }
 // $ANTLR end COMMENT
 
@@ -1829,45 +1656,39 @@ void mCOMMENT(phammerLexer ctx)
  * \remark
  *  - lexer->error == ANTLR3_TRUE if an exception was thrown.
  */
-static ANTLR3_INLINE
-void mWS(phammerLexer ctx)
+static ANTLR3_INLINE void
+mWS(phammerLexer ctx)
 {
-	ANTLR3_UINT32	_type;
+  ANTLR3_UINT32 _type;
 
+  _type = WS;
 
-    _type	    = WS;
+  // hammer.g:107:4: ( ( ' ' | '\\n' | '\\r' ) )
+  // hammer.g:107:6: ( ' ' | '\\n' | '\\r' )
+  {
+    if (LA(1) == '\n' || LA(1) == '\r' || LA(1) == ' ') {
+      CONSUME();
 
+    } else {
+      CONSTRUCTEX();
+      EXCEPTION->type = ANTLR3_MISMATCHED_SET_EXCEPTION;
+      EXCEPTION->name = (void*)ANTLR3_MISMATCHED_SET_NAME;
 
-    // hammer.g:107:4: ( ( ' ' | '\\n' | '\\r' ) )
-    // hammer.g:107:6: ( ' ' | '\\n' | '\\r' )
-    {
-        if ( LA(1) == '\n' || LA(1) == '\r' || LA(1) == ' ' )
-        {
-            CONSUME();
-
-        }
-        else
-        {
-            CONSTRUCTEX();
-            EXCEPTION->type         = ANTLR3_MISMATCHED_SET_EXCEPTION;
-            EXCEPTION->name         = (void *)ANTLR3_MISMATCHED_SET_NAME;
-
-            LRECOVER();    goto ruleWSEx;
-        }
-
-        {
-             LEXSTATE->channel = HIDDEN;
-        }
-
+      LRECOVER();
+      goto ruleWSEx;
     }
 
-	LEXSTATE->type = _type;
+    {
+      LEXSTATE->channel = HIDDEN;
+    }
+  }
 
-    // This is where rules clean up and exit
-    //
-    goto ruleWSEx; /* Prevent compiler warnings */
-    ruleWSEx: ;
+  LEXSTATE->type = _type;
 
+  // This is where rules clean up and exit
+  //
+  goto ruleWSEx; /* Prevent compiler warnings */
+ruleWSEx:;
 }
 // $ANTLR end WS
 
@@ -1877,197 +1698,155 @@ void mWS(phammerLexer ctx)
 static void
 mTokens(phammerLexer ctx)
 {
-    {
-        //  hammer.g:1:8: ( T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | LOCAL | SLASH | ID | COLON | COMMENT | WS )
+  {
+    //  hammer.g:1:8: ( T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 |
+    //  LOCAL | SLASH | ID | COLON | COMMENT | WS )
 
-        ANTLR3_UINT32 alt6;
+    ANTLR3_UINT32 alt6;
 
-        alt6=13;
+    alt6 = 13;
 
-        alt6 = cdfa6.predict(ctx, RECOGNIZER, ISTREAM, &cdfa6);
-        if  (HASEXCEPTION())
-        {
-            goto ruleTokensEx;
-        }
-
-        switch (alt6)
-        {
-    	case 1:
-    	    // hammer.g:1:10: T__30
-    	    {
-    	        /* 1:10: T__30 */
-    	        mT__30(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 2:
-    	    // hammer.g:1:16: T__31
-    	    {
-    	        /* 1:16: T__31 */
-    	        mT__31(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 3:
-    	    // hammer.g:1:22: T__32
-    	    {
-    	        /* 1:22: T__32 */
-    	        mT__32(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 4:
-    	    // hammer.g:1:28: T__33
-    	    {
-    	        /* 1:28: T__33 */
-    	        mT__33(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 5:
-    	    // hammer.g:1:34: T__34
-    	    {
-    	        /* 1:34: T__34 */
-    	        mT__34(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 6:
-    	    // hammer.g:1:40: T__35
-    	    {
-    	        /* 1:40: T__35 */
-    	        mT__35(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 7:
-    	    // hammer.g:1:46: T__36
-    	    {
-    	        /* 1:46: T__36 */
-    	        mT__36(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 8:
-    	    // hammer.g:1:52: LOCAL
-    	    {
-    	        /* 1:52: LOCAL */
-    	        mLOCAL(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 9:
-    	    // hammer.g:1:58: SLASH
-    	    {
-    	        /* 1:58: SLASH */
-    	        mSLASH(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 10:
-    	    // hammer.g:1:64: ID
-    	    {
-    	        /* 1:64: ID */
-    	        mID(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 11:
-    	    // hammer.g:1:67: COLON
-    	    {
-    	        /* 1:67: COLON */
-    	        mCOLON(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 12:
-    	    // hammer.g:1:73: COMMENT
-    	    {
-    	        /* 1:73: COMMENT */
-    	        mCOMMENT(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-    	case 13:
-    	    // hammer.g:1:81: WS
-    	    {
-    	        /* 1:81: WS */
-    	        mWS(ctx );
-    	        if  (HASEXCEPTION())
-    	        {
-    	            goto ruleTokensEx;
-    	        }
-
-
-    	    }
-    	    break;
-
-        }
+    alt6 = cdfa6.predict(ctx, RECOGNIZER, ISTREAM, &cdfa6);
+    if (HASEXCEPTION()) {
+      goto ruleTokensEx;
     }
 
+    switch (alt6) {
+      case 1:
+        // hammer.g:1:10: T__30
+        {
+          /* 1:10: T__30 */
+          mT__30(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 2:
+        // hammer.g:1:16: T__31
+        {
+          /* 1:16: T__31 */
+          mT__31(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 3:
+        // hammer.g:1:22: T__32
+        {
+          /* 1:22: T__32 */
+          mT__32(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 4:
+        // hammer.g:1:28: T__33
+        {
+          /* 1:28: T__33 */
+          mT__33(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 5:
+        // hammer.g:1:34: T__34
+        {
+          /* 1:34: T__34 */
+          mT__34(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 6:
+        // hammer.g:1:40: T__35
+        {
+          /* 1:40: T__35 */
+          mT__35(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 7:
+        // hammer.g:1:46: T__36
+        {
+          /* 1:46: T__36 */
+          mT__36(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 8:
+        // hammer.g:1:52: LOCAL
+        {
+          /* 1:52: LOCAL */
+          mLOCAL(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 9:
+        // hammer.g:1:58: SLASH
+        {
+          /* 1:58: SLASH */
+          mSLASH(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 10:
+        // hammer.g:1:64: ID
+        {
+          /* 1:64: ID */
+          mID(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 11:
+        // hammer.g:1:67: COLON
+        {
+          /* 1:67: COLON */
+          mCOLON(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 12:
+        // hammer.g:1:73: COMMENT
+        {
+          /* 1:73: COMMENT */
+          mCOMMENT(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+      case 13:
+        // hammer.g:1:81: WS
+        {
+          /* 1:81: WS */
+          mWS(ctx);
+          if (HASEXCEPTION()) {
+            goto ruleTokensEx;
+          }
+        }
+        break;
+    }
+  }
 
-    goto ruleTokensEx; /* Prevent compiler warnings */
-ruleTokensEx: ;
+  goto ruleTokensEx; /* Prevent compiler warnings */
+ruleTokensEx:;
 }
 
 /* =========================================================================
@@ -2078,7 +1857,6 @@ ruleTokensEx: ;
  * ================================================
  * ================================================
  */
-
 
 /* End of code
  * =============================================================================

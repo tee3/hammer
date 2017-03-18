@@ -3,6 +3,7 @@
 
 #include <string>
 
-std::string static_lib_foo();
+std::string
+static_lib_foo();
 
 #endif

@@ -7,13 +7,11 @@ namespace hammer {
 
 class htmpl_generator : public generator
 {
-   public:
-      htmpl_generator(engine& e,
-                      const std::string& name,
-                      const type_tag& product_type);
-
+public:
+  htmpl_generator(engine& e,
+                  const std::string& name,
+                  const type_tag& product_type);
 };
-
 }
 
 #endif

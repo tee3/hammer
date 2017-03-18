@@ -3,6 +3,7 @@
 
 #include <string>
 
-std::string from_static_lib();
+std::string
+from_static_lib();
 
-#endif //h_48f34ac2_b332_49f0_b435_8b8a89369319
+#endif // h_48f34ac2_b332_49f0_b435_8b8a89369319

@@ -1,29 +1,33 @@
 #include "stdafx.h"
+#include <hammer/ast/feature.h>
 #include <hammer/ast/requirement.h>
 #include <hammer/ast/visitor.h>
-#include <hammer/ast/feature.h>
 
-namespace hammer{ namespace ast{
+namespace hammer {
+namespace ast {
 
-bool simple_requirement::accept(visitor& v) const
+bool
+simple_requirement::accept(visitor& v) const
 {
-   return v.visit(*this);
+  return v.visit(*this);
 }
 
-bool conditional_requirement::accept(visitor& v) const
+bool
+conditional_requirement::accept(visitor& v) const
 {
-   return v.visit(*this);
+  return v.visit(*this);
 }
 
-parscore::source_location simple_requirement::start_loc() const
+parscore::source_location
+simple_requirement::start_loc() const
 {
-   return is_public() ? public_tag() : value_->start_loc();
+  return is_public() ? public_tag() : value_->start_loc();
 }
 
 parscore::source_location
 conditional_requirement::start_loc() const
 {
-   return condition_.front()->start_loc();
+  return condition_.front()->start_loc();
 }
-
-}}
+}
+}

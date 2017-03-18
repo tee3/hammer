@@ -6,208 +6,215 @@
  *     -                for the parser : jcfParserParser *
  * Editing it, at least manually, is not wise.
  *
- * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
+ * C language generator and runtime by Jim Idle,
+ * jimi|hereisanat|idle|dotgoeshere|ws.
  *
  *
 */
 /* -----------------------------------------
  * Include the ANTLR3 generated header file.
  */
-#include    "jcfParser.h"
+#include "jcfParser.h"
 /* ----------------------------------------- */
-
-
-
-
 
 /* MACROS that hide the C interface implementations from the
  * generated code, which makes it a little more understandable to the human eye.
- * I am very much against using C pre-processor macros for function calls and bits
+ * I am very much against using C pre-processor macros for function calls and
+ * bits
  * of code as you cannot see what is happening when single stepping in debuggers
- * and so on. The exception (in my book at least) is for generated code, where you are
- * not maintaining it, but may wish to read and understand it. If you single step it, you know that input()
- * hides some indirect calls, but is always referring to the input stream. This is
- * probably more readable than ctx->input->istream->input(snarfle0->blarg) and allows me to rejig
+ * and so on. The exception (in my book at least) is for generated code, where
+ * you are
+ * not maintaining it, but may wish to read and understand it. If you single
+ * step it, you know that input()
+ * hides some indirect calls, but is always referring to the input stream. This
+ * is
+ * probably more readable than ctx->input->istream->input(snarfle0->blarg) and
+ * allows me to rejig
  * the runtime interfaces without changing the generated code too often, without
- * confusing the reader of the generated output, who may not wish to know the gory
+ * confusing the reader of the generated output, who may not wish to know the
+ * gory
  * details of the interface inheritance.
  */
 
-#define		CTX	ctx
+#define CTX ctx
 
 /* Aids in accessing scopes for grammar programmers
  */
-#undef	SCOPE_TYPE
-#undef	SCOPE_STACK
-#undef	SCOPE_TOP
-#define	SCOPE_TYPE(scope)   pjcfParser_##scope##_SCOPE
-#define SCOPE_STACK(scope)  pjcfParser_##scope##Stack
-#define	SCOPE_TOP(scope)    ctx->pjcfParser_##scope##Top
-#define	SCOPE_SIZE(scope)			(ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
-#define SCOPE_INSTANCE(scope, i)	(ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope),i))
+#undef SCOPE_TYPE
+#undef SCOPE_STACK
+#undef SCOPE_TOP
+#define SCOPE_TYPE(scope) pjcfParser_##scope##_SCOPE
+#define SCOPE_STACK(scope) pjcfParser_##scope##Stack
+#define SCOPE_TOP(scope) ctx->pjcfParser_##scope##Top
+#define SCOPE_SIZE(scope)                                                      \
+  (ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
+#define SCOPE_INSTANCE(scope, i)                                               \
+  (ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope), i))
 
 /* Macros for accessing things in the parser
  */
 
-#undef	    PARSER
-#undef	    RECOGNIZER
-#undef	    HAVEPARSEDRULE
-#undef		MEMOIZE
-#undef	    INPUT
-#undef	    STRSTREAM
-#undef	    HASEXCEPTION
-#undef	    EXCEPTION
-#undef	    MATCHT
-#undef	    MATCHANYT
-#undef	    FOLLOWSTACK
-#undef	    FOLLOWPUSH
-#undef	    FOLLOWPOP
-#undef	    PRECOVER
-#undef	    PREPORTERROR
-#undef	    LA
-#undef	    LT
-#undef	    CONSTRUCTEX
-#undef	    CONSUME
-#undef	    MARK
-#undef	    REWIND
-#undef	    REWINDLAST
-#undef	    PERRORRECOVERY
-#undef	    HASFAILED
-#undef	    FAILEDFLAG
-#undef	    RECOVERFROMMISMATCHEDSET
-#undef	    RECOVERFROMMISMATCHEDELEMENT
-#undef		INDEX
-#undef      ADAPTOR
-#undef		SEEK
-#undef	    RULEMEMO
-#undef		DBG
+#undef PARSER
+#undef RECOGNIZER
+#undef HAVEPARSEDRULE
+#undef MEMOIZE
+#undef INPUT
+#undef STRSTREAM
+#undef HASEXCEPTION
+#undef EXCEPTION
+#undef MATCHT
+#undef MATCHANYT
+#undef FOLLOWSTACK
+#undef FOLLOWPUSH
+#undef FOLLOWPOP
+#undef PRECOVER
+#undef PREPORTERROR
+#undef LA
+#undef LT
+#undef CONSTRUCTEX
+#undef CONSUME
+#undef MARK
+#undef REWIND
+#undef REWINDLAST
+#undef PERRORRECOVERY
+#undef HASFAILED
+#undef FAILEDFLAG
+#undef RECOVERFROMMISMATCHEDSET
+#undef RECOVERFROMMISMATCHEDELEMENT
+#undef INDEX
+#undef ADAPTOR
+#undef SEEK
+#undef RULEMEMO
+#undef DBG
 
-#define	    PARSER							ctx->pParser
-#define	    RECOGNIZER						PARSER->rec
-#define		PSRSTATE						RECOGNIZER->state
-#define	    HAVEPARSEDRULE(r)				RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
-#define		MEMOIZE(ri,si)					RECOGNIZER->memoize(RECOGNIZER, ri, si)
-#define	    INPUT							PARSER->tstream
-#define	    STRSTREAM						INPUT
-#define		ISTREAM							INPUT->istream
-#define		INDEX()							ISTREAM->index(INPUT->istream)
-#define	    HASEXCEPTION()					(PSRSTATE->error == ANTLR3_TRUE)
-#define	    EXCEPTION						PSRSTATE->exception
-#define	    MATCHT(t, fs)					RECOGNIZER->match(RECOGNIZER, t, fs)
-#define	    MATCHANYT()						RECOGNIZER->matchAny(RECOGNIZER)
-#define	    FOLLOWSTACK					    PSRSTATE->following
-#define	    FOLLOWPUSH(x)					FOLLOWSTACK->push(FOLLOWSTACK, ((void *)(&(x))), NULL)
-#define	    FOLLOWPOP()						FOLLOWSTACK->pop(FOLLOWSTACK)
-#define	    PRECOVER()						RECOGNIZER->recover(RECOGNIZER)
-#define	    PREPORTERROR()					RECOGNIZER->reportError(RECOGNIZER)
-#define	    LA(n)							INPUT->istream->_LA(ISTREAM, n)
-#define	    LT(n)							INPUT->_LT(INPUT, n)
-#define	    CONSTRUCTEX()					RECOGNIZER->exConstruct(RECOGNIZER)
-#define	    CONSUME()						ISTREAM->consume(ISTREAM)
-#define	    MARK()							ISTREAM->mark(ISTREAM)
-#define	    REWIND(m)						ISTREAM->rewind(ISTREAM, m)
-#define	    REWINDLAST()					ISTREAM->rewindLast(ISTREAM)
-#define		SEEK(n)							ISTREAM->seek(ISTREAM, n)
-#define	    PERRORRECOVERY					PSRSTATE->errorRecovery
-#define	    FAILEDFLAG						PSRSTATE->failed
-#define	    HASFAILED()						(FAILEDFLAG == ANTLR3_TRUE)
-#define	    BACKTRACKING					PSRSTATE->backtracking
-#define	    RECOVERFROMMISMATCHEDSET(s)		RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
-#define	    RECOVERFROMMISMATCHEDELEMENT(e)	RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
-#define     ADAPTOR                         ctx->adaptor
-#define		RULEMEMO						PSRSTATE->ruleMemo
-#define		DBG								RECOGNIZER->debugger
+#define PARSER ctx->pParser
+#define RECOGNIZER PARSER->rec
+#define PSRSTATE RECOGNIZER->state
+#define HAVEPARSEDRULE(r) RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
+#define MEMOIZE(ri, si) RECOGNIZER->memoize(RECOGNIZER, ri, si)
+#define INPUT PARSER->tstream
+#define STRSTREAM INPUT
+#define ISTREAM INPUT->istream
+#define INDEX() ISTREAM->index(INPUT->istream)
+#define HASEXCEPTION() (PSRSTATE->error == ANTLR3_TRUE)
+#define EXCEPTION PSRSTATE->exception
+#define MATCHT(t, fs) RECOGNIZER->match(RECOGNIZER, t, fs)
+#define MATCHANYT() RECOGNIZER->matchAny(RECOGNIZER)
+#define FOLLOWSTACK PSRSTATE->following
+#define FOLLOWPUSH(x) FOLLOWSTACK->push(FOLLOWSTACK, ((void*)(&(x))), NULL)
+#define FOLLOWPOP() FOLLOWSTACK->pop(FOLLOWSTACK)
+#define PRECOVER() RECOGNIZER->recover(RECOGNIZER)
+#define PREPORTERROR() RECOGNIZER->reportError(RECOGNIZER)
+#define LA(n) INPUT->istream->_LA(ISTREAM, n)
+#define LT(n) INPUT->_LT(INPUT, n)
+#define CONSTRUCTEX() RECOGNIZER->exConstruct(RECOGNIZER)
+#define CONSUME() ISTREAM->consume(ISTREAM)
+#define MARK() ISTREAM->mark(ISTREAM)
+#define REWIND(m) ISTREAM->rewind(ISTREAM, m)
+#define REWINDLAST() ISTREAM->rewindLast(ISTREAM)
+#define SEEK(n) ISTREAM->seek(ISTREAM, n)
+#define PERRORRECOVERY PSRSTATE->errorRecovery
+#define FAILEDFLAG PSRSTATE->failed
+#define HASFAILED() (FAILEDFLAG == ANTLR3_TRUE)
+#define BACKTRACKING PSRSTATE->backtracking
+#define RECOVERFROMMISMATCHEDSET(s)                                            \
+  RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
+#define RECOVERFROMMISMATCHEDELEMENT(e)                                        \
+  RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
+#define ADAPTOR ctx->adaptor
+#define RULEMEMO PSRSTATE->ruleMemo
+#define DBG RECOGNIZER->debugger
 
-#define		TOKTEXT(tok, txt)				tok, (pANTLR3_UINT8)txt
+#define TOKTEXT(tok, txt) tok, (pANTLR3_UINT8)txt
 
-/* The 4 tokens defined below may well clash with your own #defines or token types. If so
- * then for the present you must use different names for your defines as these are hard coded
- * in the code generator. It would be better not to use such names internally, and maybe
- * we can change this in a forthcoming release. I deliberately do not #undef these
- * here as this will at least give you a redefined error somewhere if they clash.
+/* The 4 tokens defined below may well clash with your own #defines or token
+ * types. If so
+ * then for the present you must use different names for your defines as these
+ * are hard coded
+ * in the code generator. It would be better not to use such names internally,
+ * and maybe
+ * we can change this in a forthcoming release. I deliberately do not #undef
+ * these
+ * here as this will at least give you a redefined error somewhere if they
+ * clash.
  */
-#define	    UP	    ANTLR3_TOKEN_UP
-#define	    DOWN    ANTLR3_TOKEN_DOWN
-#define	    EOR	    ANTLR3_TOKEN_EOR
-#define	    INVALID ANTLR3_TOKEN_INVALID
-
+#define UP ANTLR3_TOKEN_UP
+#define DOWN ANTLR3_TOKEN_DOWN
+#define EOR ANTLR3_TOKEN_EOR
+#define INVALID ANTLR3_TOKEN_INVALID
 
 /* =============================================================================
  * Functions to create and destroy scopes. First come the rule scopes, followed
  * by the global declared scopes.
  */
 
-
-
-/* ============================================================================= */
+/* =============================================================================
+ */
 
 /* =============================================================================
  * Start of recognizer
  */
 
-
-
 /** \brief Table of all token names in symbolic order, mainly used for
  *         error reporting.
  */
-pANTLR3_UINT8   jcfParserTokenNames[27+4]
-     = {
-        (pANTLR3_UINT8) "<invalid>",       /* String to print to indicate an invalid token */
-        (pANTLR3_UINT8) "<EOR>",
-        (pANTLR3_UINT8) "<DOWN>",
-        (pANTLR3_UINT8) "<UP>",
-        (pANTLR3_UINT8) "TARGET",
-        (pANTLR3_UINT8) "ATTRIBUTES",
-        (pANTLR3_UINT8) "TARGETS",
-        (pANTLR3_UINT8) "TYPE_ATTR",
-        (pANTLR3_UINT8) "FEATURES_ATTR",
-        (pANTLR3_UINT8) "FEATURE",
-        (pANTLR3_UINT8) "NOT_FEATURE",
-        (pANTLR3_UINT8) "LOCATION",
-        (pANTLR3_UINT8) "NUMBER_OF_SOURCES",
-        (pANTLR3_UINT8) "ID",
-        (pANTLR3_UINT8) "NUMBER",
-        (pANTLR3_UINT8) "STRING",
-        (pANTLR3_UINT8) "COMMENT",
-        (pANTLR3_UINT8) "WS",
-        (pANTLR3_UINT8) "'['",
-        (pANTLR3_UINT8) "']'",
-        (pANTLR3_UINT8) "'{'",
-        (pANTLR3_UINT8) "'}'",
-        (pANTLR3_UINT8) "';'",
-        (pANTLR3_UINT8) "'type'",
-        (pANTLR3_UINT8) "'='",
-        (pANTLR3_UINT8) "'features'",
-        (pANTLR3_UINT8) "'<'",
-        (pANTLR3_UINT8) "'>'",
-        (pANTLR3_UINT8) "'!<'",
-        (pANTLR3_UINT8) "'location'",
-        (pANTLR3_UINT8) "'number_of_sources'"
-       };
-
-
+pANTLR3_UINT8 jcfParserTokenNames[27 + 4] = {
+  (pANTLR3_UINT8) "<invalid>", /* String to print to indicate an invalid
+                                token */
+  (pANTLR3_UINT8) "<EOR>",      (pANTLR3_UINT8) "<DOWN>",
+  (pANTLR3_UINT8) "<UP>",       (pANTLR3_UINT8) "TARGET",
+  (pANTLR3_UINT8) "ATTRIBUTES", (pANTLR3_UINT8) "TARGETS",
+  (pANTLR3_UINT8) "TYPE_ATTR",  (pANTLR3_UINT8) "FEATURES_ATTR",
+  (pANTLR3_UINT8) "FEATURE",    (pANTLR3_UINT8) "NOT_FEATURE",
+  (pANTLR3_UINT8) "LOCATION",   (pANTLR3_UINT8) "NUMBER_OF_SOURCES",
+  (pANTLR3_UINT8) "ID",         (pANTLR3_UINT8) "NUMBER",
+  (pANTLR3_UINT8) "STRING",     (pANTLR3_UINT8) "COMMENT",
+  (pANTLR3_UINT8) "WS",         (pANTLR3_UINT8) "'['",
+  (pANTLR3_UINT8) "']'",        (pANTLR3_UINT8) "'{'",
+  (pANTLR3_UINT8) "'}'",        (pANTLR3_UINT8) "';'",
+  (pANTLR3_UINT8) "'type'",     (pANTLR3_UINT8) "'='",
+  (pANTLR3_UINT8) "'features'", (pANTLR3_UINT8) "'<'",
+  (pANTLR3_UINT8) "'>'",        (pANTLR3_UINT8) "'!<'",
+  (pANTLR3_UINT8) "'location'", (pANTLR3_UINT8) "'number_of_sources'"
+};
 
 // Forward declare the locally static matching functions we have generated.
 //
-static jcfParser_jsf_file_return	jsf_file    (pjcfParser ctx);
-static jcfParser_targets_return	targets    (pjcfParser ctx);
-static jcfParser_target_return	target    (pjcfParser ctx);
-static jcfParser_attributes_return	attributes    (pjcfParser ctx);
-static jcfParser_attribute_return	attribute    (pjcfParser ctx);
-static jcfParser_type_return	type    (pjcfParser ctx);
-static jcfParser_features_return	features    (pjcfParser ctx);
-static jcfParser_feature_return	feature    (pjcfParser ctx);
-static jcfParser_location_return	location    (pjcfParser ctx);
-static jcfParser_number_of_sources_return	number_of_sources    (pjcfParser ctx);
-static jcfParser_sources_return	sources    (pjcfParser ctx);
-static void	jcfParserFree(pjcfParser ctx);
-/* For use in tree output where we are accumulating rule labels via label += ruleRef
- * we need a function that knows how to free a return scope when the list is destroyed.
- * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a macro.
+static jcfParser_jsf_file_return
+jsf_file(pjcfParser ctx);
+static jcfParser_targets_return
+targets(pjcfParser ctx);
+static jcfParser_target_return
+target(pjcfParser ctx);
+static jcfParser_attributes_return
+attributes(pjcfParser ctx);
+static jcfParser_attribute_return
+attribute(pjcfParser ctx);
+static jcfParser_type_return
+type(pjcfParser ctx);
+static jcfParser_features_return
+features(pjcfParser ctx);
+static jcfParser_feature_return
+feature(pjcfParser ctx);
+static jcfParser_location_return
+location(pjcfParser ctx);
+static jcfParser_number_of_sources_return
+number_of_sources(pjcfParser ctx);
+static jcfParser_sources_return
+sources(pjcfParser ctx);
+static void
+jcfParserFree(pjcfParser ctx);
+/* For use in tree output where we are accumulating rule labels via label +=
+ * ruleRef
+ * we need a function that knows how to free a return scope when the list is
+ * destroyed.
+ * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a
+ * macro.
  */
-static	void ANTLR3_CDECL freeScope(void * scope)
+static void ANTLR3_CDECL
+freeScope(void* scope)
 {
-    ANTLR3_FREE(scope);
+  ANTLR3_FREE(scope);
 }
 
 /** \brief Name of the grammar file that generated this code
@@ -216,9 +223,10 @@ static const char fileName[] = "jcf.g";
 
 /** \brief Return the name of the grammar file that generated this code.
  */
-static const char * getGrammarFileName()
+static const char*
+getGrammarFileName()
 {
-	return fileName;
+  return fileName;
 }
 /** \brief Create a new jcfParser parser and return a context for it.
  *
@@ -227,11 +235,11 @@ static const char * getGrammarFileName()
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API pjcfParser
-jcfParserNew   (pANTLR3_COMMON_TOKEN_STREAM instream)
+jcfParserNew(pANTLR3_COMMON_TOKEN_STREAM instream)
 {
-	// See if we can create a new parser with the standard constructor
-	//
-	return jcfParserNewSSD(instream, NULL);
+  // See if we can create a new parser with the standard constructor
+  //
+  return jcfParserNewSSD(instream, NULL);
 }
 
 /** \brief Create a new jcfParser parser and return a context for it.
@@ -241,215 +249,396 @@ jcfParserNew   (pANTLR3_COMMON_TOKEN_STREAM instream)
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API pjcfParser
-jcfParserNewSSD   (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
+jcfParserNewSSD(pANTLR3_COMMON_TOKEN_STREAM instream,
+                pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
-    pjcfParser ctx;	    /* Context structure we will build and return   */
+  pjcfParser ctx; /* Context structure we will build and return   */
 
-    ctx	= (pjcfParser) ANTLR3_CALLOC(1, sizeof(jcfParser));
+  ctx = (pjcfParser)ANTLR3_CALLOC(1, sizeof(jcfParser));
 
-    if	(ctx == NULL)
-    {
-		// Failed to allocate memory for parser context
-		//
-        return  NULL;
-    }
+  if (ctx == NULL) {
+    // Failed to allocate memory for parser context
+    //
+    return NULL;
+  }
 
-    /* -------------------------------------------------------------------
-     * Memory for basic structure is allocated, now to fill in
-     * the base ANTLR3 structures. We initialize the function pointers
-     * for the standard ANTLR3 parser function set, but upon return
-     * from here, the programmer may set the pointers to provide custom
-     * implementations of each function.
-     *
-     * We don't use the macros defined in jcfParser.h here, in order that you can get a sense
-     * of what goes where.
-     */
+  /* -------------------------------------------------------------------
+ * Memory for basic structure is allocated, now to fill in
+ * the base ANTLR3 structures. We initialize the function pointers
+ * for the standard ANTLR3 parser function set, but upon return
+ * from here, the programmer may set the pointers to provide custom
+ * implementations of each function.
+ *
+ * We don't use the macros defined in jcfParser.h here, in order that you can
+ * get a sense
+ * of what goes where.
+ */
 
-    /* Create a base parser/recognizer, using the supplied token stream
-     */
-    ctx->pParser	    = antlr3ParserNewStream(ANTLR3_SIZE_HINT, instream->tstream, state);
-    /* Install the implementation of our jcfParser interface
-     */
-    ctx->jsf_file	= jsf_file;
-    ctx->targets	= targets;
-    ctx->target	= target;
-    ctx->attributes	= attributes;
-    ctx->attribute	= attribute;
-    ctx->type	= type;
-    ctx->features	= features;
-    ctx->feature	= feature;
-    ctx->location	= location;
-    ctx->number_of_sources	= number_of_sources;
-    ctx->sources	= sources;
-    ctx->free			= jcfParserFree;
-    ctx->getGrammarFileName	= getGrammarFileName;
+  /* Create a base parser/recognizer, using the supplied token stream
+ */
+  ctx->pParser =
+    antlr3ParserNewStream(ANTLR3_SIZE_HINT, instream->tstream, state);
+  /* Install the implementation of our jcfParser interface
+ */
+  ctx->jsf_file = jsf_file;
+  ctx->targets = targets;
+  ctx->target = target;
+  ctx->attributes = attributes;
+  ctx->attribute = attribute;
+  ctx->type = type;
+  ctx->features = features;
+  ctx->feature = feature;
+  ctx->location = location;
+  ctx->number_of_sources = number_of_sources;
+  ctx->sources = sources;
+  ctx->free = jcfParserFree;
+  ctx->getGrammarFileName = getGrammarFileName;
 
-    /* Install the scope pushing methods.
-     */
-    ADAPTOR	= ANTLR3_TREE_ADAPTORNew(instream->tstream->tokenSource->strFactory);
-    ctx->vectors	= antlr3VectorFactoryNew(64);
+  /* Install the scope pushing methods.
+ */
+  ADAPTOR = ANTLR3_TREE_ADAPTORNew(instream->tstream->tokenSource->strFactory);
+  ctx->vectors = antlr3VectorFactoryNew(64);
 
+  /* Install the token table
+ */
+  PSRSTATE->tokenNames = jcfParserTokenNames;
 
-
-    /* Install the token table
-     */
-    PSRSTATE->tokenNames   = jcfParserTokenNames;
-
-
-    /* Return the newly built parser to the caller
-     */
-    return  ctx;
+  /* Return the newly built parser to the caller
+ */
+  return ctx;
 }
 
 /** Free the parser resources
  */
- static void
- jcfParserFree(pjcfParser ctx)
- {
-    /* Free any scope memory
-     */
+static void
+jcfParserFree(pjcfParser ctx)
+{
+  /* Free any scope memory
+ */
 
-    ctx->vectors->close(ctx->vectors);
-    /* We created the adaptor so we must free it
-     */
-    ADAPTOR->free(ADAPTOR);
-	// Free this parser
-	//
-    ctx->pParser->free(ctx->pParser);
-    ANTLR3_FREE(ctx);
+  ctx->vectors->close(ctx->vectors);
+  /* We created the adaptor so we must free it
+ */
+  ADAPTOR->free(ADAPTOR);
+  // Free this parser
+  //
+  ctx->pParser->free(ctx->pParser);
+  ANTLR3_FREE(ctx);
 
-    /* Everything is released, so we can return
-     */
-    return;
- }
+  /* Everything is released, so we can return
+ */
+  return;
+}
 
 /** Return token names used by this parser
  *
- * The returned pointer is used as an index into the token names table (using the token
+ * The returned pointer is used as an index into the token names table (using
+ * the token
  * number as the index).
  *
  * \return Pointer to first char * in the table.
  */
-static pANTLR3_UINT8    *getTokenNames()
+static pANTLR3_UINT8*
+getTokenNames()
 {
-        return jcfParserTokenNames;
+  return jcfParserTokenNames;
 }
-
 
 /* Declare the bitsets
  */
 
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_targets_in_jsf_file109  */
-static	ANTLR3_BITWORD FOLLOW_targets_in_jsf_file109_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_targets_in_jsf_file109	= { FOLLOW_targets_in_jsf_file109_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_in_targets117  */
-static	ANTLR3_BITWORD FOLLOW_target_in_targets117_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_in_targets117	= { FOLLOW_target_in_targets117_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_target146  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_target146_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000140000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_target146	= { FOLLOW_ID_in_target146_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_18_in_target149  */
-static	ANTLR3_BITWORD FOLLOW_18_in_target149_bits[]	= { ANTLR3_UINT64_LIT(0x0000000062880000) };
-static  ANTLR3_BITSET_LIST FOLLOW_18_in_target149	= { FOLLOW_18_in_target149_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_attributes_in_target151  */
-static	ANTLR3_BITWORD FOLLOW_attributes_in_target151_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_attributes_in_target151	= { FOLLOW_attributes_in_target151_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_19_in_target153  */
-static	ANTLR3_BITWORD FOLLOW_19_in_target153_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000140000) };
-static  ANTLR3_BITSET_LIST FOLLOW_19_in_target153	= { FOLLOW_19_in_target153_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_20_in_target157  */
-static	ANTLR3_BITWORD FOLLOW_20_in_target157_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000202000) };
-static  ANTLR3_BITSET_LIST FOLLOW_20_in_target157	= { FOLLOW_20_in_target157_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_in_target159  */
-static	ANTLR3_BITWORD FOLLOW_target_in_target159_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000202000) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_in_target159	= { FOLLOW_target_in_target159_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_21_in_target162  */
-static	ANTLR3_BITWORD FOLLOW_21_in_target162_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_21_in_target162	= { FOLLOW_21_in_target162_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_attribute_in_attributes185  */
-static	ANTLR3_BITWORD FOLLOW_attribute_in_attributes185_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000400000) };
-static  ANTLR3_BITSET_LIST FOLLOW_attribute_in_attributes185	= { FOLLOW_attribute_in_attributes185_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_22_in_attributes187  */
-static	ANTLR3_BITWORD FOLLOW_22_in_attributes187_bits[]	= { ANTLR3_UINT64_LIT(0x0000000062800002) };
-static  ANTLR3_BITSET_LIST FOLLOW_22_in_attributes187	= { FOLLOW_22_in_attributes187_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_type_in_attribute229  */
-static	ANTLR3_BITWORD FOLLOW_type_in_attribute229_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_type_in_attribute229	= { FOLLOW_type_in_attribute229_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_features_in_attribute242  */
-static	ANTLR3_BITWORD FOLLOW_features_in_attribute242_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_features_in_attribute242	= { FOLLOW_features_in_attribute242_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_location_in_attribute254  */
-static	ANTLR3_BITWORD FOLLOW_location_in_attribute254_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_location_in_attribute254	= { FOLLOW_location_in_attribute254_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_number_of_sources_in_attribute266  */
-static	ANTLR3_BITWORD FOLLOW_number_of_sources_in_attribute266_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_number_of_sources_in_attribute266	= { FOLLOW_number_of_sources_in_attribute266_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_23_in_type294  */
-static	ANTLR3_BITWORD FOLLOW_23_in_type294_bits[]	= { ANTLR3_UINT64_LIT(0x0000000001000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_23_in_type294	= { FOLLOW_23_in_type294_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_24_in_type296  */
-static	ANTLR3_BITWORD FOLLOW_24_in_type296_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_24_in_type296	= { FOLLOW_24_in_type296_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_type298  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_type298_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_type298	= { FOLLOW_ID_in_type298_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_25_in_features318  */
-static	ANTLR3_BITWORD FOLLOW_25_in_features318_bits[]	= { ANTLR3_UINT64_LIT(0x0000000001000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_25_in_features318	= { FOLLOW_25_in_features318_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_24_in_features320  */
-static	ANTLR3_BITWORD FOLLOW_24_in_features320_bits[]	= { ANTLR3_UINT64_LIT(0x0000000014000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_24_in_features320	= { FOLLOW_24_in_features320_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_features322  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_features322_bits[]	= { ANTLR3_UINT64_LIT(0x0000000014000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_features322	= { FOLLOW_feature_in_features322_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_26_in_feature340  */
-static	ANTLR3_BITWORD FOLLOW_26_in_feature340_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_26_in_feature340	= { FOLLOW_26_in_feature340_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature342  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature342_bits[]	= { ANTLR3_UINT64_LIT(0x0000000008000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature342	= { FOLLOW_ID_in_feature342_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_27_in_feature344  */
-static	ANTLR3_BITWORD FOLLOW_27_in_feature344_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_27_in_feature344	= { FOLLOW_27_in_feature344_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature346  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature346_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature346	= { FOLLOW_ID_in_feature346_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_28_in_feature369  */
-static	ANTLR3_BITWORD FOLLOW_28_in_feature369_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_28_in_feature369	= { FOLLOW_28_in_feature369_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature371  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature371_bits[]	= { ANTLR3_UINT64_LIT(0x0000000008000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature371	= { FOLLOW_ID_in_feature371_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_27_in_feature373  */
-static	ANTLR3_BITWORD FOLLOW_27_in_feature373_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_27_in_feature373	= { FOLLOW_27_in_feature373_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature375  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature375_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature375	= { FOLLOW_ID_in_feature375_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_29_in_location391  */
-static	ANTLR3_BITWORD FOLLOW_29_in_location391_bits[]	= { ANTLR3_UINT64_LIT(0x0000000001000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_29_in_location391	= { FOLLOW_29_in_location391_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_24_in_location393  */
-static	ANTLR3_BITWORD FOLLOW_24_in_location393_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_24_in_location393	= { FOLLOW_24_in_location393_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_location395  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_location395_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_location395	= { FOLLOW_ID_in_location395_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_30_in_number_of_sources418  */
-static	ANTLR3_BITWORD FOLLOW_30_in_number_of_sources418_bits[]	= { ANTLR3_UINT64_LIT(0x0000000001000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_30_in_number_of_sources418	= { FOLLOW_30_in_number_of_sources418_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_24_in_number_of_sources420  */
-static	ANTLR3_BITWORD FOLLOW_24_in_number_of_sources420_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000004000) };
-static  ANTLR3_BITSET_LIST FOLLOW_24_in_number_of_sources420	= { FOLLOW_24_in_number_of_sources420_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_NUMBER_in_number_of_sources422  */
-static	ANTLR3_BITWORD FOLLOW_NUMBER_in_number_of_sources422_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_NUMBER_in_number_of_sources422	= { FOLLOW_NUMBER_in_number_of_sources422_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_sources438  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_sources438_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_sources438	= { FOLLOW_ID_in_sources438_bits, 1	};
-
-
-
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_targets_in_jsf_file109  */
+static ANTLR3_BITWORD FOLLOW_targets_in_jsf_file109_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_targets_in_jsf_file109 = {
+  FOLLOW_targets_in_jsf_file109_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_in_targets117  */
+static ANTLR3_BITWORD FOLLOW_target_in_targets117_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002002) };
+static ANTLR3_BITSET_LIST FOLLOW_target_in_targets117 = {
+  FOLLOW_target_in_targets117_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_target146  */
+static ANTLR3_BITWORD FOLLOW_ID_in_target146_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000140000) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_target146 = {
+  FOLLOW_ID_in_target146_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_18_in_target149  */
+static ANTLR3_BITWORD FOLLOW_18_in_target149_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000062880000) };
+static ANTLR3_BITSET_LIST FOLLOW_18_in_target149 = {
+  FOLLOW_18_in_target149_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_attributes_in_target151  */
+static ANTLR3_BITWORD FOLLOW_attributes_in_target151_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_attributes_in_target151 = {
+  FOLLOW_attributes_in_target151_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_19_in_target153  */
+static ANTLR3_BITWORD FOLLOW_19_in_target153_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000140000) };
+static ANTLR3_BITSET_LIST FOLLOW_19_in_target153 = {
+  FOLLOW_19_in_target153_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_20_in_target157  */
+static ANTLR3_BITWORD FOLLOW_20_in_target157_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000202000) };
+static ANTLR3_BITSET_LIST FOLLOW_20_in_target157 = {
+  FOLLOW_20_in_target157_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_in_target159  */
+static ANTLR3_BITWORD FOLLOW_target_in_target159_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000202000) };
+static ANTLR3_BITSET_LIST FOLLOW_target_in_target159 = {
+  FOLLOW_target_in_target159_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_21_in_target162  */
+static ANTLR3_BITWORD FOLLOW_21_in_target162_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_21_in_target162 = {
+  FOLLOW_21_in_target162_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_attribute_in_attributes185  */
+static ANTLR3_BITWORD FOLLOW_attribute_in_attributes185_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000400000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_attribute_in_attributes185 = {
+  FOLLOW_attribute_in_attributes185_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_22_in_attributes187  */
+static ANTLR3_BITWORD FOLLOW_22_in_attributes187_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000062800002) };
+static ANTLR3_BITSET_LIST FOLLOW_22_in_attributes187 = {
+  FOLLOW_22_in_attributes187_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_type_in_attribute229  */
+static ANTLR3_BITWORD FOLLOW_type_in_attribute229_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_type_in_attribute229 = {
+  FOLLOW_type_in_attribute229_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_features_in_attribute242  */
+static ANTLR3_BITWORD FOLLOW_features_in_attribute242_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_features_in_attribute242 = {
+  FOLLOW_features_in_attribute242_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_location_in_attribute254  */
+static ANTLR3_BITWORD FOLLOW_location_in_attribute254_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_location_in_attribute254 = {
+  FOLLOW_location_in_attribute254_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_number_of_sources_in_attribute266  */
+static ANTLR3_BITWORD FOLLOW_number_of_sources_in_attribute266_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_number_of_sources_in_attribute266 = {
+  FOLLOW_number_of_sources_in_attribute266_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_23_in_type294  */
+static ANTLR3_BITWORD FOLLOW_23_in_type294_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000001000000) };
+static ANTLR3_BITSET_LIST FOLLOW_23_in_type294 = { FOLLOW_23_in_type294_bits,
+                                                   1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_24_in_type296  */
+static ANTLR3_BITWORD FOLLOW_24_in_type296_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_24_in_type296 = { FOLLOW_24_in_type296_bits,
+                                                   1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_type298  */
+static ANTLR3_BITWORD FOLLOW_ID_in_type298_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_type298 = { FOLLOW_ID_in_type298_bits,
+                                                   1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_25_in_features318  */
+static ANTLR3_BITWORD FOLLOW_25_in_features318_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000001000000) };
+static ANTLR3_BITSET_LIST FOLLOW_25_in_features318 = {
+  FOLLOW_25_in_features318_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_24_in_features320  */
+static ANTLR3_BITWORD FOLLOW_24_in_features320_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000014000000) };
+static ANTLR3_BITSET_LIST FOLLOW_24_in_features320 = {
+  FOLLOW_24_in_features320_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_features322  */
+static ANTLR3_BITWORD FOLLOW_feature_in_features322_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000014000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_features322 = {
+  FOLLOW_feature_in_features322_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_26_in_feature340  */
+static ANTLR3_BITWORD FOLLOW_26_in_feature340_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_26_in_feature340 = {
+  FOLLOW_26_in_feature340_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature342  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature342_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000008000000) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature342 = {
+  FOLLOW_ID_in_feature342_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_27_in_feature344  */
+static ANTLR3_BITWORD FOLLOW_27_in_feature344_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_27_in_feature344 = {
+  FOLLOW_27_in_feature344_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature346  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature346_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature346 = {
+  FOLLOW_ID_in_feature346_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_28_in_feature369  */
+static ANTLR3_BITWORD FOLLOW_28_in_feature369_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_28_in_feature369 = {
+  FOLLOW_28_in_feature369_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature371  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature371_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000008000000) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature371 = {
+  FOLLOW_ID_in_feature371_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_27_in_feature373  */
+static ANTLR3_BITWORD FOLLOW_27_in_feature373_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_27_in_feature373 = {
+  FOLLOW_27_in_feature373_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature375  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature375_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature375 = {
+  FOLLOW_ID_in_feature375_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_29_in_location391  */
+static ANTLR3_BITWORD FOLLOW_29_in_location391_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000001000000) };
+static ANTLR3_BITSET_LIST FOLLOW_29_in_location391 = {
+  FOLLOW_29_in_location391_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_24_in_location393  */
+static ANTLR3_BITWORD FOLLOW_24_in_location393_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_24_in_location393 = {
+  FOLLOW_24_in_location393_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_location395  */
+static ANTLR3_BITWORD FOLLOW_ID_in_location395_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_location395 = {
+  FOLLOW_ID_in_location395_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_30_in_number_of_sources418  */
+static ANTLR3_BITWORD FOLLOW_30_in_number_of_sources418_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000001000000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_30_in_number_of_sources418 = {
+  FOLLOW_30_in_number_of_sources418_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_24_in_number_of_sources420  */
+static ANTLR3_BITWORD FOLLOW_24_in_number_of_sources420_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000004000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_24_in_number_of_sources420 = {
+  FOLLOW_24_in_number_of_sources420_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_NUMBER_in_number_of_sources422  */
+static ANTLR3_BITWORD FOLLOW_NUMBER_in_number_of_sources422_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_NUMBER_in_number_of_sources422 = {
+  FOLLOW_NUMBER_in_number_of_sources422_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_sources438  */
+static ANTLR3_BITWORD FOLLOW_ID_in_sources438_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_sources438 = {
+  FOLLOW_ID_in_sources438_bits,
+  1
+};
 
 /* ==============================================
  * Parsing rules
@@ -461,67 +650,61 @@ static  ANTLR3_BITSET_LIST FOLLOW_ID_in_sources438	= { FOLLOW_ID_in_sources438_b
 static jcfParser_jsf_file_return
 jsf_file(pjcfParser ctx)
 {
-    jcfParser_jsf_file_return retval;
+  jcfParser_jsf_file_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    jcfParser_targets_return targets1;
-    #undef	RETURN_TYPE_targets1
-    #define	RETURN_TYPE_targets1 jcfParser_targets_return
+  jcfParser_targets_return targets1;
+#undef RETURN_TYPE_targets1
+#define RETURN_TYPE_targets1 jcfParser_targets_return
 
+  /* Initialize rule variables
+ */
 
-    /* Initialize rule variables
-     */
+  root_0 = NULL;
 
+  targets1.tree = NULL;
 
-    root_0 = NULL;
+  retval.start = LT(1);
 
-    targets1.tree = NULL;
-
-    retval.start = LT(1);
-
-    retval.tree  = NULL;
+  retval.tree = NULL;
+  {
+    // jcf.g:11:10: ( targets )
+    // jcf.g:11:12: targets
     {
-        // jcf.g:11:10: ( targets )
-        // jcf.g:11:12: targets
-        {
-            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+      root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-            FOLLOWPUSH(FOLLOW_targets_in_jsf_file109);
-            targets1=targets(ctx);
+      FOLLOWPUSH(FOLLOW_targets_in_jsf_file109);
+      targets1 = targets(ctx);
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulejsf_fileEx;
-            }
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulejsf_fileEx;
+      }
 
-            ADAPTOR->addChild(ADAPTOR, root_0, targets1.tree);
-
-        }
-
+      ADAPTOR->addChild(ADAPTOR, root_0, targets1.tree);
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulejsf_fileEx; /* Prevent compiler warnings */
+rulejsf_fileEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulejsf_fileEx; /* Prevent compiler warnings */
-    rulejsf_fileEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end jsf_file */
 
@@ -532,701 +715,665 @@ jsf_file(pjcfParser ctx)
 static jcfParser_targets_return
 targets(pjcfParser ctx)
 {
-    jcfParser_targets_return retval;
+  jcfParser_targets_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    jcfParser_target_return target2;
-    #undef	RETURN_TYPE_target2
-    #define	RETURN_TYPE_target2 jcfParser_target_return
+  jcfParser_target_return target2;
+#undef RETURN_TYPE_target2
+#define RETURN_TYPE_target2 jcfParser_target_return
 
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target;
-    /* Initialize rule variables
-     */
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  target2.tree = NULL;
 
-    target2.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    stream_target=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target");
-    retval.tree  = NULL;
+  stream_target = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target");
+  retval.tree = NULL;
+  {
     {
-        {
-            //  jcf.g:12:9: ( ( target )+ -> ^( TARGETS ( target )+ ) | )
+      //  jcf.g:12:9: ( ( target )+ -> ^( TARGETS ( target )+ ) | )
 
-            ANTLR3_UINT32 alt2;
+      ANTLR3_UINT32 alt2;
 
-            alt2=2;
+      alt2 = 2;
 
+      {
+        int LA2_0 = LA(1);
+        if ((LA2_0 == ID)) {
+          alt2 = 1;
+        } else if ((LA2_0 == EOF)) {
+          alt2 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 2;
+          EXCEPTION->state = 0;
 
+          goto ruletargetsEx;
+        }
+      }
+      switch (alt2) {
+        case 1:
+          // jcf.g:12:11: ( target )+
+          {
+            // jcf.g:12:11: ( target )+
             {
-                int LA2_0 = LA(1);
-                if ( (LA2_0 == ID) )
-                {
-                    alt2=1;
-                }
-                else if ( (LA2_0 == EOF) )
-                {
-                    alt2=2;
-                }
-                else
-                {
+              int cnt1 = 0;
 
+              for (;;) {
+                int alt1 = 2;
+                {
+                  /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                  int LA1_0 = LA(1);
+                  if ((LA1_0 == ID)) {
+                    alt1 = 1;
+                  }
+                }
+                switch (alt1) {
+                  case 1:
+                    // jcf.g:12:11: target
+                    {
+                      FOLLOWPUSH(FOLLOW_target_in_targets117);
+                      target2 = target(ctx);
+
+                      FOLLOWPOP();
+                      if (HASEXCEPTION()) {
+                        goto ruletargetsEx;
+                      }
+
+                      stream_target->add(stream_target, target2.tree, NULL);
+                    }
+                    break;
+
+                  default:
+
+                    if (cnt1 >= 1) {
+                      goto loop1;
+                    }
+                    /* mismatchedSetEx()
+         */
                     CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 2;
-                    EXCEPTION->state        = 0;
-
+                    EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+                    EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
 
                     goto ruletargetsEx;
                 }
+                cnt1++;
+              }
+            loop1:; /* Jump to here if this rule does not match */
             }
-            switch (alt2)
+
+            /* AST REWRITE
+     * elements          : target
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
             {
-        	case 1:
-        	    // jcf.g:12:11: ( target )+
-        	    {
-        	        // jcf.g:12:11: ( target )+
-        	        {
-        	            int cnt1=0;
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	            for (;;)
-        	            {
-        	                int alt1=2;
-        	        	{
-        	        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	        	    */
-        	        	    int LA1_0 = LA(1);
-        	        	    if ( (LA1_0 == ID) )
-        	        	    {
-        	        	        alt1=1;
-        	        	    }
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-        	        	}
-        	        	switch (alt1)
-        	        	{
-        	        	    case 1:
-        	        	        // jcf.g:12:11: target
-        	        	        {
-        	        	            FOLLOWPUSH(FOLLOW_target_in_targets117);
-        	        	            target2=target(ctx);
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 12:19: -> ^( TARGETS ( target )+ )
+              {
+                // jcf.g:12:22: ^( TARGETS ( target )+ )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, TARGETS, (pANTLR3_UINT8) "TARGETS"),
+                    root_1));
 
-        	        	            FOLLOWPOP();
-        	        	            if  (HASEXCEPTION())
-        	        	            {
-        	        	                goto ruletargetsEx;
-        	        	            }
+                  if (!(stream_target->hasNext(stream_target))) {
+                    CONSTRUCTEX();
+                    EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
+                    EXCEPTION->name =
+                      (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
+                  } else {
+                    while (stream_target->hasNext(stream_target)) {
+                      ADAPTOR->addChild(ADAPTOR,
+                                        root_1,
+                                        stream_target->nextTree(stream_target));
+                    }
+                    stream_target->reset(stream_target);
+                  }
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
 
-        	        	            stream_target->add(stream_target, target2.tree, NULL);
-
-        	        	        }
-        	        	        break;
-
-        	        	    default:
-
-        	        		if ( cnt1 >= 1 )
-        	        		{
-        	        		    goto loop1;
-        	        		}
-        	        		/* mismatchedSetEx()
-        	        		 */
-        	        		CONSTRUCTEX();
-        	        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        	        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        	        		goto ruletargetsEx;
-        	        	}
-        	        	cnt1++;
-        	            }
-        	            loop1: ;	/* Jump to here if this rule does not match */
-        	        }
-
-
-        	        /* AST REWRITE
-        	         * elements          : target
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 12:19: -> ^( TARGETS ( target )+ )
-        	        	{
-        	        	    // jcf.g:12:22: ^( TARGETS ( target )+ )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TARGETS, (pANTLR3_UINT8)"TARGETS"), root_1));
-
-        	        	        if ( !(stream_target->hasNext(stream_target)) )
-        	        	        {
-        	        	            CONSTRUCTEX();
-        	        	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
-        	        	            EXCEPTION->name         = (void *)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
-        	        	        }
-        	        	        else
-        	        	        {
-        	        	        	while ( stream_target->hasNext(stream_target) ) {
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_target->nextTree(stream_target));
-
-        	        	        	}
-        	        	        	stream_target->reset(stream_target);
-
-        	        	        }
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // jcf.g:13:11:
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	    }
-        	    break;
-
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
             }
-        }
+          }
+          break;
+        case 2:
+          // jcf.g:13:11:
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletargetsEx; /* Prevent compiler warnings */
+ruletargetsEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletargetsEx; /* Prevent compiler warnings */
-    ruletargetsEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_target->free(stream_target);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    stream_target->free(stream_target);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end targets */
 
 /**
  * $ANTLR start target
- * jcf.g:14:1: target : ID ( '[' attributes ']' )* '{' ( target )* '}' -> ^( TARGET ID ( attributes )* ( target )* ) ;
+ * jcf.g:14:1: target : ID ( '[' attributes ']' )* '{' ( target )* '}' -> ^(
+ * TARGET ID ( attributes )* ( target )* ) ;
  */
 static jcfParser_target_return
 target(pjcfParser ctx)
 {
-    jcfParser_target_return retval;
+  jcfParser_target_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    ID3;
-    pANTLR3_COMMON_TOKEN    char_literal4;
-    pANTLR3_COMMON_TOKEN    char_literal6;
-    pANTLR3_COMMON_TOKEN    char_literal7;
-    pANTLR3_COMMON_TOKEN    char_literal9;
-    jcfParser_attributes_return attributes5;
-    #undef	RETURN_TYPE_attributes5
-    #define	RETURN_TYPE_attributes5 jcfParser_attributes_return
+  pANTLR3_COMMON_TOKEN ID3;
+  pANTLR3_COMMON_TOKEN char_literal4;
+  pANTLR3_COMMON_TOKEN char_literal6;
+  pANTLR3_COMMON_TOKEN char_literal7;
+  pANTLR3_COMMON_TOKEN char_literal9;
+  jcfParser_attributes_return attributes5;
+#undef RETURN_TYPE_attributes5
+#define RETURN_TYPE_attributes5 jcfParser_attributes_return
 
-    jcfParser_target_return target8;
-    #undef	RETURN_TYPE_target8
-    #define	RETURN_TYPE_target8 jcfParser_target_return
+  jcfParser_target_return target8;
+#undef RETURN_TYPE_target8
+#define RETURN_TYPE_target8 jcfParser_target_return
 
-    pANTLR3_BASE_TREE ID3_tree;
-    pANTLR3_BASE_TREE char_literal4_tree;
-    pANTLR3_BASE_TREE char_literal6_tree;
-    pANTLR3_BASE_TREE char_literal7_tree;
-    pANTLR3_BASE_TREE char_literal9_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_18;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_19;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_20;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_21;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_attributes;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE ID3_tree;
+  pANTLR3_BASE_TREE char_literal4_tree;
+  pANTLR3_BASE_TREE char_literal6_tree;
+  pANTLR3_BASE_TREE char_literal7_tree;
+  pANTLR3_BASE_TREE char_literal9_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_18;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_19;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_20;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_21;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_attributes;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  ID3 = NULL;
+  char_literal4 = NULL;
+  char_literal6 = NULL;
+  char_literal7 = NULL;
+  char_literal9 = NULL;
+  attributes5.tree = NULL;
 
-    ID3       = NULL;
-    char_literal4       = NULL;
-    char_literal6       = NULL;
-    char_literal7       = NULL;
-    char_literal9       = NULL;
-    attributes5.tree = NULL;
+  target8.tree = NULL;
 
-    target8.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    ID3_tree   = NULL;
-    char_literal4_tree   = NULL;
-    char_literal6_tree   = NULL;
-    char_literal7_tree   = NULL;
-    char_literal9_tree   = NULL;
-    stream_18   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 18");
-    stream_19   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 19");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    stream_20   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 20");
-    stream_21   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 21");
-    stream_attributes=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule attributes");
-    stream_target=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target");
-    retval.tree  = NULL;
+  ID3_tree = NULL;
+  char_literal4_tree = NULL;
+  char_literal6_tree = NULL;
+  char_literal7_tree = NULL;
+  char_literal9_tree = NULL;
+  stream_18 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 18");
+  stream_19 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 19");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  stream_20 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 20");
+  stream_21 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 21");
+  stream_attributes = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule attributes");
+  stream_target = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target");
+  retval.tree = NULL;
+  {
+    // jcf.g:14:9: ( ID ( '[' attributes ']' )* '{' ( target )* '}' -> ^( TARGET
+    // ID ( attributes )* ( target )* ) )
+    // jcf.g:14:11: ID ( '[' attributes ']' )* '{' ( target )* '}'
     {
-        // jcf.g:14:9: ( ID ( '[' attributes ']' )* '{' ( target )* '}' -> ^( TARGET ID ( attributes )* ( target )* ) )
-        // jcf.g:14:11: ID ( '[' attributes ']' )* '{' ( target )* '}'
+      ID3 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_target146);
+      if (HASEXCEPTION()) {
+        goto ruletargetEx;
+      }
+
+      stream_ID->add(stream_ID, ID3, NULL);
+
+      // jcf.g:14:14: ( '[' attributes ']' )*
+
+      for (;;) {
+        int alt3 = 2;
         {
-            ID3 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_target146);
-            if  (HASEXCEPTION())
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA3_0 = LA(1);
+          if ((LA3_0 == 18)) {
+            alt3 = 1;
+          }
+        }
+        switch (alt3) {
+          case 1:
+            // jcf.g:14:15: '[' attributes ']'
             {
+              char_literal4 =
+                (pANTLR3_COMMON_TOKEN)MATCHT(18, &FOLLOW_18_in_target149);
+              if (HASEXCEPTION()) {
                 goto ruletargetEx;
-            }
+              }
 
-            stream_ID->add(stream_ID, ID3, NULL);
+              stream_18->add(stream_18, char_literal4, NULL);
 
+              FOLLOWPUSH(FOLLOW_attributes_in_target151);
+              attributes5 = attributes(ctx);
 
-            // jcf.g:14:14: ( '[' attributes ']' )*
-
-            for (;;)
-            {
-                int alt3=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA3_0 = LA(1);
-                    if ( (LA3_0 == 18) )
-                    {
-                        alt3=1;
-                    }
-
-                }
-                switch (alt3)
-                {
-            	case 1:
-            	    // jcf.g:14:15: '[' attributes ']'
-            	    {
-            	        char_literal4 = (pANTLR3_COMMON_TOKEN) MATCHT(18, &FOLLOW_18_in_target149);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletargetEx;
-            	        }
-
-            	        stream_18->add(stream_18, char_literal4, NULL);
-
-            	        FOLLOWPUSH(FOLLOW_attributes_in_target151);
-            	        attributes5=attributes(ctx);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletargetEx;
-            	        }
-
-            	        stream_attributes->add(stream_attributes, attributes5.tree, NULL);
-            	        char_literal6 = (pANTLR3_COMMON_TOKEN) MATCHT(19, &FOLLOW_19_in_target153);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletargetEx;
-            	        }
-
-            	        stream_19->add(stream_19, char_literal6, NULL);
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop3;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop3: ; /* Jump out to here if this rule does not match */
-
-            char_literal7 = (pANTLR3_COMMON_TOKEN) MATCHT(20, &FOLLOW_20_in_target157);
-            if  (HASEXCEPTION())
-            {
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
                 goto ruletargetEx;
-            }
+              }
 
-            stream_20->add(stream_20, char_literal7, NULL);
-
-
-            // jcf.g:14:40: ( target )*
-
-            for (;;)
-            {
-                int alt4=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA4_0 = LA(1);
-                    if ( (LA4_0 == ID) )
-                    {
-                        alt4=1;
-                    }
-
-                }
-                switch (alt4)
-                {
-            	case 1:
-            	    // jcf.g:14:40: target
-            	    {
-            	        FOLLOWPUSH(FOLLOW_target_in_target159);
-            	        target8=target(ctx);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletargetEx;
-            	        }
-
-            	        stream_target->add(stream_target, target8.tree, NULL);
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop4;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop4: ; /* Jump out to here if this rule does not match */
-
-            char_literal9 = (pANTLR3_COMMON_TOKEN) MATCHT(21, &FOLLOW_21_in_target162);
-            if  (HASEXCEPTION())
-            {
+              stream_attributes->add(stream_attributes, attributes5.tree, NULL);
+              char_literal6 =
+                (pANTLR3_COMMON_TOKEN)MATCHT(19, &FOLLOW_19_in_target153);
+              if (HASEXCEPTION()) {
                 goto ruletargetEx;
+              }
+
+              stream_19->add(stream_19, char_literal6, NULL);
             }
+            break;
 
-            stream_21->add(stream_21, char_literal9, NULL);
+          default:
+            goto loop3; /* break out of the loop */
+            break;
+        }
+      }
+    loop3:; /* Jump out to here if this rule does not match */
 
+      char_literal7 = (pANTLR3_COMMON_TOKEN)MATCHT(20, &FOLLOW_20_in_target157);
+      if (HASEXCEPTION()) {
+        goto ruletargetEx;
+      }
 
+      stream_20->add(stream_20, char_literal7, NULL);
 
-            /* AST REWRITE
-             * elements          : ID, target, attributes
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
+      // jcf.g:14:40: ( target )*
+
+      for (;;) {
+        int alt4 = 2;
+        {
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA4_0 = LA(1);
+          if ((LA4_0 == ID)) {
+            alt4 = 1;
+          }
+        }
+        switch (alt4) {
+          case 1:
+            // jcf.g:14:40: target
             {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+              FOLLOWPUSH(FOLLOW_target_in_target159);
+              target8 = target(ctx);
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
+                goto ruletargetEx;
+              }
 
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 14:52: -> ^( TARGET ID ( attributes )* ( target )* )
-            	{
-            	    // jcf.g:14:55: ^( TARGET ID ( attributes )* ( target )* )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TARGET, (pANTLR3_UINT8)"TARGET"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-            	        // jcf.g:14:67: ( attributes )*
-            	        {
-            	        	while ( stream_attributes->hasNext(stream_attributes) )
-            	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_attributes->nextTree(stream_attributes));
-
-            	        	}
-            	        	stream_attributes->reset(stream_attributes);
-
-            	        }
-            	        // jcf.g:14:79: ( target )*
-            	        {
-            	        	while ( stream_target->hasNext(stream_target) )
-            	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_target->nextTree(stream_target));
-
-            	        	}
-            	        	stream_target->reset(stream_target);
-
-            	        }
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
+              stream_target->add(stream_target, target8.tree, NULL);
             }
+            break;
+
+          default:
+            goto loop4; /* break out of the loop */
+            break;
+        }
+      }
+    loop4:; /* Jump out to here if this rule does not match */
+
+      char_literal9 = (pANTLR3_COMMON_TOKEN)MATCHT(21, &FOLLOW_21_in_target162);
+      if (HASEXCEPTION()) {
+        goto ruletargetEx;
+      }
+
+      stream_21->add(stream_21, char_literal9, NULL);
+
+      /* AST REWRITE
+ * elements          : ID, target, attributes
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 14:52: -> ^( TARGET ID ( attributes )* ( target )* )
+        {
+          // jcf.g:14:55: ^( TARGET ID ( attributes )* ( target )* )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(
+              ADAPTOR->becomeRoot(ADAPTOR,
+                                  (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                    ADAPTOR, TARGET, (pANTLR3_UINT8) "TARGET"),
+                                  root_1));
+
+            ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
+            // jcf.g:14:67: ( attributes )*
+            {
+              while (stream_attributes->hasNext(stream_attributes)) {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_1,
+                  stream_attributes->nextTree(stream_attributes));
+              }
+              stream_attributes->reset(stream_attributes);
+            }
+            // jcf.g:14:79: ( target )*
+            {
+              while (stream_target->hasNext(stream_target)) {
+                ADAPTOR->addChild(
+                  ADAPTOR, root_1, stream_target->nextTree(stream_target));
+              }
+              stream_target->reset(stream_target);
+            }
+
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletargetEx; /* Prevent compiler warnings */
+ruletargetEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletargetEx; /* Prevent compiler warnings */
-    ruletargetEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_18->free(stream_18);
+  stream_19->free(stream_19);
+  stream_ID->free(stream_ID);
+  stream_20->free(stream_20);
+  stream_21->free(stream_21);
+  stream_attributes->free(stream_attributes);
+  stream_target->free(stream_target);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    stream_18->free(stream_18);
-    stream_19->free(stream_19);
-    stream_ID->free(stream_ID);
-    stream_20->free(stream_20);
-    stream_21->free(stream_21);
-    stream_attributes->free(stream_attributes);
-    stream_target->free(stream_target);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end target */
 
 /**
  * $ANTLR start attributes
- * jcf.g:16:1: attributes : ( ( attribute ';' )+ -> ^( ATTRIBUTES ( attribute )+ ) | );
+ * jcf.g:16:1: attributes : ( ( attribute ';' )+ -> ^( ATTRIBUTES ( attribute )+
+ * ) | );
  */
 static jcfParser_attributes_return
 attributes(pjcfParser ctx)
 {
-    jcfParser_attributes_return retval;
+  jcfParser_attributes_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    char_literal11;
-    jcfParser_attribute_return attribute10;
-    #undef	RETURN_TYPE_attribute10
-    #define	RETURN_TYPE_attribute10 jcfParser_attribute_return
+  pANTLR3_COMMON_TOKEN char_literal11;
+  jcfParser_attribute_return attribute10;
+#undef RETURN_TYPE_attribute10
+#define RETURN_TYPE_attribute10 jcfParser_attribute_return
 
-    pANTLR3_BASE_TREE char_literal11_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_22;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_attribute;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE char_literal11_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_22;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_attribute;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  char_literal11 = NULL;
+  attribute10.tree = NULL;
 
-    char_literal11       = NULL;
-    attribute10.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    char_literal11_tree   = NULL;
-    stream_22   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 22");
-    stream_attribute=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule attribute");
-    retval.tree  = NULL;
+  char_literal11_tree = NULL;
+  stream_22 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 22");
+  stream_attribute = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule attribute");
+  retval.tree = NULL;
+  {
     {
-        {
-            //  jcf.g:16:12: ( ( attribute ';' )+ -> ^( ATTRIBUTES ( attribute )+ ) | )
+      //  jcf.g:16:12: ( ( attribute ';' )+ -> ^( ATTRIBUTES ( attribute )+ ) |
+      //  )
 
-            ANTLR3_UINT32 alt6;
+      ANTLR3_UINT32 alt6;
 
-            alt6=2;
+      alt6 = 2;
 
+      {
+        int LA6_0 = LA(1);
+        if ((LA6_0 == 23 || LA6_0 == 25 || ((LA6_0 >= 29) && (LA6_0 <= 30)))) {
+          alt6 = 1;
+        } else if ((LA6_0 == 19)) {
+          alt6 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 6;
+          EXCEPTION->state = 0;
 
+          goto ruleattributesEx;
+        }
+      }
+      switch (alt6) {
+        case 1:
+          // jcf.g:16:14: ( attribute ';' )+
+          {
+            // jcf.g:16:14: ( attribute ';' )+
             {
-                int LA6_0 = LA(1);
-                if ( (LA6_0 == 23 || LA6_0 == 25 || ((LA6_0 >= 29) && (LA6_0 <= 30))) )
-                {
-                    alt6=1;
-                }
-                else if ( (LA6_0 == 19) )
-                {
-                    alt6=2;
-                }
-                else
-                {
+              int cnt5 = 0;
 
+              for (;;) {
+                int alt5 = 2;
+                {
+                  /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                  int LA5_0 = LA(1);
+                  if ((LA5_0 == 23 || LA5_0 == 25 ||
+                       ((LA5_0 >= 29) && (LA5_0 <= 30)))) {
+                    alt5 = 1;
+                  }
+                }
+                switch (alt5) {
+                  case 1:
+                    // jcf.g:16:15: attribute ';'
+                    {
+                      FOLLOWPUSH(FOLLOW_attribute_in_attributes185);
+                      attribute10 = attribute(ctx);
+
+                      FOLLOWPOP();
+                      if (HASEXCEPTION()) {
+                        goto ruleattributesEx;
+                      }
+
+                      stream_attribute->add(
+                        stream_attribute, attribute10.tree, NULL);
+                      char_literal11 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                        22, &FOLLOW_22_in_attributes187);
+                      if (HASEXCEPTION()) {
+                        goto ruleattributesEx;
+                      }
+
+                      stream_22->add(stream_22, char_literal11, NULL);
+                    }
+                    break;
+
+                  default:
+
+                    if (cnt5 >= 1) {
+                      goto loop5;
+                    }
+                    /* mismatchedSetEx()
+         */
                     CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 6;
-                    EXCEPTION->state        = 0;
-
+                    EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+                    EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
 
                     goto ruleattributesEx;
                 }
+                cnt5++;
+              }
+            loop5:; /* Jump to here if this rule does not match */
             }
-            switch (alt6)
+
+            /* AST REWRITE
+     * elements          : attribute
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
             {
-        	case 1:
-        	    // jcf.g:16:14: ( attribute ';' )+
-        	    {
-        	        // jcf.g:16:14: ( attribute ';' )+
-        	        {
-        	            int cnt5=0;
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	            for (;;)
-        	            {
-        	                int alt5=2;
-        	        	{
-        	        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	        	    */
-        	        	    int LA5_0 = LA(1);
-        	        	    if ( (LA5_0 == 23 || LA5_0 == 25 || ((LA5_0 >= 29) && (LA5_0 <= 30))) )
-        	        	    {
-        	        	        alt5=1;
-        	        	    }
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-        	        	}
-        	        	switch (alt5)
-        	        	{
-        	        	    case 1:
-        	        	        // jcf.g:16:15: attribute ';'
-        	        	        {
-        	        	            FOLLOWPUSH(FOLLOW_attribute_in_attributes185);
-        	        	            attribute10=attribute(ctx);
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 16:32: -> ^( ATTRIBUTES ( attribute )+ )
+              {
+                // jcf.g:16:35: ^( ATTRIBUTES ( attribute )+ )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, ATTRIBUTES, (pANTLR3_UINT8) "ATTRIBUTES"),
+                    root_1));
 
-        	        	            FOLLOWPOP();
-        	        	            if  (HASEXCEPTION())
-        	        	            {
-        	        	                goto ruleattributesEx;
-        	        	            }
+                  if (!(stream_attribute->hasNext(stream_attribute))) {
+                    CONSTRUCTEX();
+                    EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
+                    EXCEPTION->name =
+                      (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
+                  } else {
+                    while (stream_attribute->hasNext(stream_attribute)) {
+                      ADAPTOR->addChild(
+                        ADAPTOR,
+                        root_1,
+                        stream_attribute->nextTree(stream_attribute));
+                    }
+                    stream_attribute->reset(stream_attribute);
+                  }
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
 
-        	        	            stream_attribute->add(stream_attribute, attribute10.tree, NULL);
-        	        	            char_literal11 = (pANTLR3_COMMON_TOKEN) MATCHT(22, &FOLLOW_22_in_attributes187);
-        	        	            if  (HASEXCEPTION())
-        	        	            {
-        	        	                goto ruleattributesEx;
-        	        	            }
-
-        	        	            stream_22->add(stream_22, char_literal11, NULL);
-
-
-        	        	        }
-        	        	        break;
-
-        	        	    default:
-
-        	        		if ( cnt5 >= 1 )
-        	        		{
-        	        		    goto loop5;
-        	        		}
-        	        		/* mismatchedSetEx()
-        	        		 */
-        	        		CONSTRUCTEX();
-        	        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        	        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        	        		goto ruleattributesEx;
-        	        	}
-        	        	cnt5++;
-        	            }
-        	            loop5: ;	/* Jump to here if this rule does not match */
-        	        }
-
-
-        	        /* AST REWRITE
-        	         * elements          : attribute
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 16:32: -> ^( ATTRIBUTES ( attribute )+ )
-        	        	{
-        	        	    // jcf.g:16:35: ^( ATTRIBUTES ( attribute )+ )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ATTRIBUTES, (pANTLR3_UINT8)"ATTRIBUTES"), root_1));
-
-        	        	        if ( !(stream_attribute->hasNext(stream_attribute)) )
-        	        	        {
-        	        	            CONSTRUCTEX();
-        	        	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
-        	        	            EXCEPTION->name         = (void *)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
-        	        	        }
-        	        	        else
-        	        	        {
-        	        	        	while ( stream_attribute->hasNext(stream_attribute) ) {
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_attribute->nextTree(stream_attribute));
-
-        	        	        	}
-        	        	        	stream_attribute->reset(stream_attribute);
-
-        	        	        }
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // jcf.g:17:14:
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	    }
-        	    break;
-
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
             }
-        }
+          }
+          break;
+        case 2:
+          // jcf.g:17:14:
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleattributesEx; /* Prevent compiler warnings */
+ruleattributesEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleattributesEx; /* Prevent compiler warnings */
-    ruleattributesEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_22->free(stream_22);
+  stream_attribute->free(stream_attribute);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    stream_22->free(stream_22);
-    stream_attribute->free(stream_attribute);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end attributes */
 
@@ -1237,185 +1384,162 @@ attributes(pjcfParser ctx)
 static jcfParser_attribute_return
 attribute(pjcfParser ctx)
 {
-    jcfParser_attribute_return retval;
+  jcfParser_attribute_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    jcfParser_type_return type12;
-    #undef	RETURN_TYPE_type12
-    #define	RETURN_TYPE_type12 jcfParser_type_return
+  jcfParser_type_return type12;
+#undef RETURN_TYPE_type12
+#define RETURN_TYPE_type12 jcfParser_type_return
 
-    jcfParser_features_return features13;
-    #undef	RETURN_TYPE_features13
-    #define	RETURN_TYPE_features13 jcfParser_features_return
+  jcfParser_features_return features13;
+#undef RETURN_TYPE_features13
+#define RETURN_TYPE_features13 jcfParser_features_return
 
-    jcfParser_location_return location14;
-    #undef	RETURN_TYPE_location14
-    #define	RETURN_TYPE_location14 jcfParser_location_return
+  jcfParser_location_return location14;
+#undef RETURN_TYPE_location14
+#define RETURN_TYPE_location14 jcfParser_location_return
 
-    jcfParser_number_of_sources_return number_of_sources15;
-    #undef	RETURN_TYPE_number_of_sources15
-    #define	RETURN_TYPE_number_of_sources15 jcfParser_number_of_sources_return
+  jcfParser_number_of_sources_return number_of_sources15;
+#undef RETURN_TYPE_number_of_sources15
+#define RETURN_TYPE_number_of_sources15 jcfParser_number_of_sources_return
 
+  /* Initialize rule variables
+ */
 
-    /* Initialize rule variables
-     */
+  root_0 = NULL;
 
+  type12.tree = NULL;
 
-    root_0 = NULL;
+  features13.tree = NULL;
 
-    type12.tree = NULL;
+  location14.tree = NULL;
 
-    features13.tree = NULL;
+  number_of_sources15.tree = NULL;
 
-    location14.tree = NULL;
+  retval.start = LT(1);
 
-    number_of_sources15.tree = NULL;
-
-    retval.start = LT(1);
-
-    retval.tree  = NULL;
+  retval.tree = NULL;
+  {
     {
-        {
-            //  jcf.g:19:9: ( type | features | location | number_of_sources )
+      //  jcf.g:19:9: ( type | features | location | number_of_sources )
 
-            ANTLR3_UINT32 alt7;
+      ANTLR3_UINT32 alt7;
 
-            alt7=4;
+      alt7 = 4;
 
-            switch ( LA(1) )
-            {
-            case 23:
-            	{
-            		alt7=1;
-            	}
-                break;
-            case 25:
-            	{
-            		alt7=2;
-            	}
-                break;
-            case 29:
-            	{
-            		alt7=3;
-            	}
-                break;
-            case 30:
-            	{
-            		alt7=4;
-            	}
-                break;
+      switch (LA(1)) {
+        case 23: {
+          alt7 = 1;
+        } break;
+        case 25: {
+          alt7 = 2;
+        } break;
+        case 29: {
+          alt7 = 3;
+        } break;
+        case 30: {
+          alt7 = 4;
+        } break;
 
-            default:
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 7;
-                EXCEPTION->state        = 0;
+        default:
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 7;
+          EXCEPTION->state = 0;
 
+          goto ruleattributeEx;
+      }
 
-                goto ruleattributeEx;
+      switch (alt7) {
+        case 1:
+          // jcf.g:19:11: type
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_type_in_attribute229);
+            type12 = type(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
             }
 
-            switch (alt7)
-            {
-        	case 1:
-        	    // jcf.g:19:11: type
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            ADAPTOR->addChild(ADAPTOR, root_0, type12.tree);
+          }
+          break;
+        case 2:
+          // jcf.g:20:11: features
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        FOLLOWPUSH(FOLLOW_type_in_attribute229);
-        	        type12=type(ctx);
+            FOLLOWPUSH(FOLLOW_features_in_attribute242);
+            features13 = features(ctx);
 
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-        	        ADAPTOR->addChild(ADAPTOR, root_0, type12.tree);
-
-        	    }
-        	    break;
-        	case 2:
-        	    // jcf.g:20:11: features
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_features_in_attribute242);
-        	        features13=features(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-        	        ADAPTOR->addChild(ADAPTOR, root_0, features13.tree);
-
-        	    }
-        	    break;
-        	case 3:
-        	    // jcf.g:21:11: location
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_location_in_attribute254);
-        	        location14=location(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-        	        ADAPTOR->addChild(ADAPTOR, root_0, location14.tree);
-
-        	    }
-        	    break;
-        	case 4:
-        	    // jcf.g:22:11: number_of_sources
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_number_of_sources_in_attribute266);
-        	        number_of_sources15=number_of_sources(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-        	        ADAPTOR->addChild(ADAPTOR, root_0, number_of_sources15.tree);
-
-        	    }
-        	    break;
-
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
             }
-        }
+
+            ADAPTOR->addChild(ADAPTOR, root_0, features13.tree);
+          }
+          break;
+        case 3:
+          // jcf.g:21:11: location
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_location_in_attribute254);
+            location14 = location(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
+            }
+
+            ADAPTOR->addChild(ADAPTOR, root_0, location14.tree);
+          }
+          break;
+        case 4:
+          // jcf.g:22:11: number_of_sources
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_number_of_sources_in_attribute266);
+            number_of_sources15 = number_of_sources(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
+            }
+
+            ADAPTOR->addChild(ADAPTOR, root_0, number_of_sources15.tree);
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleattributeEx; /* Prevent compiler warnings */
+ruleattributeEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleattributeEx; /* Prevent compiler warnings */
-    ruleattributeEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end attribute */
 
@@ -1426,592 +1550,594 @@ attribute(pjcfParser ctx)
 static jcfParser_type_return
 type(pjcfParser ctx)
 {
-    jcfParser_type_return retval;
+  jcfParser_type_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    string_literal16;
-    pANTLR3_COMMON_TOKEN    char_literal17;
-    pANTLR3_COMMON_TOKEN    ID18;
+  pANTLR3_COMMON_TOKEN string_literal16;
+  pANTLR3_COMMON_TOKEN char_literal17;
+  pANTLR3_COMMON_TOKEN ID18;
 
-    pANTLR3_BASE_TREE string_literal16_tree;
-    pANTLR3_BASE_TREE char_literal17_tree;
-    pANTLR3_BASE_TREE ID18_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_23;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_BASE_TREE string_literal16_tree;
+  pANTLR3_BASE_TREE char_literal17_tree;
+  pANTLR3_BASE_TREE ID18_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_23;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  string_literal16 = NULL;
+  char_literal17 = NULL;
+  ID18 = NULL;
+  retval.start = LT(1);
 
-    string_literal16       = NULL;
-    char_literal17       = NULL;
-    ID18       = NULL;
-    retval.start = LT(1);
-
-    string_literal16_tree   = NULL;
-    char_literal17_tree   = NULL;
-    ID18_tree   = NULL;
-    stream_23   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 23");
-    stream_24   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 24");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    retval.tree  = NULL;
+  string_literal16_tree = NULL;
+  char_literal17_tree = NULL;
+  ID18_tree = NULL;
+  stream_23 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 23");
+  stream_24 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 24");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  retval.tree = NULL;
+  {
+    // jcf.g:25:9: ( 'type' '=' ID -> ^( TYPE_ATTR ID ) )
+    // jcf.g:25:11: 'type' '=' ID
     {
-        // jcf.g:25:9: ( 'type' '=' ID -> ^( TYPE_ATTR ID ) )
-        // jcf.g:25:11: 'type' '=' ID
+      string_literal16 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(23, &FOLLOW_23_in_type294);
+      if (HASEXCEPTION()) {
+        goto ruletypeEx;
+      }
+
+      stream_23->add(stream_23, string_literal16, NULL);
+
+      char_literal17 = (pANTLR3_COMMON_TOKEN)MATCHT(24, &FOLLOW_24_in_type296);
+      if (HASEXCEPTION()) {
+        goto ruletypeEx;
+      }
+
+      stream_24->add(stream_24, char_literal17, NULL);
+
+      ID18 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_type298);
+      if (HASEXCEPTION()) {
+        goto ruletypeEx;
+      }
+
+      stream_ID->add(stream_ID, ID18, NULL);
+
+      /* AST REWRITE
+ * elements          : ID
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 25:25: -> ^( TYPE_ATTR ID )
         {
-            string_literal16 = (pANTLR3_COMMON_TOKEN) MATCHT(23, &FOLLOW_23_in_type294);
-            if  (HASEXCEPTION())
-            {
-                goto ruletypeEx;
-            }
+          // jcf.g:25:28: ^( TYPE_ATTR ID )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, TYPE_ATTR, (pANTLR3_UINT8) "TYPE_ATTR"),
+              root_1));
 
-            stream_23->add(stream_23, string_literal16, NULL);
+            ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
 
-            char_literal17 = (pANTLR3_COMMON_TOKEN) MATCHT(24, &FOLLOW_24_in_type296);
-            if  (HASEXCEPTION())
-            {
-                goto ruletypeEx;
-            }
-
-            stream_24->add(stream_24, char_literal17, NULL);
-
-            ID18 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_type298);
-            if  (HASEXCEPTION())
-            {
-                goto ruletypeEx;
-            }
-
-            stream_ID->add(stream_ID, ID18, NULL);
-
-
-
-            /* AST REWRITE
-             * elements          : ID
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 25:25: -> ^( TYPE_ATTR ID )
-            	{
-            	    // jcf.g:25:28: ^( TYPE_ATTR ID )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TYPE_ATTR, (pANTLR3_UINT8)"TYPE_ATTR"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletypeEx; /* Prevent compiler warnings */
+ruletypeEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletypeEx; /* Prevent compiler warnings */
-    ruletypeEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_23->free(stream_23);
+  stream_24->free(stream_24);
+  stream_ID->free(stream_ID);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    stream_23->free(stream_23);
-    stream_24->free(stream_24);
-    stream_ID->free(stream_ID);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end type */
 
 /**
  * $ANTLR start features
- * jcf.g:26:1: features : 'features' '=' ( feature )+ -> ^( FEATURES_ATTR ( feature )+ ) ;
+ * jcf.g:26:1: features : 'features' '=' ( feature )+ -> ^( FEATURES_ATTR (
+ * feature )+ ) ;
  */
 static jcfParser_features_return
 features(pjcfParser ctx)
 {
-    jcfParser_features_return retval;
+  jcfParser_features_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    string_literal19;
-    pANTLR3_COMMON_TOKEN    char_literal20;
-    jcfParser_feature_return feature21;
-    #undef	RETURN_TYPE_feature21
-    #define	RETURN_TYPE_feature21 jcfParser_feature_return
+  pANTLR3_COMMON_TOKEN string_literal19;
+  pANTLR3_COMMON_TOKEN char_literal20;
+  jcfParser_feature_return feature21;
+#undef RETURN_TYPE_feature21
+#define RETURN_TYPE_feature21 jcfParser_feature_return
 
-    pANTLR3_BASE_TREE string_literal19_tree;
-    pANTLR3_BASE_TREE char_literal20_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_25;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE string_literal19_tree;
+  pANTLR3_BASE_TREE char_literal20_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_25;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  string_literal19 = NULL;
+  char_literal20 = NULL;
+  feature21.tree = NULL;
 
-    string_literal19       = NULL;
-    char_literal20       = NULL;
-    feature21.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    string_literal19_tree   = NULL;
-    char_literal20_tree   = NULL;
-    stream_24   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 24");
-    stream_25   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 25");
-    stream_feature=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule feature");
-    retval.tree  = NULL;
+  string_literal19_tree = NULL;
+  char_literal20_tree = NULL;
+  stream_24 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 24");
+  stream_25 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 25");
+  stream_feature = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature");
+  retval.tree = NULL;
+  {
+    // jcf.g:26:10: ( 'features' '=' ( feature )+ -> ^( FEATURES_ATTR ( feature
+    // )+ ) )
+    // jcf.g:26:12: 'features' '=' ( feature )+
     {
-        // jcf.g:26:10: ( 'features' '=' ( feature )+ -> ^( FEATURES_ATTR ( feature )+ ) )
-        // jcf.g:26:12: 'features' '=' ( feature )+
-        {
-            string_literal19 = (pANTLR3_COMMON_TOKEN) MATCHT(25, &FOLLOW_25_in_features318);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeaturesEx;
+      string_literal19 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(25, &FOLLOW_25_in_features318);
+      if (HASEXCEPTION()) {
+        goto rulefeaturesEx;
+      }
+
+      stream_25->add(stream_25, string_literal19, NULL);
+
+      char_literal20 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(24, &FOLLOW_24_in_features320);
+      if (HASEXCEPTION()) {
+        goto rulefeaturesEx;
+      }
+
+      stream_24->add(stream_24, char_literal20, NULL);
+
+      // jcf.g:26:27: ( feature )+
+      {
+        int cnt8 = 0;
+
+        for (;;) {
+          int alt8 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA8_0 = LA(1);
+            if ((LA8_0 == 26 || LA8_0 == 28)) {
+              alt8 = 1;
             }
+          }
+          switch (alt8) {
+            case 1:
+              // jcf.g:26:27: feature
+              {
+                FOLLOWPUSH(FOLLOW_feature_in_features322);
+                feature21 = feature(ctx);
 
-            stream_25->add(stream_25, string_literal19, NULL);
-
-            char_literal20 = (pANTLR3_COMMON_TOKEN) MATCHT(24, &FOLLOW_24_in_features320);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeaturesEx;
-            }
-
-            stream_24->add(stream_24, char_literal20, NULL);
-
-            // jcf.g:26:27: ( feature )+
-            {
-                int cnt8=0;
-
-                for (;;)
-                {
-                    int alt8=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA8_0 = LA(1);
-            	    if ( (LA8_0 == 26 || LA8_0 == 28) )
-            	    {
-            	        alt8=1;
-            	    }
-
-            	}
-            	switch (alt8)
-            	{
-            	    case 1:
-            	        // jcf.g:26:27: feature
-            	        {
-            	            FOLLOWPUSH(FOLLOW_feature_in_features322);
-            	            feature21=feature(ctx);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto rulefeaturesEx;
-            	            }
-
-            	            stream_feature->add(stream_feature, feature21.tree, NULL);
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt8 >= 1 )
-            		{
-            		    goto loop8;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto rulefeaturesEx;
-            	}
-            	cnt8++;
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto rulefeaturesEx;
                 }
-                loop8: ;	/* Jump to here if this rule does not match */
+
+                stream_feature->add(stream_feature, feature21.tree, NULL);
+              }
+              break;
+
+            default:
+
+              if (cnt8 >= 1) {
+                goto loop8;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+              goto rulefeaturesEx;
+          }
+          cnt8++;
+        }
+      loop8:; /* Jump to here if this rule does not match */
+      }
+
+      /* AST REWRITE
+ * elements          : feature
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 26:36: -> ^( FEATURES_ATTR ( feature )+ )
+        {
+          // jcf.g:26:39: ^( FEATURES_ATTR ( feature )+ )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, FEATURES_ATTR, (pANTLR3_UINT8) "FEATURES_ATTR"),
+              root_1));
+
+            if (!(stream_feature->hasNext(stream_feature))) {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
+            } else {
+              while (stream_feature->hasNext(stream_feature)) {
+                ADAPTOR->addChild(
+                  ADAPTOR, root_1, stream_feature->nextTree(stream_feature));
+              }
+              stream_feature->reset(stream_feature);
             }
-
-
-            /* AST REWRITE
-             * elements          : feature
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 26:36: -> ^( FEATURES_ATTR ( feature )+ )
-            	{
-            	    // jcf.g:26:39: ^( FEATURES_ATTR ( feature )+ )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, FEATURES_ATTR, (pANTLR3_UINT8)"FEATURES_ATTR"), root_1));
-
-            	        if ( !(stream_feature->hasNext(stream_feature)) )
-            	        {
-            	            CONSTRUCTEX();
-            	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
-            	            EXCEPTION->name         = (void *)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
-            	        }
-            	        else
-            	        {
-            	        	while ( stream_feature->hasNext(stream_feature) ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_feature->nextTree(stream_feature));
-
-            	        	}
-            	        	stream_feature->reset(stream_feature);
-
-            	        }
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeaturesEx; /* Prevent compiler warnings */
+rulefeaturesEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeaturesEx; /* Prevent compiler warnings */
-    rulefeaturesEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_24->free(stream_24);
+  stream_25->free(stream_25);
+  stream_feature->free(stream_feature);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    stream_24->free(stream_24);
-    stream_25->free(stream_25);
-    stream_feature->free(stream_feature);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end features */
 
 /**
  * $ANTLR start feature
- * jcf.g:27:1: feature : ( '<' ID '>' ID -> ^( FEATURE ID ID ) | '!<' ID '>' ID -> ^( NOT_FEATURE ID ID ) );
+ * jcf.g:27:1: feature : ( '<' ID '>' ID -> ^( FEATURE ID ID ) | '!<' ID '>' ID
+ * -> ^( NOT_FEATURE ID ID ) );
  */
 static jcfParser_feature_return
 feature(pjcfParser ctx)
 {
-    jcfParser_feature_return retval;
+  jcfParser_feature_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    char_literal22;
-    pANTLR3_COMMON_TOKEN    ID23;
-    pANTLR3_COMMON_TOKEN    char_literal24;
-    pANTLR3_COMMON_TOKEN    ID25;
-    pANTLR3_COMMON_TOKEN    string_literal26;
-    pANTLR3_COMMON_TOKEN    ID27;
-    pANTLR3_COMMON_TOKEN    char_literal28;
-    pANTLR3_COMMON_TOKEN    ID29;
+  pANTLR3_COMMON_TOKEN char_literal22;
+  pANTLR3_COMMON_TOKEN ID23;
+  pANTLR3_COMMON_TOKEN char_literal24;
+  pANTLR3_COMMON_TOKEN ID25;
+  pANTLR3_COMMON_TOKEN string_literal26;
+  pANTLR3_COMMON_TOKEN ID27;
+  pANTLR3_COMMON_TOKEN char_literal28;
+  pANTLR3_COMMON_TOKEN ID29;
 
-    pANTLR3_BASE_TREE char_literal22_tree;
-    pANTLR3_BASE_TREE ID23_tree;
-    pANTLR3_BASE_TREE char_literal24_tree;
-    pANTLR3_BASE_TREE ID25_tree;
-    pANTLR3_BASE_TREE string_literal26_tree;
-    pANTLR3_BASE_TREE ID27_tree;
-    pANTLR3_BASE_TREE char_literal28_tree;
-    pANTLR3_BASE_TREE ID29_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_26;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_27;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_28;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_BASE_TREE char_literal22_tree;
+  pANTLR3_BASE_TREE ID23_tree;
+  pANTLR3_BASE_TREE char_literal24_tree;
+  pANTLR3_BASE_TREE ID25_tree;
+  pANTLR3_BASE_TREE string_literal26_tree;
+  pANTLR3_BASE_TREE ID27_tree;
+  pANTLR3_BASE_TREE char_literal28_tree;
+  pANTLR3_BASE_TREE ID29_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_26;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_27;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_28;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  char_literal22 = NULL;
+  ID23 = NULL;
+  char_literal24 = NULL;
+  ID25 = NULL;
+  string_literal26 = NULL;
+  ID27 = NULL;
+  char_literal28 = NULL;
+  ID29 = NULL;
+  retval.start = LT(1);
 
-    char_literal22       = NULL;
-    ID23       = NULL;
-    char_literal24       = NULL;
-    ID25       = NULL;
-    string_literal26       = NULL;
-    ID27       = NULL;
-    char_literal28       = NULL;
-    ID29       = NULL;
-    retval.start = LT(1);
-
-    char_literal22_tree   = NULL;
-    ID23_tree   = NULL;
-    char_literal24_tree   = NULL;
-    ID25_tree   = NULL;
-    string_literal26_tree   = NULL;
-    ID27_tree   = NULL;
-    char_literal28_tree   = NULL;
-    ID29_tree   = NULL;
-    stream_26   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 26");
-    stream_27   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 27");
-    stream_28   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 28");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    retval.tree  = NULL;
+  char_literal22_tree = NULL;
+  ID23_tree = NULL;
+  char_literal24_tree = NULL;
+  ID25_tree = NULL;
+  string_literal26_tree = NULL;
+  ID27_tree = NULL;
+  char_literal28_tree = NULL;
+  ID29_tree = NULL;
+  stream_26 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 26");
+  stream_27 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 27");
+  stream_28 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 28");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  retval.tree = NULL;
+  {
     {
-        {
-            //  jcf.g:27:10: ( '<' ID '>' ID -> ^( FEATURE ID ID ) | '!<' ID '>' ID -> ^( NOT_FEATURE ID ID ) )
+      //  jcf.g:27:10: ( '<' ID '>' ID -> ^( FEATURE ID ID ) | '!<' ID '>' ID ->
+      //  ^( NOT_FEATURE ID ID ) )
 
-            ANTLR3_UINT32 alt9;
+      ANTLR3_UINT32 alt9;
 
-            alt9=2;
+      alt9 = 2;
 
+      {
+        int LA9_0 = LA(1);
+        if ((LA9_0 == 26)) {
+          alt9 = 1;
+        } else if ((LA9_0 == 28)) {
+          alt9 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 9;
+          EXCEPTION->state = 0;
 
-            {
-                int LA9_0 = LA(1);
-                if ( (LA9_0 == 26) )
-                {
-                    alt9=1;
-                }
-                else if ( (LA9_0 == 28) )
-                {
-                    alt9=2;
-                }
-                else
-                {
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 9;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulefeatureEx;
-                }
-            }
-            switch (alt9)
-            {
-        	case 1:
-        	    // jcf.g:27:12: '<' ID '>' ID
-        	    {
-        	        char_literal22 = (pANTLR3_COMMON_TOKEN) MATCHT(26, &FOLLOW_26_in_feature340);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_26->add(stream_26, char_literal22, NULL);
-
-        	        ID23 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature342);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_ID->add(stream_ID, ID23, NULL);
-
-        	        char_literal24 = (pANTLR3_COMMON_TOKEN) MATCHT(27, &FOLLOW_27_in_feature344);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_27->add(stream_27, char_literal24, NULL);
-
-        	        ID25 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature346);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_ID->add(stream_ID, ID25, NULL);
-
-
-
-        	        /* AST REWRITE
-        	         * elements          : ID, ID
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 27:26: -> ^( FEATURE ID ID )
-        	        	{
-        	        	    // jcf.g:27:29: ^( FEATURE ID ID )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, FEATURE, (pANTLR3_UINT8)"FEATURE"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // jcf.g:28:12: '!<' ID '>' ID
-        	    {
-        	        string_literal26 = (pANTLR3_COMMON_TOKEN) MATCHT(28, &FOLLOW_28_in_feature369);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_28->add(stream_28, string_literal26, NULL);
-
-        	        ID27 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature371);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_ID->add(stream_ID, ID27, NULL);
-
-        	        char_literal28 = (pANTLR3_COMMON_TOKEN) MATCHT(27, &FOLLOW_27_in_feature373);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_27->add(stream_27, char_literal28, NULL);
-
-        	        ID29 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature375);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        stream_ID->add(stream_ID, ID29, NULL);
-
-
-
-        	        /* AST REWRITE
-        	         * elements          : ID, ID
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 28:26: -> ^( NOT_FEATURE ID ID )
-        	        	{
-        	        	    // jcf.g:28:29: ^( NOT_FEATURE ID ID )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, NOT_FEATURE, (pANTLR3_UINT8)"NOT_FEATURE"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
-            }
+          goto rulefeatureEx;
         }
+      }
+      switch (alt9) {
+        case 1:
+          // jcf.g:27:12: '<' ID '>' ID
+          {
+            char_literal22 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(26, &FOLLOW_26_in_feature340);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_26->add(stream_26, char_literal22, NULL);
+
+            ID23 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature342);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_ID->add(stream_ID, ID23, NULL);
+
+            char_literal24 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(27, &FOLLOW_27_in_feature344);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_27->add(stream_27, char_literal24, NULL);
+
+            ID25 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature346);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_ID->add(stream_ID, ID25, NULL);
+
+            /* AST REWRITE
+     * elements          : ID, ID
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 27:26: -> ^( FEATURE ID ID )
+              {
+                // jcf.g:27:29: ^( FEATURE ID ID )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, FEATURE, (pANTLR3_UINT8) "FEATURE"),
+                    root_1));
+
+                  ADAPTOR->addChild(
+                    ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
+                  ADAPTOR->addChild(
+                    ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 2:
+          // jcf.g:28:12: '!<' ID '>' ID
+          {
+            string_literal26 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(28, &FOLLOW_28_in_feature369);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_28->add(stream_28, string_literal26, NULL);
+
+            ID27 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature371);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_ID->add(stream_ID, ID27, NULL);
+
+            char_literal28 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(27, &FOLLOW_27_in_feature373);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_27->add(stream_27, char_literal28, NULL);
+
+            ID29 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature375);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            stream_ID->add(stream_ID, ID29, NULL);
+
+            /* AST REWRITE
+     * elements          : ID, ID
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 28:26: -> ^( NOT_FEATURE ID ID )
+              {
+                // jcf.g:28:29: ^( NOT_FEATURE ID ID )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, NOT_FEATURE, (pANTLR3_UINT8) "NOT_FEATURE"),
+                    root_1));
+
+                  ADAPTOR->addChild(
+                    ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
+                  ADAPTOR->addChild(
+                    ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeatureEx; /* Prevent compiler warnings */
+rulefeatureEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeatureEx; /* Prevent compiler warnings */
-    rulefeatureEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_26->free(stream_26);
+  stream_27->free(stream_27);
+  stream_28->free(stream_28);
+  stream_ID->free(stream_ID);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    stream_26->free(stream_26);
-    stream_27->free(stream_27);
-    stream_28->free(stream_28);
-    stream_ID->free(stream_ID);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end feature */
 
@@ -2022,260 +2148,274 @@ feature(pjcfParser ctx)
 static jcfParser_location_return
 location(pjcfParser ctx)
 {
-    jcfParser_location_return retval;
+  jcfParser_location_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    string_literal30;
-    pANTLR3_COMMON_TOKEN    char_literal31;
-    pANTLR3_COMMON_TOKEN    ID32;
+  pANTLR3_COMMON_TOKEN string_literal30;
+  pANTLR3_COMMON_TOKEN char_literal31;
+  pANTLR3_COMMON_TOKEN ID32;
 
-    pANTLR3_BASE_TREE string_literal30_tree;
-    pANTLR3_BASE_TREE char_literal31_tree;
-    pANTLR3_BASE_TREE ID32_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_29;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_BASE_TREE string_literal30_tree;
+  pANTLR3_BASE_TREE char_literal31_tree;
+  pANTLR3_BASE_TREE ID32_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_29;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  string_literal30 = NULL;
+  char_literal31 = NULL;
+  ID32 = NULL;
+  retval.start = LT(1);
 
-    string_literal30       = NULL;
-    char_literal31       = NULL;
-    ID32       = NULL;
-    retval.start = LT(1);
-
-    string_literal30_tree   = NULL;
-    char_literal31_tree   = NULL;
-    ID32_tree   = NULL;
-    stream_24   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 24");
-    stream_29   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 29");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    retval.tree  = NULL;
+  string_literal30_tree = NULL;
+  char_literal31_tree = NULL;
+  ID32_tree = NULL;
+  stream_24 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 24");
+  stream_29 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 29");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  retval.tree = NULL;
+  {
+    // jcf.g:29:10: ( 'location' '=' ID -> ^( LOCATION ID ) )
+    // jcf.g:29:12: 'location' '=' ID
     {
-        // jcf.g:29:10: ( 'location' '=' ID -> ^( LOCATION ID ) )
-        // jcf.g:29:12: 'location' '=' ID
+      string_literal30 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(29, &FOLLOW_29_in_location391);
+      if (HASEXCEPTION()) {
+        goto rulelocationEx;
+      }
+
+      stream_29->add(stream_29, string_literal30, NULL);
+
+      char_literal31 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(24, &FOLLOW_24_in_location393);
+      if (HASEXCEPTION()) {
+        goto rulelocationEx;
+      }
+
+      stream_24->add(stream_24, char_literal31, NULL);
+
+      ID32 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_location395);
+      if (HASEXCEPTION()) {
+        goto rulelocationEx;
+      }
+
+      stream_ID->add(stream_ID, ID32, NULL);
+
+      /* AST REWRITE
+ * elements          : ID
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 29:30: -> ^( LOCATION ID )
         {
-            string_literal30 = (pANTLR3_COMMON_TOKEN) MATCHT(29, &FOLLOW_29_in_location391);
-            if  (HASEXCEPTION())
-            {
-                goto rulelocationEx;
-            }
+          // jcf.g:29:33: ^( LOCATION ID )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, LOCATION, (pANTLR3_UINT8) "LOCATION"),
+              root_1));
 
-            stream_29->add(stream_29, string_literal30, NULL);
+            ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
 
-            char_literal31 = (pANTLR3_COMMON_TOKEN) MATCHT(24, &FOLLOW_24_in_location393);
-            if  (HASEXCEPTION())
-            {
-                goto rulelocationEx;
-            }
-
-            stream_24->add(stream_24, char_literal31, NULL);
-
-            ID32 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_location395);
-            if  (HASEXCEPTION())
-            {
-                goto rulelocationEx;
-            }
-
-            stream_ID->add(stream_ID, ID32, NULL);
-
-
-
-            /* AST REWRITE
-             * elements          : ID
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 29:30: -> ^( LOCATION ID )
-            	{
-            	    // jcf.g:29:33: ^( LOCATION ID )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, LOCATION, (pANTLR3_UINT8)"LOCATION"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulelocationEx; /* Prevent compiler warnings */
+rulelocationEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulelocationEx; /* Prevent compiler warnings */
-    rulelocationEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_24->free(stream_24);
+  stream_29->free(stream_29);
+  stream_ID->free(stream_ID);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    stream_24->free(stream_24);
-    stream_29->free(stream_29);
-    stream_ID->free(stream_ID);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end location */
 
 /**
  * $ANTLR start number_of_sources
- * jcf.g:30:1: number_of_sources : 'number_of_sources' '=' NUMBER -> ^( NUMBER_OF_SOURCES NUMBER ) ;
+ * jcf.g:30:1: number_of_sources : 'number_of_sources' '=' NUMBER -> ^(
+ * NUMBER_OF_SOURCES NUMBER ) ;
  */
 static jcfParser_number_of_sources_return
 number_of_sources(pjcfParser ctx)
 {
-    jcfParser_number_of_sources_return retval;
+  jcfParser_number_of_sources_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    string_literal33;
-    pANTLR3_COMMON_TOKEN    char_literal34;
-    pANTLR3_COMMON_TOKEN    NUMBER35;
+  pANTLR3_COMMON_TOKEN string_literal33;
+  pANTLR3_COMMON_TOKEN char_literal34;
+  pANTLR3_COMMON_TOKEN NUMBER35;
 
-    pANTLR3_BASE_TREE string_literal33_tree;
-    pANTLR3_BASE_TREE char_literal34_tree;
-    pANTLR3_BASE_TREE NUMBER35_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_NUMBER;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_30;
+  pANTLR3_BASE_TREE string_literal33_tree;
+  pANTLR3_BASE_TREE char_literal34_tree;
+  pANTLR3_BASE_TREE NUMBER35_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_24;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_NUMBER;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_30;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  string_literal33 = NULL;
+  char_literal34 = NULL;
+  NUMBER35 = NULL;
+  retval.start = LT(1);
 
-    string_literal33       = NULL;
-    char_literal34       = NULL;
-    NUMBER35       = NULL;
-    retval.start = LT(1);
-
-    string_literal33_tree   = NULL;
-    char_literal34_tree   = NULL;
-    NUMBER35_tree   = NULL;
-    stream_24   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 24");
-    stream_NUMBER   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token NUMBER");
-    stream_30   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 30");
-    retval.tree  = NULL;
+  string_literal33_tree = NULL;
+  char_literal34_tree = NULL;
+  NUMBER35_tree = NULL;
+  stream_24 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 24");
+  stream_NUMBER = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token NUMBER");
+  stream_30 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 30");
+  retval.tree = NULL;
+  {
+    // jcf.g:30:19: ( 'number_of_sources' '=' NUMBER -> ^( NUMBER_OF_SOURCES
+    // NUMBER ) )
+    // jcf.g:30:21: 'number_of_sources' '=' NUMBER
     {
-        // jcf.g:30:19: ( 'number_of_sources' '=' NUMBER -> ^( NUMBER_OF_SOURCES NUMBER ) )
-        // jcf.g:30:21: 'number_of_sources' '=' NUMBER
+      string_literal33 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(30, &FOLLOW_30_in_number_of_sources418);
+      if (HASEXCEPTION()) {
+        goto rulenumber_of_sourcesEx;
+      }
+
+      stream_30->add(stream_30, string_literal33, NULL);
+
+      char_literal34 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(24, &FOLLOW_24_in_number_of_sources420);
+      if (HASEXCEPTION()) {
+        goto rulenumber_of_sourcesEx;
+      }
+
+      stream_24->add(stream_24, char_literal34, NULL);
+
+      NUMBER35 = (pANTLR3_COMMON_TOKEN)MATCHT(
+        NUMBER, &FOLLOW_NUMBER_in_number_of_sources422);
+      if (HASEXCEPTION()) {
+        goto rulenumber_of_sourcesEx;
+      }
+
+      stream_NUMBER->add(stream_NUMBER, NUMBER35, NULL);
+
+      /* AST REWRITE
+ * elements          : NUMBER
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 30:52: -> ^( NUMBER_OF_SOURCES NUMBER )
         {
-            string_literal33 = (pANTLR3_COMMON_TOKEN) MATCHT(30, &FOLLOW_30_in_number_of_sources418);
-            if  (HASEXCEPTION())
-            {
-                goto rulenumber_of_sourcesEx;
-            }
+          // jcf.g:30:55: ^( NUMBER_OF_SOURCES NUMBER )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(
+              ADAPTOR->becomeRoot(ADAPTOR,
+                                  (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                    ADAPTOR,
+                                    NUMBER_OF_SOURCES,
+                                    (pANTLR3_UINT8) "NUMBER_OF_SOURCES"),
+                                  root_1));
 
-            stream_30->add(stream_30, string_literal33, NULL);
+            ADAPTOR->addChild(
+              ADAPTOR, root_1, stream_NUMBER->nextNode(stream_NUMBER));
 
-            char_literal34 = (pANTLR3_COMMON_TOKEN) MATCHT(24, &FOLLOW_24_in_number_of_sources420);
-            if  (HASEXCEPTION())
-            {
-                goto rulenumber_of_sourcesEx;
-            }
-
-            stream_24->add(stream_24, char_literal34, NULL);
-
-            NUMBER35 = (pANTLR3_COMMON_TOKEN) MATCHT(NUMBER, &FOLLOW_NUMBER_in_number_of_sources422);
-            if  (HASEXCEPTION())
-            {
-                goto rulenumber_of_sourcesEx;
-            }
-
-            stream_NUMBER->add(stream_NUMBER, NUMBER35, NULL);
-
-
-
-            /* AST REWRITE
-             * elements          : NUMBER
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 30:52: -> ^( NUMBER_OF_SOURCES NUMBER )
-            	{
-            	    // jcf.g:30:55: ^( NUMBER_OF_SOURCES NUMBER )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, NUMBER_OF_SOURCES, (pANTLR3_UINT8)"NUMBER_OF_SOURCES"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_NUMBER->nextNode(stream_NUMBER));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulenumber_of_sourcesEx; /* Prevent compiler warnings */
+rulenumber_of_sourcesEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulenumber_of_sourcesEx; /* Prevent compiler warnings */
-    rulenumber_of_sourcesEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  stream_24->free(stream_24);
+  stream_NUMBER->free(stream_NUMBER);
+  stream_30->free(stream_30);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    stream_24->free(stream_24);
-    stream_NUMBER->free(stream_NUMBER);
-    stream_30->free(stream_30);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end number_of_sources */
 
@@ -2286,65 +2426,59 @@ number_of_sources(pjcfParser ctx)
 static jcfParser_sources_return
 sources(pjcfParser ctx)
 {
-    jcfParser_sources_return retval;
+  jcfParser_sources_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    ID36;
+  pANTLR3_COMMON_TOKEN ID36;
 
-    pANTLR3_BASE_TREE ID36_tree;
+  pANTLR3_BASE_TREE ID36_tree;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  ID36 = NULL;
+  retval.start = LT(1);
 
-    ID36       = NULL;
-    retval.start = LT(1);
-
-    ID36_tree   = NULL;
-    retval.tree  = NULL;
+  ID36_tree = NULL;
+  retval.tree = NULL;
+  {
+    // jcf.g:32:9: ( ID )
+    // jcf.g:32:11: ID
     {
-        // jcf.g:32:9: ( ID )
-        // jcf.g:32:11: ID
-        {
-            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+      root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-            ID36 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_sources438);
-            if  (HASEXCEPTION())
-            {
-                goto rulesourcesEx;
-            }
+      ID36 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_sources438);
+      if (HASEXCEPTION()) {
+        goto rulesourcesEx;
+      }
 
-            ID36_tree = (pANTLR3_BASE_TREE)(ADAPTOR->create(ADAPTOR, ID36));
-            ADAPTOR->addChild(ADAPTOR, root_0, ID36_tree);
-
-
-        }
-
+      ID36_tree = (pANTLR3_BASE_TREE)(ADAPTOR->create(ADAPTOR, ID36));
+      ADAPTOR->addChild(ADAPTOR, root_0, ID36_tree);
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulesourcesEx; /* Prevent compiler warnings */
+rulesourcesEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulesourcesEx; /* Prevent compiler warnings */
-    rulesourcesEx: ;
-    retval.stop = LT(-1);
+  retval.stop = LT(-1);
+  retval.tree =
+    (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+  ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end sources */
 /* End of parsing rules
@@ -2357,11 +2491,6 @@ sources(pjcfParser ctx)
 /* End of syntactic predicates
  * ==============================================
  */
-
-
-
-
-
 
 /* End of code
  * =============================================================================

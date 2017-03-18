@@ -6,21 +6,28 @@
  *     -           for the tree parser : jcf_walkerTreeParser *
  * Editing it, at least manually, is not wise.
  *
- * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
+ * C language generator and runtime by Jim Idle,
+ * jimi|hereisanat|idle|dotgoeshere|ws.
  *
  *
  * The tree parser jcf_walker has the callable functions (rules) shown below,
  * which will invoke the code for the associated rule in the source grammar
- * assuming that the input stream is pointing to a token/text stream that could begin
+ * assuming that the input stream is pointing to a token/text stream that could
+ * begin
  * this rule.
  *
- * For instance if you call the first (topmost) rule in a parser grammar, you will
- * get the results of a full parse, but calling a rule half way through the grammar will
- * allow you to pass part of a full token stream to the parser, such as for syntax checking
+ * For instance if you call the first (topmost) rule in a parser grammar, you
+ * will
+ * get the results of a full parse, but calling a rule half way through the
+ * grammar will
+ * allow you to pass part of a full token stream to the parser, such as for
+ * syntax checking
  * in editors and so on.
  *
- * The parser entry points are called indirectly (by function pointer to function) via
- * a parser context typedef pjcf_walker, which is returned from a call to jcf_walkerNew().
+ * The parser entry points are called indirectly (by function pointer to
+ * function) via
+ * a parser context typedef pjcf_walker, which is returned from a call to
+ * jcf_walkerNew().
  *
  * The methods in pjcf_walker are  as follows:
  *
@@ -38,12 +45,12 @@
  * The return type for any particular rule is of course determined by the source
  * grammar file.
  */
-#ifndef	_jcf_walker_H
+#ifndef _jcf_walker_H
 #define _jcf_walker_H
 /* =============================================================================
  * Standard antlr3 C runtime definitions
  */
-#include    <antlr3.h>
+#include <antlr3.h>
 
 /* End of standard antlr 3 runtime definitions
  * =============================================================================
@@ -58,111 +65,131 @@ extern "C" {
 // interdependent and their context structures contain pointers to each other
 // C only allows such things to be declared if you pre-declare the typedef.
 //
-typedef struct jcf_walker_Ctx_struct jcf_walker, * pjcf_walker;
+typedef struct jcf_walker_Ctx_struct jcf_walker, *pjcf_walker;
 
+#include "../jcf_walker_impl.h"
 
-
-        #include "../jcf_walker_impl.h"
-
-
-#ifdef	ANTLR3_WINDOWS
-// Disable: Unreferenced parameter,							- Rules with parameters that are not used
-//          constant conditional,							- ANTLR realizes that a prediction is always true (synpred usually)
-//          initialized but unused variable					- tree rewrite variables declared but not needed
-//          Unreferenced local variable						- lexer rule declares but does not always use _type
-//          potentially unitialized variable used			- retval always returned from a rule
-//			unreferenced local function has been removed	- susually getTokenNames or freeScope, they can go without warnigns
+#ifdef ANTLR3_WINDOWS
+// Disable: Unreferenced parameter,
+// -
+// Rules
+// with parameters that are not used
+//          constant conditional,
+//          -
+//          ANTLR
+//          realizes
+//          that a prediction is always true (synpred usually)
+//          initialized but unused variable -
+//          tree
+//          rewrite
+//          variables declared but not needed
+//          Unreferenced local variable -
+//          lexer
+//          rule
+//          declares but does not always use _type
+//          potentially unitialized variable used			- retval
+//          always
+//          returned from a rule
+//			unreferenced local function has been removed	-
+// susually
+// getTokenNames or freeScope, they can go without warnigns
 //
-// These are only really displayed at warning level /W4 but that is the code ideal I am aiming at
-// and the codegen must generate some of these warnings by necessity, apart from 4100, which is
-// usually generated when a parser rule is given a parameter that it does not use. Mostly though
+// These are only really displayed at warning level /W4 but that is the code
+// ideal I am aiming at
+// and the codegen must generate some of these warnings by necessity, apart from
+// 4100, which is
+// usually generated when a parser rule is given a parameter that it does not
+// use. Mostly though
 // this is a matter of orthogonality hence I disable that one.
 //
-#pragma warning( disable : 4100 )
-#pragma warning( disable : 4101 )
-#pragma warning( disable : 4127 )
-#pragma warning( disable : 4189 )
-#pragma warning( disable : 4505 )
+#pragma warning(disable : 4100)
+#pragma warning(disable : 4101)
+#pragma warning(disable : 4127)
+#pragma warning(disable : 4189)
+#pragma warning(disable : 4505)
 #endif
-
 
 /** Context tracking structure for jcf_walker
  */
 struct jcf_walker_Ctx_struct
 {
-    /** Built in ANTLR3 context tracker contains all the generic elements
-     *  required for context tracking.
-     */
-    pANTLR3_TREE_PARSER	    pTreeParser;
+  /** Built in ANTLR3 context tracker contains all the generic elements
+ *  required for context tracking.
+ */
+  pANTLR3_TREE_PARSER pTreeParser;
 
-
-     void (*jcf_file)	(struct jcf_walker_Ctx_struct * ctx, void * t);
-     void (*targets)	(struct jcf_walker_Ctx_struct * ctx, void* t);
-     void (*target)	(struct jcf_walker_Ctx_struct * ctx, void* t, int is_top);
-     void (*attributes)	(struct jcf_walker_Ctx_struct * ctx, void* t);
-     void (*attribute)	(struct jcf_walker_Ctx_struct * ctx, void* t);
-     void (*type)	(struct jcf_walker_Ctx_struct * ctx, void* t);
-     void (*features)	(struct jcf_walker_Ctx_struct * ctx, void* t, void* f);
-     void (*feature)	(struct jcf_walker_Ctx_struct * ctx, void* t, void* f);
-     void (*location)	(struct jcf_walker_Ctx_struct * ctx, void* t);
-     void (*number_of_sources)	(struct jcf_walker_Ctx_struct * ctx, void* t);
-    // Delegated rules
-    const char * (*getGrammarFileName)();
-    void	    (*free)   (struct jcf_walker_Ctx_struct * ctx);
-
+  void (*jcf_file)(struct jcf_walker_Ctx_struct* ctx, void* t);
+  void (*targets)(struct jcf_walker_Ctx_struct* ctx, void* t);
+  void (*target)(struct jcf_walker_Ctx_struct* ctx, void* t, int is_top);
+  void (*attributes)(struct jcf_walker_Ctx_struct* ctx, void* t);
+  void (*attribute)(struct jcf_walker_Ctx_struct* ctx, void* t);
+  void (*type)(struct jcf_walker_Ctx_struct* ctx, void* t);
+  void (*features)(struct jcf_walker_Ctx_struct* ctx, void* t, void* f);
+  void (*feature)(struct jcf_walker_Ctx_struct* ctx, void* t, void* f);
+  void (*location)(struct jcf_walker_Ctx_struct* ctx, void* t);
+  void (*number_of_sources)(struct jcf_walker_Ctx_struct* ctx, void* t);
+  // Delegated rules
+  const char* (*getGrammarFileName)();
+  void (*free)(struct jcf_walker_Ctx_struct* ctx);
 };
 
-// Function protoypes for the constructor functions that external translation units
+// Function protoypes for the constructor functions that external translation
+// units
 // such as delegators and delegates may wish to call.
 //
-ANTLR3_API pjcf_walker jcf_walkerNew         (pANTLR3_COMMON_TREE_NODE_STREAM instream);
-ANTLR3_API pjcf_walker jcf_walkerNewSSD      (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state);
+ANTLR3_API pjcf_walker
+jcf_walkerNew(pANTLR3_COMMON_TREE_NODE_STREAM instream);
+ANTLR3_API pjcf_walker
+jcf_walkerNewSSD(pANTLR3_COMMON_TREE_NODE_STREAM instream,
+                 pANTLR3_RECOGNIZER_SHARED_STATE state);
 
 /** Symbolic definitions of all the tokens that the tree parser will work with.
  * \{
  *
  * Antlr will define EOF, but we can't use that as it it is too common in
- * in C header files and that would be confusing. There is no way to filter this out at the moment
- * so we just undef it here for now. That isn't the value we get back from C recognizers
+ * in C header files and that would be confusing. There is no way to filter this
+ * out at the moment
+ * so we just undef it here for now. That isn't the value we get back from C
+ * recognizers
  * anyway. We are looking for ANTLR3_TOKEN_EOF.
  */
-#ifdef	EOF
-#undef	EOF
+#ifdef EOF
+#undef EOF
 #endif
-#ifdef	Tokens
-#undef	Tokens
+#ifdef Tokens
+#undef Tokens
 #endif
-#define TARGET      4
-#define ATTRIBUTES      5
-#define NOT_FEATURE      10
-#define LOCATION      11
-#define NUMBER_OF_SOURCES      12
-#define COMMENT      16
-#define T__19      19
-#define TYPE_ATTR      7
-#define T__18      18
-#define ID      13
-#define WS      17
-#define EOF      -1
-#define T__30      30
-#define NUMBER      14
-#define FEATURES_ATTR      8
-#define T__26      26
-#define T__27      27
-#define T__28      28
-#define T__29      29
-#define T__22      22
-#define FEATURE      9
-#define T__23      23
-#define TARGETS      6
-#define STRING      15
-#define T__24      24
-#define T__25      25
-#define T__20      20
-#define T__21      21
-#ifdef	EOF
-#undef	EOF
-#define	EOF	ANTLR3_TOKEN_EOF
+#define TARGET 4
+#define ATTRIBUTES 5
+#define NOT_FEATURE 10
+#define LOCATION 11
+#define NUMBER_OF_SOURCES 12
+#define COMMENT 16
+#define T__19 19
+#define TYPE_ATTR 7
+#define T__18 18
+#define ID 13
+#define WS 17
+#define EOF -1
+#define T__30 30
+#define NUMBER 14
+#define FEATURES_ATTR 8
+#define T__26 26
+#define T__27 27
+#define T__28 28
+#define T__29 29
+#define T__22 22
+#define FEATURE 9
+#define T__23 23
+#define TARGETS 6
+#define STRING 15
+#define T__24 24
+#define T__25 25
+#define T__20 20
+#define T__21 21
+#ifdef EOF
+#undef EOF
+#define EOF ANTLR3_TOKEN_EOF
 #endif
 
 #ifndef TOKENSOURCE

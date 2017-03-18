@@ -1,41 +1,46 @@
 #if !defined(h_2c15e695_c37e_498d_b12a_5bd65ba5e645)
 #define h_2c15e695_c37e_498d_b12a_5bd65ba5e645
 
-#include <string>
 #include <iosfwd>
+#include <string>
 
-namespace hammer
+namespace hammer {
+class build_node;
+class build_environment;
+
+class argument_writer
 {
-   class build_node;
-   class build_environment;
+public:
+  argument_writer(const std::string& name)
+    : name_(name)
+  {
+  }
 
-   class argument_writer
-   {
-      public:
-         argument_writer(const std::string& name)
-            : name_(name)
-         {}
+  const std::string& name() const { return name_; }
+  void write(std::ostream& output,
+             const build_node& node,
+             const build_environment& environment) const
+  {
+    write_impl(output, node, environment);
+  }
 
-         const std::string& name() const { return name_; }
-         void write(std::ostream& output, const build_node& node, const build_environment& environment) const
-         {
-            write_impl(output, node, environment);
-         }
+  virtual argument_writer* clone() const = 0;
+  virtual ~argument_writer() {}
 
-         virtual argument_writer* clone() const = 0;
-         virtual ~argument_writer() {}
+protected:
+  virtual void write_impl(std::ostream& output,
+                          const build_node& node,
+                          const build_environment& environment) const = 0;
 
-      protected:
-         virtual void write_impl(std::ostream& output, const build_node& node, const build_environment& environment) const = 0;
+private:
+  std::string name_;
+};
 
-      private:
-         std::string name_;
-   };
-
-   inline argument_writer* new_clone(const argument_writer& v)
-   {
-      return v.clone();
-   }
+inline argument_writer*
+new_clone(const argument_writer& v)
+{
+  return v.clone();
+}
 }
 
-#endif //h_2c15e695_c37e_498d_b12a_5bd65ba5e645
+#endif // h_2c15e695_c37e_498d_b12a_5bd65ba5e645

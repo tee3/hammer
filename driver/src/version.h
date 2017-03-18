@@ -3,6 +3,7 @@
 
 #include <iosfwd>
 
-void print_version(std::ostream& s);
+void
+print_version(std::ostream& s);
 
 #endif

@@ -1,77 +1,82 @@
 #include "stdafx.h"
+#include <boost/crypto/md5.hpp>
 #include <hammer/core/basic_target.h>
+#include <hammer/core/feature.h>
+#include <hammer/core/feature_set.h>
 #include <hammer/core/main_target.h>
 #include <hammer/core/meta_target.h>
-#include <hammer/core/feature_set.h>
-#include <hammer/core/feature.h>
-#include <boost/crypto/md5.hpp>
 
-namespace hammer{
+namespace hammer {
 
 const timestamp_info_t&
 basic_target::timestamp_info() const
 {
-   if (!timestamp_info_.is_unknown_)
-      return timestamp_info_;
+  if (!timestamp_info_.is_unknown_)
+    return timestamp_info_;
 
-   timestamp_info_impl();
+  timestamp_info_impl();
 
-   return timestamp_info_;
+  return timestamp_info_;
 }
 
-const location_t& basic_target::location() const
+const location_t&
+basic_target::location() const
 {
-   return main_target_->location();
+  return main_target_->location();
 }
 
-void basic_target::properties(const feature_set* p)
+void
+basic_target::properties(const feature_set* p)
 {
-   hash_.reset();
-   features_ = p;
+  hash_.reset();
+  features_ = p;
 }
 
-const std::string& basic_target::hash_string() const
+const std::string&
+basic_target::hash_string() const
 {
-   if (!hash_)
-      hash_ = hash_string(properties(), *main_target_);
+  if (!hash_)
+    hash_ = hash_string(properties(), *main_target_);
 
-   return *hash_;
+  return *hash_;
 }
 
-std::string basic_target::hash_string(const feature_set& fs, const main_target& mt)
+std::string
+basic_target::hash_string(const feature_set& fs, const main_target& mt)
 {
-   feature_set::const_iterator i = fs.find("mangling");
-   if (i == fs.end() || (**i).value() == "md5")
-   {
-      std::ostringstream s;
-      dump_for_hash(s, fs);
-      static_cast<const basic_target&>(mt).additional_hash_string_data(s);
-      return boost::crypto::md5(s.str()).to_string();
-   }
-   else
-      return fs.get("variant").value();
+  feature_set::const_iterator i = fs.find("mangling");
+  if (i == fs.end() || (**i).value() == "md5") {
+    std::ostringstream s;
+    dump_for_hash(s, fs);
+    static_cast<const basic_target&>(mt).additional_hash_string_data(s);
+    return boost::crypto::md5(s.str()).to_string();
+  } else
+    return fs.get("variant").value();
 }
 
-const basic_meta_target* basic_target::get_meta_target() const
+const basic_meta_target*
+basic_target::get_meta_target() const
 {
-   return main_target_->get_meta_target();
+  return main_target_->get_meta_target();
 }
 
-const project* basic_target::get_project() const
+const project*
+basic_target::get_project() const
 {
-   return main_target_->get_meta_target()->get_project();
+  return main_target_->get_meta_target()->get_project();
 }
 
-engine* basic_target::get_engine() const
+engine*
+basic_target::get_engine() const
 {
-   return main_target_->get_meta_target()->get_engine();
+  return main_target_->get_meta_target()->get_engine();
 }
 
-location_t basic_target::full_path() const
+location_t
+basic_target::full_path() const
 {
-   location_t l = location() / name();
-   l.normalize();
-   return l;
+  location_t l = location() / name();
+  l.normalize();
+  return l;
 }
-
 }

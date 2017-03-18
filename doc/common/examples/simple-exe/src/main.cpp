@@ -1,7 +1,8 @@
 #include <iostream>
 
-int main()
+int
+main()
 {
-   std::cout << "Simple executable builded by hammer\n";
-   return 0;
+  std::cout << "Simple executable builded by hammer\n";
+  return 0;
 }

@@ -6,21 +6,28 @@
  *     -                for the parser : jcfParserParser *
  * Editing it, at least manually, is not wise.
  *
- * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
+ * C language generator and runtime by Jim Idle,
+ * jimi|hereisanat|idle|dotgoeshere|ws.
  *
  *
  * The parser jcfParser has the callable functions (rules) shown below,
  * which will invoke the code for the associated rule in the source grammar
- * assuming that the input stream is pointing to a token/text stream that could begin
+ * assuming that the input stream is pointing to a token/text stream that could
+ * begin
  * this rule.
  *
- * For instance if you call the first (topmost) rule in a parser grammar, you will
- * get the results of a full parse, but calling a rule half way through the grammar will
- * allow you to pass part of a full token stream to the parser, such as for syntax checking
+ * For instance if you call the first (topmost) rule in a parser grammar, you
+ * will
+ * get the results of a full parse, but calling a rule half way through the
+ * grammar will
+ * allow you to pass part of a full token stream to the parser, such as for
+ * syntax checking
  * in editors and so on.
  *
- * The parser entry points are called indirectly (by function pointer to function) via
- * a parser context typedef pjcfParser, which is returned from a call to jcfParserNew().
+ * The parser entry points are called indirectly (by function pointer to
+ * function) via
+ * a parser context typedef pjcfParser, which is returned from a call to
+ * jcfParserNew().
  *
  * The methods in pjcfParser are  as follows:
  *
@@ -33,18 +40,19 @@
  *  - jcfParser_features_return      pjcfParser->features(pjcfParser)
  *  - jcfParser_feature_return      pjcfParser->feature(pjcfParser)
  *  - jcfParser_location_return      pjcfParser->location(pjcfParser)
- *  - jcfParser_number_of_sources_return      pjcfParser->number_of_sources(pjcfParser)
+ *  - jcfParser_number_of_sources_return
+ * pjcfParser->number_of_sources(pjcfParser)
  *  - jcfParser_sources_return      pjcfParser->sources(pjcfParser)
  *
  * The return type for any particular rule is of course determined by the source
  * grammar file.
  */
-#ifndef	_jcfParser_H
+#ifndef _jcfParser_H
 #define _jcfParser_H
 /* =============================================================================
  * Standard antlr3 C runtime definitions
  */
-#include    <antlr3.h>
+#include <antlr3.h>
 
 /* End of standard antlr 3 runtime definitions
  * =============================================================================
@@ -59,234 +67,255 @@ extern "C" {
 // interdependent and their context structures contain pointers to each other
 // C only allows such things to be declared if you pre-declare the typedef.
 //
-typedef struct jcfParser_Ctx_struct jcfParser, * pjcfParser;
+typedef struct jcfParser_Ctx_struct jcfParser, *pjcfParser;
 
-
-
-#ifdef	ANTLR3_WINDOWS
-// Disable: Unreferenced parameter,							- Rules with parameters that are not used
-//          constant conditional,							- ANTLR realizes that a prediction is always true (synpred usually)
-//          initialized but unused variable					- tree rewrite variables declared but not needed
-//          Unreferenced local variable						- lexer rule declares but does not always use _type
-//          potentially unitialized variable used			- retval always returned from a rule
-//			unreferenced local function has been removed	- susually getTokenNames or freeScope, they can go without warnigns
+#ifdef ANTLR3_WINDOWS
+// Disable: Unreferenced parameter,
+// -
+// Rules
+// with parameters that are not used
+//          constant conditional,
+//          -
+//          ANTLR
+//          realizes
+//          that a prediction is always true (synpred usually)
+//          initialized but unused variable -
+//          tree
+//          rewrite
+//          variables declared but not needed
+//          Unreferenced local variable -
+//          lexer
+//          rule
+//          declares but does not always use _type
+//          potentially unitialized variable used			- retval
+//          always
+//          returned from a rule
+//			unreferenced local function has been removed	-
+// susually
+// getTokenNames or freeScope, they can go without warnigns
 //
-// These are only really displayed at warning level /W4 but that is the code ideal I am aiming at
-// and the codegen must generate some of these warnings by necessity, apart from 4100, which is
-// usually generated when a parser rule is given a parameter that it does not use. Mostly though
+// These are only really displayed at warning level /W4 but that is the code
+// ideal I am aiming at
+// and the codegen must generate some of these warnings by necessity, apart from
+// 4100, which is
+// usually generated when a parser rule is given a parameter that it does not
+// use. Mostly though
 // this is a matter of orthogonality hence I disable that one.
 //
-#pragma warning( disable : 4100 )
-#pragma warning( disable : 4101 )
-#pragma warning( disable : 4127 )
-#pragma warning( disable : 4189 )
-#pragma warning( disable : 4505 )
+#pragma warning(disable : 4100)
+#pragma warning(disable : 4101)
+#pragma warning(disable : 4127)
+#pragma warning(disable : 4189)
+#pragma warning(disable : 4505)
 #endif
 typedef struct jcfParser_jsf_file_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_jsf_file_return;
+} jcfParser_jsf_file_return;
 
 typedef struct jcfParser_targets_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_targets_return;
+} jcfParser_targets_return;
 
 typedef struct jcfParser_target_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_target_return;
+} jcfParser_target_return;
 
 typedef struct jcfParser_attributes_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_attributes_return;
+} jcfParser_attributes_return;
 
 typedef struct jcfParser_attribute_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_attribute_return;
+} jcfParser_attribute_return;
 
 typedef struct jcfParser_type_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_type_return;
+} jcfParser_type_return;
 
 typedef struct jcfParser_features_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_features_return;
+} jcfParser_features_return;
 
 typedef struct jcfParser_feature_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_feature_return;
+} jcfParser_feature_return;
 
 typedef struct jcfParser_location_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_location_return;
+} jcfParser_location_return;
 
 typedef struct jcfParser_number_of_sources_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_number_of_sources_return;
+} jcfParser_number_of_sources_return;
 
 typedef struct jcfParser_sources_return_struct
 {
-    /** Generic return elements for ANTLR3 rules that are not in tree parsers or returning trees
-     */
-    pANTLR3_COMMON_TOKEN    start;
-    pANTLR3_COMMON_TOKEN    stop;
-    pANTLR3_BASE_TREE	tree;
+  /** Generic return elements for ANTLR3 rules that are not in tree parsers or
+ * returning trees
+ */
+  pANTLR3_COMMON_TOKEN start;
+  pANTLR3_COMMON_TOKEN stop;
+  pANTLR3_BASE_TREE tree;
 
-}
-    jcfParser_sources_return;
-
-
-
+} jcfParser_sources_return;
 
 /** Context tracking structure for jcfParser
  */
 struct jcfParser_Ctx_struct
 {
-    /** Built in ANTLR3 context tracker contains all the generic elements
-     *  required for context tracking.
-     */
-    pANTLR3_PARSER   pParser;
+  /** Built in ANTLR3 context tracker contains all the generic elements
+ *  required for context tracking.
+ */
+  pANTLR3_PARSER pParser;
 
-
-     jcfParser_jsf_file_return (*jsf_file)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_targets_return (*targets)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_target_return (*target)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_attributes_return (*attributes)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_attribute_return (*attribute)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_type_return (*type)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_features_return (*features)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_feature_return (*feature)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_location_return (*location)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_number_of_sources_return (*number_of_sources)	(struct jcfParser_Ctx_struct * ctx);
-     jcfParser_sources_return (*sources)	(struct jcfParser_Ctx_struct * ctx);
-    // Delegated rules
-    const char * (*getGrammarFileName)();
-    void	    (*free)   (struct jcfParser_Ctx_struct * ctx);
-    /* @headerFile.members() */
-    pANTLR3_BASE_TREE_ADAPTOR	adaptor;
-    pANTLR3_VECTOR_FACTORY		vectors;
-    /* End @headerFile.members() */
+  jcfParser_jsf_file_return (*jsf_file)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_targets_return (*targets)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_target_return (*target)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_attributes_return (*attributes)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_attribute_return (*attribute)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_type_return (*type)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_features_return (*features)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_feature_return (*feature)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_location_return (*location)(struct jcfParser_Ctx_struct* ctx);
+  jcfParser_number_of_sources_return (*number_of_sources)(
+    struct jcfParser_Ctx_struct* ctx);
+  jcfParser_sources_return (*sources)(struct jcfParser_Ctx_struct* ctx);
+  // Delegated rules
+  const char* (*getGrammarFileName)();
+  void (*free)(struct jcfParser_Ctx_struct* ctx);
+  /* @headerFile.members() */
+  pANTLR3_BASE_TREE_ADAPTOR adaptor;
+  pANTLR3_VECTOR_FACTORY vectors;
+  /* End @headerFile.members() */
 };
 
-// Function protoypes for the constructor functions that external translation units
+// Function protoypes for the constructor functions that external translation
+// units
 // such as delegators and delegates may wish to call.
 //
-ANTLR3_API pjcfParser jcfParserNew         (pANTLR3_COMMON_TOKEN_STREAM instream);
-ANTLR3_API pjcfParser jcfParserNewSSD      (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state);
+ANTLR3_API pjcfParser
+jcfParserNew(pANTLR3_COMMON_TOKEN_STREAM instream);
+ANTLR3_API pjcfParser
+jcfParserNewSSD(pANTLR3_COMMON_TOKEN_STREAM instream,
+                pANTLR3_RECOGNIZER_SHARED_STATE state);
 
 /** Symbolic definitions of all the tokens that the parser will work with.
  * \{
  *
  * Antlr will define EOF, but we can't use that as it it is too common in
- * in C header files and that would be confusing. There is no way to filter this out at the moment
- * so we just undef it here for now. That isn't the value we get back from C recognizers
+ * in C header files and that would be confusing. There is no way to filter this
+ * out at the moment
+ * so we just undef it here for now. That isn't the value we get back from C
+ * recognizers
  * anyway. We are looking for ANTLR3_TOKEN_EOF.
  */
-#ifdef	EOF
-#undef	EOF
+#ifdef EOF
+#undef EOF
 #endif
-#ifdef	Tokens
-#undef	Tokens
+#ifdef Tokens
+#undef Tokens
 #endif
-#define TARGET      4
-#define ATTRIBUTES      5
-#define NOT_FEATURE      10
-#define LOCATION      11
-#define NUMBER_OF_SOURCES      12
-#define COMMENT      16
-#define T__19      19
-#define TYPE_ATTR      7
-#define T__18      18
-#define ID      13
-#define WS      17
-#define EOF      -1
-#define T__30      30
-#define NUMBER      14
-#define FEATURES_ATTR      8
-#define T__26      26
-#define T__27      27
-#define T__28      28
-#define T__29      29
-#define T__22      22
-#define FEATURE      9
-#define T__23      23
-#define TARGETS      6
-#define STRING      15
-#define T__24      24
-#define T__25      25
-#define T__20      20
-#define T__21      21
-#ifdef	EOF
-#undef	EOF
-#define	EOF	ANTLR3_TOKEN_EOF
+#define TARGET 4
+#define ATTRIBUTES 5
+#define NOT_FEATURE 10
+#define LOCATION 11
+#define NUMBER_OF_SOURCES 12
+#define COMMENT 16
+#define T__19 19
+#define TYPE_ATTR 7
+#define T__18 18
+#define ID 13
+#define WS 17
+#define EOF -1
+#define T__30 30
+#define NUMBER 14
+#define FEATURES_ATTR 8
+#define T__26 26
+#define T__27 27
+#define T__28 28
+#define T__29 29
+#define T__22 22
+#define FEATURE 9
+#define T__23 23
+#define TARGETS 6
+#define STRING 15
+#define T__24 24
+#define T__25 25
+#define T__20 20
+#define T__21 21
+#ifdef EOF
+#undef EOF
+#define EOF ANTLR3_TOKEN_EOF
 #endif
 
 #ifndef TOKENSOURCE

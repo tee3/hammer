@@ -3,7 +3,8 @@
 
 #include <hammer/ast/expression.h>
 
-namespace hammer{ namespace ast{
+namespace hammer {
+namespace ast {
 
 class argument : public expression
 {
@@ -12,7 +13,7 @@ class argument : public expression
 class empty_argument : public argument
 {
 };
-
-}}
+}
+}
 
 #endif

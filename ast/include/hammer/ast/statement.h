@@ -3,13 +3,14 @@
 
 #include <hammer/ast/node.h>
 
-namespace hammer{ namespace ast{
+namespace hammer {
+namespace ast {
 
 class statement : public node
 {
-   public:
+public:
 };
-
-}}
+}
+}
 
 #endif

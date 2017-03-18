@@ -2,5 +2,4 @@
 
 context_allocator::context_allocator()
 {
-
 }

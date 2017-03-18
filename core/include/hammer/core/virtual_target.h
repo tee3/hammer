@@ -7,17 +7,16 @@ namespace hammer {
 
 class virtual_target : public basic_target
 {
-   public:
-      virtual_target(const main_target* mt,
-                     const std::string& name,
-                     const target_type* t,
-                     const feature_set* f);
-      build_nodes_t generate() const override;
+public:
+  virtual_target(const main_target* mt,
+                 const std::string& name,
+                 const target_type* t,
+                 const feature_set* f);
+  build_nodes_t generate() const override;
 
-   protected:
-      void timestamp_info_impl() const override;
+protected:
+  void timestamp_info_impl() const override;
 };
-
 }
 
 #endif // VIRTUAL_TARGET_H

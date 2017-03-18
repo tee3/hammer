@@ -4,37 +4,38 @@
 #include <hammer/ast/expression.h>
 #include <hammer/parscore/identifier.h>
 
-namespace hammer{ namespace ast{
+namespace hammer {
+namespace ast {
 
 class path_like_seq;
 class requirement_set;
 
 class target_ref : public expression
 {
-   public:
-      target_ref(parscore::source_location public_tag,
-                 const path_like_seq* head,
-                 const parscore::identifier& target_name,
-                 const requirement_set* requirements);
+public:
+  target_ref(parscore::source_location public_tag,
+             const path_like_seq* head,
+             const parscore::identifier& target_name,
+             const requirement_set* requirements);
 
-      const path_like_seq* head() const { return head_; }
-      const parscore::identifier& target_name() const { return target_name_; }
-      const requirement_set* requirements() const { return requirements_; }
-      parscore::source_location public_tag() const { return public_tag_; }
+  const path_like_seq* head() const { return head_; }
+  const parscore::identifier& target_name() const { return target_name_; }
+  const requirement_set* requirements() const { return requirements_; }
+  parscore::source_location public_tag() const { return public_tag_; }
 
-      bool has_target_name() const;
-      bool is_public() const { return public_tag_.valid(); }
+  bool has_target_name() const;
+  bool is_public() const { return public_tag_.valid(); }
 
-      parscore::source_location start_loc() const override;
-      bool accept(visitor& v) const override;
+  parscore::source_location start_loc() const override;
+  bool accept(visitor& v) const override;
 
-   private:
-      parscore::source_location public_tag_;
-      const path_like_seq* head_;
-      parscore::identifier target_name_;
-      const requirement_set* requirements_;
+private:
+  parscore::source_location public_tag_;
+  const path_like_seq* head_;
+  parscore::identifier target_name_;
+  const requirement_set* requirements_;
 };
-
-}}
+}
+}
 
 #endif

@@ -6,236 +6,280 @@
  *     -                for the parser : hammerParserParser *
  * Editing it, at least manually, is not wise.
  *
- * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
+ * C language generator and runtime by Jim Idle,
+ * jimi|hereisanat|idle|dotgoeshere|ws.
  *
  *
 */
 /* -----------------------------------------
  * Include the ANTLR3 generated header file.
  */
-#include    "hammerParser.h"
+#include "hammerParser.h"
 /* ----------------------------------------- */
-
-
-
-
 
 /* MACROS that hide the C interface implementations from the
  * generated code, which makes it a little more understandable to the human eye.
- * I am very much against using C pre-processor macros for function calls and bits
+ * I am very much against using C pre-processor macros for function calls and
+ * bits
  * of code as you cannot see what is happening when single stepping in debuggers
- * and so on. The exception (in my book at least) is for generated code, where you are
- * not maintaining it, but may wish to read and understand it. If you single step it, you know that input()
- * hides some indirect calls, but is always referring to the input stream. This is
- * probably more readable than ctx->input->istream->input(snarfle0->blarg) and allows me to rejig
+ * and so on. The exception (in my book at least) is for generated code, where
+ * you are
+ * not maintaining it, but may wish to read and understand it. If you single
+ * step it, you know that input()
+ * hides some indirect calls, but is always referring to the input stream. This
+ * is
+ * probably more readable than ctx->input->istream->input(snarfle0->blarg) and
+ * allows me to rejig
  * the runtime interfaces without changing the generated code too often, without
- * confusing the reader of the generated output, who may not wish to know the gory
+ * confusing the reader of the generated output, who may not wish to know the
+ * gory
  * details of the interface inheritance.
  */
 
-#define		CTX	ctx
+#define CTX ctx
 
 /* Aids in accessing scopes for grammar programmers
  */
-#undef	SCOPE_TYPE
-#undef	SCOPE_STACK
-#undef	SCOPE_TOP
-#define	SCOPE_TYPE(scope)   phammerParser_##scope##_SCOPE
-#define SCOPE_STACK(scope)  phammerParser_##scope##Stack
-#define	SCOPE_TOP(scope)    ctx->phammerParser_##scope##Top
-#define	SCOPE_SIZE(scope)			(ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
-#define SCOPE_INSTANCE(scope, i)	(ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope),i))
+#undef SCOPE_TYPE
+#undef SCOPE_STACK
+#undef SCOPE_TOP
+#define SCOPE_TYPE(scope) phammerParser_##scope##_SCOPE
+#define SCOPE_STACK(scope) phammerParser_##scope##Stack
+#define SCOPE_TOP(scope) ctx->phammerParser_##scope##Top
+#define SCOPE_SIZE(scope)                                                      \
+  (ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
+#define SCOPE_INSTANCE(scope, i)                                               \
+  (ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope), i))
 
 /* Macros for accessing things in the parser
  */
 
-#undef	    PARSER
-#undef	    RECOGNIZER
-#undef	    HAVEPARSEDRULE
-#undef		MEMOIZE
-#undef	    INPUT
-#undef	    STRSTREAM
-#undef	    HASEXCEPTION
-#undef	    EXCEPTION
-#undef	    MATCHT
-#undef	    MATCHANYT
-#undef	    FOLLOWSTACK
-#undef	    FOLLOWPUSH
-#undef	    FOLLOWPOP
-#undef	    PRECOVER
-#undef	    PREPORTERROR
-#undef	    LA
-#undef	    LT
-#undef	    CONSTRUCTEX
-#undef	    CONSUME
-#undef	    MARK
-#undef	    REWIND
-#undef	    REWINDLAST
-#undef	    PERRORRECOVERY
-#undef	    HASFAILED
-#undef	    FAILEDFLAG
-#undef	    RECOVERFROMMISMATCHEDSET
-#undef	    RECOVERFROMMISMATCHEDELEMENT
-#undef		INDEX
-#undef      ADAPTOR
-#undef		SEEK
-#undef	    RULEMEMO
-#undef		DBG
+#undef PARSER
+#undef RECOGNIZER
+#undef HAVEPARSEDRULE
+#undef MEMOIZE
+#undef INPUT
+#undef STRSTREAM
+#undef HASEXCEPTION
+#undef EXCEPTION
+#undef MATCHT
+#undef MATCHANYT
+#undef FOLLOWSTACK
+#undef FOLLOWPUSH
+#undef FOLLOWPOP
+#undef PRECOVER
+#undef PREPORTERROR
+#undef LA
+#undef LT
+#undef CONSTRUCTEX
+#undef CONSUME
+#undef MARK
+#undef REWIND
+#undef REWINDLAST
+#undef PERRORRECOVERY
+#undef HASFAILED
+#undef FAILEDFLAG
+#undef RECOVERFROMMISMATCHEDSET
+#undef RECOVERFROMMISMATCHEDELEMENT
+#undef INDEX
+#undef ADAPTOR
+#undef SEEK
+#undef RULEMEMO
+#undef DBG
 
-#define	    PARSER							ctx->pParser
-#define	    RECOGNIZER						PARSER->rec
-#define		PSRSTATE						RECOGNIZER->state
-#define	    HAVEPARSEDRULE(r)				RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
-#define		MEMOIZE(ri,si)					RECOGNIZER->memoize(RECOGNIZER, ri, si)
-#define	    INPUT							PARSER->tstream
-#define	    STRSTREAM						INPUT
-#define		ISTREAM							INPUT->istream
-#define		INDEX()							ISTREAM->index(INPUT->istream)
-#define	    HASEXCEPTION()					(PSRSTATE->error == ANTLR3_TRUE)
-#define	    EXCEPTION						PSRSTATE->exception
-#define	    MATCHT(t, fs)					RECOGNIZER->match(RECOGNIZER, t, fs)
-#define	    MATCHANYT()						RECOGNIZER->matchAny(RECOGNIZER)
-#define	    FOLLOWSTACK					    PSRSTATE->following
-#define	    FOLLOWPUSH(x)					FOLLOWSTACK->push(FOLLOWSTACK, ((void *)(&(x))), NULL)
-#define	    FOLLOWPOP()						FOLLOWSTACK->pop(FOLLOWSTACK)
-#define	    PRECOVER()						RECOGNIZER->recover(RECOGNIZER)
-#define	    PREPORTERROR()					RECOGNIZER->reportError(RECOGNIZER)
-#define	    LA(n)							INPUT->istream->_LA(ISTREAM, n)
-#define	    LT(n)							INPUT->_LT(INPUT, n)
-#define	    CONSTRUCTEX()					RECOGNIZER->exConstruct(RECOGNIZER)
-#define	    CONSUME()						ISTREAM->consume(ISTREAM)
-#define	    MARK()							ISTREAM->mark(ISTREAM)
-#define	    REWIND(m)						ISTREAM->rewind(ISTREAM, m)
-#define	    REWINDLAST()					ISTREAM->rewindLast(ISTREAM)
-#define		SEEK(n)							ISTREAM->seek(ISTREAM, n)
-#define	    PERRORRECOVERY					PSRSTATE->errorRecovery
-#define	    FAILEDFLAG						PSRSTATE->failed
-#define	    HASFAILED()						(FAILEDFLAG == ANTLR3_TRUE)
-#define	    BACKTRACKING					PSRSTATE->backtracking
-#define	    RECOVERFROMMISMATCHEDSET(s)		RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
-#define	    RECOVERFROMMISMATCHEDELEMENT(e)	RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
-#define     ADAPTOR                         ctx->adaptor
-#define		RULEMEMO						PSRSTATE->ruleMemo
-#define		DBG								RECOGNIZER->debugger
+#define PARSER ctx->pParser
+#define RECOGNIZER PARSER->rec
+#define PSRSTATE RECOGNIZER->state
+#define HAVEPARSEDRULE(r) RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
+#define MEMOIZE(ri, si) RECOGNIZER->memoize(RECOGNIZER, ri, si)
+#define INPUT PARSER->tstream
+#define STRSTREAM INPUT
+#define ISTREAM INPUT->istream
+#define INDEX() ISTREAM->index(INPUT->istream)
+#define HASEXCEPTION() (PSRSTATE->error == ANTLR3_TRUE)
+#define EXCEPTION PSRSTATE->exception
+#define MATCHT(t, fs) RECOGNIZER->match(RECOGNIZER, t, fs)
+#define MATCHANYT() RECOGNIZER->matchAny(RECOGNIZER)
+#define FOLLOWSTACK PSRSTATE->following
+#define FOLLOWPUSH(x) FOLLOWSTACK->push(FOLLOWSTACK, ((void*)(&(x))), NULL)
+#define FOLLOWPOP() FOLLOWSTACK->pop(FOLLOWSTACK)
+#define PRECOVER() RECOGNIZER->recover(RECOGNIZER)
+#define PREPORTERROR() RECOGNIZER->reportError(RECOGNIZER)
+#define LA(n) INPUT->istream->_LA(ISTREAM, n)
+#define LT(n) INPUT->_LT(INPUT, n)
+#define CONSTRUCTEX() RECOGNIZER->exConstruct(RECOGNIZER)
+#define CONSUME() ISTREAM->consume(ISTREAM)
+#define MARK() ISTREAM->mark(ISTREAM)
+#define REWIND(m) ISTREAM->rewind(ISTREAM, m)
+#define REWINDLAST() ISTREAM->rewindLast(ISTREAM)
+#define SEEK(n) ISTREAM->seek(ISTREAM, n)
+#define PERRORRECOVERY PSRSTATE->errorRecovery
+#define FAILEDFLAG PSRSTATE->failed
+#define HASFAILED() (FAILEDFLAG == ANTLR3_TRUE)
+#define BACKTRACKING PSRSTATE->backtracking
+#define RECOVERFROMMISMATCHEDSET(s)                                            \
+  RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
+#define RECOVERFROMMISMATCHEDELEMENT(e)                                        \
+  RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
+#define ADAPTOR ctx->adaptor
+#define RULEMEMO PSRSTATE->ruleMemo
+#define DBG RECOGNIZER->debugger
 
-#define		TOKTEXT(tok, txt)				tok, (pANTLR3_UINT8)txt
+#define TOKTEXT(tok, txt) tok, (pANTLR3_UINT8)txt
 
-/* The 4 tokens defined below may well clash with your own #defines or token types. If so
- * then for the present you must use different names for your defines as these are hard coded
- * in the code generator. It would be better not to use such names internally, and maybe
- * we can change this in a forthcoming release. I deliberately do not #undef these
- * here as this will at least give you a redefined error somewhere if they clash.
+/* The 4 tokens defined below may well clash with your own #defines or token
+ * types. If so
+ * then for the present you must use different names for your defines as these
+ * are hard coded
+ * in the code generator. It would be better not to use such names internally,
+ * and maybe
+ * we can change this in a forthcoming release. I deliberately do not #undef
+ * these
+ * here as this will at least give you a redefined error somewhere if they
+ * clash.
  */
-#define	    UP	    ANTLR3_TOKEN_UP
-#define	    DOWN    ANTLR3_TOKEN_DOWN
-#define	    EOR	    ANTLR3_TOKEN_EOR
-#define	    INVALID ANTLR3_TOKEN_INVALID
-
+#define UP ANTLR3_TOKEN_UP
+#define DOWN ANTLR3_TOKEN_DOWN
+#define EOR ANTLR3_TOKEN_EOR
+#define INVALID ANTLR3_TOKEN_INVALID
 
 /* =============================================================================
  * Functions to create and destroy scopes. First come the rule scopes, followed
  * by the global declared scopes.
  */
 
-
-
-/* ============================================================================= */
+/* =============================================================================
+ */
 
 /* =============================================================================
  * Start of recognizer
  */
 
-
-
 /** \brief Table of all token names in symbolic order, mainly used for
  *         error reporting.
  */
-pANTLR3_UINT8   hammerParserTokenNames[33+4]
-     = {
-        (pANTLR3_UINT8) "<invalid>",       /* String to print to indicate an invalid token */
-        (pANTLR3_UINT8) "<EOR>",
-        (pANTLR3_UINT8) "<DOWN>",
-        (pANTLR3_UINT8) "<UP>",
-        (pANTLR3_UINT8) "HAMFILE",
-        (pANTLR3_UINT8) "TARGET_DECL_OR_RULE_CALL",
-        (pANTLR3_UINT8) "TARGET_REF",
-        (pANTLR3_UINT8) "TARGET_NAME",
-        (pANTLR3_UINT8) "EMPTY_TARGET_NAME",
-        (pANTLR3_UINT8) "ARGUMENTS",
-        (pANTLR3_UINT8) "NAMED_EXPRESSION",
-        (pANTLR3_UINT8) "EXPRESSION",
-        (pANTLR3_UINT8) "EMPTY_EXPRESSION",
-        (pANTLR3_UINT8) "LIST_OF",
-        (pANTLR3_UINT8) "PATH_LIKE_SEQ",
-        (pANTLR3_UINT8) "REQUIREMENT_SET",
-        (pANTLR3_UINT8) "REQUIREMENT",
-        (pANTLR3_UINT8) "CONDITION",
-        (pANTLR3_UINT8) "FEATURE",
-        (pANTLR3_UINT8) "WS",
-        (pANTLR3_UINT8) "EXP_END",
-        (pANTLR3_UINT8) "ID",
-        (pANTLR3_UINT8) "COLON",
-        (pANTLR3_UINT8) "SLASH",
-        (pANTLR3_UINT8) "PUBLIC_TAG",
-        (pANTLR3_UINT8) "STRING",
-        (pANTLR3_UINT8) "STRING_ID",
-        (pANTLR3_UINT8) "COMMENT",
-        (pANTLR3_UINT8) "'='",
-        (pANTLR3_UINT8) "'<'",
-        (pANTLR3_UINT8) "'>'",
-        (pANTLR3_UINT8) "'('",
-        (pANTLR3_UINT8) "')'",
-        (pANTLR3_UINT8) "','",
-        (pANTLR3_UINT8) "'//'",
-        (pANTLR3_UINT8) "'['",
-        (pANTLR3_UINT8) "']'"
-       };
-
-
+pANTLR3_UINT8 hammerParserTokenNames[33 + 4] = {
+  (pANTLR3_UINT8) "<invalid>", /* String to print to indicate an invalid
+                                token */
+  (pANTLR3_UINT8) "<EOR>",
+  (pANTLR3_UINT8) "<DOWN>",
+  (pANTLR3_UINT8) "<UP>",
+  (pANTLR3_UINT8) "HAMFILE",
+  (pANTLR3_UINT8) "TARGET_DECL_OR_RULE_CALL",
+  (pANTLR3_UINT8) "TARGET_REF",
+  (pANTLR3_UINT8) "TARGET_NAME",
+  (pANTLR3_UINT8) "EMPTY_TARGET_NAME",
+  (pANTLR3_UINT8) "ARGUMENTS",
+  (pANTLR3_UINT8) "NAMED_EXPRESSION",
+  (pANTLR3_UINT8) "EXPRESSION",
+  (pANTLR3_UINT8) "EMPTY_EXPRESSION",
+  (pANTLR3_UINT8) "LIST_OF",
+  (pANTLR3_UINT8) "PATH_LIKE_SEQ",
+  (pANTLR3_UINT8) "REQUIREMENT_SET",
+  (pANTLR3_UINT8) "REQUIREMENT",
+  (pANTLR3_UINT8) "CONDITION",
+  (pANTLR3_UINT8) "FEATURE",
+  (pANTLR3_UINT8) "WS",
+  (pANTLR3_UINT8) "EXP_END",
+  (pANTLR3_UINT8) "ID",
+  (pANTLR3_UINT8) "COLON",
+  (pANTLR3_UINT8) "SLASH",
+  (pANTLR3_UINT8) "PUBLIC_TAG",
+  (pANTLR3_UINT8) "STRING",
+  (pANTLR3_UINT8) "STRING_ID",
+  (pANTLR3_UINT8) "COMMENT",
+  (pANTLR3_UINT8) "'='",
+  (pANTLR3_UINT8) "'<'",
+  (pANTLR3_UINT8) "'>'",
+  (pANTLR3_UINT8) "'('",
+  (pANTLR3_UINT8) "')'",
+  (pANTLR3_UINT8) "','",
+  (pANTLR3_UINT8) "'//'",
+  (pANTLR3_UINT8) "'['",
+  (pANTLR3_UINT8) "']'"
+};
 
 // Forward declare the locally static matching functions we have generated.
 //
-static hammerParser_hamfile_return	hamfile    (phammerParser ctx);
-static hammerParser_target_decl_or_rule_call_return	target_decl_or_rule_call    (phammerParser ctx);
-static hammerParser_target_decl_or_rule_call_impl_return	target_decl_or_rule_call_impl    (phammerParser ctx);
-static hammerParser_arguments_return	arguments    (phammerParser ctx);
-static hammerParser_args_leaf_return	args_leaf    (phammerParser ctx);
-static hammerParser_non_empty_argument_return	non_empty_argument    (phammerParser ctx);
-static hammerParser_named_argument_return	named_argument    (phammerParser ctx);
-static hammerParser_named_argument_expression_return	named_argument_expression    (phammerParser ctx);
-static hammerParser_argument_return	argument    (phammerParser ctx);
-static hammerParser_argument_name_return	argument_name    (phammerParser ctx);
-static hammerParser_expression_return	expression    (phammerParser ctx);
-static hammerParser_feature_return	feature    (phammerParser ctx);
-static hammerParser_feature_value_return	feature_value    (phammerParser ctx);
-static hammerParser_requirement_set_return	requirement_set    (phammerParser ctx);
-static hammerParser_requirement_return	requirement    (phammerParser ctx);
-static hammerParser_requirement_impl_return	requirement_impl    (phammerParser ctx);
-static hammerParser_conditional_requirement_return	conditional_requirement    (phammerParser ctx);
-static hammerParser_condition_return	condition    (phammerParser ctx);
-static hammerParser_path_like_seq_return	path_like_seq    (phammerParser ctx);
-static hammerParser_path_like_seq_impl_return	path_like_seq_impl    (phammerParser ctx);
-static hammerParser_target_ref_return	target_ref    (phammerParser ctx);
-static hammerParser_target_ref_impl_return	target_ref_impl    (phammerParser ctx);
-static hammerParser_target_name_seq_return	target_name_seq    (phammerParser ctx);
-static hammerParser_target_requirements_return	target_requirements    (phammerParser ctx);
-static hammerParser_list_of_return	list_of    (phammerParser ctx);
-static hammerParser_list_of_impl_return	list_of_impl    (phammerParser ctx);
-static hammerParser_public_tag_return	public_tag    (phammerParser ctx);
-static ANTLR3_BOOLEAN	synpred1_hammer    (phammerParser ctx);
-static ANTLR3_BOOLEAN	synpred2_hammer    (phammerParser ctx);
-static ANTLR3_BOOLEAN	synpred3_hammer    (phammerParser ctx);
-static ANTLR3_BOOLEAN	synpred4_hammer    (phammerParser ctx);
-static ANTLR3_BOOLEAN	synpred5_hammer    (phammerParser ctx);
-static ANTLR3_BOOLEAN	synpred6_hammer    (phammerParser ctx);
-static void	hammerParserFree(phammerParser ctx);
-/* For use in tree output where we are accumulating rule labels via label += ruleRef
- * we need a function that knows how to free a return scope when the list is destroyed.
- * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a macro.
+static hammerParser_hamfile_return
+hamfile(phammerParser ctx);
+static hammerParser_target_decl_or_rule_call_return
+target_decl_or_rule_call(phammerParser ctx);
+static hammerParser_target_decl_or_rule_call_impl_return
+target_decl_or_rule_call_impl(phammerParser ctx);
+static hammerParser_arguments_return
+arguments(phammerParser ctx);
+static hammerParser_args_leaf_return
+args_leaf(phammerParser ctx);
+static hammerParser_non_empty_argument_return
+non_empty_argument(phammerParser ctx);
+static hammerParser_named_argument_return
+named_argument(phammerParser ctx);
+static hammerParser_named_argument_expression_return
+named_argument_expression(phammerParser ctx);
+static hammerParser_argument_return
+argument(phammerParser ctx);
+static hammerParser_argument_name_return
+argument_name(phammerParser ctx);
+static hammerParser_expression_return
+expression(phammerParser ctx);
+static hammerParser_feature_return
+feature(phammerParser ctx);
+static hammerParser_feature_value_return
+feature_value(phammerParser ctx);
+static hammerParser_requirement_set_return
+requirement_set(phammerParser ctx);
+static hammerParser_requirement_return
+requirement(phammerParser ctx);
+static hammerParser_requirement_impl_return
+requirement_impl(phammerParser ctx);
+static hammerParser_conditional_requirement_return
+conditional_requirement(phammerParser ctx);
+static hammerParser_condition_return
+condition(phammerParser ctx);
+static hammerParser_path_like_seq_return
+path_like_seq(phammerParser ctx);
+static hammerParser_path_like_seq_impl_return
+path_like_seq_impl(phammerParser ctx);
+static hammerParser_target_ref_return
+target_ref(phammerParser ctx);
+static hammerParser_target_ref_impl_return
+target_ref_impl(phammerParser ctx);
+static hammerParser_target_name_seq_return
+target_name_seq(phammerParser ctx);
+static hammerParser_target_requirements_return
+target_requirements(phammerParser ctx);
+static hammerParser_list_of_return
+list_of(phammerParser ctx);
+static hammerParser_list_of_impl_return
+list_of_impl(phammerParser ctx);
+static hammerParser_public_tag_return
+public_tag(phammerParser ctx);
+static ANTLR3_BOOLEAN
+synpred1_hammer(phammerParser ctx);
+static ANTLR3_BOOLEAN
+synpred2_hammer(phammerParser ctx);
+static ANTLR3_BOOLEAN
+synpred3_hammer(phammerParser ctx);
+static ANTLR3_BOOLEAN
+synpred4_hammer(phammerParser ctx);
+static ANTLR3_BOOLEAN
+synpred5_hammer(phammerParser ctx);
+static ANTLR3_BOOLEAN
+synpred6_hammer(phammerParser ctx);
+static void
+hammerParserFree(phammerParser ctx);
+/* For use in tree output where we are accumulating rule labels via label +=
+ * ruleRef
+ * we need a function that knows how to free a return scope when the list is
+ * destroyed.
+ * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a
+ * macro.
  */
-static	void ANTLR3_CDECL freeScope(void * scope)
+static void ANTLR3_CDECL
+freeScope(void* scope)
 {
-    ANTLR3_FREE(scope);
+  ANTLR3_FREE(scope);
 }
 
 /** \brief Name of the grammar file that generated this code
@@ -244,9 +288,10 @@ static const char fileName[] = "hammer.g";
 
 /** \brief Return the name of the grammar file that generated this code.
  */
-static const char * getGrammarFileName()
+static const char*
+getGrammarFileName()
 {
-	return fileName;
+  return fileName;
 }
 /** \brief Create a new hammerParser parser and return a context for it.
  *
@@ -255,11 +300,11 @@ static const char * getGrammarFileName()
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API phammerParser
-hammerParserNew   (pANTLR3_COMMON_TOKEN_STREAM instream)
+hammerParserNew(pANTLR3_COMMON_TOKEN_STREAM instream)
 {
-	// See if we can create a new parser with the standard constructor
-	//
-	return hammerParserNewSSD(instream, NULL);
+  // See if we can create a new parser with the standard constructor
+  //
+  return hammerParserNewSSD(instream, NULL);
 }
 
 /** \brief Create a new hammerParser parser and return a context for it.
@@ -269,398 +314,918 @@ hammerParserNew   (pANTLR3_COMMON_TOKEN_STREAM instream)
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API phammerParser
-hammerParserNewSSD   (pANTLR3_COMMON_TOKEN_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
+hammerParserNewSSD(pANTLR3_COMMON_TOKEN_STREAM instream,
+                   pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
-    phammerParser ctx;	    /* Context structure we will build and return   */
+  phammerParser ctx; /* Context structure we will build and return   */
 
-    ctx	= (phammerParser) ANTLR3_CALLOC(1, sizeof(hammerParser));
+  ctx = (phammerParser)ANTLR3_CALLOC(1, sizeof(hammerParser));
 
-    if	(ctx == NULL)
-    {
-		// Failed to allocate memory for parser context
-		//
-        return  NULL;
-    }
+  if (ctx == NULL) {
+    // Failed to allocate memory for parser context
+    //
+    return NULL;
+  }
 
-    /* -------------------------------------------------------------------
-     * Memory for basic structure is allocated, now to fill in
-     * the base ANTLR3 structures. We initialize the function pointers
-     * for the standard ANTLR3 parser function set, but upon return
-     * from here, the programmer may set the pointers to provide custom
-     * implementations of each function.
-     *
-     * We don't use the macros defined in hammerParser.h here, in order that you can get a sense
-     * of what goes where.
-     */
+  /* -------------------------------------------------------------------
+ * Memory for basic structure is allocated, now to fill in
+ * the base ANTLR3 structures. We initialize the function pointers
+ * for the standard ANTLR3 parser function set, but upon return
+ * from here, the programmer may set the pointers to provide custom
+ * implementations of each function.
+ *
+ * We don't use the macros defined in hammerParser.h here, in order that you
+ * can get a sense
+ * of what goes where.
+ */
 
-    /* Create a base parser/recognizer, using the supplied token stream
-     */
-    ctx->pParser	    = antlr3ParserNewStream(ANTLR3_SIZE_HINT, instream->tstream, state);
-    /* Install the implementation of our hammerParser interface
-     */
-    ctx->hamfile	= hamfile;
-    ctx->target_decl_or_rule_call	= target_decl_or_rule_call;
-    ctx->target_decl_or_rule_call_impl	= target_decl_or_rule_call_impl;
-    ctx->arguments	= arguments;
-    ctx->args_leaf	= args_leaf;
-    ctx->non_empty_argument	= non_empty_argument;
-    ctx->named_argument	= named_argument;
-    ctx->named_argument_expression	= named_argument_expression;
-    ctx->argument	= argument;
-    ctx->argument_name	= argument_name;
-    ctx->expression	= expression;
-    ctx->feature	= feature;
-    ctx->feature_value	= feature_value;
-    ctx->requirement_set	= requirement_set;
-    ctx->requirement	= requirement;
-    ctx->requirement_impl	= requirement_impl;
-    ctx->conditional_requirement	= conditional_requirement;
-    ctx->condition	= condition;
-    ctx->path_like_seq	= path_like_seq;
-    ctx->path_like_seq_impl	= path_like_seq_impl;
-    ctx->target_ref	= target_ref;
-    ctx->target_ref_impl	= target_ref_impl;
-    ctx->target_name_seq	= target_name_seq;
-    ctx->target_requirements	= target_requirements;
-    ctx->list_of	= list_of;
-    ctx->list_of_impl	= list_of_impl;
-    ctx->public_tag	= public_tag;
-    ctx->synpred1_hammer	= synpred1_hammer;
-    ctx->synpred2_hammer	= synpred2_hammer;
-    ctx->synpred3_hammer	= synpred3_hammer;
-    ctx->synpred4_hammer	= synpred4_hammer;
-    ctx->synpred5_hammer	= synpred5_hammer;
-    ctx->synpred6_hammer	= synpred6_hammer;
-    ctx->free			= hammerParserFree;
-    ctx->getGrammarFileName	= getGrammarFileName;
+  /* Create a base parser/recognizer, using the supplied token stream
+ */
+  ctx->pParser =
+    antlr3ParserNewStream(ANTLR3_SIZE_HINT, instream->tstream, state);
+  /* Install the implementation of our hammerParser interface
+ */
+  ctx->hamfile = hamfile;
+  ctx->target_decl_or_rule_call = target_decl_or_rule_call;
+  ctx->target_decl_or_rule_call_impl = target_decl_or_rule_call_impl;
+  ctx->arguments = arguments;
+  ctx->args_leaf = args_leaf;
+  ctx->non_empty_argument = non_empty_argument;
+  ctx->named_argument = named_argument;
+  ctx->named_argument_expression = named_argument_expression;
+  ctx->argument = argument;
+  ctx->argument_name = argument_name;
+  ctx->expression = expression;
+  ctx->feature = feature;
+  ctx->feature_value = feature_value;
+  ctx->requirement_set = requirement_set;
+  ctx->requirement = requirement;
+  ctx->requirement_impl = requirement_impl;
+  ctx->conditional_requirement = conditional_requirement;
+  ctx->condition = condition;
+  ctx->path_like_seq = path_like_seq;
+  ctx->path_like_seq_impl = path_like_seq_impl;
+  ctx->target_ref = target_ref;
+  ctx->target_ref_impl = target_ref_impl;
+  ctx->target_name_seq = target_name_seq;
+  ctx->target_requirements = target_requirements;
+  ctx->list_of = list_of;
+  ctx->list_of_impl = list_of_impl;
+  ctx->public_tag = public_tag;
+  ctx->synpred1_hammer = synpred1_hammer;
+  ctx->synpred2_hammer = synpred2_hammer;
+  ctx->synpred3_hammer = synpred3_hammer;
+  ctx->synpred4_hammer = synpred4_hammer;
+  ctx->synpred5_hammer = synpred5_hammer;
+  ctx->synpred6_hammer = synpred6_hammer;
+  ctx->free = hammerParserFree;
+  ctx->getGrammarFileName = getGrammarFileName;
 
-    /* Install the scope pushing methods.
-     */
-    ADAPTOR	= ANTLR3_TREE_ADAPTORNew(instream->tstream->tokenSource->strFactory);
-    ctx->vectors	= antlr3VectorFactoryNew(64);
+  /* Install the scope pushing methods.
+ */
+  ADAPTOR = ANTLR3_TREE_ADAPTORNew(instream->tstream->tokenSource->strFactory);
+  ctx->vectors = antlr3VectorFactoryNew(64);
 
+  /* Install the token table
+ */
+  PSRSTATE->tokenNames = hammerParserTokenNames;
 
-
-    /* Install the token table
-     */
-    PSRSTATE->tokenNames   = hammerParserTokenNames;
-
-
-    /* Return the newly built parser to the caller
-     */
-    return  ctx;
+  /* Return the newly built parser to the caller
+ */
+  return ctx;
 }
 
 /** Free the parser resources
  */
- static void
- hammerParserFree(phammerParser ctx)
- {
-    /* Free any scope memory
-     */
+static void
+hammerParserFree(phammerParser ctx)
+{
+  /* Free any scope memory
+ */
 
-    ctx->vectors->close(ctx->vectors);
-    /* We created the adaptor so we must free it
-     */
-    ADAPTOR->free(ADAPTOR);
-	// Free this parser
-	//
-    ctx->pParser->free(ctx->pParser);
-    ANTLR3_FREE(ctx);
+  ctx->vectors->close(ctx->vectors);
+  /* We created the adaptor so we must free it
+ */
+  ADAPTOR->free(ADAPTOR);
+  // Free this parser
+  //
+  ctx->pParser->free(ctx->pParser);
+  ANTLR3_FREE(ctx);
 
-    /* Everything is released, so we can return
-     */
-    return;
- }
+  /* Everything is released, so we can return
+ */
+  return;
+}
 
 /** Return token names used by this parser
  *
- * The returned pointer is used as an index into the token names table (using the token
+ * The returned pointer is used as an index into the token names table (using
+ * the token
  * number as the index).
  *
  * \return Pointer to first char * in the table.
  */
-static pANTLR3_UINT8    *getTokenNames()
+static pANTLR3_UINT8*
+getTokenNames()
 {
-        return hammerParserTokenNames;
+  return hammerParserTokenNames;
 }
-
 
 /* Declare the bitsets
  */
 
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_hamfile111  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_hamfile111_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000280002) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_hamfile111	= { FOLLOW_WS_in_hamfile111_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_decl_or_rule_call_in_hamfile114  */
-static	ANTLR3_BITWORD FOLLOW_target_decl_or_rule_call_in_hamfile114_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000200002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_decl_or_rule_call_in_hamfile114	= { FOLLOW_target_decl_or_rule_call_in_hamfile114_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132  */
-static	ANTLR3_BITWORD FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000180000) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132	= { FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_target_decl_or_rule_call134  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_target_decl_or_rule_call134_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000180000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_target_decl_or_rule_call134	= { FOLLOW_WS_in_target_decl_or_rule_call134_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_EXP_END_in_target_decl_or_rule_call137  */
-static	ANTLR3_BITWORD FOLLOW_EXP_END_in_target_decl_or_rule_call137_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_target_decl_or_rule_call137	= { FOLLOW_EXP_END_in_target_decl_or_rule_call137_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_target_decl_or_rule_call139  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_target_decl_or_rule_call139_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_target_decl_or_rule_call139	= { FOLLOW_WS_in_target_decl_or_rule_call139_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_target_decl_or_rule_call_impl153  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_target_decl_or_rule_call_impl153_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_target_decl_or_rule_call_impl153	= { FOLLOW_ID_in_target_decl_or_rule_call_impl153_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_arguments_in_target_decl_or_rule_call_impl155  */
-static	ANTLR3_BITWORD FOLLOW_arguments_in_target_decl_or_rule_call_impl155_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_arguments_in_target_decl_or_rule_call_impl155	= { FOLLOW_arguments_in_target_decl_or_rule_call_impl155_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_argument_in_arguments205  */
-static	ANTLR3_BITWORD FOLLOW_argument_in_arguments205_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_argument_in_arguments205	= { FOLLOW_argument_in_arguments205_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_args_leaf_in_arguments207  */
-static	ANTLR3_BITWORD FOLLOW_args_leaf_in_arguments207_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_args_leaf_in_arguments207	= { FOLLOW_args_leaf_in_arguments207_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_args_leaf229  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_args_leaf229_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000480000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_args_leaf229	= { FOLLOW_WS_in_args_leaf229_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_COLON_in_args_leaf232  */
-static	ANTLR3_BITWORD FOLLOW_COLON_in_args_leaf232_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_COLON_in_args_leaf232	= { FOLLOW_COLON_in_args_leaf232_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_argument_in_args_leaf234  */
-static	ANTLR3_BITWORD FOLLOW_argument_in_args_leaf234_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_argument_in_args_leaf234	= { FOLLOW_argument_in_args_leaf234_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_expression_in_non_empty_argument253  */
-static	ANTLR3_BITWORD FOLLOW_expression_in_non_empty_argument253_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_expression_in_non_empty_argument253	= { FOLLOW_expression_in_non_empty_argument253_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_named_argument_in_non_empty_argument268  */
-static	ANTLR3_BITWORD FOLLOW_named_argument_in_non_empty_argument268_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_named_argument_in_non_empty_argument268	= { FOLLOW_named_argument_in_non_empty_argument268_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_argument_name_in_named_argument283  */
-static	ANTLR3_BITWORD FOLLOW_argument_name_in_named_argument283_bits[]	= { ANTLR3_UINT64_LIT(0x0000000821A80000) };
-static  ANTLR3_BITSET_LIST FOLLOW_argument_name_in_named_argument283	= { FOLLOW_argument_name_in_named_argument283_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_named_argument_expression_in_named_argument285  */
-static	ANTLR3_BITWORD FOLLOW_named_argument_expression_in_named_argument285_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_named_argument_expression_in_named_argument285	= { FOLLOW_named_argument_expression_in_named_argument285_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_named_argument_expression343  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_named_argument_expression343_bits[]	= { ANTLR3_UINT64_LIT(0x0000000821A80000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_named_argument_expression343	= { FOLLOW_WS_in_named_argument_expression343_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_expression_in_named_argument_expression346  */
-static	ANTLR3_BITWORD FOLLOW_expression_in_named_argument_expression346_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_expression_in_named_argument_expression346	= { FOLLOW_expression_in_named_argument_expression346_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_argument407  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_argument407_bits[]	= { ANTLR3_UINT64_LIT(0x0000000821A80000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_argument407	= { FOLLOW_WS_in_argument407_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_non_empty_argument_in_argument410  */
-static	ANTLR3_BITWORD FOLLOW_non_empty_argument_in_argument410_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_non_empty_argument_in_argument410	= { FOLLOW_non_empty_argument_in_argument410_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_argument_name430  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_argument_name430_bits[]	= { ANTLR3_UINT64_LIT(0x0000000010080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_argument_name430	= { FOLLOW_ID_in_argument_name430_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_argument_name432  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_argument_name432_bits[]	= { ANTLR3_UINT64_LIT(0x0000000010080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_argument_name432	= { FOLLOW_WS_in_argument_name432_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_28_in_argument_name435  */
-static	ANTLR3_BITWORD FOLLOW_28_in_argument_name435_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_28_in_argument_name435	= { FOLLOW_28_in_argument_name435_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_set_in_expression449  */
-static	ANTLR3_BITWORD FOLLOW_requirement_set_in_expression449_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_set_in_expression449	= { FOLLOW_requirement_set_in_expression449_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_list_of_in_expression467  */
-static	ANTLR3_BITWORD FOLLOW_list_of_in_expression467_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_list_of_in_expression467	= { FOLLOW_list_of_in_expression467_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_29_in_feature475  */
-static	ANTLR3_BITWORD FOLLOW_29_in_feature475_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000200000) };
-static  ANTLR3_BITSET_LIST FOLLOW_29_in_feature475	= { FOLLOW_29_in_feature475_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature477  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature477_bits[]	= { ANTLR3_UINT64_LIT(0x0000000040000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature477	= { FOLLOW_ID_in_feature477_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_30_in_feature479  */
-static	ANTLR3_BITWORD FOLLOW_30_in_feature479_bits[]	= { ANTLR3_UINT64_LIT(0x0000000080A00000) };
-static  ANTLR3_BITSET_LIST FOLLOW_30_in_feature479	= { FOLLOW_30_in_feature479_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_value_in_feature481  */
-static	ANTLR3_BITWORD FOLLOW_feature_value_in_feature481_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_value_in_feature481	= { FOLLOW_feature_value_in_feature481_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_in_feature_value498  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_in_feature_value498_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_feature_value498	= { FOLLOW_path_like_seq_in_feature_value498_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_31_in_feature_value516  */
-static	ANTLR3_BITWORD FOLLOW_31_in_feature_value516_bits[]	= { ANTLR3_UINT64_LIT(0x0000000001A00000) };
-static  ANTLR3_BITSET_LIST FOLLOW_31_in_feature_value516	= { FOLLOW_31_in_feature_value516_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_in_feature_value518  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_in_feature_value518_bits[]	= { ANTLR3_UINT64_LIT(0x0000000100000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_in_feature_value518	= { FOLLOW_target_ref_in_feature_value518_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_32_in_feature_value520  */
-static	ANTLR3_BITWORD FOLLOW_32_in_feature_value520_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_32_in_feature_value520	= { FOLLOW_32_in_feature_value520_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_in_requirement_set533  */
-static	ANTLR3_BITWORD FOLLOW_requirement_in_requirement_set533_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_in_requirement_set533	= { FOLLOW_requirement_in_requirement_set533_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_requirement_set536  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_requirement_set536_bits[]	= { ANTLR3_UINT64_LIT(0x0000000021080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_requirement_set536	= { FOLLOW_WS_in_requirement_set536_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_in_requirement_set539  */
-static	ANTLR3_BITWORD FOLLOW_requirement_in_requirement_set539_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_in_requirement_set539	= { FOLLOW_requirement_in_requirement_set539_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_public_tag_in_requirement557  */
-static	ANTLR3_BITWORD FOLLOW_public_tag_in_requirement557_bits[]	= { ANTLR3_UINT64_LIT(0x0000000021000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_public_tag_in_requirement557	= { FOLLOW_public_tag_in_requirement557_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_impl_in_requirement560  */
-static	ANTLR3_BITWORD FOLLOW_requirement_impl_in_requirement560_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_impl_in_requirement560	= { FOLLOW_requirement_impl_in_requirement560_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_conditional_requirement_in_requirement_impl583  */
-static	ANTLR3_BITWORD FOLLOW_conditional_requirement_in_requirement_impl583_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_conditional_requirement_in_requirement_impl583	= { FOLLOW_conditional_requirement_in_requirement_impl583_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_requirement_impl590  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_requirement_impl590_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_requirement_impl590	= { FOLLOW_feature_in_requirement_impl590_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_condition_in_conditional_requirement597  */
-static	ANTLR3_BITWORD FOLLOW_condition_in_conditional_requirement597_bits[]	= { ANTLR3_UINT64_LIT(0x0000000020000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_condition_in_conditional_requirement597	= { FOLLOW_condition_in_conditional_requirement597_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_conditional_requirement599  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_conditional_requirement599_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_conditional_requirement599	= { FOLLOW_feature_in_conditional_requirement599_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_condition616  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_condition616_bits[]	= { ANTLR3_UINT64_LIT(0x0000000200400000) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_condition616	= { FOLLOW_feature_in_condition616_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_33_in_condition619  */
-static	ANTLR3_BITWORD FOLLOW_33_in_condition619_bits[]	= { ANTLR3_UINT64_LIT(0x0000000020000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_33_in_condition619	= { FOLLOW_33_in_condition619_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_condition621  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_condition621_bits[]	= { ANTLR3_UINT64_LIT(0x0000000200400000) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_condition621	= { FOLLOW_feature_in_condition621_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_COLON_in_condition625  */
-static	ANTLR3_BITWORD FOLLOW_COLON_in_condition625_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_COLON_in_condition625	= { FOLLOW_COLON_in_condition625_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_SLASH_in_path_like_seq640  */
-static	ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq640_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000A00000) };
-static  ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq640	= { FOLLOW_SLASH_in_path_like_seq640_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_impl_in_path_like_seq642  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq642_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq642	= { FOLLOW_path_like_seq_impl_in_path_like_seq642_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_impl_in_path_like_seq663  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq663_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq663	= { FOLLOW_path_like_seq_impl_in_path_like_seq663_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_path_like_seq_impl678  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl678_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000800002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl678	= { FOLLOW_ID_in_path_like_seq_impl678_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_SLASH_in_path_like_seq_impl681  */
-static	ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq_impl681_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000200000) };
-static  ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq_impl681	= { FOLLOW_SLASH_in_path_like_seq_impl681_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_path_like_seq_impl683  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl683_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000800002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl683	= { FOLLOW_ID_in_path_like_seq_impl683_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_SLASH_in_path_like_seq_impl687  */
-static	ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq_impl687_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq_impl687	= { FOLLOW_SLASH_in_path_like_seq_impl687_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_in_target_ref700  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_in_target_ref700_bits[]	= { ANTLR3_UINT64_LIT(0x0000000400880000) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_target_ref700	= { FOLLOW_path_like_seq_in_target_ref700_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_impl_in_target_ref702  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_impl_in_target_ref702_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_impl_in_target_ref702	= { FOLLOW_target_ref_impl_in_target_ref702_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_public_tag_in_target_ref727  */
-static	ANTLR3_BITWORD FOLLOW_public_tag_in_target_ref727_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000A00000) };
-static  ANTLR3_BITSET_LIST FOLLOW_public_tag_in_target_ref727	= { FOLLOW_public_tag_in_target_ref727_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_in_target_ref729  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_in_target_ref729_bits[]	= { ANTLR3_UINT64_LIT(0x0000000400880002) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_target_ref729	= { FOLLOW_path_like_seq_in_target_ref729_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_impl_in_target_ref731  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_impl_in_target_ref731_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_impl_in_target_ref731	= { FOLLOW_target_ref_impl_in_target_ref731_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_requirements_in_target_ref_impl752  */
-static	ANTLR3_BITWORD FOLLOW_target_requirements_in_target_ref_impl752_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_requirements_in_target_ref_impl752	= { FOLLOW_target_requirements_in_target_ref_impl752_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_name_seq_in_target_ref_impl782  */
-static	ANTLR3_BITWORD FOLLOW_target_name_seq_in_target_ref_impl782_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000880002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_name_seq_in_target_ref_impl782	= { FOLLOW_target_name_seq_in_target_ref_impl782_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_requirements_in_target_ref_impl784  */
-static	ANTLR3_BITWORD FOLLOW_target_requirements_in_target_ref_impl784_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_requirements_in_target_ref_impl784	= { FOLLOW_target_requirements_in_target_ref_impl784_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_34_in_target_name_seq793  */
-static	ANTLR3_BITWORD FOLLOW_34_in_target_name_seq793_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000200000) };
-static  ANTLR3_BITSET_LIST FOLLOW_34_in_target_name_seq793	= { FOLLOW_34_in_target_name_seq793_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_target_name_seq795  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_target_name_seq795_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_target_name_seq795	= { FOLLOW_ID_in_target_name_seq795_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_target_requirements811  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_target_requirements811_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000880000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_target_requirements811	= { FOLLOW_WS_in_target_requirements811_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_SLASH_in_target_requirements814  */
-static	ANTLR3_BITWORD FOLLOW_SLASH_in_target_requirements814_bits[]	= { ANTLR3_UINT64_LIT(0x0000000021000000) };
-static  ANTLR3_BITSET_LIST FOLLOW_SLASH_in_target_requirements814	= { FOLLOW_SLASH_in_target_requirements814_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_in_target_requirements816  */
-static	ANTLR3_BITWORD FOLLOW_requirement_in_target_requirements816_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000880002) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_in_target_requirements816	= { FOLLOW_requirement_in_target_requirements816_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_list_of_impl_in_list_of834  */
-static	ANTLR3_BITWORD FOLLOW_list_of_impl_in_list_of834_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_list_of_impl_in_list_of834	= { FOLLOW_list_of_impl_in_list_of834_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_list_of837  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_list_of837_bits[]	= { ANTLR3_UINT64_LIT(0x0000000821A80000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_list_of837	= { FOLLOW_WS_in_list_of837_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_list_of_impl_in_list_of840  */
-static	ANTLR3_BITWORD FOLLOW_list_of_impl_in_list_of840_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_list_of_impl_in_list_of840	= { FOLLOW_list_of_impl_in_list_of840_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_in_list_of_impl858  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_in_list_of_impl858_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_list_of_impl858	= { FOLLOW_path_like_seq_in_list_of_impl858_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_in_list_of_impl875  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_in_list_of_impl875_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_in_list_of_impl875	= { FOLLOW_target_ref_in_list_of_impl875_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_35_in_list_of_impl892  */
-static	ANTLR3_BITWORD FOLLOW_35_in_list_of_impl892_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000280000) };
-static  ANTLR3_BITSET_LIST FOLLOW_35_in_list_of_impl892	= { FOLLOW_35_in_list_of_impl892_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_list_of_impl894  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_list_of_impl894_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000280000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_list_of_impl894	= { FOLLOW_WS_in_list_of_impl894_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897  */
-static	ANTLR3_BITWORD FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897_bits[]	= { ANTLR3_UINT64_LIT(0x0000001000080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897	= { FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_list_of_impl899  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_list_of_impl899_bits[]	= { ANTLR3_UINT64_LIT(0x0000001000080000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_list_of_impl899	= { FOLLOW_WS_in_list_of_impl899_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_36_in_list_of_impl902  */
-static	ANTLR3_BITWORD FOLLOW_36_in_list_of_impl902_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_36_in_list_of_impl902	= { FOLLOW_36_in_list_of_impl902_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_PUBLIC_TAG_in_public_tag913  */
-static	ANTLR3_BITWORD FOLLOW_PUBLIC_TAG_in_public_tag913_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_PUBLIC_TAG_in_public_tag913	= { FOLLOW_PUBLIC_TAG_in_public_tag913_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_public_tag915  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_public_tag915_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000080002) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_public_tag915	= { FOLLOW_WS_in_public_tag915_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_synpred1_hammer174  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_synpred1_hammer174_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000180000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred1_hammer174	= { FOLLOW_WS_in_synpred1_hammer174_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_EXP_END_in_synpred1_hammer177  */
-static	ANTLR3_BITWORD FOLLOW_EXP_END_in_synpred1_hammer177_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_synpred1_hammer177	= { FOLLOW_EXP_END_in_synpred1_hammer177_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_synpred2_hammer308  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_synpred2_hammer308_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000480000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred2_hammer308	= { FOLLOW_WS_in_synpred2_hammer308_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_COLON_in_synpred2_hammer311  */
-static	ANTLR3_BITWORD FOLLOW_COLON_in_synpred2_hammer311_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_COLON_in_synpred2_hammer311	= { FOLLOW_COLON_in_synpred2_hammer311_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_synpred3_hammer326  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_synpred3_hammer326_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000180000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred3_hammer326	= { FOLLOW_WS_in_synpred3_hammer326_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_EXP_END_in_synpred3_hammer329  */
-static	ANTLR3_BITWORD FOLLOW_EXP_END_in_synpred3_hammer329_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_synpred3_hammer329	= { FOLLOW_EXP_END_in_synpred3_hammer329_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_synpred4_hammer370  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_synpred4_hammer370_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000480000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred4_hammer370	= { FOLLOW_WS_in_synpred4_hammer370_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_COLON_in_synpred4_hammer373  */
-static	ANTLR3_BITWORD FOLLOW_COLON_in_synpred4_hammer373_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_COLON_in_synpred4_hammer373	= { FOLLOW_COLON_in_synpred4_hammer373_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_WS_in_synpred5_hammer386  */
-static	ANTLR3_BITWORD FOLLOW_WS_in_synpred5_hammer386_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000180000) };
-static  ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred5_hammer386	= { FOLLOW_WS_in_synpred5_hammer386_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_EXP_END_in_synpred5_hammer389  */
-static	ANTLR3_BITWORD FOLLOW_EXP_END_in_synpred5_hammer389_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_synpred5_hammer389	= { FOLLOW_EXP_END_in_synpred5_hammer389_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_conditional_requirement_in_synpred6_hammer579  */
-static	ANTLR3_BITWORD FOLLOW_conditional_requirement_in_synpred6_hammer579_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_conditional_requirement_in_synpred6_hammer579	= { FOLLOW_conditional_requirement_in_synpred6_hammer579_bits, 1	};
-
-
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_hamfile111  */
+static ANTLR3_BITWORD FOLLOW_WS_in_hamfile111_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000280002) };
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_hamfile111 = {
+  FOLLOW_WS_in_hamfile111_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_decl_or_rule_call_in_hamfile114  */
+static ANTLR3_BITWORD FOLLOW_target_decl_or_rule_call_in_hamfile114_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000200002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_decl_or_rule_call_in_hamfile114 = {
+  FOLLOW_target_decl_or_rule_call_in_hamfile114_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132  */
+static ANTLR3_BITWORD
+  FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000000000180000)
+  };
+static ANTLR3_BITSET_LIST
+  FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132 = {
+    FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132_bits,
+    1
+  };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_target_decl_or_rule_call134  */
+static ANTLR3_BITWORD FOLLOW_WS_in_target_decl_or_rule_call134_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000180000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_target_decl_or_rule_call134 = {
+  FOLLOW_WS_in_target_decl_or_rule_call134_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_EXP_END_in_target_decl_or_rule_call137  */
+static ANTLR3_BITWORD FOLLOW_EXP_END_in_target_decl_or_rule_call137_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_target_decl_or_rule_call137 = {
+  FOLLOW_EXP_END_in_target_decl_or_rule_call137_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_target_decl_or_rule_call139  */
+static ANTLR3_BITWORD FOLLOW_WS_in_target_decl_or_rule_call139_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_target_decl_or_rule_call139 = {
+  FOLLOW_WS_in_target_decl_or_rule_call139_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_target_decl_or_rule_call_impl153  */
+static ANTLR3_BITWORD FOLLOW_ID_in_target_decl_or_rule_call_impl153_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_target_decl_or_rule_call_impl153 = {
+  FOLLOW_ID_in_target_decl_or_rule_call_impl153_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_arguments_in_target_decl_or_rule_call_impl155  */
+static ANTLR3_BITWORD
+  FOLLOW_arguments_in_target_decl_or_rule_call_impl155_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000000000000002)
+  };
+static ANTLR3_BITSET_LIST FOLLOW_arguments_in_target_decl_or_rule_call_impl155 =
+  { FOLLOW_arguments_in_target_decl_or_rule_call_impl155_bits, 1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_argument_in_arguments205  */
+static ANTLR3_BITWORD FOLLOW_argument_in_arguments205_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_argument_in_arguments205 = {
+  FOLLOW_argument_in_arguments205_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_args_leaf_in_arguments207  */
+static ANTLR3_BITWORD FOLLOW_args_leaf_in_arguments207_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_args_leaf_in_arguments207 = {
+  FOLLOW_args_leaf_in_arguments207_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_args_leaf229  */
+static ANTLR3_BITWORD FOLLOW_WS_in_args_leaf229_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000480000) };
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_args_leaf229 = {
+  FOLLOW_WS_in_args_leaf229_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_COLON_in_args_leaf232  */
+static ANTLR3_BITWORD FOLLOW_COLON_in_args_leaf232_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000080000) };
+static ANTLR3_BITSET_LIST FOLLOW_COLON_in_args_leaf232 = {
+  FOLLOW_COLON_in_args_leaf232_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_argument_in_args_leaf234  */
+static ANTLR3_BITWORD FOLLOW_argument_in_args_leaf234_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_argument_in_args_leaf234 = {
+  FOLLOW_argument_in_args_leaf234_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_expression_in_non_empty_argument253  */
+static ANTLR3_BITWORD FOLLOW_expression_in_non_empty_argument253_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_expression_in_non_empty_argument253 = {
+  FOLLOW_expression_in_non_empty_argument253_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_named_argument_in_non_empty_argument268  */
+static ANTLR3_BITWORD FOLLOW_named_argument_in_non_empty_argument268_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_named_argument_in_non_empty_argument268 = {
+  FOLLOW_named_argument_in_non_empty_argument268_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_argument_name_in_named_argument283  */
+static ANTLR3_BITWORD FOLLOW_argument_name_in_named_argument283_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000821A80000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_argument_name_in_named_argument283 = {
+  FOLLOW_argument_name_in_named_argument283_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_named_argument_expression_in_named_argument285  */
+static ANTLR3_BITWORD
+  FOLLOW_named_argument_expression_in_named_argument285_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000000000000002)
+  };
+static ANTLR3_BITSET_LIST
+  FOLLOW_named_argument_expression_in_named_argument285 =
+    { FOLLOW_named_argument_expression_in_named_argument285_bits, 1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_named_argument_expression343  */
+static ANTLR3_BITWORD FOLLOW_WS_in_named_argument_expression343_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000821A80000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_named_argument_expression343 = {
+  FOLLOW_WS_in_named_argument_expression343_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_expression_in_named_argument_expression346  */
+static ANTLR3_BITWORD FOLLOW_expression_in_named_argument_expression346_bits[] =
+  { ANTLR3_UINT64_LIT(0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_expression_in_named_argument_expression346 = {
+  FOLLOW_expression_in_named_argument_expression346_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_argument407  */
+static ANTLR3_BITWORD FOLLOW_WS_in_argument407_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000821A80000) };
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_argument407 = {
+  FOLLOW_WS_in_argument407_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_non_empty_argument_in_argument410  */
+static ANTLR3_BITWORD FOLLOW_non_empty_argument_in_argument410_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_non_empty_argument_in_argument410 = {
+  FOLLOW_non_empty_argument_in_argument410_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_argument_name430  */
+static ANTLR3_BITWORD FOLLOW_ID_in_argument_name430_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000010080000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_argument_name430 = {
+  FOLLOW_ID_in_argument_name430_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_argument_name432  */
+static ANTLR3_BITWORD FOLLOW_WS_in_argument_name432_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000010080000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_argument_name432 = {
+  FOLLOW_WS_in_argument_name432_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_28_in_argument_name435  */
+static ANTLR3_BITWORD FOLLOW_28_in_argument_name435_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_28_in_argument_name435 = {
+  FOLLOW_28_in_argument_name435_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_set_in_expression449  */
+static ANTLR3_BITWORD FOLLOW_requirement_set_in_expression449_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_requirement_set_in_expression449 = {
+  FOLLOW_requirement_set_in_expression449_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_list_of_in_expression467  */
+static ANTLR3_BITWORD FOLLOW_list_of_in_expression467_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_list_of_in_expression467 = {
+  FOLLOW_list_of_in_expression467_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_29_in_feature475  */
+static ANTLR3_BITWORD FOLLOW_29_in_feature475_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000200000) };
+static ANTLR3_BITSET_LIST FOLLOW_29_in_feature475 = {
+  FOLLOW_29_in_feature475_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature477  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature477_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000040000000) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature477 = {
+  FOLLOW_ID_in_feature477_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_30_in_feature479  */
+static ANTLR3_BITWORD FOLLOW_30_in_feature479_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000080A00000) };
+static ANTLR3_BITSET_LIST FOLLOW_30_in_feature479 = {
+  FOLLOW_30_in_feature479_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_value_in_feature481  */
+static ANTLR3_BITWORD FOLLOW_feature_value_in_feature481_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_value_in_feature481 = {
+  FOLLOW_feature_value_in_feature481_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_in_feature_value498  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_in_feature_value498_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_feature_value498 = {
+  FOLLOW_path_like_seq_in_feature_value498_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_31_in_feature_value516  */
+static ANTLR3_BITWORD FOLLOW_31_in_feature_value516_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000001A00000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_31_in_feature_value516 = {
+  FOLLOW_31_in_feature_value516_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_in_feature_value518  */
+static ANTLR3_BITWORD FOLLOW_target_ref_in_feature_value518_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000100000000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_in_feature_value518 = {
+  FOLLOW_target_ref_in_feature_value518_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_32_in_feature_value520  */
+static ANTLR3_BITWORD FOLLOW_32_in_feature_value520_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_32_in_feature_value520 = {
+  FOLLOW_32_in_feature_value520_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_in_requirement_set533  */
+static ANTLR3_BITWORD FOLLOW_requirement_in_requirement_set533_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_requirement_in_requirement_set533 = {
+  FOLLOW_requirement_in_requirement_set533_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_requirement_set536  */
+static ANTLR3_BITWORD FOLLOW_WS_in_requirement_set536_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000021080000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_requirement_set536 = {
+  FOLLOW_WS_in_requirement_set536_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_in_requirement_set539  */
+static ANTLR3_BITWORD FOLLOW_requirement_in_requirement_set539_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_requirement_in_requirement_set539 = {
+  FOLLOW_requirement_in_requirement_set539_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_public_tag_in_requirement557  */
+static ANTLR3_BITWORD FOLLOW_public_tag_in_requirement557_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000021000000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_public_tag_in_requirement557 = {
+  FOLLOW_public_tag_in_requirement557_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_impl_in_requirement560  */
+static ANTLR3_BITWORD FOLLOW_requirement_impl_in_requirement560_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_requirement_impl_in_requirement560 = {
+  FOLLOW_requirement_impl_in_requirement560_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_conditional_requirement_in_requirement_impl583  */
+static ANTLR3_BITWORD
+  FOLLOW_conditional_requirement_in_requirement_impl583_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000000000000002)
+  };
+static ANTLR3_BITSET_LIST
+  FOLLOW_conditional_requirement_in_requirement_impl583 =
+    { FOLLOW_conditional_requirement_in_requirement_impl583_bits, 1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_requirement_impl590  */
+static ANTLR3_BITWORD FOLLOW_feature_in_requirement_impl590_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_requirement_impl590 = {
+  FOLLOW_feature_in_requirement_impl590_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_condition_in_conditional_requirement597  */
+static ANTLR3_BITWORD FOLLOW_condition_in_conditional_requirement597_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000020000000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_condition_in_conditional_requirement597 = {
+  FOLLOW_condition_in_conditional_requirement597_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_conditional_requirement599  */
+static ANTLR3_BITWORD FOLLOW_feature_in_conditional_requirement599_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_conditional_requirement599 = {
+  FOLLOW_feature_in_conditional_requirement599_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_condition616  */
+static ANTLR3_BITWORD FOLLOW_feature_in_condition616_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000200400000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_condition616 = {
+  FOLLOW_feature_in_condition616_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_33_in_condition619  */
+static ANTLR3_BITWORD FOLLOW_33_in_condition619_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000020000000) };
+static ANTLR3_BITSET_LIST FOLLOW_33_in_condition619 = {
+  FOLLOW_33_in_condition619_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_condition621  */
+static ANTLR3_BITWORD FOLLOW_feature_in_condition621_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000200400000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_condition621 = {
+  FOLLOW_feature_in_condition621_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_COLON_in_condition625  */
+static ANTLR3_BITWORD FOLLOW_COLON_in_condition625_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_COLON_in_condition625 = {
+  FOLLOW_COLON_in_condition625_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_SLASH_in_path_like_seq640  */
+static ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq640_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000A00000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq640 = {
+  FOLLOW_SLASH_in_path_like_seq640_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_impl_in_path_like_seq642  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq642_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq642 = {
+  FOLLOW_path_like_seq_impl_in_path_like_seq642_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_impl_in_path_like_seq663  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq663_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq663 = {
+  FOLLOW_path_like_seq_impl_in_path_like_seq663_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_path_like_seq_impl678  */
+static ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl678_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000800002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl678 = {
+  FOLLOW_ID_in_path_like_seq_impl678_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_SLASH_in_path_like_seq_impl681  */
+static ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq_impl681_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000200000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq_impl681 = {
+  FOLLOW_SLASH_in_path_like_seq_impl681_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_path_like_seq_impl683  */
+static ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl683_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000800002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl683 = {
+  FOLLOW_ID_in_path_like_seq_impl683_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_SLASH_in_path_like_seq_impl687  */
+static ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq_impl687_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq_impl687 = {
+  FOLLOW_SLASH_in_path_like_seq_impl687_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_in_target_ref700  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_in_target_ref700_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000400880000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_target_ref700 = {
+  FOLLOW_path_like_seq_in_target_ref700_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_impl_in_target_ref702  */
+static ANTLR3_BITWORD FOLLOW_target_ref_impl_in_target_ref702_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_impl_in_target_ref702 = {
+  FOLLOW_target_ref_impl_in_target_ref702_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_public_tag_in_target_ref727  */
+static ANTLR3_BITWORD FOLLOW_public_tag_in_target_ref727_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000A00000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_public_tag_in_target_ref727 = {
+  FOLLOW_public_tag_in_target_ref727_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_in_target_ref729  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_in_target_ref729_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000400880002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_target_ref729 = {
+  FOLLOW_path_like_seq_in_target_ref729_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_impl_in_target_ref731  */
+static ANTLR3_BITWORD FOLLOW_target_ref_impl_in_target_ref731_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_impl_in_target_ref731 = {
+  FOLLOW_target_ref_impl_in_target_ref731_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_requirements_in_target_ref_impl752  */
+static ANTLR3_BITWORD FOLLOW_target_requirements_in_target_ref_impl752_bits[] =
+  { ANTLR3_UINT64_LIT(0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_target_requirements_in_target_ref_impl752 = {
+  FOLLOW_target_requirements_in_target_ref_impl752_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_name_seq_in_target_ref_impl782  */
+static ANTLR3_BITWORD FOLLOW_target_name_seq_in_target_ref_impl782_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000880002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_name_seq_in_target_ref_impl782 = {
+  FOLLOW_target_name_seq_in_target_ref_impl782_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_requirements_in_target_ref_impl784  */
+static ANTLR3_BITWORD FOLLOW_target_requirements_in_target_ref_impl784_bits[] =
+  { ANTLR3_UINT64_LIT(0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_target_requirements_in_target_ref_impl784 = {
+  FOLLOW_target_requirements_in_target_ref_impl784_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_34_in_target_name_seq793  */
+static ANTLR3_BITWORD FOLLOW_34_in_target_name_seq793_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000200000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_34_in_target_name_seq793 = {
+  FOLLOW_34_in_target_name_seq793_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_target_name_seq795  */
+static ANTLR3_BITWORD FOLLOW_ID_in_target_name_seq795_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_target_name_seq795 = {
+  FOLLOW_ID_in_target_name_seq795_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_target_requirements811  */
+static ANTLR3_BITWORD FOLLOW_WS_in_target_requirements811_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000880000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_target_requirements811 = {
+  FOLLOW_WS_in_target_requirements811_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_SLASH_in_target_requirements814  */
+static ANTLR3_BITWORD FOLLOW_SLASH_in_target_requirements814_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000021000000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_SLASH_in_target_requirements814 = {
+  FOLLOW_SLASH_in_target_requirements814_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_in_target_requirements816  */
+static ANTLR3_BITWORD FOLLOW_requirement_in_target_requirements816_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000880002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_requirement_in_target_requirements816 = {
+  FOLLOW_requirement_in_target_requirements816_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_list_of_impl_in_list_of834  */
+static ANTLR3_BITWORD FOLLOW_list_of_impl_in_list_of834_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_list_of_impl_in_list_of834 = {
+  FOLLOW_list_of_impl_in_list_of834_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_list_of837  */
+static ANTLR3_BITWORD FOLLOW_WS_in_list_of837_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000821A80000) };
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_list_of837 = {
+  FOLLOW_WS_in_list_of837_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_list_of_impl_in_list_of840  */
+static ANTLR3_BITWORD FOLLOW_list_of_impl_in_list_of840_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_list_of_impl_in_list_of840 = {
+  FOLLOW_list_of_impl_in_list_of840_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_in_list_of_impl858  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_in_list_of_impl858_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_list_of_impl858 = {
+  FOLLOW_path_like_seq_in_list_of_impl858_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_in_list_of_impl875  */
+static ANTLR3_BITWORD FOLLOW_target_ref_in_list_of_impl875_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_in_list_of_impl875 = {
+  FOLLOW_target_ref_in_list_of_impl875_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_35_in_list_of_impl892  */
+static ANTLR3_BITWORD FOLLOW_35_in_list_of_impl892_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000280000) };
+static ANTLR3_BITSET_LIST FOLLOW_35_in_list_of_impl892 = {
+  FOLLOW_35_in_list_of_impl892_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_list_of_impl894  */
+static ANTLR3_BITWORD FOLLOW_WS_in_list_of_impl894_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000280000) };
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_list_of_impl894 = {
+  FOLLOW_WS_in_list_of_impl894_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897  */
+static ANTLR3_BITWORD
+  FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000001000080000)
+  };
+static ANTLR3_BITSET_LIST
+  FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897 =
+    { FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897_bits, 1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_list_of_impl899  */
+static ANTLR3_BITWORD FOLLOW_WS_in_list_of_impl899_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000001000080000) };
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_list_of_impl899 = {
+  FOLLOW_WS_in_list_of_impl899_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_36_in_list_of_impl902  */
+static ANTLR3_BITWORD FOLLOW_36_in_list_of_impl902_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_36_in_list_of_impl902 = {
+  FOLLOW_36_in_list_of_impl902_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_PUBLIC_TAG_in_public_tag913  */
+static ANTLR3_BITWORD FOLLOW_PUBLIC_TAG_in_public_tag913_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000080002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_PUBLIC_TAG_in_public_tag913 = {
+  FOLLOW_PUBLIC_TAG_in_public_tag913_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_public_tag915  */
+static ANTLR3_BITWORD FOLLOW_WS_in_public_tag915_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000080002) };
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_public_tag915 = {
+  FOLLOW_WS_in_public_tag915_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_synpred1_hammer174  */
+static ANTLR3_BITWORD FOLLOW_WS_in_synpred1_hammer174_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000180000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred1_hammer174 = {
+  FOLLOW_WS_in_synpred1_hammer174_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_EXP_END_in_synpred1_hammer177  */
+static ANTLR3_BITWORD FOLLOW_EXP_END_in_synpred1_hammer177_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_synpred1_hammer177 = {
+  FOLLOW_EXP_END_in_synpred1_hammer177_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_synpred2_hammer308  */
+static ANTLR3_BITWORD FOLLOW_WS_in_synpred2_hammer308_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000480000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred2_hammer308 = {
+  FOLLOW_WS_in_synpred2_hammer308_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_COLON_in_synpred2_hammer311  */
+static ANTLR3_BITWORD FOLLOW_COLON_in_synpred2_hammer311_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_COLON_in_synpred2_hammer311 = {
+  FOLLOW_COLON_in_synpred2_hammer311_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_synpred3_hammer326  */
+static ANTLR3_BITWORD FOLLOW_WS_in_synpred3_hammer326_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000180000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred3_hammer326 = {
+  FOLLOW_WS_in_synpred3_hammer326_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_EXP_END_in_synpred3_hammer329  */
+static ANTLR3_BITWORD FOLLOW_EXP_END_in_synpred3_hammer329_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_synpred3_hammer329 = {
+  FOLLOW_EXP_END_in_synpred3_hammer329_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_synpred4_hammer370  */
+static ANTLR3_BITWORD FOLLOW_WS_in_synpred4_hammer370_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000480000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred4_hammer370 = {
+  FOLLOW_WS_in_synpred4_hammer370_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_COLON_in_synpred4_hammer373  */
+static ANTLR3_BITWORD FOLLOW_COLON_in_synpred4_hammer373_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_COLON_in_synpred4_hammer373 = {
+  FOLLOW_COLON_in_synpred4_hammer373_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_WS_in_synpred5_hammer386  */
+static ANTLR3_BITWORD FOLLOW_WS_in_synpred5_hammer386_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000180000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_WS_in_synpred5_hammer386 = {
+  FOLLOW_WS_in_synpred5_hammer386_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_EXP_END_in_synpred5_hammer389  */
+static ANTLR3_BITWORD FOLLOW_EXP_END_in_synpred5_hammer389_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_synpred5_hammer389 = {
+  FOLLOW_EXP_END_in_synpred5_hammer389_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_conditional_requirement_in_synpred6_hammer579  */
+static ANTLR3_BITWORD
+  FOLLOW_conditional_requirement_in_synpred6_hammer579_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000000000000002)
+  };
+static ANTLR3_BITSET_LIST FOLLOW_conditional_requirement_in_synpred6_hammer579 =
+  { FOLLOW_conditional_requirement_in_synpred6_hammer579_bits, 1 };
 
 /* =========================================================================
  * DFA tables for the parser
@@ -668,662 +1233,506 @@ static  ANTLR3_BITSET_LIST FOLLOW_conditional_requirement_in_synpred6_hammer579	
 /** Static dfa state tables for Cyclic dfa:
  *    ()* loopback of 36:28: ( args_leaf )*
  */
-static const ANTLR3_INT32 dfa5_eot[4] =
-    {
-	-1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa5_eof[4] =
-    {
-	-1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa5_min[4] =
-    {
-	19, 19, -1, -1
-    };
-static const ANTLR3_INT32 dfa5_max[4] =
-    {
-	36, 36, -1, -1
-    };
-static const ANTLR3_INT32 dfa5_accept[4] =
-    {
-	-1, -1, 2, 1
-    };
-static const ANTLR3_INT32 dfa5_special[4] =
-    {
-	-1, -1, -1, -1
-    };
+static const ANTLR3_INT32 dfa5_eot[4] = { -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa5_eof[4] = { -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa5_min[4] = { 19, 19, -1, -1 };
+static const ANTLR3_INT32 dfa5_max[4] = { 36, 36, -1, -1 };
+static const ANTLR3_INT32 dfa5_accept[4] = { -1, -1, 2, 1 };
+static const ANTLR3_INT32 dfa5_special[4] = { -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa5_T_empty	    NULL
+#define dfa5_T_empty NULL
 
-static const ANTLR3_INT32 dfa5_T0[] =
-    {
-	1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 2
-    };static const ANTLR3_INT32 dfa5_T1[] =
-    {
-	1, 2, -1, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 2
-    };
+static const ANTLR3_INT32 dfa5_T0[] = { 1,  2,  -1, -1, -1, -1, -1, -1, -1,
+                                        -1, -1, -1, -1, -1, -1, -1, -1, 2 };
+static const ANTLR3_INT32 dfa5_T1[] = { 1,  2,  -1, 3,  -1, -1, -1, -1, -1,
+                                        -1, -1, -1, -1, -1, -1, -1, -1, 2 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa5_transitions[] =
-{
-    dfa5_T0, dfa5_T1, dfa5_T_empty, dfa5_T_empty
-};
-
+static const ANTLR3_INT32* const dfa5_transitions[] = { dfa5_T0,
+                                                        dfa5_T1,
+                                                        dfa5_T_empty,
+                                                        dfa5_T_empty };
 
 /* Declare tracking structure for Cyclic DFA 5
  */
-static
-ANTLR3_CYCLIC_DFA cdfa5
-    =	{
-	    5,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"()* loopback of 36:28: ( args_leaf )*",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa5_eot,	    /* EOT table			    */
-	    dfa5_eof,	    /* EOF table			    */
-	    dfa5_min,	    /* Minimum tokens for each state    */
-	    dfa5_max,	    /* Maximum tokens for each state    */
-	    dfa5_accept,	/* Accept table			    */
-	    dfa5_special,	/* Special transition states	    */
-	    dfa5_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa5 = {
+  5, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "()* loopback of 36:28: ( args_leaf )*",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa5_eot,                   /* EOT table			    */
+  dfa5_eof,                   /* EOF table			    */
+  dfa5_min,                   /* Minimum tokens for each state    */
+  dfa5_max,                   /* Maximum tokens for each state    */
+  dfa5_accept,                /* Accept table			    */
+  dfa5_special,               /* Special transition states	    */
+  dfa5_transitions            /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 5
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    40:1: non_empty_argument : ( expression | named_argument );
- */
-static const ANTLR3_INT32 dfa8_eot[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa8_eof[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa8_min[5] =
-    {
-	21, -1, 19, 19, -1
-    };
-static const ANTLR3_INT32 dfa8_max[5] =
-    {
-	35, -1, 36, 36, -1
-    };
-static const ANTLR3_INT32 dfa8_accept[5] =
-    {
-	-1, 1, -1, -1, 2
-    };
-static const ANTLR3_INT32 dfa8_special[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                 *    40:1:
+                                                              * non_empty_argument
+                        * : (
+                                                                                 * expression |
+                                                                                                 * named_argument );
+                                                                                                 */
+static const ANTLR3_INT32 dfa8_eot[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa8_eof[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa8_min[5] = { 21, -1, 19, 19, -1 };
+static const ANTLR3_INT32 dfa8_max[5] = { 35, -1, 36, 36, -1 };
+static const ANTLR3_INT32 dfa8_accept[5] = { -1, 1, -1, -1, 2 };
+static const ANTLR3_INT32 dfa8_special[5] = { -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa8_T_empty	    NULL
+#define dfa8_T_empty NULL
 
-static const ANTLR3_INT32 dfa8_T0[] =
-    {
-	3, 1, 1, 1, 1, 1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, 1, 1
-    };static const ANTLR3_INT32 dfa8_T1[] =
-    {
-	2, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, 1
-    };static const ANTLR3_INT32 dfa8_T2[] =
-    {
-	3, 1, -1, -1, 1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, 1, -1, 1
-    };
+static const ANTLR3_INT32 dfa8_T0[] = { 3, 1,  1,  1,  1,  1,  -1, -1, -1,
+                                        4, -1, -1, -1, -1, -1, -1, 1,  1 };
+static const ANTLR3_INT32 dfa8_T1[] = { 2, -1, 1,  1,  -1, -1, -1, -1,
+                                        1, -1, -1, -1, -1, -1, 1 };
+static const ANTLR3_INT32 dfa8_T2[] = { 3, 1,  -1, -1, 1,  -1, -1, -1, -1,
+                                        4, -1, -1, -1, -1, -1, 1,  -1, 1 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa8_transitions[] =
-{
-    dfa8_T1, dfa8_T_empty, dfa8_T2, dfa8_T0, dfa8_T_empty
-};
-
+static const ANTLR3_INT32* const dfa8_transitions[] = { dfa8_T1,
+                                                        dfa8_T_empty,
+                                                        dfa8_T2,
+                                                        dfa8_T0,
+                                                        dfa8_T_empty };
 
 /* Declare tracking structure for Cyclic DFA 8
  */
-static
-ANTLR3_CYCLIC_DFA cdfa8
-    =	{
-	    8,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"40:1: non_empty_argument : ( expression | named_argument );",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa8_eot,	    /* EOT table			    */
-	    dfa8_eof,	    /* EOF table			    */
-	    dfa8_min,	    /* Minimum tokens for each state    */
-	    dfa8_max,	    /* Maximum tokens for each state    */
-	    dfa8_accept,	/* Accept table			    */
-	    dfa8_special,	/* Special transition states	    */
-	    dfa8_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa8 = {
+  8, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "40:1: non_empty_argument : ( expression | "
+                        "named_argument );",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa8_eot,                   /* EOT table			    */
+  dfa8_eof,                   /* EOF table			    */
+  dfa8_min,                   /* Minimum tokens for each state    */
+  dfa8_max,                   /* Maximum tokens for each state    */
+  dfa8_accept,                /* Accept table			    */
+  dfa8_special,               /* Special transition states	    */
+  dfa8_transitions            /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 8
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    56:1: expression : ( requirement_set | list_of );
- */
-static const ANTLR3_INT32 dfa14_eot[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa14_eof[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa14_min[5] =
-    {
-	21, 19, -1, -1, 19
-    };
-static const ANTLR3_INT32 dfa14_max[5] =
-    {
-	35, 29, -1, -1, 29
-    };
-static const ANTLR3_INT32 dfa14_accept[5] =
-    {
-	-1, -1, 1, 2, -1
-    };
-static const ANTLR3_INT32 dfa14_special[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                 *    56:1: expression
+                                                              * : (
+                                                                                 * requirement_set
+                                           * | list_of );
+                                                                                                 */
+static const ANTLR3_INT32 dfa14_eot[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa14_eof[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa14_min[5] = { 21, 19, -1, -1, 19 };
+static const ANTLR3_INT32 dfa14_max[5] = { 35, 29, -1, -1, 29 };
+static const ANTLR3_INT32 dfa14_accept[5] = { -1, -1, 1, 2, -1 };
+static const ANTLR3_INT32 dfa14_special[5] = { -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa14_T_empty	    NULL
+#define dfa14_T_empty NULL
 
-static const ANTLR3_INT32 dfa14_T0[] =
-    {
-	3, -1, 3, 1, -1, -1, -1, -1, 2, -1, -1, -1, -1, -1, 3
-    };static const ANTLR3_INT32 dfa14_T1[] =
-    {
-	4, -1, 3, -1, 3, -1, -1, -1, -1, -1, 2
-    };
+static const ANTLR3_INT32 dfa14_T0[] = { 3, -1, 3,  1,  -1, -1, -1, -1,
+                                         2, -1, -1, -1, -1, -1, 3 };
+static const ANTLR3_INT32 dfa14_T1[] = {
+  4, -1, 3, -1, 3, -1, -1, -1, -1, -1, 2
+};
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa14_transitions[] =
-{
-    dfa14_T0, dfa14_T1, dfa14_T_empty, dfa14_T_empty, dfa14_T1
-};
-
+static const ANTLR3_INT32* const dfa14_transitions[] = { dfa14_T0,
+                                                         dfa14_T1,
+                                                         dfa14_T_empty,
+                                                         dfa14_T_empty,
+                                                         dfa14_T1 };
 
 /* Declare tracking structure for Cyclic DFA 14
  */
-static
-ANTLR3_CYCLIC_DFA cdfa14
-    =	{
-	    14,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"56:1: expression : ( requirement_set | list_of );",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa14_eot,	    /* EOT table			    */
-	    dfa14_eof,	    /* EOF table			    */
-	    dfa14_min,	    /* Minimum tokens for each state    */
-	    dfa14_max,	    /* Maximum tokens for each state    */
-	    dfa14_accept,	/* Accept table			    */
-	    dfa14_special,	/* Special transition states	    */
-	    dfa14_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa14 = {
+  14, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "56:1: expression : ( requirement_set | list_of );",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa14_eot,                  /* EOT table			    */
+  dfa14_eof,                  /* EOF table			    */
+  dfa14_min,                  /* Minimum tokens for each state    */
+  dfa14_max,                  /* Maximum tokens for each state    */
+  dfa14_accept,               /* Accept table			    */
+  dfa14_special,              /* Special transition states	    */
+  dfa14_transitions           /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 14
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    ()* loopback of 61:33: ( ( WS )+ requirement )*
- */
-static const ANTLR3_INT32 dfa17_eot[4] =
-    {
-	-1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa17_eof[4] =
-    {
-	-1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa17_min[4] =
-    {
-	19, 19, -1, -1
-    };
-static const ANTLR3_INT32 dfa17_max[4] =
-    {
-	36, 36, -1, -1
-    };
-static const ANTLR3_INT32 dfa17_accept[4] =
-    {
-	-1, -1, 2, 1
-    };
-static const ANTLR3_INT32 dfa17_special[4] =
-    {
-	-1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                      *    ()* loopback
+                                                                 * of 61:33: ( (
+                         * WS )+
+                                                                                     * requirement
+                                             * )*
+                                                                                                      */
+static const ANTLR3_INT32 dfa17_eot[4] = { -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa17_eof[4] = { -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa17_min[4] = { 19, 19, -1, -1 };
+static const ANTLR3_INT32 dfa17_max[4] = { 36, 36, -1, -1 };
+static const ANTLR3_INT32 dfa17_accept[4] = { -1, -1, 2, 1 };
+static const ANTLR3_INT32 dfa17_special[4] = { -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa17_T_empty	    NULL
+#define dfa17_T_empty NULL
 
-static const ANTLR3_INT32 dfa17_T0[] =
-    {
-	1, 2, -1, 2, -1, 3, -1, -1, -1, -1, 3, -1, -1, -1, -1, -1, -1, 2
-    };static const ANTLR3_INT32 dfa17_T1[] =
-    {
-	1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 2
-    };
+static const ANTLR3_INT32 dfa17_T0[] = { 1,  2, -1, 2,  -1, 3,  -1, -1, -1,
+                                         -1, 3, -1, -1, -1, -1, -1, -1, 2 };
+static const ANTLR3_INT32 dfa17_T1[] = { 1,  2,  -1, -1, -1, -1, -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, -1, -1, 2 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa17_transitions[] =
-{
-    dfa17_T1, dfa17_T0, dfa17_T_empty, dfa17_T_empty
-};
-
+static const ANTLR3_INT32* const dfa17_transitions[] = { dfa17_T1,
+                                                         dfa17_T0,
+                                                         dfa17_T_empty,
+                                                         dfa17_T_empty };
 
 /* Declare tracking structure for Cyclic DFA 17
  */
-static
-ANTLR3_CYCLIC_DFA cdfa17
-    =	{
-	    17,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"()* loopback of 61:33: ( ( WS )+ requirement )*",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa17_eot,	    /* EOT table			    */
-	    dfa17_eof,	    /* EOF table			    */
-	    dfa17_min,	    /* Minimum tokens for each state    */
-	    dfa17_max,	    /* Maximum tokens for each state    */
-	    dfa17_accept,	/* Accept table			    */
-	    dfa17_special,	/* Special transition states	    */
-	    dfa17_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa17 = {
+  17, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "()* loopback of 61:33: ( ( WS )+ requirement )*",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa17_eot,                  /* EOT table			    */
+  dfa17_eof,                  /* EOF table			    */
+  dfa17_min,                  /* Minimum tokens for each state    */
+  dfa17_max,                  /* Maximum tokens for each state    */
+  dfa17_accept,               /* Accept table			    */
+  dfa17_special,              /* Special transition states	    */
+  dfa17_transitions           /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 17
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    72:39: ( target_ref_impl )?
- */
-static const ANTLR3_INT32 dfa24_eot[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa24_eof[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa24_min[5] =
-    {
-	19, 19, -1, -1, 21
-    };
-static const ANTLR3_INT32 dfa24_max[5] =
-    {
-	36, 36, -1, -1, 29
-    };
-static const ANTLR3_INT32 dfa24_accept[5] =
-    {
-	-1, -1, 1, 2, -1
-    };
-static const ANTLR3_INT32 dfa24_special[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                      *    72:39: (
+                                                                 * target_ref_impl
+                         * )?
+                                                                                                      */
+static const ANTLR3_INT32 dfa24_eot[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa24_eof[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa24_min[5] = { 19, 19, -1, -1, 21 };
+static const ANTLR3_INT32 dfa24_max[5] = { 36, 36, -1, -1, 29 };
+static const ANTLR3_INT32 dfa24_accept[5] = { -1, -1, 1, 2, -1 };
+static const ANTLR3_INT32 dfa24_special[5] = { -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa24_T_empty	    NULL
+#define dfa24_T_empty NULL
 
-static const ANTLR3_INT32 dfa24_T0[] =
-    {
-	1, 3, -1, -1, 2, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, 2, -1, 3
-    };static const ANTLR3_INT32 dfa24_T1[] =
-    {
-	1, 3, 3, 3, 4, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, 3
-    };static const ANTLR3_INT32 dfa24_T2[] =
-    {
-	3, -1, -1, 2, -1, -1, -1, -1, 2
-    };
+static const ANTLR3_INT32 dfa24_T0[] = { 1,  3,  -1, -1, 2, -1, -1, -1, -1,
+                                         -1, -1, -1, -1, 3, -1, 2,  -1, 3 };
+static const ANTLR3_INT32 dfa24_T1[] = { 1,  3,  3,  3,  4,  3,  -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, -1, 3,  3 };
+static const ANTLR3_INT32 dfa24_T2[] = { 3, -1, -1, 2, -1, -1, -1, -1, 2 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa24_transitions[] =
-{
-    dfa24_T0, dfa24_T1, dfa24_T_empty, dfa24_T_empty, dfa24_T2
-};
-
+static const ANTLR3_INT32* const dfa24_transitions[] = { dfa24_T0,
+                                                         dfa24_T1,
+                                                         dfa24_T_empty,
+                                                         dfa24_T_empty,
+                                                         dfa24_T2 };
 
 /* Declare tracking structure for Cyclic DFA 24
  */
-static
-ANTLR3_CYCLIC_DFA cdfa24
-    =	{
-	    24,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"72:39: ( target_ref_impl )?",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa24_eot,	    /* EOT table			    */
-	    dfa24_eof,	    /* EOF table			    */
-	    dfa24_min,	    /* Minimum tokens for each state    */
-	    dfa24_max,	    /* Maximum tokens for each state    */
-	    dfa24_accept,	/* Accept table			    */
-	    dfa24_special,	/* Special transition states	    */
-	    dfa24_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa24 = {
+  24, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "72:39: ( target_ref_impl )?",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa24_eot,                  /* EOT table			    */
+  dfa24_eof,                  /* EOF table			    */
+  dfa24_min,                  /* Minimum tokens for each state    */
+  dfa24_max,                  /* Maximum tokens for each state    */
+  dfa24_accept,               /* Accept table			    */
+  dfa24_special,              /* Special transition states	    */
+  dfa24_transitions           /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 24
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    74:35: ( target_requirements )?
- */
-static const ANTLR3_INT32 dfa26_eot[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa26_eof[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa26_min[5] =
-    {
-	19, 19, -1, -1, 21
-    };
-static const ANTLR3_INT32 dfa26_max[5] =
-    {
-	36, 36, -1, -1, 29
-    };
-static const ANTLR3_INT32 dfa26_accept[5] =
-    {
-	-1, -1, 1, 2, -1
-    };
-static const ANTLR3_INT32 dfa26_special[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                      *    74:35: (
+                                                                 * target_requirements
+                         * )?
+                                                                                                      */
+static const ANTLR3_INT32 dfa26_eot[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa26_eof[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa26_min[5] = { 19, 19, -1, -1, 21 };
+static const ANTLR3_INT32 dfa26_max[5] = { 36, 36, -1, -1, 29 };
+static const ANTLR3_INT32 dfa26_accept[5] = { -1, -1, 1, 2, -1 };
+static const ANTLR3_INT32 dfa26_special[5] = { -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa26_T_empty	    NULL
+#define dfa26_T_empty NULL
 
-static const ANTLR3_INT32 dfa26_T0[] =
-    {
-	1, 3, 3, 3, 4, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, 3
-    };static const ANTLR3_INT32 dfa26_T1[] =
-    {
-	3, -1, -1, 2, -1, -1, -1, -1, 2
-    };static const ANTLR3_INT32 dfa26_T2[] =
-    {
-	1, 3, -1, -1, 2, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, 3
-    };
+static const ANTLR3_INT32 dfa26_T0[] = { 1,  3,  3,  3,  4,  3,  -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, -1, 3,  3 };
+static const ANTLR3_INT32 dfa26_T1[] = { 3, -1, -1, 2, -1, -1, -1, -1, 2 };
+static const ANTLR3_INT32 dfa26_T2[] = { 1,  3,  -1, -1, 2, -1, -1, -1, -1,
+                                         -1, -1, -1, -1, 3, -1, -1, -1, 3 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa26_transitions[] =
-{
-    dfa26_T2, dfa26_T0, dfa26_T_empty, dfa26_T_empty, dfa26_T1
-};
-
+static const ANTLR3_INT32* const dfa26_transitions[] = { dfa26_T2,
+                                                         dfa26_T0,
+                                                         dfa26_T_empty,
+                                                         dfa26_T_empty,
+                                                         dfa26_T1 };
 
 /* Declare tracking structure for Cyclic DFA 26
  */
-static
-ANTLR3_CYCLIC_DFA cdfa26
-    =	{
-	    26,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"74:35: ( target_requirements )?",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa26_eot,	    /* EOT table			    */
-	    dfa26_eof,	    /* EOF table			    */
-	    dfa26_min,	    /* Minimum tokens for each state    */
-	    dfa26_max,	    /* Maximum tokens for each state    */
-	    dfa26_accept,	/* Accept table			    */
-	    dfa26_special,	/* Special transition states	    */
-	    dfa26_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa26 = {
+  26, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "74:35: ( target_requirements )?",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa26_eot,                  /* EOT table			    */
+  dfa26_eof,                  /* EOF table			    */
+  dfa26_min,                  /* Minimum tokens for each state    */
+  dfa26_max,                  /* Maximum tokens for each state    */
+  dfa26_accept,               /* Accept table			    */
+  dfa26_special,              /* Special transition states	    */
+  dfa26_transitions           /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 26
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    ()+ loopback of 76:23: ( ( WS )* '/' requirement )+
- */
-static const ANTLR3_INT32 dfa29_eot[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa29_eof[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa29_min[5] =
-    {
-	19, -1, 19, -1, 21
-    };
-static const ANTLR3_INT32 dfa29_max[5] =
-    {
-	36, -1, 36, -1, 29
-    };
-static const ANTLR3_INT32 dfa29_accept[5] =
-    {
-	-1, 2, -1, 1, -1
-    };
-static const ANTLR3_INT32 dfa29_special[5] =
-    {
-	-1, -1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                      *    ()+ loopback
+                                                                 * of 76:23: ( (
+                         * WS )*
+                                                                                     * '/'
+                                             * requirement )+
+                                                                                                      */
+static const ANTLR3_INT32 dfa29_eot[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa29_eof[5] = { -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa29_min[5] = { 19, -1, 19, -1, 21 };
+static const ANTLR3_INT32 dfa29_max[5] = { 36, -1, 36, -1, 29 };
+static const ANTLR3_INT32 dfa29_accept[5] = { -1, 2, -1, 1, -1 };
+static const ANTLR3_INT32 dfa29_special[5] = { -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa29_T_empty	    NULL
+#define dfa29_T_empty NULL
 
-static const ANTLR3_INT32 dfa29_T0[] =
-    {
-	2, 1, 1, 1, 4, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1
-    };static const ANTLR3_INT32 dfa29_T1[] =
-    {
-	1, -1, -1, 3, -1, -1, -1, -1, 3
-    };static const ANTLR3_INT32 dfa29_T2[] =
-    {
-	2, 1, -1, -1, 3, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1
-    };
+static const ANTLR3_INT32 dfa29_T0[] = { 2,  1,  1,  1,  4,  1,  -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, -1, 1,  1 };
+static const ANTLR3_INT32 dfa29_T1[] = { 1, -1, -1, 3, -1, -1, -1, -1, 3 };
+static const ANTLR3_INT32 dfa29_T2[] = { 2,  1,  -1, -1, 3, -1, -1, -1, -1,
+                                         -1, -1, -1, -1, 1, -1, -1, -1, 1 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa29_transitions[] =
-{
-    dfa29_T2, dfa29_T_empty, dfa29_T0, dfa29_T_empty, dfa29_T1
-};
-
+static const ANTLR3_INT32* const dfa29_transitions[] = { dfa29_T2,
+                                                         dfa29_T_empty,
+                                                         dfa29_T0,
+                                                         dfa29_T_empty,
+                                                         dfa29_T1 };
 
 /* Declare tracking structure for Cyclic DFA 29
  */
-static
-ANTLR3_CYCLIC_DFA cdfa29
-    =	{
-	    29,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"()+ loopback of 76:23: ( ( WS )* '/' requirement )+",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa29_eot,	    /* EOT table			    */
-	    dfa29_eof,	    /* EOF table			    */
-	    dfa29_min,	    /* Minimum tokens for each state    */
-	    dfa29_max,	    /* Maximum tokens for each state    */
-	    dfa29_accept,	/* Accept table			    */
-	    dfa29_special,	/* Special transition states	    */
-	    dfa29_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa29 = {
+  29, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "()+ loopback of 76:23: ( ( WS )* '/' requirement )+",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa29_eot,                  /* EOT table			    */
+  dfa29_eof,                  /* EOF table			    */
+  dfa29_min,                  /* Minimum tokens for each state    */
+  dfa29_max,                  /* Maximum tokens for each state    */
+  dfa29_accept,               /* Accept table			    */
+  dfa29_special,              /* Special transition states	    */
+  dfa29_transitions           /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 29
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    ()* loopback of 77:24: ( ( WS )+ list_of_impl )*
- */
-static const ANTLR3_INT32 dfa31_eot[4] =
-    {
-	-1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa31_eof[4] =
-    {
-	-1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa31_min[4] =
-    {
-	19, 19, -1, -1
-    };
-static const ANTLR3_INT32 dfa31_max[4] =
-    {
-	36, 36, -1, -1
-    };
-static const ANTLR3_INT32 dfa31_accept[4] =
-    {
-	-1, -1, 2, 1
-    };
-static const ANTLR3_INT32 dfa31_special[4] =
-    {
-	-1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                      *    ()* loopback
+                                                                 * of 77:24: ( (
+                         * WS )+
+                                                                                     * list_of_impl
+                                             * )*
+                                                                                                      */
+static const ANTLR3_INT32 dfa31_eot[4] = { -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa31_eof[4] = { -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa31_min[4] = { 19, 19, -1, -1 };
+static const ANTLR3_INT32 dfa31_max[4] = { 36, 36, -1, -1 };
+static const ANTLR3_INT32 dfa31_accept[4] = { -1, -1, 2, 1 };
+static const ANTLR3_INT32 dfa31_special[4] = { -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa31_T_empty	    NULL
+#define dfa31_T_empty NULL
 
-static const ANTLR3_INT32 dfa31_T0[] =
-    {
-	1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 2
-    };static const ANTLR3_INT32 dfa31_T1[] =
-    {
-	1, 2, 3, 2, 3, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, 2
-    };
+static const ANTLR3_INT32 dfa31_T0[] = { 1,  2,  -1, -1, -1, -1, -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, -1, -1, 2 };
+static const ANTLR3_INT32 dfa31_T1[] = { 1,  2,  3,  2,  3,  3,  -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, -1, 3,  2 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa31_transitions[] =
-{
-    dfa31_T0, dfa31_T1, dfa31_T_empty, dfa31_T_empty
-};
-
+static const ANTLR3_INT32* const dfa31_transitions[] = { dfa31_T0,
+                                                         dfa31_T1,
+                                                         dfa31_T_empty,
+                                                         dfa31_T_empty };
 
 /* Declare tracking structure for Cyclic DFA 31
  */
-static
-ANTLR3_CYCLIC_DFA cdfa31
-    =	{
-	    31,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"()* loopback of 77:24: ( ( WS )+ list_of_impl )*",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa31_eot,	    /* EOT table			    */
-	    dfa31_eof,	    /* EOF table			    */
-	    dfa31_min,	    /* Minimum tokens for each state    */
-	    dfa31_max,	    /* Maximum tokens for each state    */
-	    dfa31_accept,	/* Accept table			    */
-	    dfa31_special,	/* Special transition states	    */
-	    dfa31_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa31 = {
+  31, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "()* loopback of 77:24: ( ( WS )+ list_of_impl )*",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa31_eot,                  /* EOT table			    */
+  dfa31_eof,                  /* EOF table			    */
+  dfa31_min,                  /* Minimum tokens for each state    */
+  dfa31_max,                  /* Maximum tokens for each state    */
+  dfa31_accept,               /* Accept table			    */
+  dfa31_special,              /* Special transition states	    */
+  dfa31_transitions           /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 31
  * ---------------------
- *//** Static dfa state tables for Cyclic dfa:
- *    78:1: list_of_impl : ( path_like_seq | target_ref | '[' ( WS )* target_decl_or_rule_call_impl ( WS )* ']' -> target_decl_or_rule_call_impl );
- */
-static const ANTLR3_INT32 dfa34_eot[13] =
-    {
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa34_eof[13] =
-    {
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa34_min[13] =
-    {
-	21, 21, 19, -1, -1, 19, 19, 19, -1, 19, 19, 21, 19
-    };
-static const ANTLR3_INT32 dfa34_max[13] =
-    {
-	35, 21, 36, -1, -1, 36, 36, 36, -1, 36, 36, 29, 36
-    };
-static const ANTLR3_INT32 dfa34_accept[13] =
-    {
-	-1, -1, -1, 2, 3, -1, -1, -1, 1, -1, -1, -1, -1
-    };
-static const ANTLR3_INT32 dfa34_special[13] =
-    {
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    };
+ */ /** Static dfa state tables for Cyclic dfa:
+                                                                                                      *    78:1:
+                                                                 * list_of_impl
+                         * : (
+                                                                                     * path_like_seq
+                                             * | target_ref |
+                                                                                                      * '[' ( WS )*
+                                                                                     * target_decl_or_rule_call_impl
+                                             * (
+                                                                 * WS )* ']' ->
+                                                                                                      * target_decl_or_rule_call_impl
+                                                                 * );
+                                                                                                      */
+static const ANTLR3_INT32 dfa34_eot[13] = { -1, -1, -1, -1, -1, -1, -1,
+                                            -1, -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa34_eof[13] = { -1, -1, -1, -1, -1, -1, -1,
+                                            -1, -1, -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa34_min[13] = { 21, 21, 19, -1, -1, 19, 19,
+                                            19, -1, 19, 19, 21, 19 };
+static const ANTLR3_INT32 dfa34_max[13] = { 35, 21, 36, -1, -1, 36, 36,
+                                            36, -1, 36, 36, 29, 36 };
+static const ANTLR3_INT32 dfa34_accept[13] = { -1, -1, -1, 2,  3,  -1, -1,
+                                               -1, 1,  -1, -1, -1, -1 };
+static const ANTLR3_INT32 dfa34_special[13] = { -1, -1, -1, -1, -1, -1, -1,
+                                                -1, -1, -1, -1, -1, -1 };
 
 /** Used when there is no transition table entry for a particular state */
-#define dfa34_T_empty	    NULL
+#define dfa34_T_empty NULL
 
-static const ANTLR3_INT32 dfa34_T0[] =
-    {
-	7, 8, -1, -1, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, 8
-    };static const ANTLR3_INT32 dfa34_T1[] =
-    {
-	8, -1, -1, 3, -1, -1, -1, -1, 3
-    };static const ANTLR3_INT32 dfa34_T2[] =
-    {
-	7, 8, 8, 8, 11, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8, 8
-    };static const ANTLR3_INT32 dfa34_T3[] =
-    {
-	7, 8, -1, -1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, 8
-    };static const ANTLR3_INT32 dfa34_T4[] =
-    {
-	7, 8, 12, -1, 3, 3, -1, -1, -1, -1, 3, -1, -1, -1, -1, 3, -1, 8
-    };static const ANTLR3_INT32 dfa34_T5[] =
-    {
-	7, 8, 10, -1, 3, 3, -1, -1, -1, -1, 3, -1, -1, -1, -1, 3, -1, 8
-    };static const ANTLR3_INT32 dfa34_T6[] =
-    {
-	2, -1, 1, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4
-    };static const ANTLR3_INT32 dfa34_T7[] =
-    {
-	5
-    };
+static const ANTLR3_INT32 dfa34_T0[] = { 7,  8,  -1, -1, 6,  -1, -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, 3,  -1, 8 };
+static const ANTLR3_INT32 dfa34_T1[] = { 8, -1, -1, 3, -1, -1, -1, -1, 3 };
+static const ANTLR3_INT32 dfa34_T2[] = { 7,  8,  8,  8,  11, 8,  -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, -1, 8,  8 };
+static const ANTLR3_INT32 dfa34_T3[] = { 7,  8,  -1, -1, 9,  -1, -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, 3,  -1, 8 };
+static const ANTLR3_INT32 dfa34_T4[] = { 7,  8, 12, -1, 3,  3,  -1, -1, -1,
+                                         -1, 3, -1, -1, -1, -1, 3,  -1, 8 };
+static const ANTLR3_INT32 dfa34_T5[] = { 7,  8, 10, -1, 3,  3,  -1, -1, -1,
+                                         -1, 3, -1, -1, -1, -1, 3,  -1, 8 };
+static const ANTLR3_INT32 dfa34_T6[] = { 2,  -1, 1,  3,  -1, -1, -1, -1,
+                                         -1, -1, -1, -1, -1, -1, 4 };
+static const ANTLR3_INT32 dfa34_T7[] = { 5 };
 
 /* Transition tables are a table of sub tables, with some tables
  * reused for efficiency.
  */
-static const ANTLR3_INT32 * const dfa34_transitions[] =
-{
-    dfa34_T6, dfa34_T7, dfa34_T0, dfa34_T_empty, dfa34_T_empty, dfa34_T3,
-    dfa34_T5, dfa34_T2, dfa34_T_empty, dfa34_T4, dfa34_T0, dfa34_T1, dfa34_T3
+static const ANTLR3_INT32* const dfa34_transitions[] = {
+  dfa34_T6, dfa34_T7, dfa34_T0, dfa34_T_empty, dfa34_T_empty,
+  dfa34_T3, dfa34_T5, dfa34_T2, dfa34_T_empty, dfa34_T4,
+  dfa34_T0, dfa34_T1, dfa34_T3
 };
-
 
 /* Declare tracking structure for Cyclic DFA 34
  */
-static
-ANTLR3_CYCLIC_DFA cdfa34
-    =	{
-	    34,		    /* Decision number of this dfa	    */
-	    /* Which decision this represents:   */
-	    (const pANTLR3_UCHAR)"78:1: list_of_impl : ( path_like_seq | target_ref | '[' ( WS )* target_decl_or_rule_call_impl ( WS )* ']' -> target_decl_or_rule_call_impl );",
-	    (CDFA_SPECIAL_FUNC) antlr3dfaspecialStateTransition,	/* Default special state transition function	*/
-	    antlr3dfaspecialTransition,		/* DFA specialTransition is currently just a default function in the runtime */
-	    antlr3dfapredict,			/* DFA simulator function is in the runtime */
-	    dfa34_eot,	    /* EOT table			    */
-	    dfa34_eof,	    /* EOF table			    */
-	    dfa34_min,	    /* Minimum tokens for each state    */
-	    dfa34_max,	    /* Maximum tokens for each state    */
-	    dfa34_accept,	/* Accept table			    */
-	    dfa34_special,	/* Special transition states	    */
-	    dfa34_transitions	/* Table of transition tables	    */
+static ANTLR3_CYCLIC_DFA cdfa34 = {
+  34, /* Decision number of this dfa	    */
+  /* Which decision this represents:   */
+  (const pANTLR3_UCHAR) "78:1: list_of_impl : ( path_like_seq | target_ref | "
+                        "'[' ( WS )* target_decl_or_rule_call_impl ( WS )* "
+                        "']' -> target_decl_or_rule_call_impl );",
+  (CDFA_SPECIAL_FUNC)antlr3dfaspecialStateTransition, /* Default special
+                                                       state transition
+                                                       function	*/
+  antlr3dfaspecialTransition, /* DFA specialTransition is currently just a
+                               default function in the runtime */
+  antlr3dfapredict,           /* DFA simulator function is in the runtime */
+  dfa34_eot,                  /* EOT table			    */
+  dfa34_eof,                  /* EOF table			    */
+  dfa34_min,                  /* Minimum tokens for each state    */
+  dfa34_max,                  /* Maximum tokens for each state    */
+  dfa34_accept,               /* Accept table			    */
+  dfa34_special,              /* Special transition states	    */
+  dfa34_transitions           /* Table of transition tables	    */
 
-	};
+};
 /* End of Cyclic DFA 34
  * ---------------------
  */
@@ -1336,887 +1745,863 @@ ANTLR3_CYCLIC_DFA cdfa34
  */
 /**
  * $ANTLR start hamfile
- * hammer.g:30:1: hamfile : ( WS )* ( target_decl_or_rule_call )* -> ^( HAMFILE ( target_decl_or_rule_call )* ) ;
+ * hammer.g:30:1: hamfile : ( WS )* ( target_decl_or_rule_call )* -> ^( HAMFILE
+ * ( target_decl_or_rule_call )* ) ;
  */
 static hammerParser_hamfile_return
 hamfile(phammerParser ctx)
 {
-    hammerParser_hamfile_return retval;
+  hammerParser_hamfile_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS1;
-    hammerParser_target_decl_or_rule_call_return target_decl_or_rule_call2;
-    #undef	RETURN_TYPE_target_decl_or_rule_call2
-    #define	RETURN_TYPE_target_decl_or_rule_call2 hammerParser_target_decl_or_rule_call_return
+  pANTLR3_COMMON_TOKEN WS1;
+  hammerParser_target_decl_or_rule_call_return target_decl_or_rule_call2;
+#undef RETURN_TYPE_target_decl_or_rule_call2
+#define RETURN_TYPE_target_decl_or_rule_call2                                  \
+  hammerParser_target_decl_or_rule_call_return
 
-    pANTLR3_BASE_TREE WS1_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_decl_or_rule_call;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE WS1_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_decl_or_rule_call;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  WS1 = NULL;
+  target_decl_or_rule_call2.tree = NULL;
 
-    WS1       = NULL;
-    target_decl_or_rule_call2.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    WS1_tree   = NULL;
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_target_decl_or_rule_call=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target_decl_or_rule_call");
-    retval.tree  = NULL;
+  WS1_tree = NULL;
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_target_decl_or_rule_call = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target_decl_or_rule_call");
+  retval.tree = NULL;
+  {
+    // hammer.g:30:15: ( ( WS )* ( target_decl_or_rule_call )* -> ^( HAMFILE (
+    // target_decl_or_rule_call )* ) )
+    // hammer.g:30:17: ( WS )* ( target_decl_or_rule_call )*
     {
-        // hammer.g:30:15: ( ( WS )* ( target_decl_or_rule_call )* -> ^( HAMFILE ( target_decl_or_rule_call )* ) )
-        // hammer.g:30:17: ( WS )* ( target_decl_or_rule_call )*
+      // hammer.g:30:17: ( WS )*
+
+      for (;;) {
+        int alt1 = 2;
         {
-
-            // hammer.g:30:17: ( WS )*
-
-            for (;;)
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA1_0 = LA(1);
+          if ((LA1_0 == WS)) {
+            alt1 = 1;
+          }
+        }
+        switch (alt1) {
+          case 1:
+            // hammer.g:30:17: WS
             {
-                int alt1=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA1_0 = LA(1);
-                    if ( (LA1_0 == WS) )
-                    {
-                        alt1=1;
-                    }
-
-                }
-                switch (alt1)
-                {
-            	case 1:
-            	    // hammer.g:30:17: WS
-            	    {
-            	        WS1 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_hamfile111);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulehamfileEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS1, NULL);
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop1;	/* break out of the loop */
-            	    break;
-                }
+              WS1 = (pANTLR3_COMMON_TOKEN)MATCHT(WS, &FOLLOW_WS_in_hamfile111);
+              if (HASEXCEPTION()) {
+                goto rulehamfileEx;
+              }
+              if (HASFAILED()) {
+                return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_WS->add(stream_WS, WS1, NULL);
             }
-            loop1: ; /* Jump out to here if this rule does not match */
+            break;
 
+          default:
+            goto loop1; /* break out of the loop */
+            break;
+        }
+      }
+    loop1:; /* Jump out to here if this rule does not match */
 
-            // hammer.g:30:21: ( target_decl_or_rule_call )*
+      // hammer.g:30:21: ( target_decl_or_rule_call )*
 
-            for (;;)
+      for (;;) {
+        int alt2 = 2;
+        {
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA2_0 = LA(1);
+          if ((LA2_0 == ID)) {
+            alt2 = 1;
+          }
+        }
+        switch (alt2) {
+          case 1:
+            // hammer.g:30:21: target_decl_or_rule_call
             {
-                int alt2=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA2_0 = LA(1);
-                    if ( (LA2_0 == ID) )
-                    {
-                        alt2=1;
-                    }
+              FOLLOWPUSH(FOLLOW_target_decl_or_rule_call_in_hamfile114);
+              target_decl_or_rule_call2 = target_decl_or_rule_call(ctx);
 
-                }
-                switch (alt2)
-                {
-            	case 1:
-            	    // hammer.g:30:21: target_decl_or_rule_call
-            	    {
-            	        FOLLOWPUSH(FOLLOW_target_decl_or_rule_call_in_hamfile114);
-            	        target_decl_or_rule_call2=target_decl_or_rule_call(ctx);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulehamfileEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_target_decl_or_rule_call->add(stream_target_decl_or_rule_call, target_decl_or_rule_call2.tree, NULL);
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop2;	/* break out of the loop */
-            	    break;
-                }
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
+                goto rulehamfileEx;
+              }
+              if (HASFAILED()) {
+                return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_target_decl_or_rule_call->add(
+                  stream_target_decl_or_rule_call,
+                  target_decl_or_rule_call2.tree,
+                  NULL);
             }
-            loop2: ; /* Jump out to here if this rule does not match */
+            break;
 
+          default:
+            goto loop2; /* break out of the loop */
+            break;
+        }
+      }
+    loop2:; /* Jump out to here if this rule does not match */
 
+      /* AST REWRITE
+ * elements          : target_decl_or_rule_call
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            /* AST REWRITE
-             * elements          : target_decl_or_rule_call
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 30:47: -> ^( HAMFILE ( target_decl_or_rule_call )* )
+        {
+          // hammer.g:30:50: ^( HAMFILE ( target_decl_or_rule_call )* )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, HAMFILE, (pANTLR3_UINT8) "HAMFILE"),
+              root_1));
+
+            // hammer.g:30:60: ( target_decl_or_rule_call )*
             {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 30:47: -> ^( HAMFILE ( target_decl_or_rule_call )* )
-            	{
-            	    // hammer.g:30:50: ^( HAMFILE ( target_decl_or_rule_call )* )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, HAMFILE, (pANTLR3_UINT8)"HAMFILE"), root_1));
-
-            	        // hammer.g:30:60: ( target_decl_or_rule_call )*
-            	        {
-            	        	while ( stream_target_decl_or_rule_call->hasNext(stream_target_decl_or_rule_call) )
-            	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_target_decl_or_rule_call->nextTree(stream_target_decl_or_rule_call));
-
-            	        	}
-            	        	stream_target_decl_or_rule_call->reset(stream_target_decl_or_rule_call);
-
-            	        }
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
+              while (stream_target_decl_or_rule_call->hasNext(
+                stream_target_decl_or_rule_call)) {
+                ADAPTOR->addChild(ADAPTOR,
+                                  root_1,
+                                  stream_target_decl_or_rule_call->nextTree(
+                                    stream_target_decl_or_rule_call));
+              }
+              stream_target_decl_or_rule_call->reset(
+                stream_target_decl_or_rule_call);
             }
+
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulehamfileEx; /* Prevent compiler warnings */
+rulehamfileEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulehamfileEx; /* Prevent compiler warnings */
-    rulehamfileEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_WS->free(stream_WS);
+  stream_target_decl_or_rule_call->free(stream_target_decl_or_rule_call);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_WS->free(stream_WS);
-    stream_target_decl_or_rule_call->free(stream_target_decl_or_rule_call);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end hamfile */
 
 /**
  * $ANTLR start target_decl_or_rule_call
- * hammer.g:32:1: target_decl_or_rule_call : target_decl_or_rule_call_impl ( WS )* EXP_END ( WS )* -> target_decl_or_rule_call_impl EXP_END ;
+ * hammer.g:32:1: target_decl_or_rule_call : target_decl_or_rule_call_impl ( WS
+ * )* EXP_END ( WS )* -> target_decl_or_rule_call_impl EXP_END ;
  */
 static hammerParser_target_decl_or_rule_call_return
 target_decl_or_rule_call(phammerParser ctx)
 {
-    hammerParser_target_decl_or_rule_call_return retval;
+  hammerParser_target_decl_or_rule_call_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS4;
-    pANTLR3_COMMON_TOKEN    EXP_END5;
-    pANTLR3_COMMON_TOKEN    WS6;
-    hammerParser_target_decl_or_rule_call_impl_return target_decl_or_rule_call_impl3;
-    #undef	RETURN_TYPE_target_decl_or_rule_call_impl3
-    #define	RETURN_TYPE_target_decl_or_rule_call_impl3 hammerParser_target_decl_or_rule_call_impl_return
+  pANTLR3_COMMON_TOKEN WS4;
+  pANTLR3_COMMON_TOKEN EXP_END5;
+  pANTLR3_COMMON_TOKEN WS6;
+  hammerParser_target_decl_or_rule_call_impl_return
+    target_decl_or_rule_call_impl3;
+#undef RETURN_TYPE_target_decl_or_rule_call_impl3
+#define RETURN_TYPE_target_decl_or_rule_call_impl3                             \
+  hammerParser_target_decl_or_rule_call_impl_return
 
-    pANTLR3_BASE_TREE WS4_tree;
-    pANTLR3_BASE_TREE EXP_END5_tree;
-    pANTLR3_BASE_TREE WS6_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_EXP_END;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_decl_or_rule_call_impl;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE WS4_tree;
+  pANTLR3_BASE_TREE EXP_END5_tree;
+  pANTLR3_BASE_TREE WS6_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_EXP_END;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_decl_or_rule_call_impl;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  WS4 = NULL;
+  EXP_END5 = NULL;
+  WS6 = NULL;
+  target_decl_or_rule_call_impl3.tree = NULL;
 
-    WS4       = NULL;
-    EXP_END5       = NULL;
-    WS6       = NULL;
-    target_decl_or_rule_call_impl3.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    WS4_tree   = NULL;
-    EXP_END5_tree   = NULL;
-    WS6_tree   = NULL;
-    stream_EXP_END   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token EXP_END");
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_target_decl_or_rule_call_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target_decl_or_rule_call_impl");
-    retval.tree  = NULL;
+  WS4_tree = NULL;
+  EXP_END5_tree = NULL;
+  WS6_tree = NULL;
+  stream_EXP_END = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token EXP_END");
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_target_decl_or_rule_call_impl = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target_decl_or_rule_call_impl");
+  retval.tree = NULL;
+  {
+    // hammer.g:32:26: ( target_decl_or_rule_call_impl ( WS )* EXP_END ( WS )*
+    // -> target_decl_or_rule_call_impl EXP_END )
+    // hammer.g:32:28: target_decl_or_rule_call_impl ( WS )* EXP_END ( WS )*
     {
-        // hammer.g:32:26: ( target_decl_or_rule_call_impl ( WS )* EXP_END ( WS )* -> target_decl_or_rule_call_impl EXP_END )
-        // hammer.g:32:28: target_decl_or_rule_call_impl ( WS )* EXP_END ( WS )*
+      FOLLOWPUSH(
+        FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132);
+      target_decl_or_rule_call_impl3 = target_decl_or_rule_call_impl(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruletarget_decl_or_rule_callEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_target_decl_or_rule_call_impl->add(
+          stream_target_decl_or_rule_call_impl,
+          target_decl_or_rule_call_impl3.tree,
+          NULL);
+
+      // hammer.g:32:58: ( WS )*
+
+      for (;;) {
+        int alt3 = 2;
         {
-            FOLLOWPUSH(FOLLOW_target_decl_or_rule_call_impl_in_target_decl_or_rule_call132);
-            target_decl_or_rule_call_impl3=target_decl_or_rule_call_impl(ctx);
-
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA3_0 = LA(1);
+          if ((LA3_0 == WS)) {
+            alt3 = 1;
+          }
+        }
+        switch (alt3) {
+          case 1:
+            // hammer.g:32:58: WS
             {
+              WS4 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                WS, &FOLLOW_WS_in_target_decl_or_rule_call134);
+              if (HASEXCEPTION()) {
                 goto ruletarget_decl_or_rule_callEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_WS->add(stream_WS, WS4, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_target_decl_or_rule_call_impl->add(stream_target_decl_or_rule_call_impl, target_decl_or_rule_call_impl3.tree, NULL);
+            break;
 
-            // hammer.g:32:58: ( WS )*
+          default:
+            goto loop3; /* break out of the loop */
+            break;
+        }
+      }
+    loop3:; /* Jump out to here if this rule does not match */
 
-            for (;;)
+      EXP_END5 = (pANTLR3_COMMON_TOKEN)MATCHT(
+        EXP_END, &FOLLOW_EXP_END_in_target_decl_or_rule_call137);
+      if (HASEXCEPTION()) {
+        goto ruletarget_decl_or_rule_callEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_EXP_END->add(stream_EXP_END, EXP_END5, NULL);
+
+      // hammer.g:32:70: ( WS )*
+
+      for (;;) {
+        int alt4 = 2;
+        {
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA4_0 = LA(1);
+          if ((LA4_0 == WS)) {
+            alt4 = 1;
+          }
+        }
+        switch (alt4) {
+          case 1:
+            // hammer.g:32:70: WS
             {
-                int alt3=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA3_0 = LA(1);
-                    if ( (LA3_0 == WS) )
-                    {
-                        alt3=1;
-                    }
-
-                }
-                switch (alt3)
-                {
-            	case 1:
-            	    // hammer.g:32:58: WS
-            	    {
-            	        WS4 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_target_decl_or_rule_call134);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletarget_decl_or_rule_callEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS4, NULL);
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop3;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop3: ; /* Jump out to here if this rule does not match */
-
-            EXP_END5 = (pANTLR3_COMMON_TOKEN) MATCHT(EXP_END, &FOLLOW_EXP_END_in_target_decl_or_rule_call137);
-            if  (HASEXCEPTION())
-            {
+              WS6 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                WS, &FOLLOW_WS_in_target_decl_or_rule_call139);
+              if (HASEXCEPTION()) {
                 goto ruletarget_decl_or_rule_callEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_WS->add(stream_WS, WS6, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_EXP_END->add(stream_EXP_END, EXP_END5, NULL);
+            break;
 
+          default:
+            goto loop4; /* break out of the loop */
+            break;
+        }
+      }
+    loop4:; /* Jump out to here if this rule does not match */
 
-            // hammer.g:32:70: ( WS )*
+      /* AST REWRITE
+ * elements          : EXP_END, target_decl_or_rule_call_impl
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            for (;;)
-            {
-                int alt4=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA4_0 = LA(1);
-                    if ( (LA4_0 == WS) )
-                    {
-                        alt4=1;
-                    }
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-                }
-                switch (alt4)
-                {
-            	case 1:
-            	    // hammer.g:32:70: WS
-            	    {
-            	        WS6 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_target_decl_or_rule_call139);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletarget_decl_or_rule_callEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS6, NULL);
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop4;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop4: ; /* Jump out to here if this rule does not match */
-
-
-
-            /* AST REWRITE
-             * elements          : EXP_END, target_decl_or_rule_call_impl
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 32:74: -> target_decl_or_rule_call_impl EXP_END
-            	{
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_target_decl_or_rule_call_impl->nextTree(stream_target_decl_or_rule_call_impl));
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_EXP_END->nextNode(stream_EXP_END));
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 32:74: -> target_decl_or_rule_call_impl EXP_END
+        {
+          ADAPTOR->addChild(ADAPTOR,
+                            root_0,
+                            stream_target_decl_or_rule_call_impl->nextTree(
+                              stream_target_decl_or_rule_call_impl));
+          ADAPTOR->addChild(
+            ADAPTOR, root_0, stream_EXP_END->nextNode(stream_EXP_END));
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_decl_or_rule_callEx; /* Prevent compiler warnings */
+ruletarget_decl_or_rule_callEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_decl_or_rule_callEx; /* Prevent compiler warnings */
-    ruletarget_decl_or_rule_callEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_EXP_END->free(stream_EXP_END);
+  stream_WS->free(stream_WS);
+  stream_target_decl_or_rule_call_impl->free(
+    stream_target_decl_or_rule_call_impl);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_EXP_END->free(stream_EXP_END);
-    stream_WS->free(stream_WS);
-    stream_target_decl_or_rule_call_impl->free(stream_target_decl_or_rule_call_impl);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end target_decl_or_rule_call */
 
 /**
  * $ANTLR start target_decl_or_rule_call_impl
- * hammer.g:33:1: target_decl_or_rule_call_impl : ID arguments -> ^( TARGET_DECL_OR_RULE_CALL ID arguments ) ;
+ * hammer.g:33:1: target_decl_or_rule_call_impl : ID arguments -> ^(
+ * TARGET_DECL_OR_RULE_CALL ID arguments ) ;
  */
 static hammerParser_target_decl_or_rule_call_impl_return
 target_decl_or_rule_call_impl(phammerParser ctx)
 {
-    hammerParser_target_decl_or_rule_call_impl_return retval;
+  hammerParser_target_decl_or_rule_call_impl_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    ID7;
-    hammerParser_arguments_return arguments8;
-    #undef	RETURN_TYPE_arguments8
-    #define	RETURN_TYPE_arguments8 hammerParser_arguments_return
+  pANTLR3_COMMON_TOKEN ID7;
+  hammerParser_arguments_return arguments8;
+#undef RETURN_TYPE_arguments8
+#define RETURN_TYPE_arguments8 hammerParser_arguments_return
 
-    pANTLR3_BASE_TREE ID7_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_arguments;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE ID7_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_arguments;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  ID7 = NULL;
+  arguments8.tree = NULL;
 
-    ID7       = NULL;
-    arguments8.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    ID7_tree   = NULL;
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    stream_arguments=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule arguments");
-    retval.tree  = NULL;
+  ID7_tree = NULL;
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  stream_arguments = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule arguments");
+  retval.tree = NULL;
+  {
+    // hammer.g:33:31: ( ID arguments -> ^( TARGET_DECL_OR_RULE_CALL ID
+    // arguments ) )
+    // hammer.g:33:33: ID arguments
     {
-        // hammer.g:33:31: ( ID arguments -> ^( TARGET_DECL_OR_RULE_CALL ID arguments ) )
-        // hammer.g:33:33: ID arguments
+      ID7 = (pANTLR3_COMMON_TOKEN)MATCHT(
+        ID, &FOLLOW_ID_in_target_decl_or_rule_call_impl153);
+      if (HASEXCEPTION()) {
+        goto ruletarget_decl_or_rule_call_implEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_ID->add(stream_ID, ID7, NULL);
+
+      FOLLOWPUSH(FOLLOW_arguments_in_target_decl_or_rule_call_impl155);
+      arguments8 = arguments(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruletarget_decl_or_rule_call_implEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_arguments->add(stream_arguments, arguments8.tree, NULL);
+
+      /* AST REWRITE
+ * elements          : ID, arguments
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 33:46: -> ^( TARGET_DECL_OR_RULE_CALL ID arguments )
         {
-            ID7 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_target_decl_or_rule_call_impl153);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_decl_or_rule_call_implEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_ID->add(stream_ID, ID7, NULL);
+          // hammer.g:33:49: ^( TARGET_DECL_OR_RULE_CALL ID arguments )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(
+              ADAPTOR->becomeRoot(ADAPTOR,
+                                  (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                    ADAPTOR,
+                                    TARGET_DECL_OR_RULE_CALL,
+                                    (pANTLR3_UINT8) "TARGET_DECL_OR_RULE_CALL"),
+                                  root_1));
 
-            FOLLOWPUSH(FOLLOW_arguments_in_target_decl_or_rule_call_impl155);
-            arguments8=arguments(ctx);
+            ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
+            ADAPTOR->addChild(
+              ADAPTOR, root_1, stream_arguments->nextTree(stream_arguments));
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_decl_or_rule_call_implEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_arguments->add(stream_arguments, arguments8.tree, NULL);
-
-
-            /* AST REWRITE
-             * elements          : ID, arguments
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 33:46: -> ^( TARGET_DECL_OR_RULE_CALL ID arguments )
-            	{
-            	    // hammer.g:33:49: ^( TARGET_DECL_OR_RULE_CALL ID arguments )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TARGET_DECL_OR_RULE_CALL, (pANTLR3_UINT8)"TARGET_DECL_OR_RULE_CALL"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_arguments->nextTree(stream_arguments));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_decl_or_rule_call_implEx; /* Prevent compiler warnings */
+ruletarget_decl_or_rule_call_implEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_decl_or_rule_call_implEx; /* Prevent compiler warnings */
-    ruletarget_decl_or_rule_call_implEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_ID->free(stream_ID);
+  stream_arguments->free(stream_arguments);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_ID->free(stream_ID);
-    stream_arguments->free(stream_arguments);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end target_decl_or_rule_call_impl */
 
 /**
  * $ANTLR start arguments
- * hammer.g:35:1: arguments : ( ( ( WS )+ ';' )=> -> ^( ARGUMENTS ) | argument ( args_leaf )* -> ^( ARGUMENTS argument ( args_leaf )* ) );
+ * hammer.g:35:1: arguments : ( ( ( WS )+ ';' )=> -> ^( ARGUMENTS ) | argument (
+ * args_leaf )* -> ^( ARGUMENTS argument ( args_leaf )* ) );
  */
 static hammerParser_arguments_return
 arguments(phammerParser ctx)
 {
-    hammerParser_arguments_return retval;
+  hammerParser_arguments_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_argument_return argument9;
-    #undef	RETURN_TYPE_argument9
-    #define	RETURN_TYPE_argument9 hammerParser_argument_return
+  hammerParser_argument_return argument9;
+#undef RETURN_TYPE_argument9
+#define RETURN_TYPE_argument9 hammerParser_argument_return
 
-    hammerParser_args_leaf_return args_leaf10;
-    #undef	RETURN_TYPE_args_leaf10
-    #define	RETURN_TYPE_args_leaf10 hammerParser_args_leaf_return
+  hammerParser_args_leaf_return args_leaf10;
+#undef RETURN_TYPE_args_leaf10
+#define RETURN_TYPE_args_leaf10 hammerParser_args_leaf_return
 
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_args_leaf;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_argument;
-    /* Initialize rule variables
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_args_leaf;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_argument;
+  /* Initialize rule variables
+ */
+
+  root_0 = NULL;
+
+  argument9.tree = NULL;
+
+  args_leaf10.tree = NULL;
+
+  retval.start = LT(1);
+
+  stream_args_leaf = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule args_leaf");
+  stream_argument = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule argument");
+  retval.tree = NULL;
+  {
+    {
+      //  hammer.g:35:11: ( ( ( WS )+ ';' )=> -> ^( ARGUMENTS ) | argument (
+      //  args_leaf )* -> ^( ARGUMENTS argument ( args_leaf )* ) )
+
+      ANTLR3_UINT32 alt6;
+
+      alt6 = 2;
+
+      switch (LA(1)) {
+        case WS: {
+          {
+            int LA6_1 = LA(2);
+            if ((synpred1_hammer(ctx))) {
+              alt6 = 1;
+            } else if ((ANTLR3_TRUE)) {
+              alt6 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 6;
+              EXCEPTION->state = 1;
+
+              goto ruleargumentsEx;
+            }
+          }
+        } break;
+        case EXP_END: {
+          {
+            int LA6_2 = LA(2);
+            if ((synpred1_hammer(ctx))) {
+              alt6 = 1;
+            } else if ((ANTLR3_TRUE)) {
+              alt6 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 6;
+              EXCEPTION->state = 2;
+
+              goto ruleargumentsEx;
+            }
+          }
+        } break;
+        case 36: {
+          {
+            int LA6_3 = LA(2);
+            if ((synpred1_hammer(ctx))) {
+              alt6 = 1;
+            } else if ((ANTLR3_TRUE)) {
+              alt6 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 6;
+              EXCEPTION->state = 3;
+
+              goto ruleargumentsEx;
+            }
+          }
+        } break;
+
+        default:
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 6;
+          EXCEPTION->state = 0;
+
+          goto ruleargumentsEx;
+      }
+
+      switch (alt6) {
+        case 1:
+          // hammer.g:35:13: ( ( WS )+ ';' )=>
+          {
+            /* AST REWRITE
+     * elements          :
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
      */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-    root_0 = NULL;
-
-    argument9.tree = NULL;
-
-    args_leaf10.tree = NULL;
-
-    retval.start = LT(1);
-
-    stream_args_leaf=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule args_leaf");
-    stream_argument=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule argument");
-    retval.tree  = NULL;
-    {
-        {
-            //  hammer.g:35:11: ( ( ( WS )+ ';' )=> -> ^( ARGUMENTS ) | argument ( args_leaf )* -> ^( ARGUMENTS argument ( args_leaf )* ) )
-
-            ANTLR3_UINT32 alt6;
-
-            alt6=2;
-
-            switch ( LA(1) )
-            {
-            case WS:
-            	{
-
-            		{
-            		    int LA6_1 = LA(2);
-            		    if ( (synpred1_hammer(ctx)) )
-            		    {
-            		        alt6=1;
-            		    }
-            		    else if ( (ANTLR3_TRUE) )
-            		    {
-            		        alt6=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 6;
-            		        EXCEPTION->state        = 1;
-
-
-            		        goto ruleargumentsEx;
-            		    }
-            		}
-            	}
-                break;
-            case EXP_END:
-            	{
-
-            		{
-            		    int LA6_2 = LA(2);
-            		    if ( (synpred1_hammer(ctx)) )
-            		    {
-            		        alt6=1;
-            		    }
-            		    else if ( (ANTLR3_TRUE) )
-            		    {
-            		        alt6=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 6;
-            		        EXCEPTION->state        = 2;
-
-
-            		        goto ruleargumentsEx;
-            		    }
-            		}
-            	}
-                break;
-            case 36:
-            	{
-
-            		{
-            		    int LA6_3 = LA(2);
-            		    if ( (synpred1_hammer(ctx)) )
-            		    {
-            		        alt6=1;
-            		    }
-            		    else if ( (ANTLR3_TRUE) )
-            		    {
-            		        alt6=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 6;
-            		        EXCEPTION->state        = 3;
-
-
-            		        goto ruleargumentsEx;
-            		    }
-            		}
-            	}
-                break;
-
-            default:
-                if (BACKTRACKING>0)
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 35:25: -> ^( ARGUMENTS )
+              {
+                // hammer.g:35:28: ^( ARGUMENTS )
                 {
-                    FAILEDFLAG = ANTLR3_TRUE;
-                    return retval;
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, ARGUMENTS, (pANTLR3_UINT8) "ARGUMENTS"),
+                    root_1));
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
                 }
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 6;
-                EXCEPTION->state        = 0;
+              }
 
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 2:
+          // hammer.g:36:19: argument ( args_leaf )*
+          {
+            FOLLOWPUSH(FOLLOW_argument_in_arguments205);
+            argument9 = argument(ctx);
 
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleargumentsEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_argument->add(stream_argument, argument9.tree, NULL);
+
+            // hammer.g:36:28: ( args_leaf )*
+
+            for (;;) {
+              int alt5 = 2;
+              alt5 = cdfa5.predict(ctx, RECOGNIZER, ISTREAM, &cdfa5);
+              if (HASEXCEPTION()) {
                 goto ruleargumentsEx;
+              }
+              if (HASFAILED()) {
+                return retval;
+              }
+              switch (alt5) {
+                case 1:
+                  // hammer.g:36:28: args_leaf
+                  {
+                    FOLLOWPUSH(FOLLOW_args_leaf_in_arguments207);
+                    args_leaf10 = args_leaf(ctx);
+
+                    FOLLOWPOP();
+                    if (HASEXCEPTION()) {
+                      goto ruleargumentsEx;
+                    }
+                    if (HASFAILED()) {
+                      return retval;
+                    }
+                    if (BACKTRACKING == 0)
+                      stream_args_leaf->add(
+                        stream_args_leaf, args_leaf10.tree, NULL);
+                  }
+                  break;
+
+                default:
+                  goto loop5; /* break out of the loop */
+                  break;
+              }
             }
+          loop5:; /* Jump out to here if this rule does not match */
 
-            switch (alt6)
-            {
-        	case 1:
-        	    // hammer.g:35:13: ( ( WS )+ ';' )=>
-        	    {
+            /* AST REWRITE
+     * elements          : args_leaf, argument
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-        	        /* AST REWRITE
-        	         * elements          :
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 36:39: -> ^( ARGUMENTS argument ( args_leaf )* )
+              {
+                // hammer.g:36:42: ^( ARGUMENTS argument ( args_leaf )* )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, ARGUMENTS, (pANTLR3_UINT8) "ARGUMENTS"),
+                    root_1));
 
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 35:25: -> ^( ARGUMENTS )
-        	        	{
-        	        	    // hammer.g:35:28: ^( ARGUMENTS )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ARGUMENTS, (pANTLR3_UINT8)"ARGUMENTS"), root_1));
+                  ADAPTOR->addChild(ADAPTOR,
+                                    root_1,
+                                    stream_argument->nextTree(stream_argument));
+                  // hammer.g:36:63: ( args_leaf )*
+                  {
+                    while (stream_args_leaf->hasNext(stream_args_leaf)) {
+                      ADAPTOR->addChild(
+                        ADAPTOR,
+                        root_1,
+                        stream_args_leaf->nextTree(stream_args_leaf));
+                    }
+                    stream_args_leaf->reset(stream_args_leaf);
+                  }
 
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
 
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:36:19: argument ( args_leaf )*
-        	    {
-        	        FOLLOWPUSH(FOLLOW_argument_in_arguments205);
-        	        argument9=argument(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleargumentsEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_argument->add(stream_argument, argument9.tree, NULL);
-
-        	        // hammer.g:36:28: ( args_leaf )*
-
-        	        for (;;)
-        	        {
-        	            int alt5=2;
-        	            alt5 = cdfa5.predict(ctx, RECOGNIZER, ISTREAM, &cdfa5);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto ruleargumentsEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return retval;
-        	            }
-        	            switch (alt5)
-        	            {
-        	        	case 1:
-        	        	    // hammer.g:36:28: args_leaf
-        	        	    {
-        	        	        FOLLOWPUSH(FOLLOW_args_leaf_in_arguments207);
-        	        	        args_leaf10=args_leaf(ctx);
-
-        	        	        FOLLOWPOP();
-        	        	        if  (HASEXCEPTION())
-        	        	        {
-        	        	            goto ruleargumentsEx;
-        	        	        }
-        	        	        if (HASFAILED())
-        	        	        {
-        	        	            return retval;
-        	        	        }
-        	        	        if ( BACKTRACKING==0 ) stream_args_leaf->add(stream_args_leaf, args_leaf10.tree, NULL);
-
-        	        	    }
-        	        	    break;
-
-        	        	default:
-        	        	    goto loop5;	/* break out of the loop */
-        	        	    break;
-        	            }
-        	        }
-        	        loop5: ; /* Jump out to here if this rule does not match */
-
-
-
-        	        /* AST REWRITE
-        	         * elements          : args_leaf, argument
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 36:39: -> ^( ARGUMENTS argument ( args_leaf )* )
-        	        	{
-        	        	    // hammer.g:36:42: ^( ARGUMENTS argument ( args_leaf )* )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, ARGUMENTS, (pANTLR3_UINT8)"ARGUMENTS"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_argument->nextTree(stream_argument));
-        	        	        // hammer.g:36:63: ( args_leaf )*
-        	        	        {
-        	        	        	while ( stream_args_leaf->hasNext(stream_args_leaf) )
-        	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_args_leaf->nextTree(stream_args_leaf));
-
-        	        	        	}
-        	        	        	stream_args_leaf->reset(stream_args_leaf);
-
-        	        	        }
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
             }
-        }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleargumentsEx; /* Prevent compiler warnings */
+ruleargumentsEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleargumentsEx; /* Prevent compiler warnings */
-    ruleargumentsEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_args_leaf->free(stream_args_leaf);
+  stream_argument->free(stream_argument);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-    stream_args_leaf->free(stream_args_leaf);
-    stream_argument->free(stream_argument);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end arguments */
 
@@ -2227,184 +2612,177 @@ arguments(phammerParser ctx)
 static hammerParser_args_leaf_return
 args_leaf(phammerParser ctx)
 {
-    hammerParser_args_leaf_return retval;
+  hammerParser_args_leaf_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS11;
-    pANTLR3_COMMON_TOKEN    COLON12;
-    hammerParser_argument_return argument13;
-    #undef	RETURN_TYPE_argument13
-    #define	RETURN_TYPE_argument13 hammerParser_argument_return
+  pANTLR3_COMMON_TOKEN WS11;
+  pANTLR3_COMMON_TOKEN COLON12;
+  hammerParser_argument_return argument13;
+#undef RETURN_TYPE_argument13
+#define RETURN_TYPE_argument13 hammerParser_argument_return
 
-    pANTLR3_BASE_TREE WS11_tree;
-    pANTLR3_BASE_TREE COLON12_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_COLON;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_argument;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE WS11_tree;
+  pANTLR3_BASE_TREE COLON12_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_COLON;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_argument;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  WS11 = NULL;
+  COLON12 = NULL;
+  argument13.tree = NULL;
 
-    WS11       = NULL;
-    COLON12       = NULL;
-    argument13.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    WS11_tree   = NULL;
-    COLON12_tree   = NULL;
-    stream_COLON   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token COLON");
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_argument=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule argument");
-    retval.tree  = NULL;
+  WS11_tree = NULL;
+  COLON12_tree = NULL;
+  stream_COLON = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token COLON");
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_argument = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule argument");
+  retval.tree = NULL;
+  {
+    // hammer.g:38:11: ( ( WS )+ COLON argument -> COLON argument )
+    // hammer.g:38:13: ( WS )+ COLON argument
     {
-        // hammer.g:38:11: ( ( WS )+ COLON argument -> COLON argument )
-        // hammer.g:38:13: ( WS )+ COLON argument
-        {
-            // hammer.g:38:13: ( WS )+
-            {
-                int cnt7=0;
+      // hammer.g:38:13: ( WS )+
+      {
+        int cnt7 = 0;
 
-                for (;;)
-                {
-                    int alt7=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA7_0 = LA(1);
-            	    if ( (LA7_0 == WS) )
-            	    {
-            	        alt7=1;
-            	    }
-
-            	}
-            	switch (alt7)
-            	{
-            	    case 1:
-            	        // hammer.g:38:13: WS
-            	        {
-            	            WS11 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_args_leaf229);
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto ruleargs_leafEx;
-            	            }
-            	            if (HASFAILED())
-            	            {
-            	                return retval;
-            	            }
-            	            if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS11, NULL);
-
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt7 >= 1 )
-            		{
-            		    goto loop7;
-            		}
-            		if (BACKTRACKING>0)
-            		{
-            		    FAILEDFLAG = ANTLR3_TRUE;
-            		    return retval;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto ruleargs_leafEx;
-            	}
-            	cnt7++;
+        for (;;) {
+          int alt7 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA7_0 = LA(1);
+            if ((LA7_0 == WS)) {
+              alt7 = 1;
+            }
+          }
+          switch (alt7) {
+            case 1:
+              // hammer.g:38:13: WS
+              {
+                WS11 =
+                  (pANTLR3_COMMON_TOKEN)MATCHT(WS, &FOLLOW_WS_in_args_leaf229);
+                if (HASEXCEPTION()) {
+                  goto ruleargs_leafEx;
                 }
-                loop7: ;	/* Jump to here if this rule does not match */
-            }
-            COLON12 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_args_leaf232);
-            if  (HASEXCEPTION())
-            {
-                goto ruleargs_leafEx;
-            }
-            if (HASFAILED())
-            {
+                if (HASFAILED()) {
+                  return retval;
+                }
+                if (BACKTRACKING == 0)
+                  stream_WS->add(stream_WS, WS11, NULL);
+              }
+              break;
+
+            default:
+
+              if (cnt7 >= 1) {
+                goto loop7;
+              }
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
                 return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_COLON->add(stream_COLON, COLON12, NULL);
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
 
-            FOLLOWPUSH(FOLLOW_argument_in_args_leaf234);
-            argument13=argument(ctx);
+              goto ruleargs_leafEx;
+          }
+          cnt7++;
+        }
+      loop7:; /* Jump to here if this rule does not match */
+      }
+      COLON12 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(COLON, &FOLLOW_COLON_in_args_leaf232);
+      if (HASEXCEPTION()) {
+        goto ruleargs_leafEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_COLON->add(stream_COLON, COLON12, NULL);
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruleargs_leafEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_argument->add(stream_argument, argument13.tree, NULL);
+      FOLLOWPUSH(FOLLOW_argument_in_args_leaf234);
+      argument13 = argument(ctx);
 
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruleargs_leafEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_argument->add(stream_argument, argument13.tree, NULL);
 
-            /* AST REWRITE
-             * elements          : COLON, argument
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+      /* AST REWRITE
+ * elements          : COLON, argument
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 38:32: -> COLON argument
-            	{
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_COLON->nextNode(stream_COLON));
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_argument->nextTree(stream_argument));
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 38:32: -> COLON argument
+        {
+          ADAPTOR->addChild(
+            ADAPTOR, root_0, stream_COLON->nextNode(stream_COLON));
+          ADAPTOR->addChild(
+            ADAPTOR, root_0, stream_argument->nextTree(stream_argument));
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleargs_leafEx; /* Prevent compiler warnings */
+ruleargs_leafEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleargs_leafEx; /* Prevent compiler warnings */
-    ruleargs_leafEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_COLON->free(stream_COLON);
+  stream_WS->free(stream_WS);
+  stream_argument->free(stream_argument);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_COLON->free(stream_COLON);
-    stream_WS->free(stream_WS);
-    stream_argument->free(stream_argument);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end args_leaf */
 
@@ -2415,978 +2793,927 @@ args_leaf(phammerParser ctx)
 static hammerParser_non_empty_argument_return
 non_empty_argument(phammerParser ctx)
 {
-    hammerParser_non_empty_argument_return retval;
+  hammerParser_non_empty_argument_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_expression_return expression14;
-    #undef	RETURN_TYPE_expression14
-    #define	RETURN_TYPE_expression14 hammerParser_expression_return
+  hammerParser_expression_return expression14;
+#undef RETURN_TYPE_expression14
+#define RETURN_TYPE_expression14 hammerParser_expression_return
 
-    hammerParser_named_argument_return named_argument15;
-    #undef	RETURN_TYPE_named_argument15
-    #define	RETURN_TYPE_named_argument15 hammerParser_named_argument_return
+  hammerParser_named_argument_return named_argument15;
+#undef RETURN_TYPE_named_argument15
+#define RETURN_TYPE_named_argument15 hammerParser_named_argument_return
 
+  /* Initialize rule variables
+ */
 
-    /* Initialize rule variables
-     */
+  root_0 = NULL;
 
+  expression14.tree = NULL;
 
-    root_0 = NULL;
+  named_argument15.tree = NULL;
 
-    expression14.tree = NULL;
+  retval.start = LT(1);
 
-    named_argument15.tree = NULL;
-
-    retval.start = LT(1);
-
-    retval.tree  = NULL;
+  retval.tree = NULL;
+  {
     {
-        {
-            //  hammer.g:40:21: ( expression | named_argument )
+      //  hammer.g:40:21: ( expression | named_argument )
 
-            ANTLR3_UINT32 alt8;
+      ANTLR3_UINT32 alt8;
 
-            alt8=2;
+      alt8 = 2;
 
-            alt8 = cdfa8.predict(ctx, RECOGNIZER, ISTREAM, &cdfa8);
-            if  (HASEXCEPTION())
-            {
-                goto rulenon_empty_argumentEx;
+      alt8 = cdfa8.predict(ctx, RECOGNIZER, ISTREAM, &cdfa8);
+      if (HASEXCEPTION()) {
+        goto rulenon_empty_argumentEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      switch (alt8) {
+        case 1:
+          // hammer.g:40:23: expression
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_expression_in_non_empty_argument253);
+            expression14 = expression(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulenon_empty_argumentEx;
             }
-            if (HASFAILED())
-            {
-                return retval;
+            if (HASFAILED()) {
+              return retval;
             }
-            switch (alt8)
-            {
-        	case 1:
-        	    // hammer.g:40:23: expression
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, expression14.tree);
+          }
+          break;
+        case 2:
+          // hammer.g:41:14: named_argument
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        FOLLOWPUSH(FOLLOW_expression_in_non_empty_argument253);
-        	        expression14=expression(ctx);
+            FOLLOWPUSH(FOLLOW_named_argument_in_non_empty_argument268);
+            named_argument15 = named_argument(ctx);
 
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulenon_empty_argumentEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, expression14.tree);
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:41:14: named_argument
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_named_argument_in_non_empty_argument268);
-        	        named_argument15=named_argument(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulenon_empty_argumentEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, named_argument15.tree);
-
-        	    }
-        	    break;
-
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulenon_empty_argumentEx;
             }
-        }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, named_argument15.tree);
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulenon_empty_argumentEx; /* Prevent compiler warnings */
+rulenon_empty_argumentEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulenon_empty_argumentEx; /* Prevent compiler warnings */
-    rulenon_empty_argumentEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
 
-    if ( BACKTRACKING==0 ) {
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end non_empty_argument */
 
 /**
  * $ANTLR start named_argument
- * hammer.g:43:1: named_argument : argument_name named_argument_expression -> ^( NAMED_EXPRESSION argument_name named_argument_expression ) ;
+ * hammer.g:43:1: named_argument : argument_name named_argument_expression -> ^(
+ * NAMED_EXPRESSION argument_name named_argument_expression ) ;
  */
 static hammerParser_named_argument_return
 named_argument(phammerParser ctx)
 {
-    hammerParser_named_argument_return retval;
+  hammerParser_named_argument_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_argument_name_return argument_name16;
-    #undef	RETURN_TYPE_argument_name16
-    #define	RETURN_TYPE_argument_name16 hammerParser_argument_name_return
+  hammerParser_argument_name_return argument_name16;
+#undef RETURN_TYPE_argument_name16
+#define RETURN_TYPE_argument_name16 hammerParser_argument_name_return
 
-    hammerParser_named_argument_expression_return named_argument_expression17;
-    #undef	RETURN_TYPE_named_argument_expression17
-    #define	RETURN_TYPE_named_argument_expression17 hammerParser_named_argument_expression_return
+  hammerParser_named_argument_expression_return named_argument_expression17;
+#undef RETURN_TYPE_named_argument_expression17
+#define RETURN_TYPE_named_argument_expression17                                \
+  hammerParser_named_argument_expression_return
 
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_argument_name;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_named_argument_expression;
-    /* Initialize rule variables
-     */
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_argument_name;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_named_argument_expression;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  argument_name16.tree = NULL;
 
-    argument_name16.tree = NULL;
+  named_argument_expression17.tree = NULL;
 
-    named_argument_expression17.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    stream_argument_name=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule argument_name");
-    stream_named_argument_expression=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule named_argument_expression");
-    retval.tree  = NULL;
+  stream_argument_name = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule argument_name");
+  stream_named_argument_expression = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule named_argument_expression");
+  retval.tree = NULL;
+  {
+    // hammer.g:43:17: ( argument_name named_argument_expression -> ^(
+    // NAMED_EXPRESSION argument_name named_argument_expression ) )
+    // hammer.g:43:19: argument_name named_argument_expression
     {
-        // hammer.g:43:17: ( argument_name named_argument_expression -> ^( NAMED_EXPRESSION argument_name named_argument_expression ) )
-        // hammer.g:43:19: argument_name named_argument_expression
+      FOLLOWPUSH(FOLLOW_argument_name_in_named_argument283);
+      argument_name16 = argument_name(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulenamed_argumentEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_argument_name->add(
+          stream_argument_name, argument_name16.tree, NULL);
+      FOLLOWPUSH(FOLLOW_named_argument_expression_in_named_argument285);
+      named_argument_expression17 = named_argument_expression(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulenamed_argumentEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_named_argument_expression->add(stream_named_argument_expression,
+                                              named_argument_expression17.tree,
+                                              NULL);
+
+      /* AST REWRITE
+ * elements          : named_argument_expression, argument_name
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 43:59: -> ^( NAMED_EXPRESSION argument_name named_argument_expression
+        // )
         {
-            FOLLOWPUSH(FOLLOW_argument_name_in_named_argument283);
-            argument_name16=argument_name(ctx);
+          // hammer.g:43:62: ^( NAMED_EXPRESSION argument_name
+          // named_argument_expression )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, NAMED_EXPRESSION, (pANTLR3_UINT8) "NAMED_EXPRESSION"),
+              root_1));
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulenamed_argumentEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_argument_name->add(stream_argument_name, argument_name16.tree, NULL);
-            FOLLOWPUSH(FOLLOW_named_argument_expression_in_named_argument285);
-            named_argument_expression17=named_argument_expression(ctx);
+            ADAPTOR->addChild(
+              ADAPTOR,
+              root_1,
+              stream_argument_name->nextTree(stream_argument_name));
+            ADAPTOR->addChild(ADAPTOR,
+                              root_1,
+                              stream_named_argument_expression->nextTree(
+                                stream_named_argument_expression));
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulenamed_argumentEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_named_argument_expression->add(stream_named_argument_expression, named_argument_expression17.tree, NULL);
-
-
-            /* AST REWRITE
-             * elements          : named_argument_expression, argument_name
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 43:59: -> ^( NAMED_EXPRESSION argument_name named_argument_expression )
-            	{
-            	    // hammer.g:43:62: ^( NAMED_EXPRESSION argument_name named_argument_expression )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, NAMED_EXPRESSION, (pANTLR3_UINT8)"NAMED_EXPRESSION"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_argument_name->nextTree(stream_argument_name));
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_named_argument_expression->nextTree(stream_named_argument_expression));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulenamed_argumentEx; /* Prevent compiler warnings */
+rulenamed_argumentEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulenamed_argumentEx; /* Prevent compiler warnings */
-    rulenamed_argumentEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_argument_name->free(stream_argument_name);
+  stream_named_argument_expression->free(stream_named_argument_expression);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-    stream_argument_name->free(stream_argument_name);
-    stream_named_argument_expression->free(stream_named_argument_expression);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end named_argument */
 
 /**
  * $ANTLR start named_argument_expression
- * hammer.g:46:1: named_argument_expression : ( ( ( WS )+ ':' )=> -> EMPTY_EXPRESSION | ( ( WS )+ ';' )=> -> EMPTY_EXPRESSION | ( WS )* expression -> expression );
+ * hammer.g:46:1: named_argument_expression : ( ( ( WS )+ ':' )=> ->
+ * EMPTY_EXPRESSION | ( ( WS )+ ';' )=> -> EMPTY_EXPRESSION | ( WS )* expression
+ * -> expression );
  */
 static hammerParser_named_argument_expression_return
 named_argument_expression(phammerParser ctx)
 {
-    hammerParser_named_argument_expression_return retval;
+  hammerParser_named_argument_expression_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS18;
-    hammerParser_expression_return expression19;
-    #undef	RETURN_TYPE_expression19
-    #define	RETURN_TYPE_expression19 hammerParser_expression_return
+  pANTLR3_COMMON_TOKEN WS18;
+  hammerParser_expression_return expression19;
+#undef RETURN_TYPE_expression19
+#define RETURN_TYPE_expression19 hammerParser_expression_return
 
-    pANTLR3_BASE_TREE WS18_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_expression;
-    /* Initialize rule variables
+  pANTLR3_BASE_TREE WS18_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_expression;
+  /* Initialize rule variables
+ */
+
+  root_0 = NULL;
+
+  WS18 = NULL;
+  expression19.tree = NULL;
+
+  retval.start = LT(1);
+
+  WS18_tree = NULL;
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_expression = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule expression");
+  retval.tree = NULL;
+  {
+    {
+      //  hammer.g:46:28: ( ( ( WS )+ ':' )=> -> EMPTY_EXPRESSION | ( ( WS )+
+      //  ';' )=> -> EMPTY_EXPRESSION | ( WS )* expression -> expression )
+
+      ANTLR3_UINT32 alt10;
+
+      alt10 = 3;
+
+      switch (LA(1)) {
+        case WS: {
+          {
+            int LA10_1 = LA(2);
+            if ((LA10_1 == WS || LA10_1 == ID ||
+                 ((LA10_1 >= SLASH) && (LA10_1 <= PUBLIC_TAG)) ||
+                 LA10_1 == 29 || LA10_1 == 35)) {
+              alt10 = 3;
+            } else if ((synpred2_hammer(ctx))) {
+              alt10 = 1;
+            } else if ((synpred3_hammer(ctx))) {
+              alt10 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 10;
+              EXCEPTION->state = 1;
+
+              goto rulenamed_argument_expressionEx;
+            }
+          }
+        } break;
+        case EXP_END: {
+          {
+            int LA10_2 = LA(2);
+            if ((synpred2_hammer(ctx))) {
+              alt10 = 1;
+            } else if ((synpred3_hammer(ctx))) {
+              alt10 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 10;
+              EXCEPTION->state = 2;
+
+              goto rulenamed_argument_expressionEx;
+            }
+          }
+        } break;
+        case 36: {
+          {
+            int LA10_3 = LA(2);
+            if ((synpred2_hammer(ctx))) {
+              alt10 = 1;
+            } else if ((synpred3_hammer(ctx))) {
+              alt10 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 10;
+              EXCEPTION->state = 3;
+
+              goto rulenamed_argument_expressionEx;
+            }
+          }
+        } break;
+        case ID:
+        case SLASH:
+        case PUBLIC_TAG:
+        case 29:
+        case 35: {
+          alt10 = 3;
+        } break;
+
+        default:
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 10;
+          EXCEPTION->state = 0;
+
+          goto rulenamed_argument_expressionEx;
+      }
+
+      switch (alt10) {
+        case 1:
+          // hammer.g:46:30: ( ( WS )+ ':' )=>
+          {
+            /* AST REWRITE
+     * elements          :
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
      */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-    root_0 = NULL;
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 46:42: -> EMPTY_EXPRESSION
+              {
+                ADAPTOR->addChild(ADAPTOR,
+                                  root_0,
+                                  (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                    ADAPTOR,
+                                    EMPTY_EXPRESSION,
+                                    (pANTLR3_UINT8) "EMPTY_EXPRESSION"));
+              }
 
-    WS18       = NULL;
-    expression19.tree = NULL;
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 2:
+          // hammer.g:47:7: ( ( WS )+ ';' )=>
+          {
+            /* AST REWRITE
+     * elements          :
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-    retval.start = LT(1);
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-    WS18_tree   = NULL;
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_expression=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule expression");
-    retval.tree  = NULL;
-    {
-        {
-            //  hammer.g:46:28: ( ( ( WS )+ ':' )=> -> EMPTY_EXPRESSION | ( ( WS )+ ';' )=> -> EMPTY_EXPRESSION | ( WS )* expression -> expression )
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 47:19: -> EMPTY_EXPRESSION
+              {
+                ADAPTOR->addChild(ADAPTOR,
+                                  root_0,
+                                  (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                    ADAPTOR,
+                                    EMPTY_EXPRESSION,
+                                    (pANTLR3_UINT8) "EMPTY_EXPRESSION"));
+              }
 
-            ANTLR3_UINT32 alt10;
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 3:
+          // hammer.g:48:7: ( WS )* expression
+          {
+            // hammer.g:48:7: ( WS )*
 
-            alt10=3;
-
-            switch ( LA(1) )
-            {
-            case WS:
-            	{
-
-            		{
-            		    int LA10_1 = LA(2);
-            		    if ( (LA10_1 == WS || LA10_1 == ID || ((LA10_1 >= SLASH) && (LA10_1 <= PUBLIC_TAG)) || LA10_1 == 29 || LA10_1 == 35) )
-            		    {
-            		        alt10=3;
-            		    }
-            		    else if ( (synpred2_hammer(ctx)) )
-            		    {
-            		        alt10=1;
-            		    }
-            		    else if ( (synpred3_hammer(ctx)) )
-            		    {
-            		        alt10=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 10;
-            		        EXCEPTION->state        = 1;
-
-
-            		        goto rulenamed_argument_expressionEx;
-            		    }
-            		}
-            	}
-                break;
-            case EXP_END:
-            	{
-
-            		{
-            		    int LA10_2 = LA(2);
-            		    if ( (synpred2_hammer(ctx)) )
-            		    {
-            		        alt10=1;
-            		    }
-            		    else if ( (synpred3_hammer(ctx)) )
-            		    {
-            		        alt10=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 10;
-            		        EXCEPTION->state        = 2;
-
-
-            		        goto rulenamed_argument_expressionEx;
-            		    }
-            		}
-            	}
-                break;
-            case 36:
-            	{
-
-            		{
-            		    int LA10_3 = LA(2);
-            		    if ( (synpred2_hammer(ctx)) )
-            		    {
-            		        alt10=1;
-            		    }
-            		    else if ( (synpred3_hammer(ctx)) )
-            		    {
-            		        alt10=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 10;
-            		        EXCEPTION->state        = 3;
-
-
-            		        goto rulenamed_argument_expressionEx;
-            		    }
-            		}
-            	}
-                break;
-            case ID:
-            case SLASH:
-            case PUBLIC_TAG:
-            case 29:
-            case 35:
-            	{
-            		alt10=3;
-            	}
-                break;
-
-            default:
-                if (BACKTRACKING>0)
-                {
-                    FAILEDFLAG = ANTLR3_TRUE;
-                    return retval;
+            for (;;) {
+              int alt9 = 2;
+              {
+                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                int LA9_0 = LA(1);
+                if ((LA9_0 == WS)) {
+                  alt9 = 1;
                 }
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 10;
-                EXCEPTION->state        = 0;
+              }
+              switch (alt9) {
+                case 1:
+                  // hammer.g:48:7: WS
+                  {
+                    WS18 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                      WS, &FOLLOW_WS_in_named_argument_expression343);
+                    if (HASEXCEPTION()) {
+                      goto rulenamed_argument_expressionEx;
+                    }
+                    if (HASFAILED()) {
+                      return retval;
+                    }
+                    if (BACKTRACKING == 0)
+                      stream_WS->add(stream_WS, WS18, NULL);
+                  }
+                  break;
 
-
-                goto rulenamed_argument_expressionEx;
+                default:
+                  goto loop9; /* break out of the loop */
+                  break;
+              }
             }
+          loop9:; /* Jump out to here if this rule does not match */
 
-            switch (alt10)
-            {
-        	case 1:
-        	    // hammer.g:46:30: ( ( WS )+ ':' )=>
-        	    {
+            FOLLOWPUSH(FOLLOW_expression_in_named_argument_expression346);
+            expression19 = expression(ctx);
 
-        	        /* AST REWRITE
-        	         * elements          :
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 46:42: -> EMPTY_EXPRESSION
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, EMPTY_EXPRESSION, (pANTLR3_UINT8)"EMPTY_EXPRESSION"));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:47:7: ( ( WS )+ ';' )=>
-        	    {
-
-        	        /* AST REWRITE
-        	         * elements          :
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 47:19: -> EMPTY_EXPRESSION
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, EMPTY_EXPRESSION, (pANTLR3_UINT8)"EMPTY_EXPRESSION"));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 3:
-        	    // hammer.g:48:7: ( WS )* expression
-        	    {
-
-        	        // hammer.g:48:7: ( WS )*
-
-        	        for (;;)
-        	        {
-        	            int alt9=2;
-        	            {
-        	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	                */
-        	                int LA9_0 = LA(1);
-        	                if ( (LA9_0 == WS) )
-        	                {
-        	                    alt9=1;
-        	                }
-
-        	            }
-        	            switch (alt9)
-        	            {
-        	        	case 1:
-        	        	    // hammer.g:48:7: WS
-        	        	    {
-        	        	        WS18 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_named_argument_expression343);
-        	        	        if  (HASEXCEPTION())
-        	        	        {
-        	        	            goto rulenamed_argument_expressionEx;
-        	        	        }
-        	        	        if (HASFAILED())
-        	        	        {
-        	        	            return retval;
-        	        	        }
-        	        	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS18, NULL);
-
-
-        	        	    }
-        	        	    break;
-
-        	        	default:
-        	        	    goto loop9;	/* break out of the loop */
-        	        	    break;
-        	            }
-        	        }
-        	        loop9: ; /* Jump out to here if this rule does not match */
-
-        	        FOLLOWPUSH(FOLLOW_expression_in_named_argument_expression346);
-        	        expression19=expression(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulenamed_argument_expressionEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_expression->add(stream_expression, expression19.tree, NULL);
-
-
-        	        /* AST REWRITE
-        	         * elements          : expression
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 48:22: -> expression
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, stream_expression->nextTree(stream_expression));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulenamed_argument_expressionEx;
             }
-        }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_expression->add(
+                stream_expression, expression19.tree, NULL);
+
+            /* AST REWRITE
+     * elements          : expression
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 48:22: -> expression
+              {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_0,
+                  stream_expression->nextTree(stream_expression));
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulenamed_argument_expressionEx; /* Prevent compiler warnings */
+rulenamed_argument_expressionEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulenamed_argument_expressionEx; /* Prevent compiler warnings */
-    rulenamed_argument_expressionEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_WS->free(stream_WS);
+  stream_expression->free(stream_expression);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_WS->free(stream_WS);
-    stream_expression->free(stream_expression);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end named_argument_expression */
 
 /**
  * $ANTLR start argument
- * hammer.g:51:1: argument : ( ( ( WS )+ ':' )=> -> EMPTY_EXPRESSION | ( ( WS )+ ';' )=> -> EMPTY_EXPRESSION | ( WS )+ non_empty_argument -> non_empty_argument );
+ * hammer.g:51:1: argument : ( ( ( WS )+ ':' )=> -> EMPTY_EXPRESSION | ( ( WS )+
+ * ';' )=> -> EMPTY_EXPRESSION | ( WS )+ non_empty_argument ->
+ * non_empty_argument );
  */
 static hammerParser_argument_return
 argument(phammerParser ctx)
 {
-    hammerParser_argument_return retval;
+  hammerParser_argument_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS20;
-    hammerParser_non_empty_argument_return non_empty_argument21;
-    #undef	RETURN_TYPE_non_empty_argument21
-    #define	RETURN_TYPE_non_empty_argument21 hammerParser_non_empty_argument_return
+  pANTLR3_COMMON_TOKEN WS20;
+  hammerParser_non_empty_argument_return non_empty_argument21;
+#undef RETURN_TYPE_non_empty_argument21
+#define RETURN_TYPE_non_empty_argument21 hammerParser_non_empty_argument_return
 
-    pANTLR3_BASE_TREE WS20_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_non_empty_argument;
-    /* Initialize rule variables
+  pANTLR3_BASE_TREE WS20_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_non_empty_argument;
+  /* Initialize rule variables
+ */
+
+  root_0 = NULL;
+
+  WS20 = NULL;
+  non_empty_argument21.tree = NULL;
+
+  retval.start = LT(1);
+
+  WS20_tree = NULL;
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_non_empty_argument = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule non_empty_argument");
+  retval.tree = NULL;
+  {
+    {
+      //  hammer.g:51:10: ( ( ( WS )+ ':' )=> -> EMPTY_EXPRESSION | ( ( WS )+
+      //  ';' )=> -> EMPTY_EXPRESSION | ( WS )+ non_empty_argument ->
+      //  non_empty_argument )
+
+      ANTLR3_UINT32 alt12;
+
+      alt12 = 3;
+
+      switch (LA(1)) {
+        case WS: {
+          {
+            int LA12_1 = LA(2);
+            if ((LA12_1 == WS || LA12_1 == ID ||
+                 ((LA12_1 >= SLASH) && (LA12_1 <= PUBLIC_TAG)) ||
+                 LA12_1 == 29 || LA12_1 == 35)) {
+              alt12 = 3;
+            } else if ((synpred4_hammer(ctx))) {
+              alt12 = 1;
+            } else if ((synpred5_hammer(ctx))) {
+              alt12 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 12;
+              EXCEPTION->state = 1;
+
+              goto ruleargumentEx;
+            }
+          }
+        } break;
+        case EXP_END: {
+          {
+            int LA12_2 = LA(2);
+            if ((synpred4_hammer(ctx))) {
+              alt12 = 1;
+            } else if ((synpred5_hammer(ctx))) {
+              alt12 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 12;
+              EXCEPTION->state = 2;
+
+              goto ruleargumentEx;
+            }
+          }
+        } break;
+        case 36: {
+          {
+            int LA12_3 = LA(2);
+            if ((synpred4_hammer(ctx))) {
+              alt12 = 1;
+            } else if ((synpred5_hammer(ctx))) {
+              alt12 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 12;
+              EXCEPTION->state = 3;
+
+              goto ruleargumentEx;
+            }
+          }
+        } break;
+
+        default:
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 12;
+          EXCEPTION->state = 0;
+
+          goto ruleargumentEx;
+      }
+
+      switch (alt12) {
+        case 1:
+          // hammer.g:51:12: ( ( WS )+ ':' )=>
+          {
+            /* AST REWRITE
+     * elements          :
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
      */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-    root_0 = NULL;
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 51:24: -> EMPTY_EXPRESSION
+              {
+                ADAPTOR->addChild(ADAPTOR,
+                                  root_0,
+                                  (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                    ADAPTOR,
+                                    EMPTY_EXPRESSION,
+                                    (pANTLR3_UINT8) "EMPTY_EXPRESSION"));
+              }
 
-    WS20       = NULL;
-    non_empty_argument21.tree = NULL;
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 2:
+          // hammer.g:52:5: ( ( WS )+ ';' )=>
+          {
+            /* AST REWRITE
+     * elements          :
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-    retval.start = LT(1);
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
 
-    WS20_tree   = NULL;
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_non_empty_argument=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule non_empty_argument");
-    retval.tree  = NULL;
-    {
-        {
-            //  hammer.g:51:10: ( ( ( WS )+ ':' )=> -> EMPTY_EXPRESSION | ( ( WS )+ ';' )=> -> EMPTY_EXPRESSION | ( WS )+ non_empty_argument -> non_empty_argument )
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 52:17: -> EMPTY_EXPRESSION
+              {
+                ADAPTOR->addChild(ADAPTOR,
+                                  root_0,
+                                  (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                    ADAPTOR,
+                                    EMPTY_EXPRESSION,
+                                    (pANTLR3_UINT8) "EMPTY_EXPRESSION"));
+              }
 
-            ANTLR3_UINT32 alt12;
-
-            alt12=3;
-
-            switch ( LA(1) )
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 3:
+          // hammer.g:53:11: ( WS )+ non_empty_argument
+          {
+            // hammer.g:53:11: ( WS )+
             {
-            case WS:
-            	{
+              int cnt11 = 0;
 
-            		{
-            		    int LA12_1 = LA(2);
-            		    if ( (LA12_1 == WS || LA12_1 == ID || ((LA12_1 >= SLASH) && (LA12_1 <= PUBLIC_TAG)) || LA12_1 == 29 || LA12_1 == 35) )
-            		    {
-            		        alt12=3;
-            		    }
-            		    else if ( (synpred4_hammer(ctx)) )
-            		    {
-            		        alt12=1;
-            		    }
-            		    else if ( (synpred5_hammer(ctx)) )
-            		    {
-            		        alt12=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 12;
-            		        EXCEPTION->state        = 1;
-
-
-            		        goto ruleargumentEx;
-            		    }
-            		}
-            	}
-                break;
-            case EXP_END:
-            	{
-
-            		{
-            		    int LA12_2 = LA(2);
-            		    if ( (synpred4_hammer(ctx)) )
-            		    {
-            		        alt12=1;
-            		    }
-            		    else if ( (synpred5_hammer(ctx)) )
-            		    {
-            		        alt12=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 12;
-            		        EXCEPTION->state        = 2;
-
-
-            		        goto ruleargumentEx;
-            		    }
-            		}
-            	}
-                break;
-            case 36:
-            	{
-
-            		{
-            		    int LA12_3 = LA(2);
-            		    if ( (synpred4_hammer(ctx)) )
-            		    {
-            		        alt12=1;
-            		    }
-            		    else if ( (synpred5_hammer(ctx)) )
-            		    {
-            		        alt12=2;
-            		    }
-            		    else
-            		    {
-            		        if (BACKTRACKING>0)
-            		        {
-            		            FAILEDFLAG = ANTLR3_TRUE;
-            		            return retval;
-            		        }
-
-            		        CONSTRUCTEX();
-            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-            		        EXCEPTION->message      = (void *)"";
-            		        EXCEPTION->decisionNum  = 12;
-            		        EXCEPTION->state        = 3;
-
-
-            		        goto ruleargumentEx;
-            		    }
-            		}
-            	}
-                break;
-
-            default:
-                if (BACKTRACKING>0)
+              for (;;) {
+                int alt11 = 2;
                 {
-                    FAILEDFLAG = ANTLR3_TRUE;
-                    return retval;
+                  /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                  int LA11_0 = LA(1);
+                  if ((LA11_0 == WS)) {
+                    alt11 = 1;
+                  }
                 }
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 12;
-                EXCEPTION->state        = 0;
+                switch (alt11) {
+                  case 1:
+                    // hammer.g:53:11: WS
+                    {
+                      WS20 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                        WS, &FOLLOW_WS_in_argument407);
+                      if (HASEXCEPTION()) {
+                        goto ruleargumentEx;
+                      }
+                      if (HASFAILED()) {
+                        return retval;
+                      }
+                      if (BACKTRACKING == 0)
+                        stream_WS->add(stream_WS, WS20, NULL);
+                    }
+                    break;
 
+                  default:
 
-                goto ruleargumentEx;
+                    if (cnt11 >= 1) {
+                      goto loop11;
+                    }
+                    if (BACKTRACKING > 0) {
+                      FAILEDFLAG = ANTLR3_TRUE;
+                      return retval;
+                    }
+                    /* mismatchedSetEx()
+         */
+                    CONSTRUCTEX();
+                    EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+                    EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+                    goto ruleargumentEx;
+                }
+                cnt11++;
+              }
+            loop11:; /* Jump to here if this rule does not match */
             }
+            FOLLOWPUSH(FOLLOW_non_empty_argument_in_argument410);
+            non_empty_argument21 = non_empty_argument(ctx);
 
-            switch (alt12)
-            {
-        	case 1:
-        	    // hammer.g:51:12: ( ( WS )+ ':' )=>
-        	    {
-
-        	        /* AST REWRITE
-        	         * elements          :
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 51:24: -> EMPTY_EXPRESSION
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, EMPTY_EXPRESSION, (pANTLR3_UINT8)"EMPTY_EXPRESSION"));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:52:5: ( ( WS )+ ';' )=>
-        	    {
-
-        	        /* AST REWRITE
-        	         * elements          :
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 52:17: -> EMPTY_EXPRESSION
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, EMPTY_EXPRESSION, (pANTLR3_UINT8)"EMPTY_EXPRESSION"));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 3:
-        	    // hammer.g:53:11: ( WS )+ non_empty_argument
-        	    {
-        	        // hammer.g:53:11: ( WS )+
-        	        {
-        	            int cnt11=0;
-
-        	            for (;;)
-        	            {
-        	                int alt11=2;
-        	        	{
-        	        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	        	    */
-        	        	    int LA11_0 = LA(1);
-        	        	    if ( (LA11_0 == WS) )
-        	        	    {
-        	        	        alt11=1;
-        	        	    }
-
-        	        	}
-        	        	switch (alt11)
-        	        	{
-        	        	    case 1:
-        	        	        // hammer.g:53:11: WS
-        	        	        {
-        	        	            WS20 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_argument407);
-        	        	            if  (HASEXCEPTION())
-        	        	            {
-        	        	                goto ruleargumentEx;
-        	        	            }
-        	        	            if (HASFAILED())
-        	        	            {
-        	        	                return retval;
-        	        	            }
-        	        	            if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS20, NULL);
-
-
-        	        	        }
-        	        	        break;
-
-        	        	    default:
-
-        	        		if ( cnt11 >= 1 )
-        	        		{
-        	        		    goto loop11;
-        	        		}
-        	        		if (BACKTRACKING>0)
-        	        		{
-        	        		    FAILEDFLAG = ANTLR3_TRUE;
-        	        		    return retval;
-        	        		}
-        	        		/* mismatchedSetEx()
-        	        		 */
-        	        		CONSTRUCTEX();
-        	        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        	        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        	        		goto ruleargumentEx;
-        	        	}
-        	        	cnt11++;
-        	            }
-        	            loop11: ;	/* Jump to here if this rule does not match */
-        	        }
-        	        FOLLOWPUSH(FOLLOW_non_empty_argument_in_argument410);
-        	        non_empty_argument21=non_empty_argument(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleargumentEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_non_empty_argument->add(stream_non_empty_argument, non_empty_argument21.tree, NULL);
-
-
-        	        /* AST REWRITE
-        	         * elements          : non_empty_argument
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 53:34: -> non_empty_argument
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, stream_non_empty_argument->nextTree(stream_non_empty_argument));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleargumentEx;
             }
-        }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_non_empty_argument->add(
+                stream_non_empty_argument, non_empty_argument21.tree, NULL);
+
+            /* AST REWRITE
+     * elements          : non_empty_argument
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 53:34: -> non_empty_argument
+              {
+                ADAPTOR->addChild(ADAPTOR,
+                                  root_0,
+                                  stream_non_empty_argument->nextTree(
+                                    stream_non_empty_argument));
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleargumentEx; /* Prevent compiler warnings */
+ruleargumentEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleargumentEx; /* Prevent compiler warnings */
-    ruleargumentEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_WS->free(stream_WS);
+  stream_non_empty_argument->free(stream_non_empty_argument);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_WS->free(stream_WS);
-    stream_non_empty_argument->free(stream_non_empty_argument);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end argument */
 
@@ -3397,164 +3724,156 @@ argument(phammerParser ctx)
 static hammerParser_argument_name_return
 argument_name(phammerParser ctx)
 {
-    hammerParser_argument_name_return retval;
+  hammerParser_argument_name_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    ID22;
-    pANTLR3_COMMON_TOKEN    WS23;
-    pANTLR3_COMMON_TOKEN    char_literal24;
+  pANTLR3_COMMON_TOKEN ID22;
+  pANTLR3_COMMON_TOKEN WS23;
+  pANTLR3_COMMON_TOKEN char_literal24;
 
-    pANTLR3_BASE_TREE ID22_tree;
-    pANTLR3_BASE_TREE WS23_tree;
-    pANTLR3_BASE_TREE char_literal24_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_28;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_BASE_TREE ID22_tree;
+  pANTLR3_BASE_TREE WS23_tree;
+  pANTLR3_BASE_TREE char_literal24_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_28;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  ID22 = NULL;
+  WS23 = NULL;
+  char_literal24 = NULL;
+  retval.start = LT(1);
 
-    ID22       = NULL;
-    WS23       = NULL;
-    char_literal24       = NULL;
-    retval.start = LT(1);
-
-    ID22_tree   = NULL;
-    WS23_tree   = NULL;
-    char_literal24_tree   = NULL;
-    stream_28   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 28");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    retval.tree  = NULL;
+  ID22_tree = NULL;
+  WS23_tree = NULL;
+  char_literal24_tree = NULL;
+  stream_28 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 28");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  retval.tree = NULL;
+  {
+    // hammer.g:55:15: ( ID ( WS )* '=' -> ID )
+    // hammer.g:55:17: ID ( WS )* '='
     {
-        // hammer.g:55:15: ( ID ( WS )* '=' -> ID )
-        // hammer.g:55:17: ID ( WS )* '='
+      ID22 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_argument_name430);
+      if (HASEXCEPTION()) {
+        goto ruleargument_nameEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_ID->add(stream_ID, ID22, NULL);
+
+      // hammer.g:55:20: ( WS )*
+
+      for (;;) {
+        int alt13 = 2;
         {
-            ID22 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_argument_name430);
-            if  (HASEXCEPTION())
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA13_0 = LA(1);
+          if ((LA13_0 == WS)) {
+            alt13 = 1;
+          }
+        }
+        switch (alt13) {
+          case 1:
+            // hammer.g:55:20: WS
             {
+              WS23 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                WS, &FOLLOW_WS_in_argument_name432);
+              if (HASEXCEPTION()) {
                 goto ruleargument_nameEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_WS->add(stream_WS, WS23, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_ID->add(stream_ID, ID22, NULL);
+            break;
 
+          default:
+            goto loop13; /* break out of the loop */
+            break;
+        }
+      }
+    loop13:; /* Jump out to here if this rule does not match */
 
-            // hammer.g:55:20: ( WS )*
+      char_literal24 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(28, &FOLLOW_28_in_argument_name435);
+      if (HASEXCEPTION()) {
+        goto ruleargument_nameEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_28->add(stream_28, char_literal24, NULL);
 
-            for (;;)
-            {
-                int alt13=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA13_0 = LA(1);
-                    if ( (LA13_0 == WS) )
-                    {
-                        alt13=1;
-                    }
+      /* AST REWRITE
+ * elements          : ID
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-                }
-                switch (alt13)
-                {
-            	case 1:
-            	    // hammer.g:55:20: WS
-            	    {
-            	        WS23 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_argument_name432);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruleargument_nameEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS23, NULL);
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop13;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop13: ; /* Jump out to here if this rule does not match */
-
-            char_literal24 = (pANTLR3_COMMON_TOKEN) MATCHT(28, &FOLLOW_28_in_argument_name435);
-            if  (HASEXCEPTION())
-            {
-                goto ruleargument_nameEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_28->add(stream_28, char_literal24, NULL);
-
-
-
-            /* AST REWRITE
-             * elements          : ID
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 55:28: -> ID
-            	{
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_ID->nextNode(stream_ID));
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 55:28: -> ID
+        {
+          ADAPTOR->addChild(ADAPTOR, root_0, stream_ID->nextNode(stream_ID));
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleargument_nameEx; /* Prevent compiler warnings */
+ruleargument_nameEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleargument_nameEx; /* Prevent compiler warnings */
-    ruleargument_nameEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_28->free(stream_28);
+  stream_ID->free(stream_ID);
+  stream_WS->free(stream_WS);
 
-    if ( BACKTRACKING==0 ) {
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_28->free(stream_28);
-    stream_ID->free(stream_ID);
-    stream_WS->free(stream_WS);
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end argument_name */
 
@@ -3565,1621 +3884,1600 @@ argument_name(phammerParser ctx)
 static hammerParser_expression_return
 expression(phammerParser ctx)
 {
-    hammerParser_expression_return retval;
+  hammerParser_expression_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_requirement_set_return requirement_set25;
-    #undef	RETURN_TYPE_requirement_set25
-    #define	RETURN_TYPE_requirement_set25 hammerParser_requirement_set_return
+  hammerParser_requirement_set_return requirement_set25;
+#undef RETURN_TYPE_requirement_set25
+#define RETURN_TYPE_requirement_set25 hammerParser_requirement_set_return
 
-    hammerParser_list_of_return list_of26;
-    #undef	RETURN_TYPE_list_of26
-    #define	RETURN_TYPE_list_of26 hammerParser_list_of_return
+  hammerParser_list_of_return list_of26;
+#undef RETURN_TYPE_list_of26
+#define RETURN_TYPE_list_of26 hammerParser_list_of_return
 
+  /* Initialize rule variables
+ */
 
-    /* Initialize rule variables
-     */
+  root_0 = NULL;
 
+  requirement_set25.tree = NULL;
 
-    root_0 = NULL;
+  list_of26.tree = NULL;
 
-    requirement_set25.tree = NULL;
+  retval.start = LT(1);
 
-    list_of26.tree = NULL;
-
-    retval.start = LT(1);
-
-    retval.tree  = NULL;
+  retval.tree = NULL;
+  {
     {
-        {
-            //  hammer.g:56:15: ( requirement_set | list_of )
+      //  hammer.g:56:15: ( requirement_set | list_of )
 
-            ANTLR3_UINT32 alt14;
+      ANTLR3_UINT32 alt14;
 
-            alt14=2;
+      alt14 = 2;
 
-            alt14 = cdfa14.predict(ctx, RECOGNIZER, ISTREAM, &cdfa14);
-            if  (HASEXCEPTION())
-            {
-                goto ruleexpressionEx;
+      alt14 = cdfa14.predict(ctx, RECOGNIZER, ISTREAM, &cdfa14);
+      if (HASEXCEPTION()) {
+        goto ruleexpressionEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      switch (alt14) {
+        case 1:
+          // hammer.g:56:17: requirement_set
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_requirement_set_in_expression449);
+            requirement_set25 = requirement_set(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleexpressionEx;
             }
-            if (HASFAILED())
-            {
-                return retval;
+            if (HASFAILED()) {
+              return retval;
             }
-            switch (alt14)
-            {
-        	case 1:
-        	    // hammer.g:56:17: requirement_set
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, requirement_set25.tree);
+          }
+          break;
+        case 2:
+          // hammer.g:57:17: list_of
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
 
-        	        FOLLOWPUSH(FOLLOW_requirement_set_in_expression449);
-        	        requirement_set25=requirement_set(ctx);
+            FOLLOWPUSH(FOLLOW_list_of_in_expression467);
+            list_of26 = list_of(ctx);
 
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleexpressionEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, requirement_set25.tree);
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:57:17: list_of
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_list_of_in_expression467);
-        	        list_of26=list_of(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleexpressionEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, list_of26.tree);
-
-        	    }
-        	    break;
-
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleexpressionEx;
             }
-        }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, list_of26.tree);
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleexpressionEx; /* Prevent compiler warnings */
+ruleexpressionEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleexpressionEx; /* Prevent compiler warnings */
-    ruleexpressionEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
 
-    if ( BACKTRACKING==0 ) {
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end expression */
 
 /**
  * $ANTLR start feature
- * hammer.g:58:1: feature : '<' ID '>' feature_value -> ^( FEATURE ID feature_value ) ;
+ * hammer.g:58:1: feature : '<' ID '>' feature_value -> ^( FEATURE ID
+ * feature_value ) ;
  */
 static hammerParser_feature_return
 feature(phammerParser ctx)
 {
-    hammerParser_feature_return retval;
+  hammerParser_feature_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    char_literal27;
-    pANTLR3_COMMON_TOKEN    ID28;
-    pANTLR3_COMMON_TOKEN    char_literal29;
-    hammerParser_feature_value_return feature_value30;
-    #undef	RETURN_TYPE_feature_value30
-    #define	RETURN_TYPE_feature_value30 hammerParser_feature_value_return
+  pANTLR3_COMMON_TOKEN char_literal27;
+  pANTLR3_COMMON_TOKEN ID28;
+  pANTLR3_COMMON_TOKEN char_literal29;
+  hammerParser_feature_value_return feature_value30;
+#undef RETURN_TYPE_feature_value30
+#define RETURN_TYPE_feature_value30 hammerParser_feature_value_return
 
-    pANTLR3_BASE_TREE char_literal27_tree;
-    pANTLR3_BASE_TREE ID28_tree;
-    pANTLR3_BASE_TREE char_literal29_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_29;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_30;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature_value;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE char_literal27_tree;
+  pANTLR3_BASE_TREE ID28_tree;
+  pANTLR3_BASE_TREE char_literal29_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_29;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_30;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature_value;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  char_literal27 = NULL;
+  ID28 = NULL;
+  char_literal29 = NULL;
+  feature_value30.tree = NULL;
 
-    char_literal27       = NULL;
-    ID28       = NULL;
-    char_literal29       = NULL;
-    feature_value30.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    char_literal27_tree   = NULL;
-    ID28_tree   = NULL;
-    char_literal29_tree   = NULL;
-    stream_29   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 29");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    stream_30   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 30");
-    stream_feature_value=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule feature_value");
-    retval.tree  = NULL;
+  char_literal27_tree = NULL;
+  ID28_tree = NULL;
+  char_literal29_tree = NULL;
+  stream_29 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 29");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  stream_30 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 30");
+  stream_feature_value = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature_value");
+  retval.tree = NULL;
+  {
+    // hammer.g:58:9: ( '<' ID '>' feature_value -> ^( FEATURE ID feature_value
+    // ) )
+    // hammer.g:58:11: '<' ID '>' feature_value
     {
-        // hammer.g:58:9: ( '<' ID '>' feature_value -> ^( FEATURE ID feature_value ) )
-        // hammer.g:58:11: '<' ID '>' feature_value
+      char_literal27 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(29, &FOLLOW_29_in_feature475);
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_29->add(stream_29, char_literal27, NULL);
+
+      ID28 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature477);
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_ID->add(stream_ID, ID28, NULL);
+
+      char_literal29 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(30, &FOLLOW_30_in_feature479);
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_30->add(stream_30, char_literal29, NULL);
+
+      FOLLOWPUSH(FOLLOW_feature_value_in_feature481);
+      feature_value30 = feature_value(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_feature_value->add(
+          stream_feature_value, feature_value30.tree, NULL);
+
+      /* AST REWRITE
+ * elements          : ID, feature_value
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 58:36: -> ^( FEATURE ID feature_value )
         {
-            char_literal27 = (pANTLR3_COMMON_TOKEN) MATCHT(29, &FOLLOW_29_in_feature475);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_29->add(stream_29, char_literal27, NULL);
+          // hammer.g:58:39: ^( FEATURE ID feature_value )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, FEATURE, (pANTLR3_UINT8) "FEATURE"),
+              root_1));
 
-            ID28 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_feature477);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_ID->add(stream_ID, ID28, NULL);
+            ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
+            ADAPTOR->addChild(
+              ADAPTOR,
+              root_1,
+              stream_feature_value->nextTree(stream_feature_value));
 
-            char_literal29 = (pANTLR3_COMMON_TOKEN) MATCHT(30, &FOLLOW_30_in_feature479);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_30->add(stream_30, char_literal29, NULL);
-
-            FOLLOWPUSH(FOLLOW_feature_value_in_feature481);
-            feature_value30=feature_value(ctx);
-
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_feature_value->add(stream_feature_value, feature_value30.tree, NULL);
-
-
-            /* AST REWRITE
-             * elements          : ID, feature_value
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 58:36: -> ^( FEATURE ID feature_value )
-            	{
-            	    // hammer.g:58:39: ^( FEATURE ID feature_value )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, FEATURE, (pANTLR3_UINT8)"FEATURE"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_feature_value->nextTree(stream_feature_value));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeatureEx; /* Prevent compiler warnings */
+rulefeatureEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeatureEx; /* Prevent compiler warnings */
-    rulefeatureEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_29->free(stream_29);
+  stream_ID->free(stream_ID);
+  stream_30->free(stream_30);
+  stream_feature_value->free(stream_feature_value);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_29->free(stream_29);
-    stream_ID->free(stream_ID);
-    stream_30->free(stream_30);
-    stream_feature_value->free(stream_feature_value);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end feature */
 
 /**
  * $ANTLR start feature_value
- * hammer.g:59:1: feature_value : ( path_like_seq | '(' target_ref ')' -> target_ref );
+ * hammer.g:59:1: feature_value : ( path_like_seq | '(' target_ref ')' ->
+ * target_ref );
  */
 static hammerParser_feature_value_return
 feature_value(phammerParser ctx)
 {
-    hammerParser_feature_value_return retval;
+  hammerParser_feature_value_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    char_literal32;
-    pANTLR3_COMMON_TOKEN    char_literal34;
-    hammerParser_path_like_seq_return path_like_seq31;
-    #undef	RETURN_TYPE_path_like_seq31
-    #define	RETURN_TYPE_path_like_seq31 hammerParser_path_like_seq_return
+  pANTLR3_COMMON_TOKEN char_literal32;
+  pANTLR3_COMMON_TOKEN char_literal34;
+  hammerParser_path_like_seq_return path_like_seq31;
+#undef RETURN_TYPE_path_like_seq31
+#define RETURN_TYPE_path_like_seq31 hammerParser_path_like_seq_return
 
-    hammerParser_target_ref_return target_ref33;
-    #undef	RETURN_TYPE_target_ref33
-    #define	RETURN_TYPE_target_ref33 hammerParser_target_ref_return
+  hammerParser_target_ref_return target_ref33;
+#undef RETURN_TYPE_target_ref33
+#define RETURN_TYPE_target_ref33 hammerParser_target_ref_return
 
-    pANTLR3_BASE_TREE char_literal32_tree;
-    pANTLR3_BASE_TREE char_literal34_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_31;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_32;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_ref;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE char_literal32_tree;
+  pANTLR3_BASE_TREE char_literal34_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_31;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_32;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_ref;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  char_literal32 = NULL;
+  char_literal34 = NULL;
+  path_like_seq31.tree = NULL;
 
-    char_literal32       = NULL;
-    char_literal34       = NULL;
-    path_like_seq31.tree = NULL;
+  target_ref33.tree = NULL;
 
-    target_ref33.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    char_literal32_tree   = NULL;
-    char_literal34_tree   = NULL;
-    stream_31   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 31");
-    stream_32   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 32");
-    stream_target_ref=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target_ref");
-    retval.tree  = NULL;
+  char_literal32_tree = NULL;
+  char_literal34_tree = NULL;
+  stream_31 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 31");
+  stream_32 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 32");
+  stream_target_ref = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target_ref");
+  retval.tree = NULL;
+  {
     {
-        {
-            //  hammer.g:59:15: ( path_like_seq | '(' target_ref ')' -> target_ref )
+      //  hammer.g:59:15: ( path_like_seq | '(' target_ref ')' -> target_ref )
 
-            ANTLR3_UINT32 alt15;
+      ANTLR3_UINT32 alt15;
 
-            alt15=2;
+      alt15 = 2;
 
+      {
+        int LA15_0 = LA(1);
+        if ((LA15_0 == ID || LA15_0 == SLASH)) {
+          alt15 = 1;
+        } else if ((LA15_0 == 31)) {
+          alt15 = 2;
+        } else {
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
 
-            {
-                int LA15_0 = LA(1);
-                if ( (LA15_0 == ID || LA15_0 == SLASH) )
-                {
-                    alt15=1;
-                }
-                else if ( (LA15_0 == 31) )
-                {
-                    alt15=2;
-                }
-                else
-                {
-                    if (BACKTRACKING>0)
-                    {
-                        FAILEDFLAG = ANTLR3_TRUE;
-                        return retval;
-                    }
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 15;
+          EXCEPTION->state = 0;
 
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 15;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulefeature_valueEx;
-                }
-            }
-            switch (alt15)
-            {
-        	case 1:
-        	    // hammer.g:59:17: path_like_seq
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_in_feature_value498);
-        	        path_like_seq31=path_like_seq(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeature_valueEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, path_like_seq31.tree);
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:60:17: '(' target_ref ')'
-        	    {
-        	        char_literal32 = (pANTLR3_COMMON_TOKEN) MATCHT(31, &FOLLOW_31_in_feature_value516);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeature_valueEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_31->add(stream_31, char_literal32, NULL);
-
-        	        FOLLOWPUSH(FOLLOW_target_ref_in_feature_value518);
-        	        target_ref33=target_ref(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeature_valueEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_target_ref->add(stream_target_ref, target_ref33.tree, NULL);
-        	        char_literal34 = (pANTLR3_COMMON_TOKEN) MATCHT(32, &FOLLOW_32_in_feature_value520);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeature_valueEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_32->add(stream_32, char_literal34, NULL);
-
-
-
-        	        /* AST REWRITE
-        	         * elements          : target_ref
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 60:36: -> target_ref
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, stream_target_ref->nextTree(stream_target_ref));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
-            }
+          goto rulefeature_valueEx;
         }
+      }
+      switch (alt15) {
+        case 1:
+          // hammer.g:59:17: path_like_seq
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_path_like_seq_in_feature_value498);
+            path_like_seq31 = path_like_seq(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulefeature_valueEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, path_like_seq31.tree);
+          }
+          break;
+        case 2:
+          // hammer.g:60:17: '(' target_ref ')'
+          {
+            char_literal32 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(31, &FOLLOW_31_in_feature_value516);
+            if (HASEXCEPTION()) {
+              goto rulefeature_valueEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_31->add(stream_31, char_literal32, NULL);
+
+            FOLLOWPUSH(FOLLOW_target_ref_in_feature_value518);
+            target_ref33 = target_ref(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulefeature_valueEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_target_ref->add(
+                stream_target_ref, target_ref33.tree, NULL);
+            char_literal34 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(32, &FOLLOW_32_in_feature_value520);
+            if (HASEXCEPTION()) {
+              goto rulefeature_valueEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_32->add(stream_32, char_literal34, NULL);
+
+            /* AST REWRITE
+     * elements          : target_ref
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 60:36: -> target_ref
+              {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_0,
+                  stream_target_ref->nextTree(stream_target_ref));
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeature_valueEx; /* Prevent compiler warnings */
+rulefeature_valueEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeature_valueEx; /* Prevent compiler warnings */
-    rulefeature_valueEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_31->free(stream_31);
+  stream_32->free(stream_32);
+  stream_target_ref->free(stream_target_ref);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_31->free(stream_31);
-    stream_32->free(stream_32);
-    stream_target_ref->free(stream_target_ref);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end feature_value */
 
 /**
  * $ANTLR start requirement_set
- * hammer.g:61:1: requirement_set : requirement ( ( WS )+ requirement )* -> ^( REQUIREMENT_SET ( requirement )+ ) ;
+ * hammer.g:61:1: requirement_set : requirement ( ( WS )+ requirement )* -> ^(
+ * REQUIREMENT_SET ( requirement )+ ) ;
  */
 static hammerParser_requirement_set_return
 requirement_set(phammerParser ctx)
 {
-    hammerParser_requirement_set_return retval;
+  hammerParser_requirement_set_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS36;
-    hammerParser_requirement_return requirement35;
-    #undef	RETURN_TYPE_requirement35
-    #define	RETURN_TYPE_requirement35 hammerParser_requirement_return
+  pANTLR3_COMMON_TOKEN WS36;
+  hammerParser_requirement_return requirement35;
+#undef RETURN_TYPE_requirement35
+#define RETURN_TYPE_requirement35 hammerParser_requirement_return
 
-    hammerParser_requirement_return requirement37;
-    #undef	RETURN_TYPE_requirement37
-    #define	RETURN_TYPE_requirement37 hammerParser_requirement_return
+  hammerParser_requirement_return requirement37;
+#undef RETURN_TYPE_requirement37
+#define RETURN_TYPE_requirement37 hammerParser_requirement_return
 
-    pANTLR3_BASE_TREE WS36_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_requirement;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE WS36_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_requirement;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  WS36 = NULL;
+  requirement35.tree = NULL;
 
-    WS36       = NULL;
-    requirement35.tree = NULL;
+  requirement37.tree = NULL;
 
-    requirement37.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    WS36_tree   = NULL;
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_requirement=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule requirement");
-    retval.tree  = NULL;
+  WS36_tree = NULL;
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_requirement = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule requirement");
+  retval.tree = NULL;
+  {
+    // hammer.g:61:19: ( requirement ( ( WS )+ requirement )* -> ^(
+    // REQUIREMENT_SET ( requirement )+ ) )
+    // hammer.g:61:21: requirement ( ( WS )+ requirement )*
     {
-        // hammer.g:61:19: ( requirement ( ( WS )+ requirement )* -> ^( REQUIREMENT_SET ( requirement )+ ) )
-        // hammer.g:61:21: requirement ( ( WS )+ requirement )*
-        {
-            FOLLOWPUSH(FOLLOW_requirement_in_requirement_set533);
-            requirement35=requirement(ctx);
+      FOLLOWPUSH(FOLLOW_requirement_in_requirement_set533);
+      requirement35 = requirement(ctx);
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulerequirement_setEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_requirement->add(stream_requirement, requirement35.tree, NULL);
+
+      // hammer.g:61:33: ( ( WS )+ requirement )*
+
+      for (;;) {
+        int alt17 = 2;
+        alt17 = cdfa17.predict(ctx, RECOGNIZER, ISTREAM, &cdfa17);
+        if (HASEXCEPTION()) {
+          goto rulerequirement_setEx;
+        }
+        if (HASFAILED()) {
+          return retval;
+        }
+        switch (alt17) {
+          case 1:
+            // hammer.g:61:34: ( WS )+ requirement
             {
+              // hammer.g:61:34: ( WS )+
+              {
+                int cnt16 = 0;
+
+                for (;;) {
+                  int alt16 = 2;
+                  {
+                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                    int LA16_0 = LA(1);
+                    if ((LA16_0 == WS)) {
+                      alt16 = 1;
+                    }
+                  }
+                  switch (alt16) {
+                    case 1:
+                      // hammer.g:61:34: WS
+                      {
+                        WS36 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                          WS, &FOLLOW_WS_in_requirement_set536);
+                        if (HASEXCEPTION()) {
+                          goto rulerequirement_setEx;
+                        }
+                        if (HASFAILED()) {
+                          return retval;
+                        }
+                        if (BACKTRACKING == 0)
+                          stream_WS->add(stream_WS, WS36, NULL);
+                      }
+                      break;
+
+                    default:
+
+                      if (cnt16 >= 1) {
+                        goto loop16;
+                      }
+                      if (BACKTRACKING > 0) {
+                        FAILEDFLAG = ANTLR3_TRUE;
+                        return retval;
+                      }
+                      /* mismatchedSetEx()
+         */
+                      CONSTRUCTEX();
+                      EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+                      EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+                      goto rulerequirement_setEx;
+                  }
+                  cnt16++;
+                }
+              loop16:; /* Jump to here if this rule does not match */
+              }
+              FOLLOWPUSH(FOLLOW_requirement_in_requirement_set539);
+              requirement37 = requirement(ctx);
+
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
                 goto rulerequirement_setEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_requirement->add(
+                  stream_requirement, requirement37.tree, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_requirement->add(stream_requirement, requirement35.tree, NULL);
+            break;
 
-            // hammer.g:61:33: ( ( WS )+ requirement )*
+          default:
+            goto loop17; /* break out of the loop */
+            break;
+        }
+      }
+    loop17:; /* Jump out to here if this rule does not match */
 
-            for (;;)
-            {
-                int alt17=2;
-                alt17 = cdfa17.predict(ctx, RECOGNIZER, ISTREAM, &cdfa17);
-                if  (HASEXCEPTION())
-                {
-                    goto rulerequirement_setEx;
-                }
-                if (HASFAILED())
-                {
-                    return retval;
-                }
-                switch (alt17)
-                {
-            	case 1:
-            	    // hammer.g:61:34: ( WS )+ requirement
-            	    {
-            	        // hammer.g:61:34: ( WS )+
-            	        {
-            	            int cnt16=0;
+      /* AST REWRITE
+ * elements          : requirement
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	            for (;;)
-            	            {
-            	                int alt16=2;
-            	        	{
-            	        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	        	    */
-            	        	    int LA16_0 = LA(1);
-            	        	    if ( (LA16_0 == WS) )
-            	        	    {
-            	        	        alt16=1;
-            	        	    }
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-            	        	}
-            	        	switch (alt16)
-            	        	{
-            	        	    case 1:
-            	        	        // hammer.g:61:34: WS
-            	        	        {
-            	        	            WS36 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_requirement_set536);
-            	        	            if  (HASEXCEPTION())
-            	        	            {
-            	        	                goto rulerequirement_setEx;
-            	        	            }
-            	        	            if (HASFAILED())
-            	        	            {
-            	        	                return retval;
-            	        	            }
-            	        	            if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS36, NULL);
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 61:52: -> ^( REQUIREMENT_SET ( requirement )+ )
+        {
+          // hammer.g:61:55: ^( REQUIREMENT_SET ( requirement )+ )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, REQUIREMENT_SET, (pANTLR3_UINT8) "REQUIREMENT_SET"),
+              root_1));
 
-
-            	        	        }
-            	        	        break;
-
-            	        	    default:
-
-            	        		if ( cnt16 >= 1 )
-            	        		{
-            	        		    goto loop16;
-            	        		}
-            	        		if (BACKTRACKING>0)
-            	        		{
-            	        		    FAILEDFLAG = ANTLR3_TRUE;
-            	        		    return retval;
-            	        		}
-            	        		/* mismatchedSetEx()
-            	        		 */
-            	        		CONSTRUCTEX();
-            	        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            	        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            	        		goto rulerequirement_setEx;
-            	        	}
-            	        	cnt16++;
-            	            }
-            	            loop16: ;	/* Jump to here if this rule does not match */
-            	        }
-            	        FOLLOWPUSH(FOLLOW_requirement_in_requirement_set539);
-            	        requirement37=requirement(ctx);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulerequirement_setEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_requirement->add(stream_requirement, requirement37.tree, NULL);
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop17;	/* break out of the loop */
-            	    break;
-                }
+            if (!(stream_requirement->hasNext(stream_requirement))) {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
+            } else {
+              while (stream_requirement->hasNext(stream_requirement)) {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_1,
+                  stream_requirement->nextTree(stream_requirement));
+              }
+              stream_requirement->reset(stream_requirement);
             }
-            loop17: ; /* Jump out to here if this rule does not match */
-
-
-
-            /* AST REWRITE
-             * elements          : requirement
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 61:52: -> ^( REQUIREMENT_SET ( requirement )+ )
-            	{
-            	    // hammer.g:61:55: ^( REQUIREMENT_SET ( requirement )+ )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, REQUIREMENT_SET, (pANTLR3_UINT8)"REQUIREMENT_SET"), root_1));
-
-            	        if ( !(stream_requirement->hasNext(stream_requirement)) )
-            	        {
-            	            CONSTRUCTEX();
-            	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
-            	            EXCEPTION->name         = (void *)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
-            	        }
-            	        else
-            	        {
-            	        	while ( stream_requirement->hasNext(stream_requirement) ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_requirement->nextTree(stream_requirement));
-
-            	        	}
-            	        	stream_requirement->reset(stream_requirement);
-
-            	        }
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulerequirement_setEx; /* Prevent compiler warnings */
+rulerequirement_setEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulerequirement_setEx; /* Prevent compiler warnings */
-    rulerequirement_setEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_WS->free(stream_WS);
+  stream_requirement->free(stream_requirement);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_WS->free(stream_WS);
-    stream_requirement->free(stream_requirement);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end requirement_set */
 
 /**
  * $ANTLR start requirement
- * hammer.g:62:1: requirement : ( public_tag )? requirement_impl -> ^( REQUIREMENT ( public_tag )? requirement_impl ) ;
+ * hammer.g:62:1: requirement : ( public_tag )? requirement_impl -> ^(
+ * REQUIREMENT ( public_tag )? requirement_impl ) ;
  */
 static hammerParser_requirement_return
 requirement(phammerParser ctx)
 {
-    hammerParser_requirement_return retval;
+  hammerParser_requirement_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_public_tag_return public_tag38;
-    #undef	RETURN_TYPE_public_tag38
-    #define	RETURN_TYPE_public_tag38 hammerParser_public_tag_return
+  hammerParser_public_tag_return public_tag38;
+#undef RETURN_TYPE_public_tag38
+#define RETURN_TYPE_public_tag38 hammerParser_public_tag_return
 
-    hammerParser_requirement_impl_return requirement_impl39;
-    #undef	RETURN_TYPE_requirement_impl39
-    #define	RETURN_TYPE_requirement_impl39 hammerParser_requirement_impl_return
+  hammerParser_requirement_impl_return requirement_impl39;
+#undef RETURN_TYPE_requirement_impl39
+#define RETURN_TYPE_requirement_impl39 hammerParser_requirement_impl_return
 
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_public_tag;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_requirement_impl;
-    /* Initialize rule variables
-     */
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_public_tag;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_requirement_impl;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  public_tag38.tree = NULL;
 
-    public_tag38.tree = NULL;
+  requirement_impl39.tree = NULL;
 
-    requirement_impl39.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    stream_public_tag=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule public_tag");
-    stream_requirement_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule requirement_impl");
-    retval.tree  = NULL;
+  stream_public_tag = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule public_tag");
+  stream_requirement_impl = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule requirement_impl");
+  retval.tree = NULL;
+  {
+    // hammer.g:62:13: ( ( public_tag )? requirement_impl -> ^( REQUIREMENT (
+    // public_tag )? requirement_impl ) )
+    // hammer.g:62:15: ( public_tag )? requirement_impl
     {
-        // hammer.g:62:13: ( ( public_tag )? requirement_impl -> ^( REQUIREMENT ( public_tag )? requirement_impl ) )
-        // hammer.g:62:15: ( public_tag )? requirement_impl
+      // hammer.g:62:15: ( public_tag )?
+      {
+        int alt18 = 2;
         {
-
-            // hammer.g:62:15: ( public_tag )?
+          int LA18_0 = LA(1);
+          if ((LA18_0 == PUBLIC_TAG)) {
+            alt18 = 1;
+          }
+        }
+        switch (alt18) {
+          case 1:
+            // hammer.g:62:15: public_tag
             {
-                int alt18=2;
-                {
-                    int LA18_0 = LA(1);
-                    if ( (LA18_0 == PUBLIC_TAG) )
-                    {
-                        alt18=1;
-                    }
-                }
-                switch (alt18)
-                {
-            	case 1:
-            	    // hammer.g:62:15: public_tag
-            	    {
-            	        FOLLOWPUSH(FOLLOW_public_tag_in_requirement557);
-            	        public_tag38=public_tag(ctx);
+              FOLLOWPUSH(FOLLOW_public_tag_in_requirement557);
+              public_tag38 = public_tag(ctx);
 
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulerequirementEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_public_tag->add(stream_public_tag, public_tag38.tree, NULL);
-
-            	    }
-            	    break;
-
-                }
-            }
-            FOLLOWPUSH(FOLLOW_requirement_impl_in_requirement560);
-            requirement_impl39=requirement_impl(ctx);
-
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
                 goto rulerequirementEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_public_tag->add(
+                  stream_public_tag, public_tag38.tree, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_requirement_impl->add(stream_requirement_impl, requirement_impl39.tree, NULL);
+            break;
+        }
+      }
+      FOLLOWPUSH(FOLLOW_requirement_impl_in_requirement560);
+      requirement_impl39 = requirement_impl(ctx);
 
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulerequirementEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_requirement_impl->add(
+          stream_requirement_impl, requirement_impl39.tree, NULL);
 
-            /* AST REWRITE
-             * elements          : public_tag, requirement_impl
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
+      /* AST REWRITE
+ * elements          : public_tag, requirement_impl
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 62:44: -> ^( REQUIREMENT ( public_tag )? requirement_impl )
+        {
+          // hammer.g:62:47: ^( REQUIREMENT ( public_tag )? requirement_impl )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, REQUIREMENT, (pANTLR3_UINT8) "REQUIREMENT"),
+              root_1));
+
+            // hammer.g:62:61: ( public_tag )?
             {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 62:44: -> ^( REQUIREMENT ( public_tag )? requirement_impl )
-            	{
-            	    // hammer.g:62:47: ^( REQUIREMENT ( public_tag )? requirement_impl )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, REQUIREMENT, (pANTLR3_UINT8)"REQUIREMENT"), root_1));
-
-            	        // hammer.g:62:61: ( public_tag )?
-            	        {
-            	        	if ( stream_public_tag->hasNext(stream_public_tag) )
-            	        	{
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_public_tag->nextTree(stream_public_tag));
-
-            	        	}
-            	        	stream_public_tag->reset(stream_public_tag);
-
-            	        }
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_requirement_impl->nextTree(stream_requirement_impl));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
+              if (stream_public_tag->hasNext(stream_public_tag)) {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_1,
+                  stream_public_tag->nextTree(stream_public_tag));
+              }
+              stream_public_tag->reset(stream_public_tag);
             }
+            ADAPTOR->addChild(
+              ADAPTOR,
+              root_1,
+              stream_requirement_impl->nextTree(stream_requirement_impl));
+
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulerequirementEx; /* Prevent compiler warnings */
+rulerequirementEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulerequirementEx; /* Prevent compiler warnings */
-    rulerequirementEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_public_tag->free(stream_public_tag);
+  stream_requirement_impl->free(stream_requirement_impl);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-    stream_public_tag->free(stream_public_tag);
-    stream_requirement_impl->free(stream_requirement_impl);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end requirement */
 
 /**
  * $ANTLR start requirement_impl
- * hammer.g:63:1: requirement_impl : ( ( conditional_requirement )=> conditional_requirement | feature );
+ * hammer.g:63:1: requirement_impl : ( ( conditional_requirement )=>
+ * conditional_requirement | feature );
  */
 static hammerParser_requirement_impl_return
 requirement_impl(phammerParser ctx)
 {
-    hammerParser_requirement_impl_return retval;
+  hammerParser_requirement_impl_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_conditional_requirement_return conditional_requirement40;
-    #undef	RETURN_TYPE_conditional_requirement40
-    #define	RETURN_TYPE_conditional_requirement40 hammerParser_conditional_requirement_return
+  hammerParser_conditional_requirement_return conditional_requirement40;
+#undef RETURN_TYPE_conditional_requirement40
+#define RETURN_TYPE_conditional_requirement40                                  \
+  hammerParser_conditional_requirement_return
 
-    hammerParser_feature_return feature41;
-    #undef	RETURN_TYPE_feature41
-    #define	RETURN_TYPE_feature41 hammerParser_feature_return
+  hammerParser_feature_return feature41;
+#undef RETURN_TYPE_feature41
+#define RETURN_TYPE_feature41 hammerParser_feature_return
 
+  /* Initialize rule variables
+ */
 
-    /* Initialize rule variables
-     */
+  root_0 = NULL;
 
+  conditional_requirement40.tree = NULL;
 
-    root_0 = NULL;
+  feature41.tree = NULL;
 
-    conditional_requirement40.tree = NULL;
+  retval.start = LT(1);
 
-    feature41.tree = NULL;
-
-    retval.start = LT(1);
-
-    retval.tree  = NULL;
+  retval.tree = NULL;
+  {
     {
-        {
-            //  hammer.g:63:18: ( ( conditional_requirement )=> conditional_requirement | feature )
+      //  hammer.g:63:18: ( ( conditional_requirement )=>
+      //  conditional_requirement | feature )
 
-            ANTLR3_UINT32 alt19;
+      ANTLR3_UINT32 alt19;
 
-            alt19=2;
+      alt19 = 2;
 
+      {
+        int LA19_0 = LA(1);
+        if ((LA19_0 == 29)) {
+          {
+            int LA19_1 = LA(2);
+            if ((synpred6_hammer(ctx))) {
+              alt19 = 1;
+            } else if ((ANTLR3_TRUE)) {
+              alt19 = 2;
+            } else {
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
 
-            {
-                int LA19_0 = LA(1);
-                if ( (LA19_0 == 29) )
-                {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 19;
+              EXCEPTION->state = 1;
 
-                    {
-                        int LA19_1 = LA(2);
-                        if ( (synpred6_hammer(ctx)) )
-                        {
-                            alt19=1;
-                        }
-                        else if ( (ANTLR3_TRUE) )
-                        {
-                            alt19=2;
-                        }
-                        else
-                        {
-                            if (BACKTRACKING>0)
-                            {
-                                FAILEDFLAG = ANTLR3_TRUE;
-                                return retval;
-                            }
-
-                            CONSTRUCTEX();
-                            EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                            EXCEPTION->message      = (void *)"";
-                            EXCEPTION->decisionNum  = 19;
-                            EXCEPTION->state        = 1;
-
-
-                            goto rulerequirement_implEx;
-                        }
-                    }
-                }
-                else
-                {
-                    if (BACKTRACKING>0)
-                    {
-                        FAILEDFLAG = ANTLR3_TRUE;
-                        return retval;
-                    }
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 19;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulerequirement_implEx;
-                }
+              goto rulerequirement_implEx;
             }
-            switch (alt19)
-            {
-        	case 1:
-        	    // hammer.g:63:20: ( conditional_requirement )=> conditional_requirement
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+          }
+        } else {
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
 
-        	        FOLLOWPUSH(FOLLOW_conditional_requirement_in_requirement_impl583);
-        	        conditional_requirement40=conditional_requirement(ctx);
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 19;
+          EXCEPTION->state = 0;
 
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulerequirement_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, conditional_requirement40.tree);
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:64:6: feature
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_feature_in_requirement_impl590);
-        	        feature41=feature(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulerequirement_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, feature41.tree);
-
-        	    }
-        	    break;
-
-            }
+          goto rulerequirement_implEx;
         }
+      }
+      switch (alt19) {
+        case 1:
+          // hammer.g:63:20: ( conditional_requirement )=>
+          // conditional_requirement
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_conditional_requirement_in_requirement_impl583);
+            conditional_requirement40 = conditional_requirement(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulerequirement_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(
+                ADAPTOR, root_0, conditional_requirement40.tree);
+          }
+          break;
+        case 2:
+          // hammer.g:64:6: feature
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_feature_in_requirement_impl590);
+            feature41 = feature(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulerequirement_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, feature41.tree);
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulerequirement_implEx; /* Prevent compiler warnings */
+rulerequirement_implEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulerequirement_implEx; /* Prevent compiler warnings */
-    rulerequirement_implEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
 
-    if ( BACKTRACKING==0 ) {
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end requirement_impl */
 
 /**
  * $ANTLR start conditional_requirement
- * hammer.g:65:1: conditional_requirement : condition feature -> ^( CONDITION condition ) feature ;
+ * hammer.g:65:1: conditional_requirement : condition feature -> ^( CONDITION
+ * condition ) feature ;
  */
 static hammerParser_conditional_requirement_return
 conditional_requirement(phammerParser ctx)
 {
-    hammerParser_conditional_requirement_return retval;
+  hammerParser_conditional_requirement_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_condition_return condition42;
-    #undef	RETURN_TYPE_condition42
-    #define	RETURN_TYPE_condition42 hammerParser_condition_return
+  hammerParser_condition_return condition42;
+#undef RETURN_TYPE_condition42
+#define RETURN_TYPE_condition42 hammerParser_condition_return
 
-    hammerParser_feature_return feature43;
-    #undef	RETURN_TYPE_feature43
-    #define	RETURN_TYPE_feature43 hammerParser_feature_return
+  hammerParser_feature_return feature43;
+#undef RETURN_TYPE_feature43
+#define RETURN_TYPE_feature43 hammerParser_feature_return
 
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_condition;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature;
-    /* Initialize rule variables
-     */
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_condition;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  condition42.tree = NULL;
 
-    condition42.tree = NULL;
+  feature43.tree = NULL;
 
-    feature43.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    stream_condition=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule condition");
-    stream_feature=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule feature");
-    retval.tree  = NULL;
+  stream_condition = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule condition");
+  stream_feature = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature");
+  retval.tree = NULL;
+  {
+    // hammer.g:65:25: ( condition feature -> ^( CONDITION condition ) feature )
+    // hammer.g:65:27: condition feature
     {
-        // hammer.g:65:25: ( condition feature -> ^( CONDITION condition ) feature )
-        // hammer.g:65:27: condition feature
+      FOLLOWPUSH(FOLLOW_condition_in_conditional_requirement597);
+      condition42 = condition(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_condition->add(stream_condition, condition42.tree, NULL);
+      FOLLOWPUSH(FOLLOW_feature_in_conditional_requirement599);
+      feature43 = feature(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_feature->add(stream_feature, feature43.tree, NULL);
+
+      /* AST REWRITE
+ * elements          : feature, condition
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 65:45: -> ^( CONDITION condition ) feature
         {
-            FOLLOWPUSH(FOLLOW_condition_in_conditional_requirement597);
-            condition42=condition(ctx);
+          // hammer.g:65:48: ^( CONDITION condition )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, CONDITION, (pANTLR3_UINT8) "CONDITION"),
+              root_1));
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_condition->add(stream_condition, condition42.tree, NULL);
-            FOLLOWPUSH(FOLLOW_feature_in_conditional_requirement599);
-            feature43=feature(ctx);
+            ADAPTOR->addChild(
+              ADAPTOR, root_1, stream_condition->nextTree(stream_condition));
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_feature->add(stream_feature, feature43.tree, NULL);
-
-
-            /* AST REWRITE
-             * elements          : feature, condition
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 65:45: -> ^( CONDITION condition ) feature
-            	{
-            	    // hammer.g:65:48: ^( CONDITION condition )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, CONDITION, (pANTLR3_UINT8)"CONDITION"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_condition->nextTree(stream_condition));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_feature->nextTree(stream_feature));
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
+          ADAPTOR->addChild(
+            ADAPTOR, root_0, stream_feature->nextTree(stream_feature));
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleconditional_requirementEx; /* Prevent compiler warnings */
+ruleconditional_requirementEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleconditional_requirementEx; /* Prevent compiler warnings */
-    ruleconditional_requirementEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_condition->free(stream_condition);
+  stream_feature->free(stream_feature);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-    stream_condition->free(stream_condition);
-    stream_feature->free(stream_feature);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end conditional_requirement */
 
 /**
  * $ANTLR start condition
- * hammer.g:66:1: condition : feature ( ',' feature )* COLON -> ( feature )* COLON ;
+ * hammer.g:66:1: condition : feature ( ',' feature )* COLON -> ( feature )*
+ * COLON ;
  */
 static hammerParser_condition_return
 condition(phammerParser ctx)
 {
-    hammerParser_condition_return retval;
+  hammerParser_condition_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    char_literal45;
-    pANTLR3_COMMON_TOKEN    COLON47;
-    hammerParser_feature_return feature44;
-    #undef	RETURN_TYPE_feature44
-    #define	RETURN_TYPE_feature44 hammerParser_feature_return
+  pANTLR3_COMMON_TOKEN char_literal45;
+  pANTLR3_COMMON_TOKEN COLON47;
+  hammerParser_feature_return feature44;
+#undef RETURN_TYPE_feature44
+#define RETURN_TYPE_feature44 hammerParser_feature_return
 
-    hammerParser_feature_return feature46;
-    #undef	RETURN_TYPE_feature46
-    #define	RETURN_TYPE_feature46 hammerParser_feature_return
+  hammerParser_feature_return feature46;
+#undef RETURN_TYPE_feature46
+#define RETURN_TYPE_feature46 hammerParser_feature_return
 
-    pANTLR3_BASE_TREE char_literal45_tree;
-    pANTLR3_BASE_TREE COLON47_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_33;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_COLON;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE char_literal45_tree;
+  pANTLR3_BASE_TREE COLON47_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_33;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_COLON;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_feature;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  char_literal45 = NULL;
+  COLON47 = NULL;
+  feature44.tree = NULL;
 
-    char_literal45       = NULL;
-    COLON47       = NULL;
-    feature44.tree = NULL;
+  feature46.tree = NULL;
 
-    feature46.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    char_literal45_tree   = NULL;
-    COLON47_tree   = NULL;
-    stream_33   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 33");
-    stream_COLON   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token COLON");
-    stream_feature=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule feature");
-    retval.tree  = NULL;
+  char_literal45_tree = NULL;
+  COLON47_tree = NULL;
+  stream_33 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 33");
+  stream_COLON = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token COLON");
+  stream_feature = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature");
+  retval.tree = NULL;
+  {
+    // hammer.g:66:11: ( feature ( ',' feature )* COLON -> ( feature )* COLON )
+    // hammer.g:66:13: feature ( ',' feature )* COLON
     {
-        // hammer.g:66:11: ( feature ( ',' feature )* COLON -> ( feature )* COLON )
-        // hammer.g:66:13: feature ( ',' feature )* COLON
+      FOLLOWPUSH(FOLLOW_feature_in_condition616);
+      feature44 = feature(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruleconditionEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_feature->add(stream_feature, feature44.tree, NULL);
+
+      // hammer.g:66:21: ( ',' feature )*
+
+      for (;;) {
+        int alt20 = 2;
         {
-            FOLLOWPUSH(FOLLOW_feature_in_condition616);
-            feature44=feature(ctx);
-
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA20_0 = LA(1);
+          if ((LA20_0 == 33)) {
+            alt20 = 1;
+          }
+        }
+        switch (alt20) {
+          case 1:
+            // hammer.g:66:22: ',' feature
             {
+              char_literal45 =
+                (pANTLR3_COMMON_TOKEN)MATCHT(33, &FOLLOW_33_in_condition619);
+              if (HASEXCEPTION()) {
                 goto ruleconditionEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_feature->add(stream_feature, feature44.tree, NULL);
+              }
+              if (BACKTRACKING == 0)
+                stream_33->add(stream_33, char_literal45, NULL);
 
-            // hammer.g:66:21: ( ',' feature )*
+              FOLLOWPUSH(FOLLOW_feature_in_condition621);
+              feature46 = feature(ctx);
 
-            for (;;)
-            {
-                int alt20=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA20_0 = LA(1);
-                    if ( (LA20_0 == 33) )
-                    {
-                        alt20=1;
-                    }
-
-                }
-                switch (alt20)
-                {
-            	case 1:
-            	    // hammer.g:66:22: ',' feature
-            	    {
-            	        char_literal45 = (pANTLR3_COMMON_TOKEN) MATCHT(33, &FOLLOW_33_in_condition619);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruleconditionEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_33->add(stream_33, char_literal45, NULL);
-
-            	        FOLLOWPUSH(FOLLOW_feature_in_condition621);
-            	        feature46=feature(ctx);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruleconditionEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_feature->add(stream_feature, feature46.tree, NULL);
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop20;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop20: ; /* Jump out to here if this rule does not match */
-
-            COLON47 = (pANTLR3_COMMON_TOKEN) MATCHT(COLON, &FOLLOW_COLON_in_condition625);
-            if  (HASEXCEPTION())
-            {
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
                 goto ruleconditionEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_feature->add(stream_feature, feature46.tree, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_COLON->add(stream_COLON, COLON47, NULL);
+            break;
 
+          default:
+            goto loop20; /* break out of the loop */
+            break;
+        }
+      }
+    loop20:; /* Jump out to here if this rule does not match */
 
+      COLON47 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(COLON, &FOLLOW_COLON_in_condition625);
+      if (HASEXCEPTION()) {
+        goto ruleconditionEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_COLON->add(stream_COLON, COLON47, NULL);
 
-            /* AST REWRITE
-             * elements          : feature, COLON
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+      /* AST REWRITE
+ * elements          : feature, COLON
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 66:42: -> ( feature )* COLON
-            	{
-            	    // hammer.g:66:45: ( feature )*
-            	    {
-            	    	while ( stream_feature->hasNext(stream_feature) )
-            	    	{
-            	    		ADAPTOR->addChild(ADAPTOR, root_0, stream_feature->nextTree(stream_feature));
-
-            	    	}
-            	    	stream_feature->reset(stream_feature);
-
-            	    }
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_COLON->nextNode(stream_COLON));
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 66:42: -> ( feature )* COLON
+        {
+          // hammer.g:66:45: ( feature )*
+          {
+            while (stream_feature->hasNext(stream_feature)) {
+              ADAPTOR->addChild(
+                ADAPTOR, root_0, stream_feature->nextTree(stream_feature));
             }
+            stream_feature->reset(stream_feature);
+          }
+          ADAPTOR->addChild(
+            ADAPTOR, root_0, stream_COLON->nextNode(stream_COLON));
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleconditionEx; /* Prevent compiler warnings */
+ruleconditionEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruleconditionEx; /* Prevent compiler warnings */
-    ruleconditionEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_33->free(stream_33);
+  stream_COLON->free(stream_COLON);
+  stream_feature->free(stream_feature);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_33->free(stream_33);
-    stream_COLON->free(stream_COLON);
-    stream_feature->free(stream_feature);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end condition */
 
 /**
  * $ANTLR start path_like_seq
- * hammer.g:68:1: path_like_seq : ( SLASH path_like_seq_impl -> ^( PATH_LIKE_SEQ SLASH path_like_seq_impl ) | path_like_seq_impl -> ^( PATH_LIKE_SEQ path_like_seq_impl ) );
+ * hammer.g:68:1: path_like_seq : ( SLASH path_like_seq_impl -> ^( PATH_LIKE_SEQ
+ * SLASH path_like_seq_impl ) | path_like_seq_impl -> ^( PATH_LIKE_SEQ
+ * path_like_seq_impl ) );
  */
 static hammerParser_path_like_seq_return
 path_like_seq(phammerParser ctx)
 {
-    hammerParser_path_like_seq_return retval;
+  hammerParser_path_like_seq_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    SLASH48;
-    hammerParser_path_like_seq_impl_return path_like_seq_impl49;
-    #undef	RETURN_TYPE_path_like_seq_impl49
-    #define	RETURN_TYPE_path_like_seq_impl49 hammerParser_path_like_seq_impl_return
+  pANTLR3_COMMON_TOKEN SLASH48;
+  hammerParser_path_like_seq_impl_return path_like_seq_impl49;
+#undef RETURN_TYPE_path_like_seq_impl49
+#define RETURN_TYPE_path_like_seq_impl49 hammerParser_path_like_seq_impl_return
 
-    hammerParser_path_like_seq_impl_return path_like_seq_impl50;
-    #undef	RETURN_TYPE_path_like_seq_impl50
-    #define	RETURN_TYPE_path_like_seq_impl50 hammerParser_path_like_seq_impl_return
+  hammerParser_path_like_seq_impl_return path_like_seq_impl50;
+#undef RETURN_TYPE_path_like_seq_impl50
+#define RETURN_TYPE_path_like_seq_impl50 hammerParser_path_like_seq_impl_return
 
-    pANTLR3_BASE_TREE SLASH48_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_SLASH;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_path_like_seq_impl;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE SLASH48_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_SLASH;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_path_like_seq_impl;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  SLASH48 = NULL;
+  path_like_seq_impl49.tree = NULL;
 
-    SLASH48       = NULL;
-    path_like_seq_impl49.tree = NULL;
+  path_like_seq_impl50.tree = NULL;
 
-    path_like_seq_impl50.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    SLASH48_tree   = NULL;
-    stream_SLASH   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SLASH");
-    stream_path_like_seq_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule path_like_seq_impl");
-    retval.tree  = NULL;
+  SLASH48_tree = NULL;
+  stream_SLASH = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token SLASH");
+  stream_path_like_seq_impl = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule path_like_seq_impl");
+  retval.tree = NULL;
+  {
     {
-        {
-            //  hammer.g:68:15: ( SLASH path_like_seq_impl -> ^( PATH_LIKE_SEQ SLASH path_like_seq_impl ) | path_like_seq_impl -> ^( PATH_LIKE_SEQ path_like_seq_impl ) )
+      //  hammer.g:68:15: ( SLASH path_like_seq_impl -> ^( PATH_LIKE_SEQ SLASH
+      //  path_like_seq_impl ) | path_like_seq_impl -> ^( PATH_LIKE_SEQ
+      //  path_like_seq_impl ) )
 
-            ANTLR3_UINT32 alt21;
+      ANTLR3_UINT32 alt21;
 
-            alt21=2;
+      alt21 = 2;
 
+      {
+        int LA21_0 = LA(1);
+        if ((LA21_0 == SLASH)) {
+          alt21 = 1;
+        } else if ((LA21_0 == ID)) {
+          alt21 = 2;
+        } else {
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
 
-            {
-                int LA21_0 = LA(1);
-                if ( (LA21_0 == SLASH) )
-                {
-                    alt21=1;
-                }
-                else if ( (LA21_0 == ID) )
-                {
-                    alt21=2;
-                }
-                else
-                {
-                    if (BACKTRACKING>0)
-                    {
-                        FAILEDFLAG = ANTLR3_TRUE;
-                        return retval;
-                    }
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 21;
+          EXCEPTION->state = 0;
 
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 21;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulepath_like_seqEx;
-                }
-            }
-            switch (alt21)
-            {
-        	case 1:
-        	    // hammer.g:68:17: SLASH path_like_seq_impl
-        	    {
-        	        SLASH48 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_path_like_seq640);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_SLASH->add(stream_SLASH, SLASH48, NULL);
-
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq642);
-        	        path_like_seq_impl49=path_like_seq_impl(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_path_like_seq_impl->add(stream_path_like_seq_impl, path_like_seq_impl49.tree, NULL);
-
-
-        	        /* AST REWRITE
-        	         * elements          : SLASH, path_like_seq_impl
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 68:42: -> ^( PATH_LIKE_SEQ SLASH path_like_seq_impl )
-        	        	{
-        	        	    // hammer.g:68:45: ^( PATH_LIKE_SEQ SLASH path_like_seq_impl )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, PATH_LIKE_SEQ, (pANTLR3_UINT8)"PATH_LIKE_SEQ"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_SLASH->nextNode(stream_SLASH));
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_path_like_seq_impl->nextTree(stream_path_like_seq_impl));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:69:10: path_like_seq_impl
-        	    {
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq663);
-        	        path_like_seq_impl50=path_like_seq_impl(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_path_like_seq_impl->add(stream_path_like_seq_impl, path_like_seq_impl50.tree, NULL);
-
-
-        	        /* AST REWRITE
-        	         * elements          : path_like_seq_impl
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 69:29: -> ^( PATH_LIKE_SEQ path_like_seq_impl )
-        	        	{
-        	        	    // hammer.g:69:32: ^( PATH_LIKE_SEQ path_like_seq_impl )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, PATH_LIKE_SEQ, (pANTLR3_UINT8)"PATH_LIKE_SEQ"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_path_like_seq_impl->nextTree(stream_path_like_seq_impl));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
-            }
+          goto rulepath_like_seqEx;
         }
+      }
+      switch (alt21) {
+        case 1:
+          // hammer.g:68:17: SLASH path_like_seq_impl
+          {
+            SLASH48 = (pANTLR3_COMMON_TOKEN)MATCHT(
+              SLASH, &FOLLOW_SLASH_in_path_like_seq640);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_SLASH->add(stream_SLASH, SLASH48, NULL);
+
+            FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq642);
+            path_like_seq_impl49 = path_like_seq_impl(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_path_like_seq_impl->add(
+                stream_path_like_seq_impl, path_like_seq_impl49.tree, NULL);
+
+            /* AST REWRITE
+     * elements          : SLASH, path_like_seq_impl
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 68:42: -> ^( PATH_LIKE_SEQ SLASH path_like_seq_impl )
+              {
+                // hammer.g:68:45: ^( PATH_LIKE_SEQ SLASH path_like_seq_impl )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, PATH_LIKE_SEQ, (pANTLR3_UINT8) "PATH_LIKE_SEQ"),
+                    root_1));
+
+                  ADAPTOR->addChild(
+                    ADAPTOR, root_1, stream_SLASH->nextNode(stream_SLASH));
+                  ADAPTOR->addChild(ADAPTOR,
+                                    root_1,
+                                    stream_path_like_seq_impl->nextTree(
+                                      stream_path_like_seq_impl));
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 2:
+          // hammer.g:69:10: path_like_seq_impl
+          {
+            FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq663);
+            path_like_seq_impl50 = path_like_seq_impl(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_path_like_seq_impl->add(
+                stream_path_like_seq_impl, path_like_seq_impl50.tree, NULL);
+
+            /* AST REWRITE
+     * elements          : path_like_seq_impl
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 69:29: -> ^( PATH_LIKE_SEQ path_like_seq_impl )
+              {
+                // hammer.g:69:32: ^( PATH_LIKE_SEQ path_like_seq_impl )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, PATH_LIKE_SEQ, (pANTLR3_UINT8) "PATH_LIKE_SEQ"),
+                    root_1));
+
+                  ADAPTOR->addChild(ADAPTOR,
+                                    root_1,
+                                    stream_path_like_seq_impl->nextTree(
+                                      stream_path_like_seq_impl));
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulepath_like_seqEx; /* Prevent compiler warnings */
+rulepath_like_seqEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulepath_like_seqEx; /* Prevent compiler warnings */
-    rulepath_like_seqEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_SLASH->free(stream_SLASH);
+  stream_path_like_seq_impl->free(stream_path_like_seq_impl);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_SLASH->free(stream_SLASH);
-    stream_path_like_seq_impl->free(stream_path_like_seq_impl);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end path_like_seq */
 
@@ -5190,758 +5488,759 @@ path_like_seq(phammerParser ctx)
 static hammerParser_path_like_seq_impl_return
 path_like_seq_impl(phammerParser ctx)
 {
-    hammerParser_path_like_seq_impl_return retval;
+  hammerParser_path_like_seq_impl_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    ID51;
-    pANTLR3_COMMON_TOKEN    char_literal52;
-    pANTLR3_COMMON_TOKEN    ID53;
-    pANTLR3_COMMON_TOKEN    char_literal54;
+  pANTLR3_COMMON_TOKEN ID51;
+  pANTLR3_COMMON_TOKEN char_literal52;
+  pANTLR3_COMMON_TOKEN ID53;
+  pANTLR3_COMMON_TOKEN char_literal54;
 
-    pANTLR3_BASE_TREE ID51_tree;
-    pANTLR3_BASE_TREE char_literal52_tree;
-    pANTLR3_BASE_TREE ID53_tree;
-    pANTLR3_BASE_TREE char_literal54_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_SLASH;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_BASE_TREE ID51_tree;
+  pANTLR3_BASE_TREE char_literal52_tree;
+  pANTLR3_BASE_TREE ID53_tree;
+  pANTLR3_BASE_TREE char_literal54_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_SLASH;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  ID51 = NULL;
+  char_literal52 = NULL;
+  ID53 = NULL;
+  char_literal54 = NULL;
+  retval.start = LT(1);
 
-    ID51       = NULL;
-    char_literal52       = NULL;
-    ID53       = NULL;
-    char_literal54       = NULL;
-    retval.start = LT(1);
-
-    ID51_tree   = NULL;
-    char_literal52_tree   = NULL;
-    ID53_tree   = NULL;
-    char_literal54_tree   = NULL;
-    stream_SLASH   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SLASH");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    retval.tree  = NULL;
+  ID51_tree = NULL;
+  char_literal52_tree = NULL;
+  ID53_tree = NULL;
+  char_literal54_tree = NULL;
+  stream_SLASH = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token SLASH");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  retval.tree = NULL;
+  {
+    // hammer.g:70:20: ( ID ( '/' ID )* ( '/' )? -> ( ID )+ )
+    // hammer.g:70:22: ID ( '/' ID )* ( '/' )?
     {
-        // hammer.g:70:20: ( ID ( '/' ID )* ( '/' )? -> ( ID )+ )
-        // hammer.g:70:22: ID ( '/' ID )* ( '/' )?
+      ID51 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl678);
+      if (HASEXCEPTION()) {
+        goto rulepath_like_seq_implEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_ID->add(stream_ID, ID51, NULL);
+
+      // hammer.g:70:25: ( '/' ID )*
+
+      for (;;) {
+        int alt22 = 2;
         {
-            ID51 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl678);
-            if  (HASEXCEPTION())
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA22_0 = LA(1);
+          if ((LA22_0 == SLASH)) {
             {
+              /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+              int LA22_1 = LA(2);
+              if ((LA22_1 == ID)) {
+                alt22 = 1;
+              }
+            }
+          }
+        }
+        switch (alt22) {
+          case 1:
+            // hammer.g:70:26: '/' ID
+            {
+              char_literal52 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                SLASH, &FOLLOW_SLASH_in_path_like_seq_impl681);
+              if (HASEXCEPTION()) {
                 goto rulepath_like_seq_implEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_SLASH->add(stream_SLASH, char_literal52, NULL);
+
+              ID53 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                ID, &FOLLOW_ID_in_path_like_seq_impl683);
+              if (HASEXCEPTION()) {
+                goto rulepath_like_seq_implEx;
+              }
+              if (HASFAILED()) {
+                return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_ID->add(stream_ID, ID53, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_ID->add(stream_ID, ID51, NULL);
+            break;
 
+          default:
+            goto loop22; /* break out of the loop */
+            break;
+        }
+      }
+    loop22:; /* Jump out to here if this rule does not match */
 
-            // hammer.g:70:25: ( '/' ID )*
-
-            for (;;)
+      // hammer.g:70:35: ( '/' )?
+      {
+        int alt23 = 2;
+        {
+          int LA23_0 = LA(1);
+          if ((LA23_0 == SLASH)) {
             {
-                int alt22=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA22_0 = LA(1);
-                    if ( (LA22_0 == SLASH) )
-                    {
-                        {
-                           /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                            */
-                            int LA22_1 = LA(2);
-                            if ( (LA22_1 == ID) )
-                            {
-                                alt22=1;
-                            }
-
-                        }
-                    }
-
-                }
-                switch (alt22)
-                {
-            	case 1:
-            	    // hammer.g:70:26: '/' ID
-            	    {
-            	        char_literal52 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_path_like_seq_impl681);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulepath_like_seq_implEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_SLASH->add(stream_SLASH, char_literal52, NULL);
-
-            	        ID53 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl683);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulepath_like_seq_implEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_ID->add(stream_ID, ID53, NULL);
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop22;	/* break out of the loop */
-            	    break;
-                }
+              int LA23_1 = LA(2);
+              if ((LA23_1 == EOF || ((LA23_1 >= WS) && (LA23_1 <= EXP_END)) ||
+                   ((LA23_1 >= COLON) && (LA23_1 <= SLASH)) ||
+                   ((LA23_1 >= 32) && (LA23_1 <= 34)) || LA23_1 == 36)) {
+                alt23 = 1;
+              }
             }
-            loop22: ; /* Jump out to here if this rule does not match */
-
-
-            // hammer.g:70:35: ( '/' )?
+          }
+        }
+        switch (alt23) {
+          case 1:
+            // hammer.g:70:35: '/'
             {
-                int alt23=2;
-                {
-                    int LA23_0 = LA(1);
-                    if ( (LA23_0 == SLASH) )
-                    {
-                        {
-                            int LA23_1 = LA(2);
-                            if ( (LA23_1 == EOF || ((LA23_1 >= WS) && (LA23_1 <= EXP_END)) || ((LA23_1 >= COLON) && (LA23_1 <= SLASH)) || ((LA23_1 >= 32) && (LA23_1 <= 34)) || LA23_1 == 36) )
-                            {
-                                alt23=1;
-                            }
-                        }
-                    }
-                }
-                switch (alt23)
-                {
-            	case 1:
-            	    // hammer.g:70:35: '/'
-            	    {
-            	        char_literal54 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_path_like_seq_impl687);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulepath_like_seq_implEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_SLASH->add(stream_SLASH, char_literal54, NULL);
-
-
-            	    }
-            	    break;
-
-                }
+              char_literal54 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                SLASH, &FOLLOW_SLASH_in_path_like_seq_impl687);
+              if (HASEXCEPTION()) {
+                goto rulepath_like_seq_implEx;
+              }
+              if (HASFAILED()) {
+                return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_SLASH->add(stream_SLASH, char_literal54, NULL);
             }
+            break;
+        }
+      }
 
+      /* AST REWRITE
+ * elements          : ID
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            /* AST REWRITE
-             * elements          : ID
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 70:40: -> ( ID )+
-            	{
-            	    if ( !(stream_ID->hasNext(stream_ID)) )
-            	    {
-            	        CONSTRUCTEX();
-            	        EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
-            	        EXCEPTION->name         = (void *)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
-            	    }
-            	    else
-            	    {
-            	    	while ( stream_ID->hasNext(stream_ID) ) {
-            	    		ADAPTOR->addChild(ADAPTOR, root_0, stream_ID->nextNode(stream_ID));
-
-            	    	}
-            	    	stream_ID->reset(stream_ID);
-
-            	    }
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 70:40: -> ( ID )+
+        {
+          if (!(stream_ID->hasNext(stream_ID))) {
+            CONSTRUCTEX();
+            EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
+            EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
+          } else {
+            while (stream_ID->hasNext(stream_ID)) {
+              ADAPTOR->addChild(
+                ADAPTOR, root_0, stream_ID->nextNode(stream_ID));
             }
+            stream_ID->reset(stream_ID);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulepath_like_seq_implEx; /* Prevent compiler warnings */
+rulepath_like_seq_implEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulepath_like_seq_implEx; /* Prevent compiler warnings */
-    rulepath_like_seq_implEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_SLASH->free(stream_SLASH);
+  stream_ID->free(stream_ID);
 
-    if ( BACKTRACKING==0 ) {
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_SLASH->free(stream_SLASH);
-    stream_ID->free(stream_ID);
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end path_like_seq_impl */
 
 /**
  * $ANTLR start target_ref
- * hammer.g:71:1: target_ref : ( path_like_seq target_ref_impl -> ^( TARGET_REF path_like_seq target_ref_impl ) | public_tag path_like_seq ( target_ref_impl )? -> ^( TARGET_REF public_tag path_like_seq ( target_ref_impl )? ) );
+ * hammer.g:71:1: target_ref : ( path_like_seq target_ref_impl -> ^( TARGET_REF
+ * path_like_seq target_ref_impl ) | public_tag path_like_seq ( target_ref_impl
+ * )? -> ^( TARGET_REF public_tag path_like_seq ( target_ref_impl )? ) );
  */
 static hammerParser_target_ref_return
 target_ref(phammerParser ctx)
 {
-    hammerParser_target_ref_return retval;
+  hammerParser_target_ref_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_path_like_seq_return path_like_seq55;
-    #undef	RETURN_TYPE_path_like_seq55
-    #define	RETURN_TYPE_path_like_seq55 hammerParser_path_like_seq_return
+  hammerParser_path_like_seq_return path_like_seq55;
+#undef RETURN_TYPE_path_like_seq55
+#define RETURN_TYPE_path_like_seq55 hammerParser_path_like_seq_return
 
-    hammerParser_target_ref_impl_return target_ref_impl56;
-    #undef	RETURN_TYPE_target_ref_impl56
-    #define	RETURN_TYPE_target_ref_impl56 hammerParser_target_ref_impl_return
+  hammerParser_target_ref_impl_return target_ref_impl56;
+#undef RETURN_TYPE_target_ref_impl56
+#define RETURN_TYPE_target_ref_impl56 hammerParser_target_ref_impl_return
 
-    hammerParser_public_tag_return public_tag57;
-    #undef	RETURN_TYPE_public_tag57
-    #define	RETURN_TYPE_public_tag57 hammerParser_public_tag_return
+  hammerParser_public_tag_return public_tag57;
+#undef RETURN_TYPE_public_tag57
+#define RETURN_TYPE_public_tag57 hammerParser_public_tag_return
 
-    hammerParser_path_like_seq_return path_like_seq58;
-    #undef	RETURN_TYPE_path_like_seq58
-    #define	RETURN_TYPE_path_like_seq58 hammerParser_path_like_seq_return
+  hammerParser_path_like_seq_return path_like_seq58;
+#undef RETURN_TYPE_path_like_seq58
+#define RETURN_TYPE_path_like_seq58 hammerParser_path_like_seq_return
 
-    hammerParser_target_ref_impl_return target_ref_impl59;
-    #undef	RETURN_TYPE_target_ref_impl59
-    #define	RETURN_TYPE_target_ref_impl59 hammerParser_target_ref_impl_return
+  hammerParser_target_ref_impl_return target_ref_impl59;
+#undef RETURN_TYPE_target_ref_impl59
+#define RETURN_TYPE_target_ref_impl59 hammerParser_target_ref_impl_return
 
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_public_tag;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_ref_impl;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_path_like_seq;
-    /* Initialize rule variables
-     */
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_public_tag;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_ref_impl;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_path_like_seq;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  path_like_seq55.tree = NULL;
 
-    path_like_seq55.tree = NULL;
+  target_ref_impl56.tree = NULL;
 
-    target_ref_impl56.tree = NULL;
+  public_tag57.tree = NULL;
 
-    public_tag57.tree = NULL;
+  path_like_seq58.tree = NULL;
 
-    path_like_seq58.tree = NULL;
+  target_ref_impl59.tree = NULL;
 
-    target_ref_impl59.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    stream_public_tag=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule public_tag");
-    stream_target_ref_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target_ref_impl");
-    stream_path_like_seq=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule path_like_seq");
-    retval.tree  = NULL;
+  stream_public_tag = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule public_tag");
+  stream_target_ref_impl = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target_ref_impl");
+  stream_path_like_seq = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule path_like_seq");
+  retval.tree = NULL;
+  {
     {
-        {
-            //  hammer.g:71:12: ( path_like_seq target_ref_impl -> ^( TARGET_REF path_like_seq target_ref_impl ) | public_tag path_like_seq ( target_ref_impl )? -> ^( TARGET_REF public_tag path_like_seq ( target_ref_impl )? ) )
+      //  hammer.g:71:12: ( path_like_seq target_ref_impl -> ^( TARGET_REF
+      //  path_like_seq target_ref_impl ) | public_tag path_like_seq (
+      //  target_ref_impl )? -> ^( TARGET_REF public_tag path_like_seq (
+      //  target_ref_impl )? ) )
 
-            ANTLR3_UINT32 alt25;
+      ANTLR3_UINT32 alt25;
 
-            alt25=2;
+      alt25 = 2;
 
+      {
+        int LA25_0 = LA(1);
+        if ((LA25_0 == ID || LA25_0 == SLASH)) {
+          alt25 = 1;
+        } else if ((LA25_0 == PUBLIC_TAG)) {
+          alt25 = 2;
+        } else {
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
 
-            {
-                int LA25_0 = LA(1);
-                if ( (LA25_0 == ID || LA25_0 == SLASH) )
-                {
-                    alt25=1;
-                }
-                else if ( (LA25_0 == PUBLIC_TAG) )
-                {
-                    alt25=2;
-                }
-                else
-                {
-                    if (BACKTRACKING>0)
-                    {
-                        FAILEDFLAG = ANTLR3_TRUE;
-                        return retval;
-                    }
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 25;
+          EXCEPTION->state = 0;
 
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 25;
-                    EXCEPTION->state        = 0;
-
-
-                    goto ruletarget_refEx;
-                }
-            }
-            switch (alt25)
-            {
-        	case 1:
-        	    // hammer.g:71:14: path_like_seq target_ref_impl
-        	    {
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_in_target_ref700);
-        	        path_like_seq55=path_like_seq(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_refEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_path_like_seq->add(stream_path_like_seq, path_like_seq55.tree, NULL);
-        	        FOLLOWPUSH(FOLLOW_target_ref_impl_in_target_ref702);
-        	        target_ref_impl56=target_ref_impl(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_refEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_target_ref_impl->add(stream_target_ref_impl, target_ref_impl56.tree, NULL);
-
-
-        	        /* AST REWRITE
-        	         * elements          : path_like_seq, target_ref_impl
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 71:44: -> ^( TARGET_REF path_like_seq target_ref_impl )
-        	        	{
-        	        	    // hammer.g:71:47: ^( TARGET_REF path_like_seq target_ref_impl )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TARGET_REF, (pANTLR3_UINT8)"TARGET_REF"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_path_like_seq->nextTree(stream_path_like_seq));
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_target_ref_impl->nextTree(stream_target_ref_impl));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:72:14: public_tag path_like_seq ( target_ref_impl )?
-        	    {
-        	        FOLLOWPUSH(FOLLOW_public_tag_in_target_ref727);
-        	        public_tag57=public_tag(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_refEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_public_tag->add(stream_public_tag, public_tag57.tree, NULL);
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_in_target_ref729);
-        	        path_like_seq58=path_like_seq(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_refEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_path_like_seq->add(stream_path_like_seq, path_like_seq58.tree, NULL);
-
-        	        // hammer.g:72:39: ( target_ref_impl )?
-        	        {
-        	            int alt24=2;
-        	            alt24 = cdfa24.predict(ctx, RECOGNIZER, ISTREAM, &cdfa24);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto ruletarget_refEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return retval;
-        	            }
-        	            switch (alt24)
-        	            {
-        	        	case 1:
-        	        	    // hammer.g:72:39: target_ref_impl
-        	        	    {
-        	        	        FOLLOWPUSH(FOLLOW_target_ref_impl_in_target_ref731);
-        	        	        target_ref_impl59=target_ref_impl(ctx);
-
-        	        	        FOLLOWPOP();
-        	        	        if  (HASEXCEPTION())
-        	        	        {
-        	        	            goto ruletarget_refEx;
-        	        	        }
-        	        	        if (HASFAILED())
-        	        	        {
-        	        	            return retval;
-        	        	        }
-        	        	        if ( BACKTRACKING==0 ) stream_target_ref_impl->add(stream_target_ref_impl, target_ref_impl59.tree, NULL);
-
-        	        	    }
-        	        	    break;
-
-        	            }
-        	        }
-
-
-        	        /* AST REWRITE
-        	         * elements          : target_ref_impl, path_like_seq, public_tag
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 72:56: -> ^( TARGET_REF public_tag path_like_seq ( target_ref_impl )? )
-        	        	{
-        	        	    // hammer.g:72:59: ^( TARGET_REF public_tag path_like_seq ( target_ref_impl )? )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TARGET_REF, (pANTLR3_UINT8)"TARGET_REF"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_public_tag->nextTree(stream_public_tag));
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, stream_path_like_seq->nextTree(stream_path_like_seq));
-        	        	        // hammer.g:72:97: ( target_ref_impl )?
-        	        	        {
-        	        	        	if ( stream_target_ref_impl->hasNext(stream_target_ref_impl) )
-        	        	        	{
-        	        	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_target_ref_impl->nextTree(stream_target_ref_impl));
-
-        	        	        	}
-        	        	        	stream_target_ref_impl->reset(stream_target_ref_impl);
-
-        	        	        }
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
-            }
+          goto ruletarget_refEx;
         }
+      }
+      switch (alt25) {
+        case 1:
+          // hammer.g:71:14: path_like_seq target_ref_impl
+          {
+            FOLLOWPUSH(FOLLOW_path_like_seq_in_target_ref700);
+            path_like_seq55 = path_like_seq(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruletarget_refEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_path_like_seq->add(
+                stream_path_like_seq, path_like_seq55.tree, NULL);
+            FOLLOWPUSH(FOLLOW_target_ref_impl_in_target_ref702);
+            target_ref_impl56 = target_ref_impl(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruletarget_refEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_target_ref_impl->add(
+                stream_target_ref_impl, target_ref_impl56.tree, NULL);
+
+            /* AST REWRITE
+     * elements          : path_like_seq, target_ref_impl
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 71:44: -> ^( TARGET_REF path_like_seq target_ref_impl )
+              {
+                // hammer.g:71:47: ^( TARGET_REF path_like_seq target_ref_impl )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, TARGET_REF, (pANTLR3_UINT8) "TARGET_REF"),
+                    root_1));
+
+                  ADAPTOR->addChild(
+                    ADAPTOR,
+                    root_1,
+                    stream_path_like_seq->nextTree(stream_path_like_seq));
+                  ADAPTOR->addChild(
+                    ADAPTOR,
+                    root_1,
+                    stream_target_ref_impl->nextTree(stream_target_ref_impl));
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 2:
+          // hammer.g:72:14: public_tag path_like_seq ( target_ref_impl )?
+          {
+            FOLLOWPUSH(FOLLOW_public_tag_in_target_ref727);
+            public_tag57 = public_tag(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruletarget_refEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_public_tag->add(
+                stream_public_tag, public_tag57.tree, NULL);
+            FOLLOWPUSH(FOLLOW_path_like_seq_in_target_ref729);
+            path_like_seq58 = path_like_seq(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruletarget_refEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_path_like_seq->add(
+                stream_path_like_seq, path_like_seq58.tree, NULL);
+
+            // hammer.g:72:39: ( target_ref_impl )?
+            {
+              int alt24 = 2;
+              alt24 = cdfa24.predict(ctx, RECOGNIZER, ISTREAM, &cdfa24);
+              if (HASEXCEPTION()) {
+                goto ruletarget_refEx;
+              }
+              if (HASFAILED()) {
+                return retval;
+              }
+              switch (alt24) {
+                case 1:
+                  // hammer.g:72:39: target_ref_impl
+                  {
+                    FOLLOWPUSH(FOLLOW_target_ref_impl_in_target_ref731);
+                    target_ref_impl59 = target_ref_impl(ctx);
+
+                    FOLLOWPOP();
+                    if (HASEXCEPTION()) {
+                      goto ruletarget_refEx;
+                    }
+                    if (HASFAILED()) {
+                      return retval;
+                    }
+                    if (BACKTRACKING == 0)
+                      stream_target_ref_impl->add(
+                        stream_target_ref_impl, target_ref_impl59.tree, NULL);
+                  }
+                  break;
+              }
+            }
+
+            /* AST REWRITE
+     * elements          : target_ref_impl, path_like_seq, public_tag
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 72:56: -> ^( TARGET_REF public_tag path_like_seq (
+              // target_ref_impl )? )
+              {
+                // hammer.g:72:59: ^( TARGET_REF public_tag path_like_seq (
+                // target_ref_impl )? )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, TARGET_REF, (pANTLR3_UINT8) "TARGET_REF"),
+                    root_1));
+
+                  ADAPTOR->addChild(
+                    ADAPTOR,
+                    root_1,
+                    stream_public_tag->nextTree(stream_public_tag));
+                  ADAPTOR->addChild(
+                    ADAPTOR,
+                    root_1,
+                    stream_path_like_seq->nextTree(stream_path_like_seq));
+                  // hammer.g:72:97: ( target_ref_impl )?
+                  {
+                    if (stream_target_ref_impl->hasNext(
+                          stream_target_ref_impl)) {
+                      ADAPTOR->addChild(ADAPTOR,
+                                        root_1,
+                                        stream_target_ref_impl->nextTree(
+                                          stream_target_ref_impl));
+                    }
+                    stream_target_ref_impl->reset(stream_target_ref_impl);
+                  }
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_refEx; /* Prevent compiler warnings */
+ruletarget_refEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_refEx; /* Prevent compiler warnings */
-    ruletarget_refEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_public_tag->free(stream_public_tag);
+  stream_target_ref_impl->free(stream_target_ref_impl);
+  stream_path_like_seq->free(stream_path_like_seq);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-    stream_public_tag->free(stream_public_tag);
-    stream_target_ref_impl->free(stream_target_ref_impl);
-    stream_path_like_seq->free(stream_path_like_seq);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end target_ref */
 
 /**
  * $ANTLR start target_ref_impl
- * hammer.g:73:1: target_ref_impl : ( target_requirements -> ^( TARGET_NAME EMPTY_TARGET_NAME ) target_requirements | target_name_seq ( target_requirements )? );
+ * hammer.g:73:1: target_ref_impl : ( target_requirements -> ^( TARGET_NAME
+ * EMPTY_TARGET_NAME ) target_requirements | target_name_seq (
+ * target_requirements )? );
  */
 static hammerParser_target_ref_impl_return
 target_ref_impl(phammerParser ctx)
 {
-    hammerParser_target_ref_impl_return retval;
+  hammerParser_target_ref_impl_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    hammerParser_target_requirements_return target_requirements60;
-    #undef	RETURN_TYPE_target_requirements60
-    #define	RETURN_TYPE_target_requirements60 hammerParser_target_requirements_return
+  hammerParser_target_requirements_return target_requirements60;
+#undef RETURN_TYPE_target_requirements60
+#define RETURN_TYPE_target_requirements60                                      \
+  hammerParser_target_requirements_return
 
-    hammerParser_target_name_seq_return target_name_seq61;
-    #undef	RETURN_TYPE_target_name_seq61
-    #define	RETURN_TYPE_target_name_seq61 hammerParser_target_name_seq_return
+  hammerParser_target_name_seq_return target_name_seq61;
+#undef RETURN_TYPE_target_name_seq61
+#define RETURN_TYPE_target_name_seq61 hammerParser_target_name_seq_return
 
-    hammerParser_target_requirements_return target_requirements62;
-    #undef	RETURN_TYPE_target_requirements62
-    #define	RETURN_TYPE_target_requirements62 hammerParser_target_requirements_return
+  hammerParser_target_requirements_return target_requirements62;
+#undef RETURN_TYPE_target_requirements62
+#define RETURN_TYPE_target_requirements62                                      \
+  hammerParser_target_requirements_return
 
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_requirements;
-    /* Initialize rule variables
-     */
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_requirements;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  target_requirements60.tree = NULL;
 
-    target_requirements60.tree = NULL;
+  target_name_seq61.tree = NULL;
 
-    target_name_seq61.tree = NULL;
+  target_requirements62.tree = NULL;
 
-    target_requirements62.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    stream_target_requirements=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target_requirements");
-    retval.tree  = NULL;
+  stream_target_requirements = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target_requirements");
+  retval.tree = NULL;
+  {
     {
-        {
-            //  hammer.g:73:17: ( target_requirements -> ^( TARGET_NAME EMPTY_TARGET_NAME ) target_requirements | target_name_seq ( target_requirements )? )
+      //  hammer.g:73:17: ( target_requirements -> ^( TARGET_NAME
+      //  EMPTY_TARGET_NAME ) target_requirements | target_name_seq (
+      //  target_requirements )? )
 
-            ANTLR3_UINT32 alt27;
+      ANTLR3_UINT32 alt27;
 
-            alt27=2;
+      alt27 = 2;
 
+      {
+        int LA27_0 = LA(1);
+        if ((LA27_0 == WS || LA27_0 == SLASH)) {
+          alt27 = 1;
+        } else if ((LA27_0 == 34)) {
+          alt27 = 2;
+        } else {
+          if (BACKTRACKING > 0) {
+            FAILEDFLAG = ANTLR3_TRUE;
+            return retval;
+          }
 
-            {
-                int LA27_0 = LA(1);
-                if ( (LA27_0 == WS || LA27_0 == SLASH) )
-                {
-                    alt27=1;
-                }
-                else if ( (LA27_0 == 34) )
-                {
-                    alt27=2;
-                }
-                else
-                {
-                    if (BACKTRACKING>0)
-                    {
-                        FAILEDFLAG = ANTLR3_TRUE;
-                        return retval;
-                    }
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 27;
+          EXCEPTION->state = 0;
 
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 27;
-                    EXCEPTION->state        = 0;
-
-
-                    goto ruletarget_ref_implEx;
-                }
-            }
-            switch (alt27)
-            {
-        	case 1:
-        	    // hammer.g:73:19: target_requirements
-        	    {
-        	        FOLLOWPUSH(FOLLOW_target_requirements_in_target_ref_impl752);
-        	        target_requirements60=target_requirements(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_target_requirements->add(stream_target_requirements, target_requirements60.tree, NULL);
-
-
-        	        /* AST REWRITE
-        	         * elements          : target_requirements
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 73:39: -> ^( TARGET_NAME EMPTY_TARGET_NAME ) target_requirements
-        	        	{
-        	        	    // hammer.g:73:42: ^( TARGET_NAME EMPTY_TARGET_NAME )
-        	        	    {
-        	        	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TARGET_NAME, (pANTLR3_UINT8)"TARGET_NAME"), root_1));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_1, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, EMPTY_TARGET_NAME, (pANTLR3_UINT8)"EMPTY_TARGET_NAME"));
-
-        	        	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-        	        	    }
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, stream_target_requirements->nextTree(stream_target_requirements));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:74:19: target_name_seq ( target_requirements )?
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_target_name_seq_in_target_ref_impl782);
-        	        target_name_seq61=target_name_seq(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, target_name_seq61.tree);
-
-        	        // hammer.g:74:35: ( target_requirements )?
-        	        {
-        	            int alt26=2;
-        	            alt26 = cdfa26.predict(ctx, RECOGNIZER, ISTREAM, &cdfa26);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto ruletarget_ref_implEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return retval;
-        	            }
-        	            switch (alt26)
-        	            {
-        	        	case 1:
-        	        	    // hammer.g:74:35: target_requirements
-        	        	    {
-        	        	        FOLLOWPUSH(FOLLOW_target_requirements_in_target_ref_impl784);
-        	        	        target_requirements62=target_requirements(ctx);
-
-        	        	        FOLLOWPOP();
-        	        	        if  (HASEXCEPTION())
-        	        	        {
-        	        	            goto ruletarget_ref_implEx;
-        	        	        }
-        	        	        if (HASFAILED())
-        	        	        {
-        	        	            return retval;
-        	        	        }
-        	        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, target_requirements62.tree);
-
-        	        	    }
-        	        	    break;
-
-        	            }
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto ruletarget_ref_implEx;
         }
+      }
+      switch (alt27) {
+        case 1:
+          // hammer.g:73:19: target_requirements
+          {
+            FOLLOWPUSH(FOLLOW_target_requirements_in_target_ref_impl752);
+            target_requirements60 = target_requirements(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_target_requirements->add(
+                stream_target_requirements, target_requirements60.tree, NULL);
+
+            /* AST REWRITE
+     * elements          : target_requirements
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 73:39: -> ^( TARGET_NAME EMPTY_TARGET_NAME )
+              // target_requirements
+              {
+                // hammer.g:73:42: ^( TARGET_NAME EMPTY_TARGET_NAME )
+                {
+                  pANTLR3_BASE_TREE root_1 =
+                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+                    ADAPTOR,
+                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                      ADAPTOR, TARGET_NAME, (pANTLR3_UINT8) "TARGET_NAME"),
+                    root_1));
+
+                  ADAPTOR->addChild(ADAPTOR,
+                                    root_1,
+                                    (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                                      ADAPTOR,
+                                      EMPTY_TARGET_NAME,
+                                      (pANTLR3_UINT8) "EMPTY_TARGET_NAME"));
+
+                  ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+                }
+                ADAPTOR->addChild(ADAPTOR,
+                                  root_0,
+                                  stream_target_requirements->nextTree(
+                                    stream_target_requirements));
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+        case 2:
+          // hammer.g:74:19: target_name_seq ( target_requirements )?
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_target_name_seq_in_target_ref_impl782);
+            target_name_seq61 = target_name_seq(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, target_name_seq61.tree);
+
+            // hammer.g:74:35: ( target_requirements )?
+            {
+              int alt26 = 2;
+              alt26 = cdfa26.predict(ctx, RECOGNIZER, ISTREAM, &cdfa26);
+              if (HASEXCEPTION()) {
+                goto ruletarget_ref_implEx;
+              }
+              if (HASFAILED()) {
+                return retval;
+              }
+              switch (alt26) {
+                case 1:
+                  // hammer.g:74:35: target_requirements
+                  {
+                    FOLLOWPUSH(
+                      FOLLOW_target_requirements_in_target_ref_impl784);
+                    target_requirements62 = target_requirements(ctx);
+
+                    FOLLOWPOP();
+                    if (HASEXCEPTION()) {
+                      goto ruletarget_ref_implEx;
+                    }
+                    if (HASFAILED()) {
+                      return retval;
+                    }
+                    if (BACKTRACKING == 0)
+                      ADAPTOR->addChild(
+                        ADAPTOR, root_0, target_requirements62.tree);
+                  }
+                  break;
+              }
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_ref_implEx; /* Prevent compiler warnings */
+ruletarget_ref_implEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_ref_implEx; /* Prevent compiler warnings */
-    ruletarget_ref_implEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_target_requirements->free(stream_target_requirements);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }
-    stream_target_requirements->free(stream_target_requirements);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end target_ref_impl */
 
@@ -5952,910 +6251,889 @@ target_ref_impl(phammerParser ctx)
 static hammerParser_target_name_seq_return
 target_name_seq(phammerParser ctx)
 {
-    hammerParser_target_name_seq_return retval;
+  hammerParser_target_name_seq_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    string_literal63;
-    pANTLR3_COMMON_TOKEN    ID64;
+  pANTLR3_COMMON_TOKEN string_literal63;
+  pANTLR3_COMMON_TOKEN ID64;
 
-    pANTLR3_BASE_TREE string_literal63_tree;
-    pANTLR3_BASE_TREE ID64_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_34;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
+  pANTLR3_BASE_TREE string_literal63_tree;
+  pANTLR3_BASE_TREE ID64_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_34;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_ID;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  string_literal63 = NULL;
+  ID64 = NULL;
+  retval.start = LT(1);
 
-    string_literal63       = NULL;
-    ID64       = NULL;
-    retval.start = LT(1);
-
-    string_literal63_tree   = NULL;
-    ID64_tree   = NULL;
-    stream_34   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 34");
-    stream_ID   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token ID");
-    retval.tree  = NULL;
+  string_literal63_tree = NULL;
+  ID64_tree = NULL;
+  stream_34 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 34");
+  stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
+  retval.tree = NULL;
+  {
+    // hammer.g:75:17: ( '//' ID -> ^( TARGET_NAME ID ) )
+    // hammer.g:75:19: '//' ID
     {
-        // hammer.g:75:17: ( '//' ID -> ^( TARGET_NAME ID ) )
-        // hammer.g:75:19: '//' ID
+      string_literal63 =
+        (pANTLR3_COMMON_TOKEN)MATCHT(34, &FOLLOW_34_in_target_name_seq793);
+      if (HASEXCEPTION()) {
+        goto ruletarget_name_seqEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_34->add(stream_34, string_literal63, NULL);
+
+      ID64 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_target_name_seq795);
+      if (HASEXCEPTION()) {
+        goto ruletarget_name_seqEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_ID->add(stream_ID, ID64, NULL);
+
+      /* AST REWRITE
+ * elements          : ID
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 75:27: -> ^( TARGET_NAME ID )
         {
-            string_literal63 = (pANTLR3_COMMON_TOKEN) MATCHT(34, &FOLLOW_34_in_target_name_seq793);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_name_seqEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_34->add(stream_34, string_literal63, NULL);
+          // hammer.g:75:30: ^( TARGET_NAME ID )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, TARGET_NAME, (pANTLR3_UINT8) "TARGET_NAME"),
+              root_1));
 
-            ID64 = (pANTLR3_COMMON_TOKEN) MATCHT(ID, &FOLLOW_ID_in_target_name_seq795);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_name_seqEx;
-            }
-            if (HASFAILED())
-            {
-                return retval;
-            }
-            if ( BACKTRACKING==0 ) stream_ID->add(stream_ID, ID64, NULL);
+            ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
 
-
-
-            /* AST REWRITE
-             * elements          : ID
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 75:27: -> ^( TARGET_NAME ID )
-            	{
-            	    // hammer.g:75:30: ^( TARGET_NAME ID )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, TARGET_NAME, (pANTLR3_UINT8)"TARGET_NAME"), root_1));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
-
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_name_seqEx; /* Prevent compiler warnings */
+ruletarget_name_seqEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_name_seqEx; /* Prevent compiler warnings */
-    ruletarget_name_seqEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_34->free(stream_34);
+  stream_ID->free(stream_ID);
 
-    if ( BACKTRACKING==0 ) {
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_34->free(stream_34);
-    stream_ID->free(stream_ID);
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end target_name_seq */
 
 /**
  * $ANTLR start target_requirements
- * hammer.g:76:1: target_requirements : ( ( WS )* '/' requirement )+ -> ^( REQUIREMENT_SET ( requirement )+ ) ;
+ * hammer.g:76:1: target_requirements : ( ( WS )* '/' requirement )+ -> ^(
+ * REQUIREMENT_SET ( requirement )+ ) ;
  */
 static hammerParser_target_requirements_return
 target_requirements(phammerParser ctx)
 {
-    hammerParser_target_requirements_return retval;
+  hammerParser_target_requirements_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS65;
-    pANTLR3_COMMON_TOKEN    char_literal66;
-    hammerParser_requirement_return requirement67;
-    #undef	RETURN_TYPE_requirement67
-    #define	RETURN_TYPE_requirement67 hammerParser_requirement_return
+  pANTLR3_COMMON_TOKEN WS65;
+  pANTLR3_COMMON_TOKEN char_literal66;
+  hammerParser_requirement_return requirement67;
+#undef RETURN_TYPE_requirement67
+#define RETURN_TYPE_requirement67 hammerParser_requirement_return
 
-    pANTLR3_BASE_TREE WS65_tree;
-    pANTLR3_BASE_TREE char_literal66_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_SLASH;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_requirement;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE WS65_tree;
+  pANTLR3_BASE_TREE char_literal66_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_SLASH;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_requirement;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  WS65 = NULL;
+  char_literal66 = NULL;
+  requirement67.tree = NULL;
 
-    WS65       = NULL;
-    char_literal66       = NULL;
-    requirement67.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    WS65_tree   = NULL;
-    char_literal66_tree   = NULL;
-    stream_SLASH   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token SLASH");
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_requirement=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule requirement");
-    retval.tree  = NULL;
+  WS65_tree = NULL;
+  char_literal66_tree = NULL;
+  stream_SLASH = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token SLASH");
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_requirement = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule requirement");
+  retval.tree = NULL;
+  {
+    // hammer.g:76:21: ( ( ( WS )* '/' requirement )+ -> ^( REQUIREMENT_SET (
+    // requirement )+ ) )
+    // hammer.g:76:23: ( ( WS )* '/' requirement )+
     {
-        // hammer.g:76:21: ( ( ( WS )* '/' requirement )+ -> ^( REQUIREMENT_SET ( requirement )+ ) )
-        // hammer.g:76:23: ( ( WS )* '/' requirement )+
-        {
-            // hammer.g:76:23: ( ( WS )* '/' requirement )+
-            {
-                int cnt29=0;
+      // hammer.g:76:23: ( ( WS )* '/' requirement )+
+      {
+        int cnt29 = 0;
 
-                for (;;)
-                {
-                    int alt29=2;
-            	alt29 = cdfa29.predict(ctx, RECOGNIZER, ISTREAM, &cdfa29);
-            	if  (HASEXCEPTION())
-            	{
-            	    goto ruletarget_requirementsEx;
-            	}
-            	if (HASFAILED())
-            	{
-            	    return retval;
-            	}
-            	switch (alt29)
-            	{
-            	    case 1:
-            	        // hammer.g:76:24: ( WS )* '/' requirement
-            	        {
+        for (;;) {
+          int alt29 = 2;
+          alt29 = cdfa29.predict(ctx, RECOGNIZER, ISTREAM, &cdfa29);
+          if (HASEXCEPTION()) {
+            goto ruletarget_requirementsEx;
+          }
+          if (HASFAILED()) {
+            return retval;
+          }
+          switch (alt29) {
+            case 1:
+              // hammer.g:76:24: ( WS )* '/' requirement
+              {
+                // hammer.g:76:24: ( WS )*
 
-            	            // hammer.g:76:24: ( WS )*
+                for (;;) {
+                  int alt28 = 2;
+                  {
+                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                    int LA28_0 = LA(1);
+                    if ((LA28_0 == WS)) {
+                      alt28 = 1;
+                    }
+                  }
+                  switch (alt28) {
+                    case 1:
+                      // hammer.g:76:24: WS
+                      {
+                        WS65 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                          WS, &FOLLOW_WS_in_target_requirements811);
+                        if (HASEXCEPTION()) {
+                          goto ruletarget_requirementsEx;
+                        }
+                        if (HASFAILED()) {
+                          return retval;
+                        }
+                        if (BACKTRACKING == 0)
+                          stream_WS->add(stream_WS, WS65, NULL);
+                      }
+                      break;
 
-            	            for (;;)
-            	            {
-            	                int alt28=2;
-            	                {
-            	                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	                    */
-            	                    int LA28_0 = LA(1);
-            	                    if ( (LA28_0 == WS) )
-            	                    {
-            	                        alt28=1;
-            	                    }
-
-            	                }
-            	                switch (alt28)
-            	                {
-            	            	case 1:
-            	            	    // hammer.g:76:24: WS
-            	            	    {
-            	            	        WS65 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_target_requirements811);
-            	            	        if  (HASEXCEPTION())
-            	            	        {
-            	            	            goto ruletarget_requirementsEx;
-            	            	        }
-            	            	        if (HASFAILED())
-            	            	        {
-            	            	            return retval;
-            	            	        }
-            	            	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS65, NULL);
-
-
-            	            	    }
-            	            	    break;
-
-            	            	default:
-            	            	    goto loop28;	/* break out of the loop */
-            	            	    break;
-            	                }
-            	            }
-            	            loop28: ; /* Jump out to here if this rule does not match */
-
-            	            char_literal66 = (pANTLR3_COMMON_TOKEN) MATCHT(SLASH, &FOLLOW_SLASH_in_target_requirements814);
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto ruletarget_requirementsEx;
-            	            }
-            	            if (HASFAILED())
-            	            {
-            	                return retval;
-            	            }
-            	            if ( BACKTRACKING==0 ) stream_SLASH->add(stream_SLASH, char_literal66, NULL);
-
-            	            FOLLOWPUSH(FOLLOW_requirement_in_target_requirements816);
-            	            requirement67=requirement(ctx);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto ruletarget_requirementsEx;
-            	            }
-            	            if (HASFAILED())
-            	            {
-            	                return retval;
-            	            }
-            	            if ( BACKTRACKING==0 ) stream_requirement->add(stream_requirement, requirement67.tree, NULL);
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt29 >= 1 )
-            		{
-            		    goto loop29;
-            		}
-            		if (BACKTRACKING>0)
-            		{
-            		    FAILEDFLAG = ANTLR3_TRUE;
-            		    return retval;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto ruletarget_requirementsEx;
-            	}
-            	cnt29++;
+                    default:
+                      goto loop28; /* break out of the loop */
+                      break;
+                  }
                 }
-                loop29: ;	/* Jump to here if this rule does not match */
+              loop28:; /* Jump out to here if this rule does not match */
+
+                char_literal66 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                  SLASH, &FOLLOW_SLASH_in_target_requirements814);
+                if (HASEXCEPTION()) {
+                  goto ruletarget_requirementsEx;
+                }
+                if (HASFAILED()) {
+                  return retval;
+                }
+                if (BACKTRACKING == 0)
+                  stream_SLASH->add(stream_SLASH, char_literal66, NULL);
+
+                FOLLOWPUSH(FOLLOW_requirement_in_target_requirements816);
+                requirement67 = requirement(ctx);
+
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto ruletarget_requirementsEx;
+                }
+                if (HASFAILED()) {
+                  return retval;
+                }
+                if (BACKTRACKING == 0)
+                  stream_requirement->add(
+                    stream_requirement, requirement67.tree, NULL);
+              }
+              break;
+
+            default:
+
+              if (cnt29 >= 1) {
+                goto loop29;
+              }
+              if (BACKTRACKING > 0) {
+                FAILEDFLAG = ANTLR3_TRUE;
+                return retval;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+              goto ruletarget_requirementsEx;
+          }
+          cnt29++;
+        }
+      loop29:; /* Jump to here if this rule does not match */
+      }
+
+      /* AST REWRITE
+ * elements          : requirement
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
+
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 76:46: -> ^( REQUIREMENT_SET ( requirement )+ )
+        {
+          // hammer.g:76:49: ^( REQUIREMENT_SET ( requirement )+ )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, REQUIREMENT_SET, (pANTLR3_UINT8) "REQUIREMENT_SET"),
+              root_1));
+
+            if (!(stream_requirement->hasNext(stream_requirement))) {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
+            } else {
+              while (stream_requirement->hasNext(stream_requirement)) {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_1,
+                  stream_requirement->nextTree(stream_requirement));
+              }
+              stream_requirement->reset(stream_requirement);
             }
-
-
-            /* AST REWRITE
-             * elements          : requirement
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 76:46: -> ^( REQUIREMENT_SET ( requirement )+ )
-            	{
-            	    // hammer.g:76:49: ^( REQUIREMENT_SET ( requirement )+ )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, REQUIREMENT_SET, (pANTLR3_UINT8)"REQUIREMENT_SET"), root_1));
-
-            	        if ( !(stream_requirement->hasNext(stream_requirement)) )
-            	        {
-            	            CONSTRUCTEX();
-            	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
-            	            EXCEPTION->name         = (void *)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
-            	        }
-            	        else
-            	        {
-            	        	while ( stream_requirement->hasNext(stream_requirement) ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_requirement->nextTree(stream_requirement));
-
-            	        	}
-            	        	stream_requirement->reset(stream_requirement);
-
-            	        }
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_requirementsEx; /* Prevent compiler warnings */
+ruletarget_requirementsEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_requirementsEx; /* Prevent compiler warnings */
-    ruletarget_requirementsEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_SLASH->free(stream_SLASH);
+  stream_WS->free(stream_WS);
+  stream_requirement->free(stream_requirement);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_SLASH->free(stream_SLASH);
-    stream_WS->free(stream_WS);
-    stream_requirement->free(stream_requirement);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end target_requirements */
 
 /**
  * $ANTLR start list_of
- * hammer.g:77:1: list_of : list_of_impl ( ( WS )+ list_of_impl )* -> ^( LIST_OF ( list_of_impl )+ ) ;
+ * hammer.g:77:1: list_of : list_of_impl ( ( WS )+ list_of_impl )* -> ^( LIST_OF
+ * ( list_of_impl )+ ) ;
  */
 static hammerParser_list_of_return
 list_of(phammerParser ctx)
 {
-    hammerParser_list_of_return retval;
+  hammerParser_list_of_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    WS69;
-    hammerParser_list_of_impl_return list_of_impl68;
-    #undef	RETURN_TYPE_list_of_impl68
-    #define	RETURN_TYPE_list_of_impl68 hammerParser_list_of_impl_return
+  pANTLR3_COMMON_TOKEN WS69;
+  hammerParser_list_of_impl_return list_of_impl68;
+#undef RETURN_TYPE_list_of_impl68
+#define RETURN_TYPE_list_of_impl68 hammerParser_list_of_impl_return
 
-    hammerParser_list_of_impl_return list_of_impl70;
-    #undef	RETURN_TYPE_list_of_impl70
-    #define	RETURN_TYPE_list_of_impl70 hammerParser_list_of_impl_return
+  hammerParser_list_of_impl_return list_of_impl70;
+#undef RETURN_TYPE_list_of_impl70
+#define RETURN_TYPE_list_of_impl70 hammerParser_list_of_impl_return
 
-    pANTLR3_BASE_TREE WS69_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_list_of_impl;
-    /* Initialize rule variables
-     */
+  pANTLR3_BASE_TREE WS69_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_list_of_impl;
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  WS69 = NULL;
+  list_of_impl68.tree = NULL;
 
-    WS69       = NULL;
-    list_of_impl68.tree = NULL;
+  list_of_impl70.tree = NULL;
 
-    list_of_impl70.tree = NULL;
+  retval.start = LT(1);
 
-    retval.start = LT(1);
-
-    WS69_tree   = NULL;
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_list_of_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule list_of_impl");
-    retval.tree  = NULL;
+  WS69_tree = NULL;
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_list_of_impl = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule list_of_impl");
+  retval.tree = NULL;
+  {
+    // hammer.g:77:9: ( list_of_impl ( ( WS )+ list_of_impl )* -> ^( LIST_OF (
+    // list_of_impl )+ ) )
+    // hammer.g:77:11: list_of_impl ( ( WS )+ list_of_impl )*
     {
-        // hammer.g:77:9: ( list_of_impl ( ( WS )+ list_of_impl )* -> ^( LIST_OF ( list_of_impl )+ ) )
-        // hammer.g:77:11: list_of_impl ( ( WS )+ list_of_impl )*
-        {
-            FOLLOWPUSH(FOLLOW_list_of_impl_in_list_of834);
-            list_of_impl68=list_of_impl(ctx);
+      FOLLOWPUSH(FOLLOW_list_of_impl_in_list_of834);
+      list_of_impl68 = list_of_impl(ctx);
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulelist_ofEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_list_of_impl->add(
+          stream_list_of_impl, list_of_impl68.tree, NULL);
+
+      // hammer.g:77:24: ( ( WS )+ list_of_impl )*
+
+      for (;;) {
+        int alt31 = 2;
+        alt31 = cdfa31.predict(ctx, RECOGNIZER, ISTREAM, &cdfa31);
+        if (HASEXCEPTION()) {
+          goto rulelist_ofEx;
+        }
+        if (HASFAILED()) {
+          return retval;
+        }
+        switch (alt31) {
+          case 1:
+            // hammer.g:77:25: ( WS )+ list_of_impl
             {
+              // hammer.g:77:25: ( WS )+
+              {
+                int cnt30 = 0;
+
+                for (;;) {
+                  int alt30 = 2;
+                  {
+                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                    int LA30_0 = LA(1);
+                    if ((LA30_0 == WS)) {
+                      alt30 = 1;
+                    }
+                  }
+                  switch (alt30) {
+                    case 1:
+                      // hammer.g:77:25: WS
+                      {
+                        WS69 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                          WS, &FOLLOW_WS_in_list_of837);
+                        if (HASEXCEPTION()) {
+                          goto rulelist_ofEx;
+                        }
+                        if (HASFAILED()) {
+                          return retval;
+                        }
+                        if (BACKTRACKING == 0)
+                          stream_WS->add(stream_WS, WS69, NULL);
+                      }
+                      break;
+
+                    default:
+
+                      if (cnt30 >= 1) {
+                        goto loop30;
+                      }
+                      if (BACKTRACKING > 0) {
+                        FAILEDFLAG = ANTLR3_TRUE;
+                        return retval;
+                      }
+                      /* mismatchedSetEx()
+         */
+                      CONSTRUCTEX();
+                      EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+                      EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+                      goto rulelist_ofEx;
+                  }
+                  cnt30++;
+                }
+              loop30:; /* Jump to here if this rule does not match */
+              }
+              FOLLOWPUSH(FOLLOW_list_of_impl_in_list_of840);
+              list_of_impl70 = list_of_impl(ctx);
+
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
                 goto rulelist_ofEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_list_of_impl->add(
+                  stream_list_of_impl, list_of_impl70.tree, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_list_of_impl->add(stream_list_of_impl, list_of_impl68.tree, NULL);
+            break;
 
-            // hammer.g:77:24: ( ( WS )+ list_of_impl )*
+          default:
+            goto loop31; /* break out of the loop */
+            break;
+        }
+      }
+    loop31:; /* Jump out to here if this rule does not match */
 
-            for (;;)
-            {
-                int alt31=2;
-                alt31 = cdfa31.predict(ctx, RECOGNIZER, ISTREAM, &cdfa31);
-                if  (HASEXCEPTION())
-                {
-                    goto rulelist_ofEx;
-                }
-                if (HASFAILED())
-                {
-                    return retval;
-                }
-                switch (alt31)
-                {
-            	case 1:
-            	    // hammer.g:77:25: ( WS )+ list_of_impl
-            	    {
-            	        // hammer.g:77:25: ( WS )+
-            	        {
-            	            int cnt30=0;
+      /* AST REWRITE
+ * elements          : list_of_impl
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            	            for (;;)
-            	            {
-            	                int alt30=2;
-            	        	{
-            	        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	        	    */
-            	        	    int LA30_0 = LA(1);
-            	        	    if ( (LA30_0 == WS) )
-            	        	    {
-            	        	        alt30=1;
-            	        	    }
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-            	        	}
-            	        	switch (alt30)
-            	        	{
-            	        	    case 1:
-            	        	        // hammer.g:77:25: WS
-            	        	        {
-            	        	            WS69 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_list_of837);
-            	        	            if  (HASEXCEPTION())
-            	        	            {
-            	        	                goto rulelist_ofEx;
-            	        	            }
-            	        	            if (HASFAILED())
-            	        	            {
-            	        	                return retval;
-            	        	            }
-            	        	            if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS69, NULL);
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 77:44: -> ^( LIST_OF ( list_of_impl )+ )
+        {
+          // hammer.g:77:47: ^( LIST_OF ( list_of_impl )+ )
+          {
+            pANTLR3_BASE_TREE root_1 =
+              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
+              ADAPTOR,
+              (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
+                ADAPTOR, LIST_OF, (pANTLR3_UINT8) "LIST_OF"),
+              root_1));
 
-
-            	        	        }
-            	        	        break;
-
-            	        	    default:
-
-            	        		if ( cnt30 >= 1 )
-            	        		{
-            	        		    goto loop30;
-            	        		}
-            	        		if (BACKTRACKING>0)
-            	        		{
-            	        		    FAILEDFLAG = ANTLR3_TRUE;
-            	        		    return retval;
-            	        		}
-            	        		/* mismatchedSetEx()
-            	        		 */
-            	        		CONSTRUCTEX();
-            	        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            	        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            	        		goto rulelist_ofEx;
-            	        	}
-            	        	cnt30++;
-            	            }
-            	            loop30: ;	/* Jump to here if this rule does not match */
-            	        }
-            	        FOLLOWPUSH(FOLLOW_list_of_impl_in_list_of840);
-            	        list_of_impl70=list_of_impl(ctx);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulelist_ofEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_list_of_impl->add(stream_list_of_impl, list_of_impl70.tree, NULL);
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop31;	/* break out of the loop */
-            	    break;
-                }
+            if (!(stream_list_of_impl->hasNext(stream_list_of_impl))) {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
+            } else {
+              while (stream_list_of_impl->hasNext(stream_list_of_impl)) {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_1,
+                  stream_list_of_impl->nextTree(stream_list_of_impl));
+              }
+              stream_list_of_impl->reset(stream_list_of_impl);
             }
-            loop31: ; /* Jump out to here if this rule does not match */
-
-
-
-            /* AST REWRITE
-             * elements          : list_of_impl
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 77:44: -> ^( LIST_OF ( list_of_impl )+ )
-            	{
-            	    // hammer.g:77:47: ^( LIST_OF ( list_of_impl )+ )
-            	    {
-            	        pANTLR3_BASE_TREE root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	        root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(ADAPTOR, (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(ADAPTOR, LIST_OF, (pANTLR3_UINT8)"LIST_OF"), root_1));
-
-            	        if ( !(stream_list_of_impl->hasNext(stream_list_of_impl)) )
-            	        {
-            	            CONSTRUCTEX();
-            	            EXCEPTION->type         = ANTLR3_REWRITE_EARLY_EXCEPTION;
-            	            EXCEPTION->name         = (void *)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
-            	        }
-            	        else
-            	        {
-            	        	while ( stream_list_of_impl->hasNext(stream_list_of_impl) ) {
-            	        		ADAPTOR->addChild(ADAPTOR, root_1, stream_list_of_impl->nextTree(stream_list_of_impl));
-
-            	        	}
-            	        	stream_list_of_impl->reset(stream_list_of_impl);
-
-            	        }
-            	        ADAPTOR->addChild(ADAPTOR, root_0, root_1);
-            	    }
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+            ADAPTOR->addChild(ADAPTOR, root_0, root_1);
+          }
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulelist_ofEx; /* Prevent compiler warnings */
+rulelist_ofEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulelist_ofEx; /* Prevent compiler warnings */
-    rulelist_ofEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_WS->free(stream_WS);
+  stream_list_of_impl->free(stream_list_of_impl);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_WS->free(stream_WS);
-    stream_list_of_impl->free(stream_list_of_impl);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end list_of */
 
 /**
  * $ANTLR start list_of_impl
- * hammer.g:78:1: list_of_impl : ( path_like_seq | target_ref | '[' ( WS )* target_decl_or_rule_call_impl ( WS )* ']' -> target_decl_or_rule_call_impl );
+ * hammer.g:78:1: list_of_impl : ( path_like_seq | target_ref | '[' ( WS )*
+ * target_decl_or_rule_call_impl ( WS )* ']' -> target_decl_or_rule_call_impl );
  */
 static hammerParser_list_of_impl_return
 list_of_impl(phammerParser ctx)
 {
-    hammerParser_list_of_impl_return retval;
+  hammerParser_list_of_impl_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    char_literal73;
-    pANTLR3_COMMON_TOKEN    WS74;
-    pANTLR3_COMMON_TOKEN    WS76;
-    pANTLR3_COMMON_TOKEN    char_literal77;
-    hammerParser_path_like_seq_return path_like_seq71;
-    #undef	RETURN_TYPE_path_like_seq71
-    #define	RETURN_TYPE_path_like_seq71 hammerParser_path_like_seq_return
+  pANTLR3_COMMON_TOKEN char_literal73;
+  pANTLR3_COMMON_TOKEN WS74;
+  pANTLR3_COMMON_TOKEN WS76;
+  pANTLR3_COMMON_TOKEN char_literal77;
+  hammerParser_path_like_seq_return path_like_seq71;
+#undef RETURN_TYPE_path_like_seq71
+#define RETURN_TYPE_path_like_seq71 hammerParser_path_like_seq_return
 
-    hammerParser_target_ref_return target_ref72;
-    #undef	RETURN_TYPE_target_ref72
-    #define	RETURN_TYPE_target_ref72 hammerParser_target_ref_return
+  hammerParser_target_ref_return target_ref72;
+#undef RETURN_TYPE_target_ref72
+#define RETURN_TYPE_target_ref72 hammerParser_target_ref_return
 
-    hammerParser_target_decl_or_rule_call_impl_return target_decl_or_rule_call_impl75;
-    #undef	RETURN_TYPE_target_decl_or_rule_call_impl75
-    #define	RETURN_TYPE_target_decl_or_rule_call_impl75 hammerParser_target_decl_or_rule_call_impl_return
+  hammerParser_target_decl_or_rule_call_impl_return
+    target_decl_or_rule_call_impl75;
+#undef RETURN_TYPE_target_decl_or_rule_call_impl75
+#define RETURN_TYPE_target_decl_or_rule_call_impl75                            \
+  hammerParser_target_decl_or_rule_call_impl_return
 
-    pANTLR3_BASE_TREE char_literal73_tree;
-    pANTLR3_BASE_TREE WS74_tree;
-    pANTLR3_BASE_TREE WS76_tree;
-    pANTLR3_BASE_TREE char_literal77_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_35;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_36;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
-    pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_decl_or_rule_call_impl;
-    /* Initialize rule variables
+  pANTLR3_BASE_TREE char_literal73_tree;
+  pANTLR3_BASE_TREE WS74_tree;
+  pANTLR3_BASE_TREE WS76_tree;
+  pANTLR3_BASE_TREE char_literal77_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_35;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_36;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_target_decl_or_rule_call_impl;
+  /* Initialize rule variables
+ */
+
+  root_0 = NULL;
+
+  char_literal73 = NULL;
+  WS74 = NULL;
+  WS76 = NULL;
+  char_literal77 = NULL;
+  path_like_seq71.tree = NULL;
+
+  target_ref72.tree = NULL;
+
+  target_decl_or_rule_call_impl75.tree = NULL;
+
+  retval.start = LT(1);
+
+  char_literal73_tree = NULL;
+  WS74_tree = NULL;
+  WS76_tree = NULL;
+  char_literal77_tree = NULL;
+  stream_35 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 35");
+  stream_36 = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 36");
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  stream_target_decl_or_rule_call_impl = antlr3RewriteRuleSubtreeStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target_decl_or_rule_call_impl");
+  retval.tree = NULL;
+  {
+    {
+      //  hammer.g:78:14: ( path_like_seq | target_ref | '[' ( WS )*
+      //  target_decl_or_rule_call_impl ( WS )* ']' ->
+      //  target_decl_or_rule_call_impl )
+
+      ANTLR3_UINT32 alt34;
+
+      alt34 = 3;
+
+      alt34 = cdfa34.predict(ctx, RECOGNIZER, ISTREAM, &cdfa34);
+      if (HASEXCEPTION()) {
+        goto rulelist_of_implEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      switch (alt34) {
+        case 1:
+          // hammer.g:78:16: path_like_seq
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_path_like_seq_in_list_of_impl858);
+            path_like_seq71 = path_like_seq(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, path_like_seq71.tree);
+          }
+          break;
+        case 2:
+          // hammer.g:79:16: target_ref
+          {
+            root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+
+            FOLLOWPUSH(FOLLOW_target_ref_in_list_of_impl875);
+            target_ref72 = target_ref(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              ADAPTOR->addChild(ADAPTOR, root_0, target_ref72.tree);
+          }
+          break;
+        case 3:
+          // hammer.g:80:16: '[' ( WS )* target_decl_or_rule_call_impl ( WS )*
+          // ']'
+          {
+            char_literal73 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(35, &FOLLOW_35_in_list_of_impl892);
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_35->add(stream_35, char_literal73, NULL);
+
+            // hammer.g:80:20: ( WS )*
+
+            for (;;) {
+              int alt32 = 2;
+              {
+                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
      */
+                int LA32_0 = LA(1);
+                if ((LA32_0 == WS)) {
+                  alt32 = 1;
+                }
+              }
+              switch (alt32) {
+                case 1:
+                  // hammer.g:80:20: WS
+                  {
+                    WS74 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                      WS, &FOLLOW_WS_in_list_of_impl894);
+                    if (HASEXCEPTION()) {
+                      goto rulelist_of_implEx;
+                    }
+                    if (HASFAILED()) {
+                      return retval;
+                    }
+                    if (BACKTRACKING == 0)
+                      stream_WS->add(stream_WS, WS74, NULL);
+                  }
+                  break;
 
-
-    root_0 = NULL;
-
-    char_literal73       = NULL;
-    WS74       = NULL;
-    WS76       = NULL;
-    char_literal77       = NULL;
-    path_like_seq71.tree = NULL;
-
-    target_ref72.tree = NULL;
-
-    target_decl_or_rule_call_impl75.tree = NULL;
-
-    retval.start = LT(1);
-
-    char_literal73_tree   = NULL;
-    WS74_tree   = NULL;
-    WS76_tree   = NULL;
-    char_literal77_tree   = NULL;
-    stream_35   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 35");
-    stream_36   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token 36");
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    stream_target_decl_or_rule_call_impl=antlr3RewriteRuleSubtreeStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"rule target_decl_or_rule_call_impl");
-    retval.tree  = NULL;
-    {
-        {
-            //  hammer.g:78:14: ( path_like_seq | target_ref | '[' ( WS )* target_decl_or_rule_call_impl ( WS )* ']' -> target_decl_or_rule_call_impl )
-
-            ANTLR3_UINT32 alt34;
-
-            alt34=3;
-
-            alt34 = cdfa34.predict(ctx, RECOGNIZER, ISTREAM, &cdfa34);
-            if  (HASEXCEPTION())
-            {
-                goto rulelist_of_implEx;
+                default:
+                  goto loop32; /* break out of the loop */
+                  break;
+              }
             }
-            if (HASFAILED())
-            {
-                return retval;
+          loop32:; /* Jump out to here if this rule does not match */
+
+            FOLLOWPUSH(FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897);
+            target_decl_or_rule_call_impl75 =
+              target_decl_or_rule_call_impl(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
             }
-            switch (alt34)
-            {
-        	case 1:
-        	    // hammer.g:78:16: path_like_seq
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_in_list_of_impl858);
-        	        path_like_seq71=path_like_seq(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, path_like_seq71.tree);
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer.g:79:16: target_ref
-        	    {
-        	        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-
-        	        FOLLOWPUSH(FOLLOW_target_ref_in_list_of_impl875);
-        	        target_ref72=target_ref(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) ADAPTOR->addChild(ADAPTOR, root_0, target_ref72.tree);
-
-        	    }
-        	    break;
-        	case 3:
-        	    // hammer.g:80:16: '[' ( WS )* target_decl_or_rule_call_impl ( WS )* ']'
-        	    {
-        	        char_literal73 = (pANTLR3_COMMON_TOKEN) MATCHT(35, &FOLLOW_35_in_list_of_impl892);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_35->add(stream_35, char_literal73, NULL);
-
-
-        	        // hammer.g:80:20: ( WS )*
-
-        	        for (;;)
-        	        {
-        	            int alt32=2;
-        	            {
-        	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	                */
-        	                int LA32_0 = LA(1);
-        	                if ( (LA32_0 == WS) )
-        	                {
-        	                    alt32=1;
-        	                }
-
-        	            }
-        	            switch (alt32)
-        	            {
-        	        	case 1:
-        	        	    // hammer.g:80:20: WS
-        	        	    {
-        	        	        WS74 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_list_of_impl894);
-        	        	        if  (HASEXCEPTION())
-        	        	        {
-        	        	            goto rulelist_of_implEx;
-        	        	        }
-        	        	        if (HASFAILED())
-        	        	        {
-        	        	            return retval;
-        	        	        }
-        	        	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS74, NULL);
-
-
-        	        	    }
-        	        	    break;
-
-        	        	default:
-        	        	    goto loop32;	/* break out of the loop */
-        	        	    break;
-        	            }
-        	        }
-        	        loop32: ; /* Jump out to here if this rule does not match */
-
-        	        FOLLOWPUSH(FOLLOW_target_decl_or_rule_call_impl_in_list_of_impl897);
-        	        target_decl_or_rule_call_impl75=target_decl_or_rule_call_impl(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_target_decl_or_rule_call_impl->add(stream_target_decl_or_rule_call_impl, target_decl_or_rule_call_impl75.tree, NULL);
-
-        	        // hammer.g:80:54: ( WS )*
-
-        	        for (;;)
-        	        {
-        	            int alt33=2;
-        	            {
-        	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	                */
-        	                int LA33_0 = LA(1);
-        	                if ( (LA33_0 == WS) )
-        	                {
-        	                    alt33=1;
-        	                }
-
-        	            }
-        	            switch (alt33)
-        	            {
-        	        	case 1:
-        	        	    // hammer.g:80:54: WS
-        	        	    {
-        	        	        WS76 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_list_of_impl899);
-        	        	        if  (HASEXCEPTION())
-        	        	        {
-        	        	            goto rulelist_of_implEx;
-        	        	        }
-        	        	        if (HASFAILED())
-        	        	        {
-        	        	            return retval;
-        	        	        }
-        	        	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS76, NULL);
-
-
-        	        	    }
-        	        	    break;
-
-        	        	default:
-        	        	    goto loop33;	/* break out of the loop */
-        	        	    break;
-        	            }
-        	        }
-        	        loop33: ; /* Jump out to here if this rule does not match */
-
-        	        char_literal77 = (pANTLR3_COMMON_TOKEN) MATCHT(36, &FOLLOW_36_in_list_of_impl902);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-        	        if (HASFAILED())
-        	        {
-        	            return retval;
-        	        }
-        	        if ( BACKTRACKING==0 ) stream_36->add(stream_36, char_literal77, NULL);
-
-
-
-        	        /* AST REWRITE
-        	         * elements          : target_decl_or_rule_call_impl
-        	         * token labels      :
-        	         * rule labels       : retval
-        	         * token list labels :
-        	         * rule list labels  :
-        	         */
-        	        if ( BACKTRACKING==0 )
-        	        {
-        	        	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-        	        	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-        	        	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-        	        	retval.tree    = root_0;
-        	        	// 80:62: -> target_decl_or_rule_call_impl
-        	        	{
-        	        	    ADAPTOR->addChild(ADAPTOR, root_0, stream_target_decl_or_rule_call_impl->nextTree(stream_target_decl_or_rule_call_impl));
-
-        	        	}
-
-        	        	retval.tree = root_0; // set result root
-        	        	stream_retval->free(stream_retval);
-
-
-        	        }
-        	    }
-        	    break;
-
+            if (HASFAILED()) {
+              return retval;
             }
-        }
+            if (BACKTRACKING == 0)
+              stream_target_decl_or_rule_call_impl->add(
+                stream_target_decl_or_rule_call_impl,
+                target_decl_or_rule_call_impl75.tree,
+                NULL);
+
+            // hammer.g:80:54: ( WS )*
+
+            for (;;) {
+              int alt33 = 2;
+              {
+                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                int LA33_0 = LA(1);
+                if ((LA33_0 == WS)) {
+                  alt33 = 1;
+                }
+              }
+              switch (alt33) {
+                case 1:
+                  // hammer.g:80:54: WS
+                  {
+                    WS76 = (pANTLR3_COMMON_TOKEN)MATCHT(
+                      WS, &FOLLOW_WS_in_list_of_impl899);
+                    if (HASEXCEPTION()) {
+                      goto rulelist_of_implEx;
+                    }
+                    if (HASFAILED()) {
+                      return retval;
+                    }
+                    if (BACKTRACKING == 0)
+                      stream_WS->add(stream_WS, WS76, NULL);
+                  }
+                  break;
+
+                default:
+                  goto loop33; /* break out of the loop */
+                  break;
+              }
+            }
+          loop33:; /* Jump out to here if this rule does not match */
+
+            char_literal77 =
+              (pANTLR3_COMMON_TOKEN)MATCHT(36, &FOLLOW_36_in_list_of_impl902);
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
+            }
+            if (HASFAILED()) {
+              return retval;
+            }
+            if (BACKTRACKING == 0)
+              stream_36->add(stream_36, char_literal77, NULL);
+
+            /* AST REWRITE
+     * elements          : target_decl_or_rule_call_impl
+     * token labels      :
+     * rule labels       : retval
+     * token list labels :
+     * rule list labels  :
+     */
+            if (BACKTRACKING == 0) {
+              pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
+
+              stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+                ADAPTOR,
+                RECOGNIZER,
+                (pANTLR3_UINT8) "token retval",
+                retval.tree != NULL ? retval.tree : NULL);
+
+              root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              retval.tree = root_0;
+              // 80:62: -> target_decl_or_rule_call_impl
+              {
+                ADAPTOR->addChild(
+                  ADAPTOR,
+                  root_0,
+                  stream_target_decl_or_rule_call_impl->nextTree(
+                    stream_target_decl_or_rule_call_impl));
+              }
+
+              retval.tree = root_0; // set result root
+              stream_retval->free(stream_retval);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulelist_of_implEx; /* Prevent compiler warnings */
+rulelist_of_implEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulelist_of_implEx; /* Prevent compiler warnings */
-    rulelist_of_implEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_35->free(stream_35);
+  stream_36->free(stream_36);
+  stream_WS->free(stream_WS);
+  stream_target_decl_or_rule_call_impl->free(
+    stream_target_decl_or_rule_call_impl);
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    if ( BACKTRACKING==0 ) {
-
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_35->free(stream_35);
-    stream_36->free(stream_36);
-    stream_WS->free(stream_WS);
-    stream_target_decl_or_rule_call_impl->free(stream_target_decl_or_rule_call_impl);
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end list_of_impl */
 
@@ -6866,600 +7144,525 @@ list_of_impl(phammerParser ctx)
 static hammerParser_public_tag_return
 public_tag(phammerParser ctx)
 {
-    hammerParser_public_tag_return retval;
+  hammerParser_public_tag_return retval;
 
-    pANTLR3_BASE_TREE root_0;
+  pANTLR3_BASE_TREE root_0;
 
-    pANTLR3_COMMON_TOKEN    PUBLIC_TAG78;
-    pANTLR3_COMMON_TOKEN    WS79;
+  pANTLR3_COMMON_TOKEN PUBLIC_TAG78;
+  pANTLR3_COMMON_TOKEN WS79;
 
-    pANTLR3_BASE_TREE PUBLIC_TAG78_tree;
-    pANTLR3_BASE_TREE WS79_tree;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_PUBLIC_TAG;
-    pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
+  pANTLR3_BASE_TREE PUBLIC_TAG78_tree;
+  pANTLR3_BASE_TREE WS79_tree;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_PUBLIC_TAG;
+  pANTLR3_REWRITE_RULE_TOKEN_STREAM stream_WS;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  root_0 = NULL;
 
-    root_0 = NULL;
+  PUBLIC_TAG78 = NULL;
+  WS79 = NULL;
+  retval.start = LT(1);
 
-    PUBLIC_TAG78       = NULL;
-    WS79       = NULL;
-    retval.start = LT(1);
-
-    PUBLIC_TAG78_tree   = NULL;
-    WS79_tree   = NULL;
-    stream_PUBLIC_TAG   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token PUBLIC_TAG");
-    stream_WS   = antlr3RewriteRuleTOKENStreamNewAE(ADAPTOR, RECOGNIZER, (pANTLR3_UINT8)"token WS");
-    retval.tree  = NULL;
+  PUBLIC_TAG78_tree = NULL;
+  WS79_tree = NULL;
+  stream_PUBLIC_TAG = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token PUBLIC_TAG");
+  stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
+    ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
+  retval.tree = NULL;
+  {
+    // hammer.g:81:12: ( PUBLIC_TAG ( WS )* -> PUBLIC_TAG )
+    // hammer.g:81:14: PUBLIC_TAG ( WS )*
     {
-        // hammer.g:81:12: ( PUBLIC_TAG ( WS )* -> PUBLIC_TAG )
-        // hammer.g:81:14: PUBLIC_TAG ( WS )*
+      PUBLIC_TAG78 = (pANTLR3_COMMON_TOKEN)MATCHT(
+        PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_public_tag913);
+      if (HASEXCEPTION()) {
+        goto rulepublic_tagEx;
+      }
+      if (HASFAILED()) {
+        return retval;
+      }
+      if (BACKTRACKING == 0)
+        stream_PUBLIC_TAG->add(stream_PUBLIC_TAG, PUBLIC_TAG78, NULL);
+
+      // hammer.g:81:25: ( WS )*
+
+      for (;;) {
+        int alt35 = 2;
         {
-            PUBLIC_TAG78 = (pANTLR3_COMMON_TOKEN) MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_public_tag913);
-            if  (HASEXCEPTION())
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA35_0 = LA(1);
+          if ((LA35_0 == WS)) {
+            alt35 = 1;
+          }
+        }
+        switch (alt35) {
+          case 1:
+            // hammer.g:81:25: WS
             {
+              WS79 =
+                (pANTLR3_COMMON_TOKEN)MATCHT(WS, &FOLLOW_WS_in_public_tag915);
+              if (HASEXCEPTION()) {
                 goto rulepublic_tagEx;
-            }
-            if (HASFAILED())
-            {
+              }
+              if (HASFAILED()) {
                 return retval;
+              }
+              if (BACKTRACKING == 0)
+                stream_WS->add(stream_WS, WS79, NULL);
             }
-            if ( BACKTRACKING==0 ) stream_PUBLIC_TAG->add(stream_PUBLIC_TAG, PUBLIC_TAG78, NULL);
+            break;
 
+          default:
+            goto loop35; /* break out of the loop */
+            break;
+        }
+      }
+    loop35:; /* Jump out to here if this rule does not match */
 
-            // hammer.g:81:25: ( WS )*
+      /* AST REWRITE
+ * elements          : PUBLIC_TAG
+ * token labels      :
+ * rule labels       : retval
+ * token list labels :
+ * rule list labels  :
+ */
+      if (BACKTRACKING == 0) {
+        pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
 
-            for (;;)
-            {
-                int alt35=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA35_0 = LA(1);
-                    if ( (LA35_0 == WS) )
-                    {
-                        alt35=1;
-                    }
+        stream_retval = antlr3RewriteRuleSubtreeStreamNewAEE(
+          ADAPTOR,
+          RECOGNIZER,
+          (pANTLR3_UINT8) "token retval",
+          retval.tree != NULL ? retval.tree : NULL);
 
-                }
-                switch (alt35)
-                {
-            	case 1:
-            	    // hammer.g:81:25: WS
-            	    {
-            	        WS79 = (pANTLR3_COMMON_TOKEN) MATCHT(WS, &FOLLOW_WS_in_public_tag915);
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto rulepublic_tagEx;
-            	        }
-            	        if (HASFAILED())
-            	        {
-            	            return retval;
-            	        }
-            	        if ( BACKTRACKING==0 ) stream_WS->add(stream_WS, WS79, NULL);
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop35;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop35: ; /* Jump out to here if this rule does not match */
-
-
-
-            /* AST REWRITE
-             * elements          : PUBLIC_TAG
-             * token labels      :
-             * rule labels       : retval
-             * token list labels :
-             * rule list labels  :
-             */
-            if ( BACKTRACKING==0 )
-            {
-            	pANTLR3_REWRITE_RULE_SUBTREE_STREAM stream_retval;
-
-            	stream_retval=antlr3RewriteRuleSubtreeStreamNewAEE(ADAPTOR,  RECOGNIZER, (pANTLR3_UINT8)"token retval", retval.tree != NULL ? retval.tree : NULL);
-
-            	root_0			    = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
-            	retval.tree    = root_0;
-            	// 81:29: -> PUBLIC_TAG
-            	{
-            	    ADAPTOR->addChild(ADAPTOR, root_0, stream_PUBLIC_TAG->nextNode(stream_PUBLIC_TAG));
-
-            	}
-
-            	retval.tree = root_0; // set result root
-            	stream_retval->free(stream_retval);
-
-
-            }
+        root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+        retval.tree = root_0;
+        // 81:29: -> PUBLIC_TAG
+        {
+          ADAPTOR->addChild(
+            ADAPTOR, root_0, stream_PUBLIC_TAG->nextNode(stream_PUBLIC_TAG));
         }
 
+        retval.tree = root_0; // set result root
+        stream_retval->free(stream_retval);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulepublic_tagEx; /* Prevent compiler warnings */
+rulepublic_tagEx:;
+  retval.stop = LT(-1);
 
-    // This is where rules clean up and exit
-    //
-    goto rulepublic_tagEx; /* Prevent compiler warnings */
-    rulepublic_tagEx: ;
+  if (BACKTRACKING == 0) {
     retval.stop = LT(-1);
+    retval.tree =
+      (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
+    ADAPTOR->setTokenBoundaries(
+      ADAPTOR, retval.tree, retval.start, retval.stop);
+  }
+  stream_PUBLIC_TAG->free(stream_PUBLIC_TAG);
+  stream_WS->free(stream_WS);
 
-    if ( BACKTRACKING==0 ) {
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+    retval.tree = (pANTLR3_BASE_TREE)(
+      ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
+  }
 
-    	retval.stop = LT(-1);
-    	retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->rulePostProcessing(ADAPTOR, root_0));
-    	ADAPTOR->setTokenBoundaries(ADAPTOR, retval.tree, retval.start, retval.stop);
-    }stream_PUBLIC_TAG->free(stream_PUBLIC_TAG);
-    stream_WS->free(stream_WS);
-
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-        retval.tree = (pANTLR3_BASE_TREE)(ADAPTOR->errorNode(ADAPTOR, INPUT, retval.start, LT(-1), EXCEPTION));
-    }
-
-    return retval;
+  return retval;
 }
 /* $ANTLR end public_tag */
 
 // $ANTLR start synpred1_hammer
-static void synpred1_hammer_fragment(phammerParser ctx )
+static void
+synpred1_hammer_fragment(phammerParser ctx)
 {
-    // hammer.g:35:13: ( ( WS )+ ';' )
-    // hammer.g:35:14: ( WS )+ ';'
+  // hammer.g:35:13: ( ( WS )+ ';' )
+  // hammer.g:35:14: ( WS )+ ';'
+  {
+    // hammer.g:35:14: ( WS )+
     {
-        // hammer.g:35:14: ( WS )+
+      int cnt36 = 0;
+
+      for (;;) {
+        int alt36 = 2;
         {
-            int cnt36=0;
-
-            for (;;)
-            {
-                int alt36=2;
-        	{
-        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	    */
-        	    int LA36_0 = LA(1);
-        	    if ( (LA36_0 == WS) )
-        	    {
-        	        alt36=1;
-        	    }
-
-        	}
-        	switch (alt36)
-        	{
-        	    case 1:
-        	        // hammer.g:35:14: WS
-        	        {
-        	             MATCHT(WS, &FOLLOW_WS_in_synpred1_hammer174);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto rulesynpred1_hammerEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return ;
-        	            }
-
-        	        }
-        	        break;
-
-        	    default:
-
-        		if ( cnt36 >= 1 )
-        		{
-        		    goto loop36;
-        		}
-        		if (BACKTRACKING>0)
-        		{
-        		    FAILEDFLAG = ANTLR3_TRUE;
-        		    return ;
-        		}
-        		/* mismatchedSetEx()
-        		 */
-        		CONSTRUCTEX();
-        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        		goto rulesynpred1_hammerEx;
-        	}
-        	cnt36++;
-            }
-            loop36: ;	/* Jump to here if this rule does not match */
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA36_0 = LA(1);
+          if ((LA36_0 == WS)) {
+            alt36 = 1;
+          }
         }
-         MATCHT(EXP_END, &FOLLOW_EXP_END_in_synpred1_hammer177);
-        if  (HASEXCEPTION())
-        {
+        switch (alt36) {
+          case 1:
+            // hammer.g:35:14: WS
+            {
+              MATCHT(WS, &FOLLOW_WS_in_synpred1_hammer174);
+              if (HASEXCEPTION()) {
+                goto rulesynpred1_hammerEx;
+              }
+              if (HASFAILED()) {
+                return;
+              }
+            }
+            break;
+
+          default:
+
+            if (cnt36 >= 1) {
+              goto loop36;
+            }
+            if (BACKTRACKING > 0) {
+              FAILEDFLAG = ANTLR3_TRUE;
+              return;
+            }
+            /* mismatchedSetEx()
+     */
+            CONSTRUCTEX();
+            EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+            EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
             goto rulesynpred1_hammerEx;
         }
-        if (HASFAILED())
-        {
-            return ;
-        }
-
+        cnt36++;
+      }
+    loop36:; /* Jump to here if this rule does not match */
     }
+    MATCHT(EXP_END, &FOLLOW_EXP_END_in_synpred1_hammer177);
+    if (HASEXCEPTION()) {
+      goto rulesynpred1_hammerEx;
+    }
+    if (HASFAILED()) {
+      return;
+    }
+  }
 
-// This is where rules clean up and exit
-//
-goto rulesynpred1_hammerEx; /* Prevent compiler warnings */
-rulesynpred1_hammerEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto rulesynpred1_hammerEx; /* Prevent compiler warnings */
+rulesynpred1_hammerEx:;
 }
 // $ANTLR end synpred1_hammer
 
 // $ANTLR start synpred2_hammer
-static void synpred2_hammer_fragment(phammerParser ctx )
+static void
+synpred2_hammer_fragment(phammerParser ctx)
 {
-    // hammer.g:46:30: ( ( WS )+ ':' )
-    // hammer.g:46:31: ( WS )+ ':'
+  // hammer.g:46:30: ( ( WS )+ ':' )
+  // hammer.g:46:31: ( WS )+ ':'
+  {
+    // hammer.g:46:31: ( WS )+
     {
-        // hammer.g:46:31: ( WS )+
+      int cnt37 = 0;
+
+      for (;;) {
+        int alt37 = 2;
         {
-            int cnt37=0;
-
-            for (;;)
-            {
-                int alt37=2;
-        	{
-        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	    */
-        	    int LA37_0 = LA(1);
-        	    if ( (LA37_0 == WS) )
-        	    {
-        	        alt37=1;
-        	    }
-
-        	}
-        	switch (alt37)
-        	{
-        	    case 1:
-        	        // hammer.g:46:31: WS
-        	        {
-        	             MATCHT(WS, &FOLLOW_WS_in_synpred2_hammer308);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto rulesynpred2_hammerEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return ;
-        	            }
-
-        	        }
-        	        break;
-
-        	    default:
-
-        		if ( cnt37 >= 1 )
-        		{
-        		    goto loop37;
-        		}
-        		if (BACKTRACKING>0)
-        		{
-        		    FAILEDFLAG = ANTLR3_TRUE;
-        		    return ;
-        		}
-        		/* mismatchedSetEx()
-        		 */
-        		CONSTRUCTEX();
-        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        		goto rulesynpred2_hammerEx;
-        	}
-        	cnt37++;
-            }
-            loop37: ;	/* Jump to here if this rule does not match */
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA37_0 = LA(1);
+          if ((LA37_0 == WS)) {
+            alt37 = 1;
+          }
         }
-         MATCHT(COLON, &FOLLOW_COLON_in_synpred2_hammer311);
-        if  (HASEXCEPTION())
-        {
+        switch (alt37) {
+          case 1:
+            // hammer.g:46:31: WS
+            {
+              MATCHT(WS, &FOLLOW_WS_in_synpred2_hammer308);
+              if (HASEXCEPTION()) {
+                goto rulesynpred2_hammerEx;
+              }
+              if (HASFAILED()) {
+                return;
+              }
+            }
+            break;
+
+          default:
+
+            if (cnt37 >= 1) {
+              goto loop37;
+            }
+            if (BACKTRACKING > 0) {
+              FAILEDFLAG = ANTLR3_TRUE;
+              return;
+            }
+            /* mismatchedSetEx()
+     */
+            CONSTRUCTEX();
+            EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+            EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
             goto rulesynpred2_hammerEx;
         }
-        if (HASFAILED())
-        {
-            return ;
-        }
-
+        cnt37++;
+      }
+    loop37:; /* Jump to here if this rule does not match */
     }
+    MATCHT(COLON, &FOLLOW_COLON_in_synpred2_hammer311);
+    if (HASEXCEPTION()) {
+      goto rulesynpred2_hammerEx;
+    }
+    if (HASFAILED()) {
+      return;
+    }
+  }
 
-// This is where rules clean up and exit
-//
-goto rulesynpred2_hammerEx; /* Prevent compiler warnings */
-rulesynpred2_hammerEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto rulesynpred2_hammerEx; /* Prevent compiler warnings */
+rulesynpred2_hammerEx:;
 }
 // $ANTLR end synpred2_hammer
 
 // $ANTLR start synpred3_hammer
-static void synpred3_hammer_fragment(phammerParser ctx )
+static void
+synpred3_hammer_fragment(phammerParser ctx)
 {
-    // hammer.g:47:7: ( ( WS )+ ';' )
-    // hammer.g:47:8: ( WS )+ ';'
+  // hammer.g:47:7: ( ( WS )+ ';' )
+  // hammer.g:47:8: ( WS )+ ';'
+  {
+    // hammer.g:47:8: ( WS )+
     {
-        // hammer.g:47:8: ( WS )+
+      int cnt38 = 0;
+
+      for (;;) {
+        int alt38 = 2;
         {
-            int cnt38=0;
-
-            for (;;)
-            {
-                int alt38=2;
-        	{
-        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	    */
-        	    int LA38_0 = LA(1);
-        	    if ( (LA38_0 == WS) )
-        	    {
-        	        alt38=1;
-        	    }
-
-        	}
-        	switch (alt38)
-        	{
-        	    case 1:
-        	        // hammer.g:47:8: WS
-        	        {
-        	             MATCHT(WS, &FOLLOW_WS_in_synpred3_hammer326);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto rulesynpred3_hammerEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return ;
-        	            }
-
-        	        }
-        	        break;
-
-        	    default:
-
-        		if ( cnt38 >= 1 )
-        		{
-        		    goto loop38;
-        		}
-        		if (BACKTRACKING>0)
-        		{
-        		    FAILEDFLAG = ANTLR3_TRUE;
-        		    return ;
-        		}
-        		/* mismatchedSetEx()
-        		 */
-        		CONSTRUCTEX();
-        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        		goto rulesynpred3_hammerEx;
-        	}
-        	cnt38++;
-            }
-            loop38: ;	/* Jump to here if this rule does not match */
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA38_0 = LA(1);
+          if ((LA38_0 == WS)) {
+            alt38 = 1;
+          }
         }
-         MATCHT(EXP_END, &FOLLOW_EXP_END_in_synpred3_hammer329);
-        if  (HASEXCEPTION())
-        {
+        switch (alt38) {
+          case 1:
+            // hammer.g:47:8: WS
+            {
+              MATCHT(WS, &FOLLOW_WS_in_synpred3_hammer326);
+              if (HASEXCEPTION()) {
+                goto rulesynpred3_hammerEx;
+              }
+              if (HASFAILED()) {
+                return;
+              }
+            }
+            break;
+
+          default:
+
+            if (cnt38 >= 1) {
+              goto loop38;
+            }
+            if (BACKTRACKING > 0) {
+              FAILEDFLAG = ANTLR3_TRUE;
+              return;
+            }
+            /* mismatchedSetEx()
+     */
+            CONSTRUCTEX();
+            EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+            EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
             goto rulesynpred3_hammerEx;
         }
-        if (HASFAILED())
-        {
-            return ;
-        }
-
+        cnt38++;
+      }
+    loop38:; /* Jump to here if this rule does not match */
     }
+    MATCHT(EXP_END, &FOLLOW_EXP_END_in_synpred3_hammer329);
+    if (HASEXCEPTION()) {
+      goto rulesynpred3_hammerEx;
+    }
+    if (HASFAILED()) {
+      return;
+    }
+  }
 
-// This is where rules clean up and exit
-//
-goto rulesynpred3_hammerEx; /* Prevent compiler warnings */
-rulesynpred3_hammerEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto rulesynpred3_hammerEx; /* Prevent compiler warnings */
+rulesynpred3_hammerEx:;
 }
 // $ANTLR end synpred3_hammer
 
 // $ANTLR start synpred4_hammer
-static void synpred4_hammer_fragment(phammerParser ctx )
+static void
+synpred4_hammer_fragment(phammerParser ctx)
 {
-    // hammer.g:51:12: ( ( WS )+ ':' )
-    // hammer.g:51:13: ( WS )+ ':'
+  // hammer.g:51:12: ( ( WS )+ ':' )
+  // hammer.g:51:13: ( WS )+ ':'
+  {
+    // hammer.g:51:13: ( WS )+
     {
-        // hammer.g:51:13: ( WS )+
+      int cnt39 = 0;
+
+      for (;;) {
+        int alt39 = 2;
         {
-            int cnt39=0;
-
-            for (;;)
-            {
-                int alt39=2;
-        	{
-        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	    */
-        	    int LA39_0 = LA(1);
-        	    if ( (LA39_0 == WS) )
-        	    {
-        	        alt39=1;
-        	    }
-
-        	}
-        	switch (alt39)
-        	{
-        	    case 1:
-        	        // hammer.g:51:13: WS
-        	        {
-        	             MATCHT(WS, &FOLLOW_WS_in_synpred4_hammer370);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto rulesynpred4_hammerEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return ;
-        	            }
-
-        	        }
-        	        break;
-
-        	    default:
-
-        		if ( cnt39 >= 1 )
-        		{
-        		    goto loop39;
-        		}
-        		if (BACKTRACKING>0)
-        		{
-        		    FAILEDFLAG = ANTLR3_TRUE;
-        		    return ;
-        		}
-        		/* mismatchedSetEx()
-        		 */
-        		CONSTRUCTEX();
-        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        		goto rulesynpred4_hammerEx;
-        	}
-        	cnt39++;
-            }
-            loop39: ;	/* Jump to here if this rule does not match */
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA39_0 = LA(1);
+          if ((LA39_0 == WS)) {
+            alt39 = 1;
+          }
         }
-         MATCHT(COLON, &FOLLOW_COLON_in_synpred4_hammer373);
-        if  (HASEXCEPTION())
-        {
+        switch (alt39) {
+          case 1:
+            // hammer.g:51:13: WS
+            {
+              MATCHT(WS, &FOLLOW_WS_in_synpred4_hammer370);
+              if (HASEXCEPTION()) {
+                goto rulesynpred4_hammerEx;
+              }
+              if (HASFAILED()) {
+                return;
+              }
+            }
+            break;
+
+          default:
+
+            if (cnt39 >= 1) {
+              goto loop39;
+            }
+            if (BACKTRACKING > 0) {
+              FAILEDFLAG = ANTLR3_TRUE;
+              return;
+            }
+            /* mismatchedSetEx()
+     */
+            CONSTRUCTEX();
+            EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+            EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
             goto rulesynpred4_hammerEx;
         }
-        if (HASFAILED())
-        {
-            return ;
-        }
-
+        cnt39++;
+      }
+    loop39:; /* Jump to here if this rule does not match */
     }
+    MATCHT(COLON, &FOLLOW_COLON_in_synpred4_hammer373);
+    if (HASEXCEPTION()) {
+      goto rulesynpred4_hammerEx;
+    }
+    if (HASFAILED()) {
+      return;
+    }
+  }
 
-// This is where rules clean up and exit
-//
-goto rulesynpred4_hammerEx; /* Prevent compiler warnings */
-rulesynpred4_hammerEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto rulesynpred4_hammerEx; /* Prevent compiler warnings */
+rulesynpred4_hammerEx:;
 }
 // $ANTLR end synpred4_hammer
 
 // $ANTLR start synpred5_hammer
-static void synpred5_hammer_fragment(phammerParser ctx )
+static void
+synpred5_hammer_fragment(phammerParser ctx)
 {
-    // hammer.g:52:5: ( ( WS )+ ';' )
-    // hammer.g:52:6: ( WS )+ ';'
+  // hammer.g:52:5: ( ( WS )+ ';' )
+  // hammer.g:52:6: ( WS )+ ';'
+  {
+    // hammer.g:52:6: ( WS )+
     {
-        // hammer.g:52:6: ( WS )+
+      int cnt40 = 0;
+
+      for (;;) {
+        int alt40 = 2;
         {
-            int cnt40=0;
-
-            for (;;)
-            {
-                int alt40=2;
-        	{
-        	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	    */
-        	    int LA40_0 = LA(1);
-        	    if ( (LA40_0 == WS) )
-        	    {
-        	        alt40=1;
-        	    }
-
-        	}
-        	switch (alt40)
-        	{
-        	    case 1:
-        	        // hammer.g:52:6: WS
-        	        {
-        	             MATCHT(WS, &FOLLOW_WS_in_synpred5_hammer386);
-        	            if  (HASEXCEPTION())
-        	            {
-        	                goto rulesynpred5_hammerEx;
-        	            }
-        	            if (HASFAILED())
-        	            {
-        	                return ;
-        	            }
-
-        	        }
-        	        break;
-
-        	    default:
-
-        		if ( cnt40 >= 1 )
-        		{
-        		    goto loop40;
-        		}
-        		if (BACKTRACKING>0)
-        		{
-        		    FAILEDFLAG = ANTLR3_TRUE;
-        		    return ;
-        		}
-        		/* mismatchedSetEx()
-        		 */
-        		CONSTRUCTEX();
-        		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-        		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-        		goto rulesynpred5_hammerEx;
-        	}
-        	cnt40++;
-            }
-            loop40: ;	/* Jump to here if this rule does not match */
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA40_0 = LA(1);
+          if ((LA40_0 == WS)) {
+            alt40 = 1;
+          }
         }
-         MATCHT(EXP_END, &FOLLOW_EXP_END_in_synpred5_hammer389);
-        if  (HASEXCEPTION())
-        {
+        switch (alt40) {
+          case 1:
+            // hammer.g:52:6: WS
+            {
+              MATCHT(WS, &FOLLOW_WS_in_synpred5_hammer386);
+              if (HASEXCEPTION()) {
+                goto rulesynpred5_hammerEx;
+              }
+              if (HASFAILED()) {
+                return;
+              }
+            }
+            break;
+
+          default:
+
+            if (cnt40 >= 1) {
+              goto loop40;
+            }
+            if (BACKTRACKING > 0) {
+              FAILEDFLAG = ANTLR3_TRUE;
+              return;
+            }
+            /* mismatchedSetEx()
+     */
+            CONSTRUCTEX();
+            EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+            EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
             goto rulesynpred5_hammerEx;
         }
-        if (HASFAILED())
-        {
-            return ;
-        }
-
+        cnt40++;
+      }
+    loop40:; /* Jump to here if this rule does not match */
     }
+    MATCHT(EXP_END, &FOLLOW_EXP_END_in_synpred5_hammer389);
+    if (HASEXCEPTION()) {
+      goto rulesynpred5_hammerEx;
+    }
+    if (HASFAILED()) {
+      return;
+    }
+  }
 
-// This is where rules clean up and exit
-//
-goto rulesynpred5_hammerEx; /* Prevent compiler warnings */
-rulesynpred5_hammerEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto rulesynpred5_hammerEx; /* Prevent compiler warnings */
+rulesynpred5_hammerEx:;
 }
 // $ANTLR end synpred5_hammer
 
 // $ANTLR start synpred6_hammer
-static void synpred6_hammer_fragment(phammerParser ctx )
+static void
+synpred6_hammer_fragment(phammerParser ctx)
 {
-    // hammer.g:63:20: ( conditional_requirement )
-    // hammer.g:63:21: conditional_requirement
-    {
-        FOLLOWPUSH(FOLLOW_conditional_requirement_in_synpred6_hammer579);
-        conditional_requirement(ctx);
+  // hammer.g:63:20: ( conditional_requirement )
+  // hammer.g:63:21: conditional_requirement
+  {
+    FOLLOWPUSH(FOLLOW_conditional_requirement_in_synpred6_hammer579);
+    conditional_requirement(ctx);
 
-        FOLLOWPOP();
-        if  (HASEXCEPTION())
-        {
-            goto rulesynpred6_hammerEx;
-        }
-        if (HASFAILED())
-        {
-            return ;
-        }
-
+    FOLLOWPOP();
+    if (HASEXCEPTION()) {
+      goto rulesynpred6_hammerEx;
     }
+    if (HASFAILED()) {
+      return;
+    }
+  }
 
-// This is where rules clean up and exit
-//
-goto rulesynpred6_hammerEx; /* Prevent compiler warnings */
-rulesynpred6_hammerEx: ;
-
+  // This is where rules clean up and exit
+  //
+  goto rulesynpred6_hammerEx; /* Prevent compiler warnings */
+rulesynpred6_hammerEx:;
 }
 // $ANTLR end synpred6_hammer
 /* End of parsing rules
@@ -7469,99 +7672,100 @@ rulesynpred6_hammerEx: ;
 /* ==============================================
  * Syntactic predicates
  */
-static ANTLR3_BOOLEAN synpred6_hammer(phammerParser ctx)
+static ANTLR3_BOOLEAN
+synpred6_hammer(phammerParser ctx)
 {
-    ANTLR3_MARKER   start;
-    ANTLR3_BOOLEAN  success;
+  ANTLR3_MARKER start;
+  ANTLR3_BOOLEAN success;
 
-    BACKTRACKING++;
-    start	= MARK();
-    synpred6_hammer_fragment(ctx);	    // can never throw exception
-    success	= !(FAILEDFLAG);
-    REWIND(start);
-    BACKTRACKING--;
-    FAILEDFLAG	= ANTLR3_FALSE;
-    return success;
+  BACKTRACKING++;
+  start = MARK();
+  synpred6_hammer_fragment(ctx); // can never throw exception
+  success = !(FAILEDFLAG);
+  REWIND(start);
+  BACKTRACKING--;
+  FAILEDFLAG = ANTLR3_FALSE;
+  return success;
 }
-static ANTLR3_BOOLEAN synpred5_hammer(phammerParser ctx)
+static ANTLR3_BOOLEAN
+synpred5_hammer(phammerParser ctx)
 {
-    ANTLR3_MARKER   start;
-    ANTLR3_BOOLEAN  success;
+  ANTLR3_MARKER start;
+  ANTLR3_BOOLEAN success;
 
-    BACKTRACKING++;
-    start	= MARK();
-    synpred5_hammer_fragment(ctx);	    // can never throw exception
-    success	= !(FAILEDFLAG);
-    REWIND(start);
-    BACKTRACKING--;
-    FAILEDFLAG	= ANTLR3_FALSE;
-    return success;
+  BACKTRACKING++;
+  start = MARK();
+  synpred5_hammer_fragment(ctx); // can never throw exception
+  success = !(FAILEDFLAG);
+  REWIND(start);
+  BACKTRACKING--;
+  FAILEDFLAG = ANTLR3_FALSE;
+  return success;
 }
-static ANTLR3_BOOLEAN synpred1_hammer(phammerParser ctx)
+static ANTLR3_BOOLEAN
+synpred1_hammer(phammerParser ctx)
 {
-    ANTLR3_MARKER   start;
-    ANTLR3_BOOLEAN  success;
+  ANTLR3_MARKER start;
+  ANTLR3_BOOLEAN success;
 
-    BACKTRACKING++;
-    start	= MARK();
-    synpred1_hammer_fragment(ctx);	    // can never throw exception
-    success	= !(FAILEDFLAG);
-    REWIND(start);
-    BACKTRACKING--;
-    FAILEDFLAG	= ANTLR3_FALSE;
-    return success;
+  BACKTRACKING++;
+  start = MARK();
+  synpred1_hammer_fragment(ctx); // can never throw exception
+  success = !(FAILEDFLAG);
+  REWIND(start);
+  BACKTRACKING--;
+  FAILEDFLAG = ANTLR3_FALSE;
+  return success;
 }
-static ANTLR3_BOOLEAN synpred2_hammer(phammerParser ctx)
+static ANTLR3_BOOLEAN
+synpred2_hammer(phammerParser ctx)
 {
-    ANTLR3_MARKER   start;
-    ANTLR3_BOOLEAN  success;
+  ANTLR3_MARKER start;
+  ANTLR3_BOOLEAN success;
 
-    BACKTRACKING++;
-    start	= MARK();
-    synpred2_hammer_fragment(ctx);	    // can never throw exception
-    success	= !(FAILEDFLAG);
-    REWIND(start);
-    BACKTRACKING--;
-    FAILEDFLAG	= ANTLR3_FALSE;
-    return success;
+  BACKTRACKING++;
+  start = MARK();
+  synpred2_hammer_fragment(ctx); // can never throw exception
+  success = !(FAILEDFLAG);
+  REWIND(start);
+  BACKTRACKING--;
+  FAILEDFLAG = ANTLR3_FALSE;
+  return success;
 }
-static ANTLR3_BOOLEAN synpred3_hammer(phammerParser ctx)
+static ANTLR3_BOOLEAN
+synpred3_hammer(phammerParser ctx)
 {
-    ANTLR3_MARKER   start;
-    ANTLR3_BOOLEAN  success;
+  ANTLR3_MARKER start;
+  ANTLR3_BOOLEAN success;
 
-    BACKTRACKING++;
-    start	= MARK();
-    synpred3_hammer_fragment(ctx);	    // can never throw exception
-    success	= !(FAILEDFLAG);
-    REWIND(start);
-    BACKTRACKING--;
-    FAILEDFLAG	= ANTLR3_FALSE;
-    return success;
+  BACKTRACKING++;
+  start = MARK();
+  synpred3_hammer_fragment(ctx); // can never throw exception
+  success = !(FAILEDFLAG);
+  REWIND(start);
+  BACKTRACKING--;
+  FAILEDFLAG = ANTLR3_FALSE;
+  return success;
 }
-static ANTLR3_BOOLEAN synpred4_hammer(phammerParser ctx)
+static ANTLR3_BOOLEAN
+synpred4_hammer(phammerParser ctx)
 {
-    ANTLR3_MARKER   start;
-    ANTLR3_BOOLEAN  success;
+  ANTLR3_MARKER start;
+  ANTLR3_BOOLEAN success;
 
-    BACKTRACKING++;
-    start	= MARK();
-    synpred4_hammer_fragment(ctx);	    // can never throw exception
-    success	= !(FAILEDFLAG);
-    REWIND(start);
-    BACKTRACKING--;
-    FAILEDFLAG	= ANTLR3_FALSE;
-    return success;
+  BACKTRACKING++;
+  start = MARK();
+  synpred4_hammer_fragment(ctx); // can never throw exception
+  success = !(FAILEDFLAG);
+  REWIND(start);
+  BACKTRACKING--;
+  FAILEDFLAG = ANTLR3_FALSE;
+  return success;
 }
 
 /* End of syntactic predicates
  * ==============================================
  */
-
-
-
-
-
 
 /* End of code
  * =============================================================================

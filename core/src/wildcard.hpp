@@ -1,51 +1,48 @@
 #ifndef BOOST_WILDCARD_HPP
 #define BOOST_WILDCARD_HPP
 
-#include <string>
-#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/shared_ptr.hpp>
+#include <string>
 
-namespace boost{
+namespace boost {
 
 class dos_wildcard_implementation;
 
 class dos_wildcard
 {
 public:
-   // construct:
-   dos_wildcard();
-   dos_wildcard(const char* wild, bool ignore_case = true);
-   dos_wildcard(const std::string& wild, bool ignore_case = true);
-   dos_wildcard(const dos_wildcard& wild);
-   ~dos_wildcard();
+  // construct:
+  dos_wildcard();
+  dos_wildcard(const char* wild, bool ignore_case = true);
+  dos_wildcard(const std::string& wild, bool ignore_case = true);
+  dos_wildcard(const dos_wildcard& wild);
+  ~dos_wildcard();
 
-   // assign:
-   dos_wildcard& operator=(const char* wild);
-   dos_wildcard& operator=(const std::string& wild);
-   dos_wildcard& operator=(const dos_wildcard& wild);
-   dos_wildcard& assign(const char* wild, bool ignore_case = true);
-   dos_wildcard& assign(const std::string& wild, bool ignore_case = true);
+  // assign:
+  dos_wildcard& operator=(const char* wild);
+  dos_wildcard& operator=(const std::string& wild);
+  dos_wildcard& operator=(const dos_wildcard& wild);
+  dos_wildcard& assign(const char* wild, bool ignore_case = true);
+  dos_wildcard& assign(const std::string& wild, bool ignore_case = true);
 
-   // match:
-   bool match(const char* text) const;
-   bool match(const std::string& text) const;
-   bool match(const filesystem::path& path) const;
+  // match:
+  bool match(const char* text) const;
+  bool match(const std::string& text) const;
+  bool match(const filesystem::path& path) const;
 
-   // predicates:
-   bool operator()(const char* text);
-   bool operator()(const std::string& text);
-   bool operator()(const filesystem::path& text);
+  // predicates:
+  bool operator()(const char* text);
+  bool operator()(const std::string& text);
+  bool operator()(const filesystem::path& text);
 
 private:
-   void do_assign(const char* p1, const char* p2, bool ignore_case);
-   bool do_match(const char* p1, const char*p2) const;
-   void cow();
+  void do_assign(const char* p1, const char* p2, bool ignore_case);
+  bool do_match(const char* p1, const char* p2) const;
+  void cow();
 
-   boost::shared_ptr<dos_wildcard_implementation> m_pimpl;
-
+  boost::shared_ptr<dos_wildcard_implementation> m_pimpl;
 };
-
 }
 
 #endif
-

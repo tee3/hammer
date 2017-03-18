@@ -6,7 +6,8 @@
  *     -           for the tree parser : hammer_semaTreeParser *
  * Editing it, at least manually, is not wise.
  *
- * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
+ * C language generator and runtime by Jim Idle,
+ * jimi|hereisanat|idle|dotgoeshere|ws.
  *
  *
 */
@@ -15,15 +16,15 @@
  * This is what the grammar programmer asked us to put at the top of every file.
  */
 
-
-#include <hammer/sema/actions.h>
-#include <hammer/parscore/identifier.h>
-#include <hammer/ast/requirement_set.h>
-#include <hammer/ast/requirement.h>
 #include <hammer/ast/path_like_seq.h>
+#include <hammer/ast/requirement.h>
+#include <hammer/ast/requirement_set.h>
+#include <hammer/parscore/identifier.h>
+#include <hammer/sema/actions.h>
 
 #define SEMA static_cast<const hammer::sema::actions*>(PARSER->super)
-#define DECLARE_TYPE(Type, name) Type name ( Type ::allocator_type{SEMA->get_context()});
+#define DECLARE_TYPE(Type, name)                                               \
+  Type name(Type::allocator_type{ SEMA->get_context() });
 
 /* End of Header action.
  * =============================================================================
@@ -31,217 +32,249 @@
 /* -----------------------------------------
  * Include the ANTLR3 generated header file.
  */
-#include    "hammer_sema.h"
+#include "hammer_sema.h"
 /* ----------------------------------------- */
-
-
-
-
 
 /* MACROS that hide the C interface implementations from the
  * generated code, which makes it a little more understandable to the human eye.
- * I am very much against using C pre-processor macros for function calls and bits
+ * I am very much against using C pre-processor macros for function calls and
+ * bits
  * of code as you cannot see what is happening when single stepping in debuggers
- * and so on. The exception (in my book at least) is for generated code, where you are
- * not maintaining it, but may wish to read and understand it. If you single step it, you know that input()
- * hides some indirect calls, but is always referring to the input stream. This is
- * probably more readable than ctx->input->istream->input(snarfle0->blarg) and allows me to rejig
+ * and so on. The exception (in my book at least) is for generated code, where
+ * you are
+ * not maintaining it, but may wish to read and understand it. If you single
+ * step it, you know that input()
+ * hides some indirect calls, but is always referring to the input stream. This
+ * is
+ * probably more readable than ctx->input->istream->input(snarfle0->blarg) and
+ * allows me to rejig
  * the runtime interfaces without changing the generated code too often, without
- * confusing the reader of the generated output, who may not wish to know the gory
+ * confusing the reader of the generated output, who may not wish to know the
+ * gory
  * details of the interface inheritance.
  */
 
-#define		CTX	ctx
+#define CTX ctx
 
 /* Aids in accessing scopes for grammar programmers
  */
-#undef	SCOPE_TYPE
-#undef	SCOPE_STACK
-#undef	SCOPE_TOP
-#define	SCOPE_TYPE(scope)   phammer_sema_##scope##_SCOPE
-#define SCOPE_STACK(scope)  phammer_sema_##scope##Stack
-#define	SCOPE_TOP(scope)    ctx->phammer_sema_##scope##Top
-#define	SCOPE_SIZE(scope)			(ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
-#define SCOPE_INSTANCE(scope, i)	(ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope),i))
+#undef SCOPE_TYPE
+#undef SCOPE_STACK
+#undef SCOPE_TOP
+#define SCOPE_TYPE(scope) phammer_sema_##scope##_SCOPE
+#define SCOPE_STACK(scope) phammer_sema_##scope##Stack
+#define SCOPE_TOP(scope) ctx->phammer_sema_##scope##Top
+#define SCOPE_SIZE(scope)                                                      \
+  (ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
+#define SCOPE_INSTANCE(scope, i)                                               \
+  (ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope), i))
 
 /* Macros for accessing things in the parser
  */
 
-#undef	    PARSER
-#undef	    RECOGNIZER
-#undef	    HAVEPARSEDRULE
-#undef	    INPUT
-#undef	    STRSTREAM
-#undef	    HASEXCEPTION
-#undef	    EXCEPTION
-#undef	    MATCHT
-#undef	    MATCHANYT
-#undef	    FOLLOWSTACK
-#undef	    FOLLOWPUSH
-#undef	    FOLLOWPOP
-#undef	    PRECOVER
-#undef	    PREPORTERROR
-#undef	    LA
-#undef	    LT
-#undef	    CONSTRUCTEX
-#undef	    CONSUME
-#undef	    MARK
-#undef	    REWIND
-#undef	    REWINDLAST
-#undef	    PERRORRECOVERY
-#undef	    HASFAILED
-#undef	    FAILEDFLAG
-#undef	    RECOVERFROMMISMATCHEDSET
-#undef	    RECOVERFROMMISMATCHEDELEMENT
-#undef	    BACKTRACKING
-#undef      ADAPTOR
-#undef	    RULEMEMO
-#undef		SEEK
-#undef		INDEX
-#undef		DBG
+#undef PARSER
+#undef RECOGNIZER
+#undef HAVEPARSEDRULE
+#undef INPUT
+#undef STRSTREAM
+#undef HASEXCEPTION
+#undef EXCEPTION
+#undef MATCHT
+#undef MATCHANYT
+#undef FOLLOWSTACK
+#undef FOLLOWPUSH
+#undef FOLLOWPOP
+#undef PRECOVER
+#undef PREPORTERROR
+#undef LA
+#undef LT
+#undef CONSTRUCTEX
+#undef CONSUME
+#undef MARK
+#undef REWIND
+#undef REWINDLAST
+#undef PERRORRECOVERY
+#undef HASFAILED
+#undef FAILEDFLAG
+#undef RECOVERFROMMISMATCHEDSET
+#undef RECOVERFROMMISMATCHEDELEMENT
+#undef BACKTRACKING
+#undef ADAPTOR
+#undef RULEMEMO
+#undef SEEK
+#undef INDEX
+#undef DBG
 
-#define	    PARSER							ctx->pTreeParser
-#define	    RECOGNIZER						PARSER->rec
-#define		PSRSTATE						RECOGNIZER->state
-#define	    HAVEPARSEDRULE(r)				RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
-#define	    INPUT							PARSER->ctnstream
-#define		ISTREAM							INPUT->tnstream->istream
-#define	    STRSTREAM						INPUT->tnstream
-#define	    HASEXCEPTION()					(PSRSTATE->error == ANTLR3_TRUE)
-#define	    EXCEPTION						PSRSTATE->exception
-#define	    MATCHT(t, fs)					RECOGNIZER->match(RECOGNIZER, t, fs)
-#define	    MATCHANYT()						RECOGNIZER->matchAny(RECOGNIZER)
-#define	    FOLLOWSTACK					    PSRSTATE->following
-#define	    FOLLOWPUSH(x)					FOLLOWSTACK->push(FOLLOWSTACK, ((void *)(&(x))), NULL)
-#define	    FOLLOWPOP()						FOLLOWSTACK->pop(FOLLOWSTACK)
-#define	    PRECOVER()						RECOGNIZER->recover(RECOGNIZER)
-#define	    PREPORTERROR()					RECOGNIZER->reportError(RECOGNIZER)
-#define	    LA(n)							ISTREAM->_LA(ISTREAM, n)
-#define	    LT(n)							INPUT->tnstream->_LT(INPUT->tnstream, n)
-#define	    CONSTRUCTEX()					RECOGNIZER->exConstruct(RECOGNIZER)
-#define	    CONSUME()						ISTREAM->consume(ISTREAM)
-#define	    MARK()							ISTREAM->mark(ISTREAM)
-#define	    REWIND(m)						ISTREAM->rewind(ISTREAM, m)
-#define	    REWINDLAST()					ISTREAM->rewindLast(ISTREAM)
-#define	    PERRORRECOVERY					PSRSTATE->errorRecovery
-#define	    FAILEDFLAG						PSRSTATE->failed
-#define	    HASFAILED()						(FAILEDFLAG == ANTLR3_TRUE)
-#define	    BACKTRACKING					PSRSTATE->backtracking
-#define	    RECOVERFROMMISMATCHEDSET(s)		RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
-#define	    RECOVERFROMMISMATCHEDELEMENT(e)	RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
-#define     ADAPTOR                         INPUT->adaptor
-#define		RULEMEMO						PSRSTATE->ruleMemo
-#define		SEEK(n)							ISTREAM->seek(ISTREAM, n)
-#define		INDEX()							ISTREAM->index(ISTREAM)
-#define		DBG								RECOGNIZER->debugger
+#define PARSER ctx->pTreeParser
+#define RECOGNIZER PARSER->rec
+#define PSRSTATE RECOGNIZER->state
+#define HAVEPARSEDRULE(r) RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
+#define INPUT PARSER->ctnstream
+#define ISTREAM INPUT->tnstream->istream
+#define STRSTREAM INPUT->tnstream
+#define HASEXCEPTION() (PSRSTATE->error == ANTLR3_TRUE)
+#define EXCEPTION PSRSTATE->exception
+#define MATCHT(t, fs) RECOGNIZER->match(RECOGNIZER, t, fs)
+#define MATCHANYT() RECOGNIZER->matchAny(RECOGNIZER)
+#define FOLLOWSTACK PSRSTATE->following
+#define FOLLOWPUSH(x) FOLLOWSTACK->push(FOLLOWSTACK, ((void*)(&(x))), NULL)
+#define FOLLOWPOP() FOLLOWSTACK->pop(FOLLOWSTACK)
+#define PRECOVER() RECOGNIZER->recover(RECOGNIZER)
+#define PREPORTERROR() RECOGNIZER->reportError(RECOGNIZER)
+#define LA(n) ISTREAM->_LA(ISTREAM, n)
+#define LT(n) INPUT->tnstream->_LT(INPUT->tnstream, n)
+#define CONSTRUCTEX() RECOGNIZER->exConstruct(RECOGNIZER)
+#define CONSUME() ISTREAM->consume(ISTREAM)
+#define MARK() ISTREAM->mark(ISTREAM)
+#define REWIND(m) ISTREAM->rewind(ISTREAM, m)
+#define REWINDLAST() ISTREAM->rewindLast(ISTREAM)
+#define PERRORRECOVERY PSRSTATE->errorRecovery
+#define FAILEDFLAG PSRSTATE->failed
+#define HASFAILED() (FAILEDFLAG == ANTLR3_TRUE)
+#define BACKTRACKING PSRSTATE->backtracking
+#define RECOVERFROMMISMATCHEDSET(s)                                            \
+  RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
+#define RECOVERFROMMISMATCHEDELEMENT(e)                                        \
+  RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
+#define ADAPTOR INPUT->adaptor
+#define RULEMEMO PSRSTATE->ruleMemo
+#define SEEK(n) ISTREAM->seek(ISTREAM, n)
+#define INDEX() ISTREAM->index(ISTREAM)
+#define DBG RECOGNIZER->debugger
 
+#define TOKTEXT(tok, txt) tok, (pANTLR3_UINT8)txt
 
-#define		TOKTEXT(tok, txt)				tok, (pANTLR3_UINT8)txt
-
-/* The 4 tokens defined below may well clash with your own #defines or token types. If so
- * then for the present you must use different names for your defines as these are hard coded
- * in the code generator. It would be better not to use such names internally, and maybe
- * we can change this in a forthcoming release. I deliberately do not #undef these
- * here as this will at least give you a redefined error somewhere if they clash.
+/* The 4 tokens defined below may well clash with your own #defines or token
+ * types. If so
+ * then for the present you must use different names for your defines as these
+ * are hard coded
+ * in the code generator. It would be better not to use such names internally,
+ * and maybe
+ * we can change this in a forthcoming release. I deliberately do not #undef
+ * these
+ * here as this will at least give you a redefined error somewhere if they
+ * clash.
  */
-#define	    UP	    ANTLR3_TOKEN_UP
-#define	    DOWN    ANTLR3_TOKEN_DOWN
-#define	    EOR	    ANTLR3_TOKEN_EOR
-#define	    INVALID ANTLR3_TOKEN_INVALID
-
+#define UP ANTLR3_TOKEN_UP
+#define DOWN ANTLR3_TOKEN_DOWN
+#define EOR ANTLR3_TOKEN_EOR
+#define INVALID ANTLR3_TOKEN_INVALID
 
 /* =============================================================================
  * Functions to create and destroy scopes. First come the rule scopes, followed
  * by the global declared scopes.
  */
 
-
-
-/* ============================================================================= */
+/* =============================================================================
+ */
 
 /* =============================================================================
  * Start of recognizer
  */
 
-
-
 /** \brief Table of all token names in symbolic order, mainly used for
  *         error reporting.
  */
-pANTLR3_UINT8   hammer_semaTokenNames[33+4]
-     = {
-        (pANTLR3_UINT8) "<invalid>",       /* String to print to indicate an invalid token */
-        (pANTLR3_UINT8) "<EOR>",
-        (pANTLR3_UINT8) "<DOWN>",
-        (pANTLR3_UINT8) "<UP>",
-        (pANTLR3_UINT8) "HAMFILE",
-        (pANTLR3_UINT8) "TARGET_DECL_OR_RULE_CALL",
-        (pANTLR3_UINT8) "TARGET_REF",
-        (pANTLR3_UINT8) "TARGET_NAME",
-        (pANTLR3_UINT8) "EMPTY_TARGET_NAME",
-        (pANTLR3_UINT8) "ARGUMENTS",
-        (pANTLR3_UINT8) "NAMED_EXPRESSION",
-        (pANTLR3_UINT8) "EXPRESSION",
-        (pANTLR3_UINT8) "EMPTY_EXPRESSION",
-        (pANTLR3_UINT8) "LIST_OF",
-        (pANTLR3_UINT8) "PATH_LIKE_SEQ",
-        (pANTLR3_UINT8) "REQUIREMENT_SET",
-        (pANTLR3_UINT8) "REQUIREMENT",
-        (pANTLR3_UINT8) "CONDITION",
-        (pANTLR3_UINT8) "FEATURE",
-        (pANTLR3_UINT8) "WS",
-        (pANTLR3_UINT8) "EXP_END",
-        (pANTLR3_UINT8) "ID",
-        (pANTLR3_UINT8) "COLON",
-        (pANTLR3_UINT8) "SLASH",
-        (pANTLR3_UINT8) "PUBLIC_TAG",
-        (pANTLR3_UINT8) "STRING",
-        (pANTLR3_UINT8) "STRING_ID",
-        (pANTLR3_UINT8) "COMMENT",
-        (pANTLR3_UINT8) "'='",
-        (pANTLR3_UINT8) "'<'",
-        (pANTLR3_UINT8) "'>'",
-        (pANTLR3_UINT8) "'('",
-        (pANTLR3_UINT8) "')'",
-        (pANTLR3_UINT8) "','",
-        (pANTLR3_UINT8) "'//'",
-        (pANTLR3_UINT8) "'['",
-        (pANTLR3_UINT8) "']'"
-       };
-
-
+pANTLR3_UINT8 hammer_semaTokenNames[33 + 4] = {
+  (pANTLR3_UINT8) "<invalid>", /* String to print to indicate an invalid
+                                token */
+  (pANTLR3_UINT8) "<EOR>",
+  (pANTLR3_UINT8) "<DOWN>",
+  (pANTLR3_UINT8) "<UP>",
+  (pANTLR3_UINT8) "HAMFILE",
+  (pANTLR3_UINT8) "TARGET_DECL_OR_RULE_CALL",
+  (pANTLR3_UINT8) "TARGET_REF",
+  (pANTLR3_UINT8) "TARGET_NAME",
+  (pANTLR3_UINT8) "EMPTY_TARGET_NAME",
+  (pANTLR3_UINT8) "ARGUMENTS",
+  (pANTLR3_UINT8) "NAMED_EXPRESSION",
+  (pANTLR3_UINT8) "EXPRESSION",
+  (pANTLR3_UINT8) "EMPTY_EXPRESSION",
+  (pANTLR3_UINT8) "LIST_OF",
+  (pANTLR3_UINT8) "PATH_LIKE_SEQ",
+  (pANTLR3_UINT8) "REQUIREMENT_SET",
+  (pANTLR3_UINT8) "REQUIREMENT",
+  (pANTLR3_UINT8) "CONDITION",
+  (pANTLR3_UINT8) "FEATURE",
+  (pANTLR3_UINT8) "WS",
+  (pANTLR3_UINT8) "EXP_END",
+  (pANTLR3_UINT8) "ID",
+  (pANTLR3_UINT8) "COLON",
+  (pANTLR3_UINT8) "SLASH",
+  (pANTLR3_UINT8) "PUBLIC_TAG",
+  (pANTLR3_UINT8) "STRING",
+  (pANTLR3_UINT8) "STRING_ID",
+  (pANTLR3_UINT8) "COMMENT",
+  (pANTLR3_UINT8) "'='",
+  (pANTLR3_UINT8) "'<'",
+  (pANTLR3_UINT8) "'>'",
+  (pANTLR3_UINT8) "'('",
+  (pANTLR3_UINT8) "')'",
+  (pANTLR3_UINT8) "','",
+  (pANTLR3_UINT8) "'//'",
+  (pANTLR3_UINT8) "'['",
+  (pANTLR3_UINT8) "']'"
+};
 
 // Forward declare the locally static matching functions we have generated.
 //
-static const hammer::ast::hamfile*	hamfile    (phammer_sema ctx);
-static void	statement    (phammer_sema ctx, hammer::ast::statements_t* statements);
-static const hammer::ast::expression*	target_def_or_rule_call    (phammer_sema ctx);
-static void	arguments    (phammer_sema ctx, hammer::ast::expressions_t* args);
-static const hammer::ast::expression*	argument    (phammer_sema ctx);
-static const hammer::ast::expression*	named_expression    (phammer_sema ctx);
-static const hammer::ast::expression*	expression    (phammer_sema ctx);
-static const hammer::ast::requirement_set*	requirement_set    (phammer_sema ctx);
-static const hammer::ast::requirement*	requirement    (phammer_sema ctx);
-static const hammer::ast::requirement*	conditional_requirement    (phammer_sema ctx);
-static const hammer::ast::requirement*	simple_requirement    (phammer_sema ctx);
-static const hammer::ast::feature*	feature    (phammer_sema ctx);
-static const hammer::ast::expression*	feature_value    (phammer_sema ctx);
-static void	list_of    (phammer_sema ctx, hammer::ast::expressions_t* args);
-static const hammer::ast::expression*	list_of_impl    (phammer_sema ctx);
-static const hammer::ast::expression*	target_ref    (phammer_sema ctx);
-static void	public_tag    (phammer_sema ctx, hammer::parscore::source_location* tag_loc);
-static void	target_ref_name    (phammer_sema ctx, hammer::parscore::identifier* name);
-static const hammer::ast::requirement_set*	target_ref_requirements    (phammer_sema ctx);
-static const hammer::ast::path_like_seq*	path_like_seq    (phammer_sema ctx);
-static void	path_like_seq_impl    (phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds);
-static void	hammer_semaFree(phammer_sema ctx);
-/* For use in tree output where we are accumulating rule labels via label += ruleRef
- * we need a function that knows how to free a return scope when the list is destroyed.
- * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a macro.
+static const hammer::ast::hamfile*
+hamfile(phammer_sema ctx);
+static void
+statement(phammer_sema ctx, hammer::ast::statements_t* statements);
+static const hammer::ast::expression*
+target_def_or_rule_call(phammer_sema ctx);
+static void
+arguments(phammer_sema ctx, hammer::ast::expressions_t* args);
+static const hammer::ast::expression*
+argument(phammer_sema ctx);
+static const hammer::ast::expression*
+named_expression(phammer_sema ctx);
+static const hammer::ast::expression*
+expression(phammer_sema ctx);
+static const hammer::ast::requirement_set*
+requirement_set(phammer_sema ctx);
+static const hammer::ast::requirement*
+requirement(phammer_sema ctx);
+static const hammer::ast::requirement*
+conditional_requirement(phammer_sema ctx);
+static const hammer::ast::requirement*
+simple_requirement(phammer_sema ctx);
+static const hammer::ast::feature*
+feature(phammer_sema ctx);
+static const hammer::ast::expression*
+feature_value(phammer_sema ctx);
+static void
+list_of(phammer_sema ctx, hammer::ast::expressions_t* args);
+static const hammer::ast::expression*
+list_of_impl(phammer_sema ctx);
+static const hammer::ast::expression*
+target_ref(phammer_sema ctx);
+static void
+public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc);
+static void
+target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name);
+static const hammer::ast::requirement_set*
+target_ref_requirements(phammer_sema ctx);
+static const hammer::ast::path_like_seq*
+path_like_seq(phammer_sema ctx);
+static void
+path_like_seq_impl(
+  phammer_sema ctx,
+  std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds);
+static void
+hammer_semaFree(phammer_sema ctx);
+/* For use in tree output where we are accumulating rule labels via label +=
+ * ruleRef
+ * we need a function that knows how to free a return scope when the list is
+ * destroyed.
+ * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a
+ * macro.
  */
-static	void ANTLR3_CDECL freeScope(void * scope)
+static void ANTLR3_CDECL
+freeScope(void* scope)
 {
-    ANTLR3_FREE(scope);
+  ANTLR3_FREE(scope);
 }
 
 /** \brief Name of the grammar file that generated this code
@@ -250,9 +283,10 @@ static const char fileName[] = "hammer_sema.gt";
 
 /** \brief Return the name of the grammar file that generated this code.
  */
-static const char * getGrammarFileName()
+static const char*
+getGrammarFileName()
 {
-	return fileName;
+  return fileName;
 }
 /** \brief Create a new hammer_sema parser and return a context for it.
  *
@@ -261,11 +295,11 @@ static const char * getGrammarFileName()
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API phammer_sema
-hammer_semaNew   (pANTLR3_COMMON_TREE_NODE_STREAM instream)
+hammer_semaNew(pANTLR3_COMMON_TREE_NODE_STREAM instream)
 {
-	// See if we can create a new parser with the standard constructor
-	//
-	return hammer_semaNewSSD(instream, NULL);
+  // See if we can create a new parser with the standard constructor
+  //
+  return hammer_semaNewSSD(instream, NULL);
 }
 
 /** \brief Create a new hammer_sema parser and return a context for it.
@@ -275,2902 +309,2882 @@ hammer_semaNew   (pANTLR3_COMMON_TREE_NODE_STREAM instream)
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API phammer_sema
-hammer_semaNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
+hammer_semaNewSSD(pANTLR3_COMMON_TREE_NODE_STREAM instream,
+                  pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
-    phammer_sema ctx;	    /* Context structure we will build and return   */
+  phammer_sema ctx; /* Context structure we will build and return   */
 
-    ctx	= (phammer_sema) ANTLR3_CALLOC(1, sizeof(hammer_sema));
+  ctx = (phammer_sema)ANTLR3_CALLOC(1, sizeof(hammer_sema));
 
-    if	(ctx == NULL)
-    {
-		// Failed to allocate memory for parser context
-		//
-        return  NULL;
-    }
+  if (ctx == NULL) {
+    // Failed to allocate memory for parser context
+    //
+    return NULL;
+  }
 
-    /* -------------------------------------------------------------------
-     * Memory for basic structure is allocated, now to fill in
-     * the base ANTLR3 structures. We initialize the function pointers
-     * for the standard ANTLR3 parser function set, but upon return
-     * from here, the programmer may set the pointers to provide custom
-     * implementations of each function.
-     *
-     * We don't use the macros defined in hammer_sema.h here, in order that you can get a sense
-     * of what goes where.
-     */
+  /* -------------------------------------------------------------------
+ * Memory for basic structure is allocated, now to fill in
+ * the base ANTLR3 structures. We initialize the function pointers
+ * for the standard ANTLR3 parser function set, but upon return
+ * from here, the programmer may set the pointers to provide custom
+ * implementations of each function.
+ *
+ * We don't use the macros defined in hammer_sema.h here, in order that you
+ * can get a sense
+ * of what goes where.
+ */
 
-    /* Create a base Tree parser/recognizer, using the supplied tree node stream
-     */
-    ctx->pTreeParser		= antlr3TreeParserNewStream(ANTLR3_SIZE_HINT, instream, state);
-    /* Install the implementation of our hammer_sema interface
-     */
-    ctx->hamfile	= hamfile;
-    ctx->statement	= statement;
-    ctx->target_def_or_rule_call	= target_def_or_rule_call;
-    ctx->arguments	= arguments;
-    ctx->argument	= argument;
-    ctx->named_expression	= named_expression;
-    ctx->expression	= expression;
-    ctx->requirement_set	= requirement_set;
-    ctx->requirement	= requirement;
-    ctx->conditional_requirement	= conditional_requirement;
-    ctx->simple_requirement	= simple_requirement;
-    ctx->feature	= feature;
-    ctx->feature_value	= feature_value;
-    ctx->list_of	= list_of;
-    ctx->list_of_impl	= list_of_impl;
-    ctx->target_ref	= target_ref;
-    ctx->public_tag	= public_tag;
-    ctx->target_ref_name	= target_ref_name;
-    ctx->target_ref_requirements	= target_ref_requirements;
-    ctx->path_like_seq	= path_like_seq;
-    ctx->path_like_seq_impl	= path_like_seq_impl;
-    ctx->free			= hammer_semaFree;
-    ctx->getGrammarFileName	= getGrammarFileName;
+  /* Create a base Tree parser/recognizer, using the supplied tree node stream
+ */
+  ctx->pTreeParser =
+    antlr3TreeParserNewStream(ANTLR3_SIZE_HINT, instream, state);
+  /* Install the implementation of our hammer_sema interface
+ */
+  ctx->hamfile = hamfile;
+  ctx->statement = statement;
+  ctx->target_def_or_rule_call = target_def_or_rule_call;
+  ctx->arguments = arguments;
+  ctx->argument = argument;
+  ctx->named_expression = named_expression;
+  ctx->expression = expression;
+  ctx->requirement_set = requirement_set;
+  ctx->requirement = requirement;
+  ctx->conditional_requirement = conditional_requirement;
+  ctx->simple_requirement = simple_requirement;
+  ctx->feature = feature;
+  ctx->feature_value = feature_value;
+  ctx->list_of = list_of;
+  ctx->list_of_impl = list_of_impl;
+  ctx->target_ref = target_ref;
+  ctx->public_tag = public_tag;
+  ctx->target_ref_name = target_ref_name;
+  ctx->target_ref_requirements = target_ref_requirements;
+  ctx->path_like_seq = path_like_seq;
+  ctx->path_like_seq_impl = path_like_seq_impl;
+  ctx->free = hammer_semaFree;
+  ctx->getGrammarFileName = getGrammarFileName;
 
-    /* Install the scope pushing methods.
-     */
+  /* Install the scope pushing methods.
+ */
 
+  /* Install the token table
+ */
+  PSRSTATE->tokenNames = hammer_semaTokenNames;
 
-
-
-
-    /* Install the token table
-     */
-    PSRSTATE->tokenNames   = hammer_semaTokenNames;
-
-
-    /* Return the newly built parser to the caller
-     */
-    return  ctx;
+  /* Return the newly built parser to the caller
+ */
+  return ctx;
 }
 
 /** Free the parser resources
  */
- static void
- hammer_semaFree(phammer_sema ctx)
- {
-    /* Free any scope memory
-     */
+static void
+hammer_semaFree(phammer_sema ctx)
+{
+  /* Free any scope memory
+ */
 
+  // Free this parser
+  //
+  ctx->pTreeParser->free(ctx->pTreeParser);
+  ANTLR3_FREE(ctx);
 
-	// Free this parser
-	//
-    ctx->pTreeParser->free(ctx->pTreeParser);
-    ANTLR3_FREE(ctx);
-
-    /* Everything is released, so we can return
-     */
-    return;
- }
+  /* Everything is released, so we can return
+ */
+  return;
+}
 
 /** Return token names used by this tree parser
  *
- * The returned pointer is used as an index into the token names table (using the token
+ * The returned pointer is used as an index into the token names table (using
+ * the token
  * number as the index).
  *
  * \return Pointer to first char * in the table.
  */
-static pANTLR3_UINT8    *getTokenNames()
+static pANTLR3_UINT8*
+getTokenNames()
 {
-        return hammer_semaTokenNames;
+  return hammer_semaTokenNames;
 }
-
 
 /* Declare the bitsets
  */
 
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_HAMFILE_in_hamfile88  */
-static	ANTLR3_BITWORD FOLLOW_HAMFILE_in_hamfile88_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_HAMFILE_in_hamfile88	= { FOLLOW_HAMFILE_in_hamfile88_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_statement_in_hamfile90  */
-static	ANTLR3_BITWORD FOLLOW_statement_in_hamfile90_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000028) };
-static  ANTLR3_BITSET_LIST FOLLOW_statement_in_hamfile90	= { FOLLOW_statement_in_hamfile90_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_def_or_rule_call_in_statement122  */
-static	ANTLR3_BITWORD FOLLOW_target_def_or_rule_call_in_statement122_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000100000) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_def_or_rule_call_in_statement122	= { FOLLOW_target_def_or_rule_call_in_statement122_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_EXP_END_in_statement124  */
-static	ANTLR3_BITWORD FOLLOW_EXP_END_in_statement124_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_statement124	= { FOLLOW_EXP_END_in_statement124_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146  */
-static	ANTLR3_BITWORD FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146	= { FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_target_def_or_rule_call150  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_target_def_or_rule_call150_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000200) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_target_def_or_rule_call150	= { FOLLOW_ID_in_target_def_or_rule_call150_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_arguments_in_target_def_or_rule_call152  */
-static	ANTLR3_BITWORD FOLLOW_arguments_in_target_def_or_rule_call152_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_arguments_in_target_def_or_rule_call152	= { FOLLOW_arguments_in_target_def_or_rule_call152_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ARGUMENTS_in_arguments177  */
-static	ANTLR3_BITWORD FOLLOW_ARGUMENTS_in_arguments177_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_ARGUMENTS_in_arguments177	= { FOLLOW_ARGUMENTS_in_arguments177_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_argument_in_arguments180  */
-static	ANTLR3_BITWORD FOLLOW_argument_in_arguments180_bits[]	= { ANTLR3_UINT64_LIT(0x000000000040B408) };
-static  ANTLR3_BITSET_LIST FOLLOW_argument_in_arguments180	= { FOLLOW_argument_in_arguments180_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_COLON_in_arguments182  */
-static	ANTLR3_BITWORD FOLLOW_COLON_in_arguments182_bits[]	= { ANTLR3_UINT64_LIT(0x000000000040B408) };
-static  ANTLR3_BITSET_LIST FOLLOW_COLON_in_arguments182	= { FOLLOW_COLON_in_arguments182_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_expression_in_argument210  */
-static	ANTLR3_BITWORD FOLLOW_expression_in_argument210_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_expression_in_argument210	= { FOLLOW_expression_in_argument210_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_named_expression_in_argument217  */
-static	ANTLR3_BITWORD FOLLOW_named_expression_in_argument217_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_named_expression_in_argument217	= { FOLLOW_named_expression_in_argument217_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_NAMED_EXPRESSION_in_named_expression234  */
-static	ANTLR3_BITWORD FOLLOW_NAMED_EXPRESSION_in_named_expression234_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_NAMED_EXPRESSION_in_named_expression234	= { FOLLOW_NAMED_EXPRESSION_in_named_expression234_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_named_expression236  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_named_expression236_bits[]	= { ANTLR3_UINT64_LIT(0x000000000000B000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_named_expression236	= { FOLLOW_ID_in_named_expression236_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_expression_in_named_expression238  */
-static	ANTLR3_BITWORD FOLLOW_expression_in_named_expression238_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_expression_in_named_expression238	= { FOLLOW_expression_in_named_expression238_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_EMPTY_EXPRESSION_in_expression264  */
-static	ANTLR3_BITWORD FOLLOW_EMPTY_EXPRESSION_in_expression264_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_EMPTY_EXPRESSION_in_expression264	= { FOLLOW_EMPTY_EXPRESSION_in_expression264_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_list_of_in_expression277  */
-static	ANTLR3_BITWORD FOLLOW_list_of_in_expression277_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_list_of_in_expression277	= { FOLLOW_list_of_in_expression277_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_set_in_expression292  */
-static	ANTLR3_BITWORD FOLLOW_requirement_set_in_expression292_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_set_in_expression292	= { FOLLOW_requirement_set_in_expression292_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_REQUIREMENT_SET_in_requirement_set322  */
-static	ANTLR3_BITWORD FOLLOW_REQUIREMENT_SET_in_requirement_set322_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_REQUIREMENT_SET_in_requirement_set322	= { FOLLOW_REQUIREMENT_SET_in_requirement_set322_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_in_requirement_set325  */
-static	ANTLR3_BITWORD FOLLOW_requirement_in_requirement_set325_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000010008) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_in_requirement_set325	= { FOLLOW_requirement_in_requirement_set325_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_simple_requirement_in_requirement347  */
-static	ANTLR3_BITWORD FOLLOW_simple_requirement_in_requirement347_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_simple_requirement_in_requirement347	= { FOLLOW_simple_requirement_in_requirement347_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_conditional_requirement_in_requirement355  */
-static	ANTLR3_BITWORD FOLLOW_conditional_requirement_in_requirement355_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_conditional_requirement_in_requirement355	= { FOLLOW_conditional_requirement_in_requirement355_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_REQUIREMENT_in_conditional_requirement378  */
-static	ANTLR3_BITWORD FOLLOW_REQUIREMENT_in_conditional_requirement378_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_REQUIREMENT_in_conditional_requirement378	= { FOLLOW_REQUIREMENT_in_conditional_requirement378_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_public_tag_in_conditional_requirement380  */
-static	ANTLR3_BITWORD FOLLOW_public_tag_in_conditional_requirement380_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000020000) };
-static  ANTLR3_BITSET_LIST FOLLOW_public_tag_in_conditional_requirement380	= { FOLLOW_public_tag_in_conditional_requirement380_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_CONDITION_in_conditional_requirement384  */
-static	ANTLR3_BITWORD FOLLOW_CONDITION_in_conditional_requirement384_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_CONDITION_in_conditional_requirement384	= { FOLLOW_CONDITION_in_conditional_requirement384_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_conditional_requirement389  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_conditional_requirement389_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000440000) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_conditional_requirement389	= { FOLLOW_feature_in_conditional_requirement389_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_COLON_in_conditional_requirement395  */
-static	ANTLR3_BITWORD FOLLOW_COLON_in_conditional_requirement395_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_COLON_in_conditional_requirement395	= { FOLLOW_COLON_in_conditional_requirement395_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_conditional_requirement400  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_conditional_requirement400_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_conditional_requirement400	= { FOLLOW_feature_in_conditional_requirement400_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_REQUIREMENT_in_simple_requirement424  */
-static	ANTLR3_BITWORD FOLLOW_REQUIREMENT_in_simple_requirement424_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_REQUIREMENT_in_simple_requirement424	= { FOLLOW_REQUIREMENT_in_simple_requirement424_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_public_tag_in_simple_requirement426  */
-static	ANTLR3_BITWORD FOLLOW_public_tag_in_simple_requirement426_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000440000) };
-static  ANTLR3_BITSET_LIST FOLLOW_public_tag_in_simple_requirement426	= { FOLLOW_public_tag_in_simple_requirement426_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_simple_requirement429  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_simple_requirement429_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_simple_requirement429	= { FOLLOW_feature_in_simple_requirement429_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_FEATURE_in_feature447  */
-static	ANTLR3_BITWORD FOLLOW_FEATURE_in_feature447_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_FEATURE_in_feature447	= { FOLLOW_FEATURE_in_feature447_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature449  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature449_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000004040) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature449	= { FOLLOW_ID_in_feature449_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_value_in_feature451  */
-static	ANTLR3_BITWORD FOLLOW_feature_value_in_feature451_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_value_in_feature451	= { FOLLOW_feature_value_in_feature451_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_in_feature_value469  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_in_feature_value469_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_feature_value469	= { FOLLOW_path_like_seq_in_feature_value469_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_in_feature_value476  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_in_feature_value476_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_in_feature_value476	= { FOLLOW_target_ref_in_feature_value476_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_LIST_OF_in_list_of491  */
-static	ANTLR3_BITWORD FOLLOW_LIST_OF_in_list_of491_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_LIST_OF_in_list_of491	= { FOLLOW_LIST_OF_in_list_of491_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_list_of_impl_in_list_of494  */
-static	ANTLR3_BITWORD FOLLOW_list_of_impl_in_list_of494_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000004068) };
-static  ANTLR3_BITSET_LIST FOLLOW_list_of_impl_in_list_of494	= { FOLLOW_list_of_impl_in_list_of494_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_in_list_of_impl526  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_in_list_of_impl526_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_list_of_impl526	= { FOLLOW_path_like_seq_in_list_of_impl526_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_def_or_rule_call_in_list_of_impl533  */
-static	ANTLR3_BITWORD FOLLOW_target_def_or_rule_call_in_list_of_impl533_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_def_or_rule_call_in_list_of_impl533	= { FOLLOW_target_def_or_rule_call_in_list_of_impl533_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_in_list_of_impl540  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_in_list_of_impl540_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_in_list_of_impl540	= { FOLLOW_target_ref_in_list_of_impl540_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_TARGET_REF_in_target_ref564  */
-static	ANTLR3_BITWORD FOLLOW_TARGET_REF_in_target_ref564_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_TARGET_REF_in_target_ref564	= { FOLLOW_TARGET_REF_in_target_ref564_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_public_tag_in_target_ref566  */
-static	ANTLR3_BITWORD FOLLOW_public_tag_in_target_ref566_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000004000) };
-static  ANTLR3_BITSET_LIST FOLLOW_public_tag_in_target_ref566	= { FOLLOW_public_tag_in_target_ref566_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_in_target_ref569  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_in_target_ref569_bits[]	= { ANTLR3_UINT64_LIT(0x000000000000B088) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_target_ref569	= { FOLLOW_path_like_seq_in_target_ref569_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_name_in_target_ref571  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_name_in_target_ref571_bits[]	= { ANTLR3_UINT64_LIT(0x000000000000B008) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_name_in_target_ref571	= { FOLLOW_target_ref_name_in_target_ref571_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_ref_requirements_in_target_ref574  */
-static	ANTLR3_BITWORD FOLLOW_target_ref_requirements_in_target_ref574_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_ref_requirements_in_target_ref574	= { FOLLOW_target_ref_requirements_in_target_ref574_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_PUBLIC_TAG_in_public_tag593  */
-static	ANTLR3_BITWORD FOLLOW_PUBLIC_TAG_in_public_tag593_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_PUBLIC_TAG_in_public_tag593	= { FOLLOW_PUBLIC_TAG_in_public_tag593_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_TARGET_NAME_in_target_ref_name613  */
-static	ANTLR3_BITWORD FOLLOW_TARGET_NAME_in_target_ref_name613_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_TARGET_NAME_in_target_ref_name613	= { FOLLOW_TARGET_NAME_in_target_ref_name613_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615  */
-static	ANTLR3_BITWORD FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615	= { FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_TARGET_NAME_in_target_ref_name622  */
-static	ANTLR3_BITWORD FOLLOW_TARGET_NAME_in_target_ref_name622_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_TARGET_NAME_in_target_ref_name622	= { FOLLOW_TARGET_NAME_in_target_ref_name622_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_target_ref_name624  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_target_ref_name624_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_target_ref_name624	= { FOLLOW_ID_in_target_ref_name624_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_requirement_set_in_target_ref_requirements645  */
-static	ANTLR3_BITWORD FOLLOW_requirement_set_in_target_ref_requirements645_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_requirement_set_in_target_ref_requirements645	= { FOLLOW_requirement_set_in_target_ref_requirements645_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673  */
-static	ANTLR3_BITWORD FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673	= { FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_SLASH_in_path_like_seq675  */
-static	ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq675_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000200000) };
-static  ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq675	= { FOLLOW_SLASH_in_path_like_seq675_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_impl_in_path_like_seq677  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq677_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq677	= { FOLLOW_path_like_seq_impl_in_path_like_seq677_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687  */
-static	ANTLR3_BITWORD FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687	= { FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_path_like_seq_impl_in_path_like_seq689  */
-static	ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq689_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq689	= { FOLLOW_path_like_seq_impl_in_path_like_seq689_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_path_like_seq_impl713  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl713_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl713	= { FOLLOW_ID_in_path_like_seq_impl713_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_path_like_seq_impl722  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl722_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000200000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl722	= { FOLLOW_ID_in_path_like_seq_impl722_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_path_like_seq_impl724  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl724_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000200000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl724	= { FOLLOW_ID_in_path_like_seq_impl724_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_path_like_seq_impl729  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl729_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl729	= { FOLLOW_ID_in_path_like_seq_impl729_bits, 1	};
-
-
-
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_HAMFILE_in_hamfile88  */
+static ANTLR3_BITWORD FOLLOW_HAMFILE_in_hamfile88_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_HAMFILE_in_hamfile88 = {
+  FOLLOW_HAMFILE_in_hamfile88_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_statement_in_hamfile90  */
+static ANTLR3_BITWORD FOLLOW_statement_in_hamfile90_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000028)
+};
+static ANTLR3_BITSET_LIST FOLLOW_statement_in_hamfile90 = {
+  FOLLOW_statement_in_hamfile90_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_def_or_rule_call_in_statement122  */
+static ANTLR3_BITWORD FOLLOW_target_def_or_rule_call_in_statement122_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000100000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_def_or_rule_call_in_statement122 = {
+  FOLLOW_target_def_or_rule_call_in_statement122_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_EXP_END_in_statement124  */
+static ANTLR3_BITWORD FOLLOW_EXP_END_in_statement124_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_EXP_END_in_statement124 = {
+  FOLLOW_EXP_END_in_statement124_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146  */
+static ANTLR3_BITWORD
+  FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000000000000004)
+  };
+static ANTLR3_BITSET_LIST
+  FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146 =
+    { FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146_bits, 1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_target_def_or_rule_call150  */
+static ANTLR3_BITWORD FOLLOW_ID_in_target_def_or_rule_call150_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000200)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_target_def_or_rule_call150 = {
+  FOLLOW_ID_in_target_def_or_rule_call150_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_arguments_in_target_def_or_rule_call152  */
+static ANTLR3_BITWORD FOLLOW_arguments_in_target_def_or_rule_call152_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_arguments_in_target_def_or_rule_call152 = {
+  FOLLOW_arguments_in_target_def_or_rule_call152_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ARGUMENTS_in_arguments177  */
+static ANTLR3_BITWORD FOLLOW_ARGUMENTS_in_arguments177_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ARGUMENTS_in_arguments177 = {
+  FOLLOW_ARGUMENTS_in_arguments177_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_argument_in_arguments180  */
+static ANTLR3_BITWORD FOLLOW_argument_in_arguments180_bits[] = {
+  ANTLR3_UINT64_LIT(0x000000000040B408)
+};
+static ANTLR3_BITSET_LIST FOLLOW_argument_in_arguments180 = {
+  FOLLOW_argument_in_arguments180_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_COLON_in_arguments182  */
+static ANTLR3_BITWORD FOLLOW_COLON_in_arguments182_bits[] = { ANTLR3_UINT64_LIT(
+  0x000000000040B408) };
+static ANTLR3_BITSET_LIST FOLLOW_COLON_in_arguments182 = {
+  FOLLOW_COLON_in_arguments182_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_expression_in_argument210  */
+static ANTLR3_BITWORD FOLLOW_expression_in_argument210_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_expression_in_argument210 = {
+  FOLLOW_expression_in_argument210_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_named_expression_in_argument217  */
+static ANTLR3_BITWORD FOLLOW_named_expression_in_argument217_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_named_expression_in_argument217 = {
+  FOLLOW_named_expression_in_argument217_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_NAMED_EXPRESSION_in_named_expression234  */
+static ANTLR3_BITWORD FOLLOW_NAMED_EXPRESSION_in_named_expression234_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_NAMED_EXPRESSION_in_named_expression234 = {
+  FOLLOW_NAMED_EXPRESSION_in_named_expression234_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_named_expression236  */
+static ANTLR3_BITWORD FOLLOW_ID_in_named_expression236_bits[] = {
+  ANTLR3_UINT64_LIT(0x000000000000B000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_named_expression236 = {
+  FOLLOW_ID_in_named_expression236_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_expression_in_named_expression238  */
+static ANTLR3_BITWORD FOLLOW_expression_in_named_expression238_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_expression_in_named_expression238 = {
+  FOLLOW_expression_in_named_expression238_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_EMPTY_EXPRESSION_in_expression264  */
+static ANTLR3_BITWORD FOLLOW_EMPTY_EXPRESSION_in_expression264_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_EMPTY_EXPRESSION_in_expression264 = {
+  FOLLOW_EMPTY_EXPRESSION_in_expression264_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_list_of_in_expression277  */
+static ANTLR3_BITWORD FOLLOW_list_of_in_expression277_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_list_of_in_expression277 = {
+  FOLLOW_list_of_in_expression277_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_set_in_expression292  */
+static ANTLR3_BITWORD FOLLOW_requirement_set_in_expression292_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_requirement_set_in_expression292 = {
+  FOLLOW_requirement_set_in_expression292_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_REQUIREMENT_SET_in_requirement_set322  */
+static ANTLR3_BITWORD FOLLOW_REQUIREMENT_SET_in_requirement_set322_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_REQUIREMENT_SET_in_requirement_set322 = {
+  FOLLOW_REQUIREMENT_SET_in_requirement_set322_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_in_requirement_set325  */
+static ANTLR3_BITWORD FOLLOW_requirement_in_requirement_set325_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000010008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_requirement_in_requirement_set325 = {
+  FOLLOW_requirement_in_requirement_set325_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_simple_requirement_in_requirement347  */
+static ANTLR3_BITWORD FOLLOW_simple_requirement_in_requirement347_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_simple_requirement_in_requirement347 = {
+  FOLLOW_simple_requirement_in_requirement347_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_conditional_requirement_in_requirement355  */
+static ANTLR3_BITWORD FOLLOW_conditional_requirement_in_requirement355_bits[] =
+  { ANTLR3_UINT64_LIT(0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_conditional_requirement_in_requirement355 = {
+  FOLLOW_conditional_requirement_in_requirement355_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_REQUIREMENT_in_conditional_requirement378  */
+static ANTLR3_BITWORD FOLLOW_REQUIREMENT_in_conditional_requirement378_bits[] =
+  { ANTLR3_UINT64_LIT(0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_REQUIREMENT_in_conditional_requirement378 = {
+  FOLLOW_REQUIREMENT_in_conditional_requirement378_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_public_tag_in_conditional_requirement380  */
+static ANTLR3_BITWORD FOLLOW_public_tag_in_conditional_requirement380_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000020000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_public_tag_in_conditional_requirement380 = {
+  FOLLOW_public_tag_in_conditional_requirement380_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_CONDITION_in_conditional_requirement384  */
+static ANTLR3_BITWORD FOLLOW_CONDITION_in_conditional_requirement384_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_CONDITION_in_conditional_requirement384 = {
+  FOLLOW_CONDITION_in_conditional_requirement384_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_conditional_requirement389  */
+static ANTLR3_BITWORD FOLLOW_feature_in_conditional_requirement389_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000440000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_conditional_requirement389 = {
+  FOLLOW_feature_in_conditional_requirement389_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_COLON_in_conditional_requirement395  */
+static ANTLR3_BITWORD FOLLOW_COLON_in_conditional_requirement395_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_COLON_in_conditional_requirement395 = {
+  FOLLOW_COLON_in_conditional_requirement395_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_conditional_requirement400  */
+static ANTLR3_BITWORD FOLLOW_feature_in_conditional_requirement400_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_conditional_requirement400 = {
+  FOLLOW_feature_in_conditional_requirement400_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_REQUIREMENT_in_simple_requirement424  */
+static ANTLR3_BITWORD FOLLOW_REQUIREMENT_in_simple_requirement424_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_REQUIREMENT_in_simple_requirement424 = {
+  FOLLOW_REQUIREMENT_in_simple_requirement424_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_public_tag_in_simple_requirement426  */
+static ANTLR3_BITWORD FOLLOW_public_tag_in_simple_requirement426_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000440000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_public_tag_in_simple_requirement426 = {
+  FOLLOW_public_tag_in_simple_requirement426_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_simple_requirement429  */
+static ANTLR3_BITWORD FOLLOW_feature_in_simple_requirement429_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_simple_requirement429 = {
+  FOLLOW_feature_in_simple_requirement429_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_FEATURE_in_feature447  */
+static ANTLR3_BITWORD FOLLOW_FEATURE_in_feature447_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_FEATURE_in_feature447 = {
+  FOLLOW_FEATURE_in_feature447_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature449  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature449_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000004040) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature449 = {
+  FOLLOW_ID_in_feature449_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_value_in_feature451  */
+static ANTLR3_BITWORD FOLLOW_feature_value_in_feature451_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_value_in_feature451 = {
+  FOLLOW_feature_value_in_feature451_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_in_feature_value469  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_in_feature_value469_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_feature_value469 = {
+  FOLLOW_path_like_seq_in_feature_value469_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_in_feature_value476  */
+static ANTLR3_BITWORD FOLLOW_target_ref_in_feature_value476_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_in_feature_value476 = {
+  FOLLOW_target_ref_in_feature_value476_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_LIST_OF_in_list_of491  */
+static ANTLR3_BITWORD FOLLOW_LIST_OF_in_list_of491_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_LIST_OF_in_list_of491 = {
+  FOLLOW_LIST_OF_in_list_of491_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_list_of_impl_in_list_of494  */
+static ANTLR3_BITWORD FOLLOW_list_of_impl_in_list_of494_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000004068)
+};
+static ANTLR3_BITSET_LIST FOLLOW_list_of_impl_in_list_of494 = {
+  FOLLOW_list_of_impl_in_list_of494_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_in_list_of_impl526  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_in_list_of_impl526_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_list_of_impl526 = {
+  FOLLOW_path_like_seq_in_list_of_impl526_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_def_or_rule_call_in_list_of_impl533  */
+static ANTLR3_BITWORD FOLLOW_target_def_or_rule_call_in_list_of_impl533_bits[] =
+  { ANTLR3_UINT64_LIT(0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_target_def_or_rule_call_in_list_of_impl533 = {
+  FOLLOW_target_def_or_rule_call_in_list_of_impl533_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_in_list_of_impl540  */
+static ANTLR3_BITWORD FOLLOW_target_ref_in_list_of_impl540_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_in_list_of_impl540 = {
+  FOLLOW_target_ref_in_list_of_impl540_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_TARGET_REF_in_target_ref564  */
+static ANTLR3_BITWORD FOLLOW_TARGET_REF_in_target_ref564_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_TARGET_REF_in_target_ref564 = {
+  FOLLOW_TARGET_REF_in_target_ref564_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_public_tag_in_target_ref566  */
+static ANTLR3_BITWORD FOLLOW_public_tag_in_target_ref566_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000004000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_public_tag_in_target_ref566 = {
+  FOLLOW_public_tag_in_target_ref566_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_in_target_ref569  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_in_target_ref569_bits[] = {
+  ANTLR3_UINT64_LIT(0x000000000000B088)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_in_target_ref569 = {
+  FOLLOW_path_like_seq_in_target_ref569_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_name_in_target_ref571  */
+static ANTLR3_BITWORD FOLLOW_target_ref_name_in_target_ref571_bits[] = {
+  ANTLR3_UINT64_LIT(0x000000000000B008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_name_in_target_ref571 = {
+  FOLLOW_target_ref_name_in_target_ref571_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_ref_requirements_in_target_ref574  */
+static ANTLR3_BITWORD FOLLOW_target_ref_requirements_in_target_ref574_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_target_ref_requirements_in_target_ref574 = {
+  FOLLOW_target_ref_requirements_in_target_ref574_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_PUBLIC_TAG_in_public_tag593  */
+static ANTLR3_BITWORD FOLLOW_PUBLIC_TAG_in_public_tag593_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_PUBLIC_TAG_in_public_tag593 = {
+  FOLLOW_PUBLIC_TAG_in_public_tag593_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_TARGET_NAME_in_target_ref_name613  */
+static ANTLR3_BITWORD FOLLOW_TARGET_NAME_in_target_ref_name613_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_TARGET_NAME_in_target_ref_name613 = {
+  FOLLOW_TARGET_NAME_in_target_ref_name613_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615  */
+static ANTLR3_BITWORD FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615 = {
+  FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_TARGET_NAME_in_target_ref_name622  */
+static ANTLR3_BITWORD FOLLOW_TARGET_NAME_in_target_ref_name622_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_TARGET_NAME_in_target_ref_name622 = {
+  FOLLOW_TARGET_NAME_in_target_ref_name622_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_target_ref_name624  */
+static ANTLR3_BITWORD FOLLOW_ID_in_target_ref_name624_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_target_ref_name624 = {
+  FOLLOW_ID_in_target_ref_name624_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_requirement_set_in_target_ref_requirements645  */
+static ANTLR3_BITWORD
+  FOLLOW_requirement_set_in_target_ref_requirements645_bits[] = {
+    ANTLR3_UINT64_LIT(0x0000000000000002)
+  };
+static ANTLR3_BITSET_LIST FOLLOW_requirement_set_in_target_ref_requirements645 =
+  { FOLLOW_requirement_set_in_target_ref_requirements645_bits, 1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673  */
+static ANTLR3_BITWORD FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673 = {
+  FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_SLASH_in_path_like_seq675  */
+static ANTLR3_BITWORD FOLLOW_SLASH_in_path_like_seq675_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000200000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_SLASH_in_path_like_seq675 = {
+  FOLLOW_SLASH_in_path_like_seq675_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_impl_in_path_like_seq677  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq677_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq677 = {
+  FOLLOW_path_like_seq_impl_in_path_like_seq677_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687  */
+static ANTLR3_BITWORD FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687 = {
+  FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_path_like_seq_impl_in_path_like_seq689  */
+static ANTLR3_BITWORD FOLLOW_path_like_seq_impl_in_path_like_seq689_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_path_like_seq_impl_in_path_like_seq689 = {
+  FOLLOW_path_like_seq_impl_in_path_like_seq689_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_path_like_seq_impl713  */
+static ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl713_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl713 = {
+  FOLLOW_ID_in_path_like_seq_impl713_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_path_like_seq_impl722  */
+static ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl722_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000200000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl722 = {
+  FOLLOW_ID_in_path_like_seq_impl722_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_path_like_seq_impl724  */
+static ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl724_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000200000)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl724 = {
+  FOLLOW_ID_in_path_like_seq_impl724_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_path_like_seq_impl729  */
+static ANTLR3_BITWORD FOLLOW_ID_in_path_like_seq_impl729_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_path_like_seq_impl729 = {
+  FOLLOW_ID_in_path_like_seq_impl729_bits,
+  1
+};
 
 /* ==============================================
  * Parsing rules
  */
 /**
  * $ANTLR start hamfile
- * hammer_sema.gt:21:1: hamfile returns [const hammer::ast::hamfile* result] : ^( HAMFILE ( statement[&statements] )* ) ;
+ * hammer_sema.gt:21:1: hamfile returns [const hammer::ast::hamfile* result] :
+ * ^( HAMFILE ( statement[&statements] )* ) ;
  */
 static const hammer::ast::hamfile*
 hamfile(phammer_sema ctx)
 {
-    const hammer::ast::hamfile* result = NULL;
+  const hammer::ast::hamfile* result = NULL;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
-
-     DECLARE_TYPE(hammer::ast::statements_t, statements);
+  DECLARE_TYPE(hammer::ast::statements_t, statements);
+  {
+    // hammer_sema.gt:23:9: ( ^( HAMFILE ( statement[&statements] )* ) )
+    // hammer_sema.gt:23:11: ^( HAMFILE ( statement[&statements] )* )
     {
-        // hammer_sema.gt:23:9: ( ^( HAMFILE ( statement[&statements] )* ) )
-        // hammer_sema.gt:23:11: ^( HAMFILE ( statement[&statements] )* )
-        {
-             MATCHT(HAMFILE, &FOLLOW_HAMFILE_in_hamfile88);
-            if  (HASEXCEPTION())
-            {
-                goto rulehamfileEx;
-            }
+      MATCHT(HAMFILE, &FOLLOW_HAMFILE_in_hamfile88);
+      if (HASEXCEPTION()) {
+        goto rulehamfileEx;
+      }
 
-
-            if ( LA(1)==ANTLR3_TOKEN_DOWN ) {
-                MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-                if  (HASEXCEPTION())
-                {
-                    goto rulehamfileEx;
-                }
-
-
-                // hammer_sema.gt:23:21: ( statement[&statements] )*
-
-                for (;;)
-                {
-                    int alt1=2;
-                    {
-                       /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                        */
-                        int LA1_0 = LA(1);
-                        if ( (LA1_0 == TARGET_DECL_OR_RULE_CALL) )
-                        {
-                            alt1=1;
-                        }
-
-                    }
-                    switch (alt1)
-                    {
-                	case 1:
-                	    // hammer_sema.gt:23:21: statement[&statements]
-                	    {
-                	        FOLLOWPUSH(FOLLOW_statement_in_hamfile90);
-                	        statement(ctx, &statements);
-
-                	        FOLLOWPOP();
-                	        if  (HASEXCEPTION())
-                	        {
-                	            goto rulehamfileEx;
-                	        }
-
-
-                	    }
-                	    break;
-
-                	default:
-                	    goto loop1;	/* break out of the loop */
-                	    break;
-                    }
-                }
-                loop1: ; /* Jump out to here if this rule does not match */
-
-
-                MATCHT(ANTLR3_TOKEN_UP, NULL);
-                if  (HASEXCEPTION())
-                {
-                    goto rulehamfileEx;
-                }
-
-            }
-            {
-                 result = SEMA->on_hamfile(statements);
-            }
-
+      if (LA(1) == ANTLR3_TOKEN_DOWN) {
+        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+        if (HASEXCEPTION()) {
+          goto rulehamfileEx;
         }
 
+        // hammer_sema.gt:23:21: ( statement[&statements] )*
+
+        for (;;) {
+          int alt1 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA1_0 = LA(1);
+            if ((LA1_0 == TARGET_DECL_OR_RULE_CALL)) {
+              alt1 = 1;
+            }
+          }
+          switch (alt1) {
+            case 1:
+              // hammer_sema.gt:23:21: statement[&statements]
+              {
+                FOLLOWPUSH(FOLLOW_statement_in_hamfile90);
+                statement(ctx, &statements);
+
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto rulehamfileEx;
+                }
+              }
+              break;
+
+            default:
+              goto loop1; /* break out of the loop */
+              break;
+          }
+        }
+      loop1:; /* Jump out to here if this rule does not match */
+
+        MATCHT(ANTLR3_TOKEN_UP, NULL);
+        if (HASEXCEPTION()) {
+          goto rulehamfileEx;
+        }
+      }
+      {
+        result = SEMA->on_hamfile(statements);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulehamfileEx; /* Prevent compiler warnings */
+rulehamfileEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulehamfileEx; /* Prevent compiler warnings */
-    rulehamfileEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end hamfile */
 
 /**
  * $ANTLR start statement
- * hammer_sema.gt:26:1: statement[hammer::ast::statements_t* statements] : target_def_or_rule_call EXP_END ;
+ * hammer_sema.gt:26:1: statement[hammer::ast::statements_t* statements] :
+ * target_def_or_rule_call EXP_END ;
  */
 static void
 statement(phammer_sema ctx, hammer::ast::statements_t* statements)
 {
-    const hammer::ast::expression* target_def_or_rule_call1;
-    #undef	RETURN_TYPE_target_def_or_rule_call1
-    #define	RETURN_TYPE_target_def_or_rule_call1 const hammer::ast::expression*
+  const hammer::ast::expression* target_def_or_rule_call1;
+#undef RETURN_TYPE_target_def_or_rule_call1
+#define RETURN_TYPE_target_def_or_rule_call1 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  target_def_or_rule_call1 = NULL;
 
-    target_def_or_rule_call1 = NULL;
-
+  {
+    // hammer_sema.gt:27:2: ( target_def_or_rule_call EXP_END )
+    // hammer_sema.gt:27:4: target_def_or_rule_call EXP_END
     {
-        // hammer_sema.gt:27:2: ( target_def_or_rule_call EXP_END )
-        // hammer_sema.gt:27:4: target_def_or_rule_call EXP_END
-        {
-            FOLLOWPUSH(FOLLOW_target_def_or_rule_call_in_statement122);
-            target_def_or_rule_call1=target_def_or_rule_call(ctx);
+      FOLLOWPUSH(FOLLOW_target_def_or_rule_call_in_statement122);
+      target_def_or_rule_call1 = target_def_or_rule_call(ctx);
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulestatementEx;
-            }
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulestatementEx;
+      }
 
-             MATCHT(EXP_END, &FOLLOW_EXP_END_in_statement124);
-            if  (HASEXCEPTION())
-            {
-                goto rulestatementEx;
-            }
+      MATCHT(EXP_END, &FOLLOW_EXP_END_in_statement124);
+      if (HASEXCEPTION()) {
+        goto rulestatementEx;
+      }
 
-            {
-                 statements->push_back(target_def_or_rule_call1);
-            }
-
-        }
-
+      {
+        statements->push_back(target_def_or_rule_call1);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulestatementEx; /* Prevent compiler warnings */
+rulestatementEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulestatementEx; /* Prevent compiler warnings */
-    rulestatementEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end statement */
 
 /**
  * $ANTLR start target_def_or_rule_call
- * hammer_sema.gt:30:1: target_def_or_rule_call returns [const hammer::ast::expression* result] : ^( TARGET_DECL_OR_RULE_CALL name= ID arguments[&args] ) ;
+ * hammer_sema.gt:30:1: target_def_or_rule_call returns [const
+ * hammer::ast::expression* result] : ^( TARGET_DECL_OR_RULE_CALL name= ID
+ * arguments[&args] ) ;
  */
 static const hammer::ast::expression*
 target_def_or_rule_call(phammer_sema ctx)
 {
-    const hammer::ast::expression* result = NULL;
+  const hammer::ast::expression* result = NULL;
 
-    pANTLR3_BASE_TREE    name;
+  pANTLR3_BASE_TREE name;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  DECLARE_TYPE(hammer::ast::expressions_t, args);
+  name = NULL;
 
-     DECLARE_TYPE(hammer::ast::expressions_t, args);
-    name       = NULL;
-
+  {
+    // hammer_sema.gt:32:2: ( ^( TARGET_DECL_OR_RULE_CALL name= ID
+    // arguments[&args] ) )
+    // hammer_sema.gt:32:4: ^( TARGET_DECL_OR_RULE_CALL name= ID
+    // arguments[&args] )
     {
-        // hammer_sema.gt:32:2: ( ^( TARGET_DECL_OR_RULE_CALL name= ID arguments[&args] ) )
-        // hammer_sema.gt:32:4: ^( TARGET_DECL_OR_RULE_CALL name= ID arguments[&args] )
-        {
-             MATCHT(TARGET_DECL_OR_RULE_CALL, &FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_def_or_rule_callEx;
-            }
+      MATCHT(TARGET_DECL_OR_RULE_CALL,
+             &FOLLOW_TARGET_DECL_OR_RULE_CALL_in_target_def_or_rule_call146);
+      if (HASEXCEPTION()) {
+        goto ruletarget_def_or_rule_callEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletarget_def_or_rule_callEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_def_or_rule_callEx;
-            }
+      name =
+        (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_target_def_or_rule_call150);
+      if (HASEXCEPTION()) {
+        goto ruletarget_def_or_rule_callEx;
+      }
 
-            name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_def_or_rule_call150);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_def_or_rule_callEx;
-            }
+      FOLLOWPUSH(FOLLOW_arguments_in_target_def_or_rule_call152);
+      arguments(ctx, &args);
 
-            FOLLOWPUSH(FOLLOW_arguments_in_target_def_or_rule_call152);
-            arguments(ctx, &args);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruletarget_def_or_rule_callEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_def_or_rule_callEx;
-            }
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletarget_def_or_rule_callEx;
+      }
 
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_def_or_rule_callEx;
-            }
-
-            {
-                 result = SEMA->on_target_or_rule_call(name->getToken(name), args);
-            }
-
-        }
-
+      {
+        result = SEMA->on_target_or_rule_call(name->getToken(name), args);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_def_or_rule_callEx; /* Prevent compiler warnings */
+ruletarget_def_or_rule_callEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_def_or_rule_callEx; /* Prevent compiler warnings */
-    ruletarget_def_or_rule_callEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end target_def_or_rule_call */
 
 /**
  * $ANTLR start arguments
- * hammer_sema.gt:35:1: arguments[hammer::ast::expressions_t* args] : ^( ARGUMENTS ( argument ( COLON )? )* ) ;
+ * hammer_sema.gt:35:1: arguments[hammer::ast::expressions_t* args] : ^(
+ * ARGUMENTS ( argument ( COLON )? )* ) ;
  */
 static void
 arguments(phammer_sema ctx, hammer::ast::expressions_t* args)
 {
-    const hammer::ast::expression* argument2;
-    #undef	RETURN_TYPE_argument2
-    #define	RETURN_TYPE_argument2 const hammer::ast::expression*
+  const hammer::ast::expression* argument2;
+#undef RETURN_TYPE_argument2
+#define RETURN_TYPE_argument2 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  argument2 = NULL;
 
-    argument2 = NULL;
-
+  {
+    // hammer_sema.gt:36:9: ( ^( ARGUMENTS ( argument ( COLON )? )* ) )
+    // hammer_sema.gt:36:11: ^( ARGUMENTS ( argument ( COLON )? )* )
     {
-        // hammer_sema.gt:36:9: ( ^( ARGUMENTS ( argument ( COLON )? )* ) )
-        // hammer_sema.gt:36:11: ^( ARGUMENTS ( argument ( COLON )? )* )
-        {
-             MATCHT(ARGUMENTS, &FOLLOW_ARGUMENTS_in_arguments177);
-            if  (HASEXCEPTION())
-            {
-                goto ruleargumentsEx;
-            }
+      MATCHT(ARGUMENTS, &FOLLOW_ARGUMENTS_in_arguments177);
+      if (HASEXCEPTION()) {
+        goto ruleargumentsEx;
+      }
 
-
-            if ( LA(1)==ANTLR3_TOKEN_DOWN ) {
-                MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-                if  (HASEXCEPTION())
-                {
-                    goto ruleargumentsEx;
-                }
-
-
-                // hammer_sema.gt:36:23: ( argument ( COLON )? )*
-
-                for (;;)
-                {
-                    int alt3=2;
-                    {
-                       /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                        */
-                        int LA3_0 = LA(1);
-                        if ( (LA3_0 == NAMED_EXPRESSION || ((LA3_0 >= EMPTY_EXPRESSION) && (LA3_0 <= LIST_OF)) || LA3_0 == REQUIREMENT_SET) )
-                        {
-                            alt3=1;
-                        }
-
-                    }
-                    switch (alt3)
-                    {
-                	case 1:
-                	    // hammer_sema.gt:36:24: argument ( COLON )?
-                	    {
-                	        FOLLOWPUSH(FOLLOW_argument_in_arguments180);
-                	        argument2=argument(ctx);
-
-                	        FOLLOWPOP();
-                	        if  (HASEXCEPTION())
-                	        {
-                	            goto ruleargumentsEx;
-                	        }
-
-
-                	        // hammer_sema.gt:36:33: ( COLON )?
-                	        {
-                	            int alt2=2;
-                	            {
-                	                int LA2_0 = LA(1);
-                	                if ( (LA2_0 == COLON) )
-                	                {
-                	                    alt2=1;
-                	                }
-                	            }
-                	            switch (alt2)
-                	            {
-                	        	case 1:
-                	        	    // hammer_sema.gt:36:33: COLON
-                	        	    {
-                	        	         MATCHT(COLON, &FOLLOW_COLON_in_arguments182);
-                	        	        if  (HASEXCEPTION())
-                	        	        {
-                	        	            goto ruleargumentsEx;
-                	        	        }
-
-
-                	        	    }
-                	        	    break;
-
-                	            }
-                	        }
-                	        {
-                	             args->push_back(argument2);
-                	        }
-
-                	    }
-                	    break;
-
-                	default:
-                	    goto loop3;	/* break out of the loop */
-                	    break;
-                    }
-                }
-                loop3: ; /* Jump out to here if this rule does not match */
-
-
-                MATCHT(ANTLR3_TOKEN_UP, NULL);
-                if  (HASEXCEPTION())
-                {
-                    goto ruleargumentsEx;
-                }
-
-            }
-
+      if (LA(1) == ANTLR3_TOKEN_DOWN) {
+        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+        if (HASEXCEPTION()) {
+          goto ruleargumentsEx;
         }
 
+        // hammer_sema.gt:36:23: ( argument ( COLON )? )*
+
+        for (;;) {
+          int alt3 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA3_0 = LA(1);
+            if ((LA3_0 == NAMED_EXPRESSION ||
+                 ((LA3_0 >= EMPTY_EXPRESSION) && (LA3_0 <= LIST_OF)) ||
+                 LA3_0 == REQUIREMENT_SET)) {
+              alt3 = 1;
+            }
+          }
+          switch (alt3) {
+            case 1:
+              // hammer_sema.gt:36:24: argument ( COLON )?
+              {
+                FOLLOWPUSH(FOLLOW_argument_in_arguments180);
+                argument2 = argument(ctx);
+
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto ruleargumentsEx;
+                }
+
+                // hammer_sema.gt:36:33: ( COLON )?
+                {
+                  int alt2 = 2;
+                  {
+                    int LA2_0 = LA(1);
+                    if ((LA2_0 == COLON)) {
+                      alt2 = 1;
+                    }
+                  }
+                  switch (alt2) {
+                    case 1:
+                      // hammer_sema.gt:36:33: COLON
+                      {
+                        MATCHT(COLON, &FOLLOW_COLON_in_arguments182);
+                        if (HASEXCEPTION()) {
+                          goto ruleargumentsEx;
+                        }
+                      }
+                      break;
+                  }
+                }
+                {
+                  args->push_back(argument2);
+                }
+              }
+              break;
+
+            default:
+              goto loop3; /* break out of the loop */
+              break;
+          }
+        }
+      loop3:; /* Jump out to here if this rule does not match */
+
+        MATCHT(ANTLR3_TOKEN_UP, NULL);
+        if (HASEXCEPTION()) {
+          goto ruleargumentsEx;
+        }
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleargumentsEx; /* Prevent compiler warnings */
+ruleargumentsEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleargumentsEx; /* Prevent compiler warnings */
-    ruleargumentsEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end arguments */
 
 /**
  * $ANTLR start argument
- * hammer_sema.gt:39:1: argument returns [const hammer::ast::expression* result] : ( expression | named_expression );
+ * hammer_sema.gt:39:1: argument returns [const hammer::ast::expression* result]
+ * : ( expression | named_expression );
  */
 static const hammer::ast::expression*
 argument(phammer_sema ctx)
 {
-    const hammer::ast::expression* result = NULL;
+  const hammer::ast::expression* result = NULL;
 
-    const hammer::ast::expression* expression3;
-    #undef	RETURN_TYPE_expression3
-    #define	RETURN_TYPE_expression3 const hammer::ast::expression*
+  const hammer::ast::expression* expression3;
+#undef RETURN_TYPE_expression3
+#define RETURN_TYPE_expression3 const hammer::ast::expression*
 
-    const hammer::ast::expression* named_expression4;
-    #undef	RETURN_TYPE_named_expression4
-    #define	RETURN_TYPE_named_expression4 const hammer::ast::expression*
+  const hammer::ast::expression* named_expression4;
+#undef RETURN_TYPE_named_expression4
+#define RETURN_TYPE_named_expression4 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  expression3 = NULL;
+  named_expression4 = NULL;
 
-    expression3 = NULL;
-    named_expression4 = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:40:2: ( expression | named_expression )
+      //  hammer_sema.gt:40:2: ( expression | named_expression )
 
-            ANTLR3_UINT32 alt4;
+      ANTLR3_UINT32 alt4;
 
-            alt4=2;
+      alt4 = 2;
 
+      {
+        int LA4_0 = LA(1);
+        if ((((LA4_0 >= EMPTY_EXPRESSION) && (LA4_0 <= LIST_OF)) ||
+             LA4_0 == REQUIREMENT_SET)) {
+          alt4 = 1;
+        } else if ((LA4_0 == NAMED_EXPRESSION)) {
+          alt4 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 4;
+          EXCEPTION->state = 0;
 
-            {
-                int LA4_0 = LA(1);
-                if ( (((LA4_0 >= EMPTY_EXPRESSION) && (LA4_0 <= LIST_OF)) || LA4_0 == REQUIREMENT_SET) )
-                {
-                    alt4=1;
-                }
-                else if ( (LA4_0 == NAMED_EXPRESSION) )
-                {
-                    alt4=2;
-                }
-                else
-                {
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 4;
-                    EXCEPTION->state        = 0;
-
-
-                    goto ruleargumentEx;
-                }
-            }
-            switch (alt4)
-            {
-        	case 1:
-        	    // hammer_sema.gt:40:4: expression
-        	    {
-        	        FOLLOWPUSH(FOLLOW_expression_in_argument210);
-        	        expression3=expression(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleargumentEx;
-        	        }
-
-        	        {
-        	             result = expression3;
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:41:4: named_expression
-        	    {
-        	        FOLLOWPUSH(FOLLOW_named_expression_in_argument217);
-        	        named_expression4=named_expression(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleargumentEx;
-        	        }
-
-        	        {
-        	             result = named_expression4;
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto ruleargumentEx;
         }
+      }
+      switch (alt4) {
+        case 1:
+          // hammer_sema.gt:40:4: expression
+          {
+            FOLLOWPUSH(FOLLOW_expression_in_argument210);
+            expression3 = expression(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleargumentEx;
+            }
+
+            {
+              result = expression3;
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:41:4: named_expression
+          {
+            FOLLOWPUSH(FOLLOW_named_expression_in_argument217);
+            named_expression4 = named_expression(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleargumentEx;
+            }
+
+            {
+              result = named_expression4;
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleargumentEx; /* Prevent compiler warnings */
+ruleargumentEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleargumentEx; /* Prevent compiler warnings */
-    ruleargumentEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end argument */
 
 /**
  * $ANTLR start named_expression
- * hammer_sema.gt:44:1: named_expression returns [const hammer::ast::expression* result] : ^( NAMED_EXPRESSION ID expression ) ;
+ * hammer_sema.gt:44:1: named_expression returns [const hammer::ast::expression*
+ * result] : ^( NAMED_EXPRESSION ID expression ) ;
  */
 static const hammer::ast::expression*
 named_expression(phammer_sema ctx)
 {
-    const hammer::ast::expression* result = NULL;
+  const hammer::ast::expression* result = NULL;
 
-    pANTLR3_BASE_TREE    ID5;
-    const hammer::ast::expression* expression6;
-    #undef	RETURN_TYPE_expression6
-    #define	RETURN_TYPE_expression6 const hammer::ast::expression*
+  pANTLR3_BASE_TREE ID5;
+  const hammer::ast::expression* expression6;
+#undef RETURN_TYPE_expression6
+#define RETURN_TYPE_expression6 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  ID5 = NULL;
+  expression6 = NULL;
 
-    ID5       = NULL;
-    expression6 = NULL;
-
+  {
+    // hammer_sema.gt:45:2: ( ^( NAMED_EXPRESSION ID expression ) )
+    // hammer_sema.gt:45:4: ^( NAMED_EXPRESSION ID expression )
     {
-        // hammer_sema.gt:45:2: ( ^( NAMED_EXPRESSION ID expression ) )
-        // hammer_sema.gt:45:4: ^( NAMED_EXPRESSION ID expression )
-        {
-             MATCHT(NAMED_EXPRESSION, &FOLLOW_NAMED_EXPRESSION_in_named_expression234);
-            if  (HASEXCEPTION())
-            {
-                goto rulenamed_expressionEx;
-            }
+      MATCHT(NAMED_EXPRESSION, &FOLLOW_NAMED_EXPRESSION_in_named_expression234);
+      if (HASEXCEPTION()) {
+        goto rulenamed_expressionEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulenamed_expressionEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulenamed_expressionEx;
-            }
+      ID5 = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_named_expression236);
+      if (HASEXCEPTION()) {
+        goto rulenamed_expressionEx;
+      }
 
-            ID5 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_named_expression236);
-            if  (HASEXCEPTION())
-            {
-                goto rulenamed_expressionEx;
-            }
+      FOLLOWPUSH(FOLLOW_expression_in_named_expression238);
+      expression6 = expression(ctx);
 
-            FOLLOWPUSH(FOLLOW_expression_in_named_expression238);
-            expression6=expression(ctx);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulenamed_expressionEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulenamed_expressionEx;
-            }
+      {
+        result = SEMA->on_named_expr(ID5->getToken(ID5), expression6);
+      }
 
-            {
-                 result = SEMA->on_named_expr(ID5->getToken(ID5), expression6);
-            }
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulenamed_expressionEx;
-            }
-
-
-        }
-
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulenamed_expressionEx;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulenamed_expressionEx; /* Prevent compiler warnings */
+rulenamed_expressionEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulenamed_expressionEx; /* Prevent compiler warnings */
-    rulenamed_expressionEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end named_expression */
 
 /**
  * $ANTLR start expression
- * hammer_sema.gt:48:1: expression returns [const hammer::ast::expression* result] : ( EMPTY_EXPRESSION | list_of[&args] | requirement_set );
+ * hammer_sema.gt:48:1: expression returns [const hammer::ast::expression*
+ * result] : ( EMPTY_EXPRESSION | list_of[&args] | requirement_set );
  */
 static const hammer::ast::expression*
 expression(phammer_sema ctx)
 {
-    const hammer::ast::expression* result = NULL;
+  const hammer::ast::expression* result = NULL;
 
-    const hammer::ast::requirement_set* requirement_set7;
-    #undef	RETURN_TYPE_requirement_set7
-    #define	RETURN_TYPE_requirement_set7 const hammer::ast::requirement_set*
+  const hammer::ast::requirement_set* requirement_set7;
+#undef RETURN_TYPE_requirement_set7
+#define RETURN_TYPE_requirement_set7 const hammer::ast::requirement_set*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  DECLARE_TYPE(hammer::ast::expressions_t, args);
+  requirement_set7 = NULL;
 
-     DECLARE_TYPE(hammer::ast::expressions_t, args);
-    requirement_set7 = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:50:2: ( EMPTY_EXPRESSION | list_of[&args] | requirement_set )
+      //  hammer_sema.gt:50:2: ( EMPTY_EXPRESSION | list_of[&args] |
+      //  requirement_set )
 
-            ANTLR3_UINT32 alt5;
+      ANTLR3_UINT32 alt5;
 
-            alt5=3;
+      alt5 = 3;
 
-            switch ( LA(1) )
-            {
-            case EMPTY_EXPRESSION:
-            	{
-            		alt5=1;
-            	}
-                break;
-            case LIST_OF:
-            	{
-            		alt5=2;
-            	}
-                break;
-            case REQUIREMENT_SET:
-            	{
-            		alt5=3;
-            	}
-                break;
+      switch (LA(1)) {
+        case EMPTY_EXPRESSION: {
+          alt5 = 1;
+        } break;
+        case LIST_OF: {
+          alt5 = 2;
+        } break;
+        case REQUIREMENT_SET: {
+          alt5 = 3;
+        } break;
 
-            default:
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 5;
-                EXCEPTION->state        = 0;
+        default:
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 5;
+          EXCEPTION->state = 0;
 
+          goto ruleexpressionEx;
+      }
 
-                goto ruleexpressionEx;
+      switch (alt5) {
+        case 1:
+          // hammer_sema.gt:50:4: EMPTY_EXPRESSION
+          {
+            MATCHT(EMPTY_EXPRESSION, &FOLLOW_EMPTY_EXPRESSION_in_expression264);
+            if (HASEXCEPTION()) {
+              goto ruleexpressionEx;
             }
 
-            switch (alt5)
             {
-        	case 1:
-        	    // hammer_sema.gt:50:4: EMPTY_EXPRESSION
-        	    {
-        	         MATCHT(EMPTY_EXPRESSION, &FOLLOW_EMPTY_EXPRESSION_in_expression264);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleexpressionEx;
-        	        }
-
-        	        {
-
-        	            		// next tokens will be COLON or UP UP EXP_END
-        	            	   	if (LA(1) == COLON)
-        	            		   	result = SEMA->on_empty_expr(LT(1)->getToken(LT(1)));
-        	            		else
-        	            			result = SEMA->on_empty_expr(LT(3)->getToken(LT(3)));
-
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:57:11: list_of[&args]
-        	    {
-        	        FOLLOWPUSH(FOLLOW_list_of_in_expression277);
-        	        list_of(ctx, &args);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleexpressionEx;
-        	        }
-
-        	        {
-        	             result = SEMA->on_list_of(args);
-        	        }
-
-        	    }
-        	    break;
-        	case 3:
-        	    // hammer_sema.gt:58:11: requirement_set
-        	    {
-        	        FOLLOWPUSH(FOLLOW_requirement_set_in_expression292);
-        	        requirement_set7=requirement_set(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleexpressionEx;
-        	        }
-
-        	        {
-        	             result = requirement_set7;
-        	        }
-
-        	    }
-        	    break;
-
+              // next tokens will be COLON or UP UP EXP_END
+              if (LA(1) == COLON)
+                result = SEMA->on_empty_expr(LT(1)->getToken(LT(1)));
+              else
+                result = SEMA->on_empty_expr(LT(3)->getToken(LT(3)));
             }
-        }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:57:11: list_of[&args]
+          {
+            FOLLOWPUSH(FOLLOW_list_of_in_expression277);
+            list_of(ctx, &args);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleexpressionEx;
+            }
+
+            {
+              result = SEMA->on_list_of(args);
+            }
+          }
+          break;
+        case 3:
+          // hammer_sema.gt:58:11: requirement_set
+          {
+            FOLLOWPUSH(FOLLOW_requirement_set_in_expression292);
+            requirement_set7 = requirement_set(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleexpressionEx;
+            }
+
+            {
+              result = requirement_set7;
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleexpressionEx; /* Prevent compiler warnings */
+ruleexpressionEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleexpressionEx; /* Prevent compiler warnings */
-    ruleexpressionEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end expression */
 
 /**
  * $ANTLR start requirement_set
- * hammer_sema.gt:61:1: requirement_set returns [const hammer::ast::requirement_set* result] : ^( REQUIREMENT_SET ( requirement )+ ) ;
+ * hammer_sema.gt:61:1: requirement_set returns [const
+ * hammer::ast::requirement_set* result] : ^( REQUIREMENT_SET ( requirement )+ )
+ * ;
  */
 static const hammer::ast::requirement_set*
 requirement_set(phammer_sema ctx)
 {
-    const hammer::ast::requirement_set* result = NULL;
+  const hammer::ast::requirement_set* result = NULL;
 
-    const hammer::ast::requirement* requirement8;
-    #undef	RETURN_TYPE_requirement8
-    #define	RETURN_TYPE_requirement8 const hammer::ast::requirement*
+  const hammer::ast::requirement* requirement8;
+#undef RETURN_TYPE_requirement8
+#define RETURN_TYPE_requirement8 const hammer::ast::requirement*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  DECLARE_TYPE(hammer::ast::requirements_t, requirements);
+  requirement8 = NULL;
 
-     DECLARE_TYPE(hammer::ast::requirements_t, requirements);
-    requirement8 = NULL;
-
+  {
+    // hammer_sema.gt:63:3: ( ^( REQUIREMENT_SET ( requirement )+ ) )
+    // hammer_sema.gt:63:5: ^( REQUIREMENT_SET ( requirement )+ )
     {
-        // hammer_sema.gt:63:3: ( ^( REQUIREMENT_SET ( requirement )+ ) )
-        // hammer_sema.gt:63:5: ^( REQUIREMENT_SET ( requirement )+ )
-        {
-             MATCHT(REQUIREMENT_SET, &FOLLOW_REQUIREMENT_SET_in_requirement_set322);
-            if  (HASEXCEPTION())
-            {
-                goto rulerequirement_setEx;
+      MATCHT(REQUIREMENT_SET, &FOLLOW_REQUIREMENT_SET_in_requirement_set322);
+      if (HASEXCEPTION()) {
+        goto rulerequirement_setEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulerequirement_setEx;
+      }
+
+      // hammer_sema.gt:63:23: ( requirement )+
+      {
+        int cnt6 = 0;
+
+        for (;;) {
+          int alt6 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA6_0 = LA(1);
+            if ((LA6_0 == REQUIREMENT)) {
+              alt6 = 1;
             }
+          }
+          switch (alt6) {
+            case 1:
+              // hammer_sema.gt:63:24: requirement
+              {
+                FOLLOWPUSH(FOLLOW_requirement_in_requirement_set325);
+                requirement8 = requirement(ctx);
 
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulerequirement_setEx;
-            }
-
-            // hammer_sema.gt:63:23: ( requirement )+
-            {
-                int cnt6=0;
-
-                for (;;)
-                {
-                    int alt6=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA6_0 = LA(1);
-            	    if ( (LA6_0 == REQUIREMENT) )
-            	    {
-            	        alt6=1;
-            	    }
-
-            	}
-            	switch (alt6)
-            	{
-            	    case 1:
-            	        // hammer_sema.gt:63:24: requirement
-            	        {
-            	            FOLLOWPUSH(FOLLOW_requirement_in_requirement_set325);
-            	            requirement8=requirement(ctx);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto rulerequirement_setEx;
-            	            }
-
-            	            {
-            	                 requirements.push_back(requirement8);
-            	            }
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt6 >= 1 )
-            		{
-            		    goto loop6;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto rulerequirement_setEx;
-            	}
-            	cnt6++;
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto rulerequirement_setEx;
                 }
-                loop6: ;	/* Jump to here if this rule does not match */
-            }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulerequirement_setEx;
-            }
+                {
+                  requirements.push_back(requirement8);
+                }
+              }
+              break;
 
-            {
-                 result = SEMA->on_requirement_set(requirements);
-            }
+            default:
 
+              if (cnt6 >= 1) {
+                goto loop6;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+              goto rulerequirement_setEx;
+          }
+          cnt6++;
         }
+      loop6:; /* Jump to here if this rule does not match */
+      }
 
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulerequirement_setEx;
+      }
+
+      {
+        result = SEMA->on_requirement_set(requirements);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulerequirement_setEx; /* Prevent compiler warnings */
+rulerequirement_setEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulerequirement_setEx; /* Prevent compiler warnings */
-    rulerequirement_setEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end requirement_set */
 
 /**
  * $ANTLR start requirement
- * hammer_sema.gt:66:1: requirement returns [const hammer::ast::requirement* result] : ( simple_requirement | conditional_requirement );
+ * hammer_sema.gt:66:1: requirement returns [const hammer::ast::requirement*
+ * result] : ( simple_requirement | conditional_requirement );
  */
 static const hammer::ast::requirement*
 requirement(phammer_sema ctx)
 {
-    const hammer::ast::requirement* result = NULL;
+  const hammer::ast::requirement* result = NULL;
 
-    const hammer::ast::requirement* simple_requirement9;
-    #undef	RETURN_TYPE_simple_requirement9
-    #define	RETURN_TYPE_simple_requirement9 const hammer::ast::requirement*
+  const hammer::ast::requirement* simple_requirement9;
+#undef RETURN_TYPE_simple_requirement9
+#define RETURN_TYPE_simple_requirement9 const hammer::ast::requirement*
 
-    const hammer::ast::requirement* conditional_requirement10;
-    #undef	RETURN_TYPE_conditional_requirement10
-    #define	RETURN_TYPE_conditional_requirement10 const hammer::ast::requirement*
+  const hammer::ast::requirement* conditional_requirement10;
+#undef RETURN_TYPE_conditional_requirement10
+#define RETURN_TYPE_conditional_requirement10 const hammer::ast::requirement*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  simple_requirement9 = NULL;
+  conditional_requirement10 = NULL;
 
-    simple_requirement9 = NULL;
-    conditional_requirement10 = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:67:2: ( simple_requirement | conditional_requirement )
+      //  hammer_sema.gt:67:2: ( simple_requirement | conditional_requirement )
 
-            ANTLR3_UINT32 alt7;
+      ANTLR3_UINT32 alt7;
 
-            alt7=2;
+      alt7 = 2;
 
+      {
+        int LA7_0 = LA(1);
+        if ((LA7_0 == REQUIREMENT)) {
+          {
+            int LA7_1 = LA(2);
+            if ((LA7_1 == DOWN)) {
+              switch (LA(3)) {
+                case PUBLIC_TAG: {
+                  {
+                    int LA7_3 = LA(4);
+                    if ((LA7_3 == CONDITION)) {
+                      alt7 = 2;
+                    } else if ((LA7_3 == FEATURE)) {
+                      alt7 = 1;
+                    } else {
+                      CONSTRUCTEX();
+                      EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+                      EXCEPTION->message = (void*)"";
+                      EXCEPTION->decisionNum = 7;
+                      EXCEPTION->state = 3;
 
-            {
-                int LA7_0 = LA(1);
-                if ( (LA7_0 == REQUIREMENT) )
-                {
-
-                    {
-                        int LA7_1 = LA(2);
-                        if ( (LA7_1 == DOWN) )
-                        {
-                            switch ( LA(3) )
-                            {
-                            case PUBLIC_TAG:
-                            	{
-
-                            		{
-                            		    int LA7_3 = LA(4);
-                            		    if ( (LA7_3 == CONDITION) )
-                            		    {
-                            		        alt7=2;
-                            		    }
-                            		    else if ( (LA7_3 == FEATURE) )
-                            		    {
-                            		        alt7=1;
-                            		    }
-                            		    else
-                            		    {
-
-                            		        CONSTRUCTEX();
-                            		        EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                            		        EXCEPTION->message      = (void *)"";
-                            		        EXCEPTION->decisionNum  = 7;
-                            		        EXCEPTION->state        = 3;
-
-
-                            		        goto rulerequirementEx;
-                            		    }
-                            		}
-                            	}
-                                break;
-                            case FEATURE:
-                            	{
-                            		alt7=1;
-                            	}
-                                break;
-                            case CONDITION:
-                            	{
-                            		alt7=2;
-                            	}
-                                break;
-
-                            default:
-                                CONSTRUCTEX();
-                                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                                EXCEPTION->message      = (void *)"";
-                                EXCEPTION->decisionNum  = 7;
-                                EXCEPTION->state        = 2;
-
-
-                                goto rulerequirementEx;
-                            }
-
-                        }
-                        else
-                        {
-
-                            CONSTRUCTEX();
-                            EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                            EXCEPTION->message      = (void *)"";
-                            EXCEPTION->decisionNum  = 7;
-                            EXCEPTION->state        = 1;
-
-
-                            goto rulerequirementEx;
-                        }
+                      goto rulerequirementEx;
                     }
-                }
-                else
-                {
+                  }
+                } break;
+                case FEATURE: {
+                  alt7 = 1;
+                } break;
+                case CONDITION: {
+                  alt7 = 2;
+                } break;
 
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 7;
-                    EXCEPTION->state        = 0;
+                default:
+                  CONSTRUCTEX();
+                  EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+                  EXCEPTION->message = (void*)"";
+                  EXCEPTION->decisionNum = 7;
+                  EXCEPTION->state = 2;
 
+                  goto rulerequirementEx;
+              }
 
-                    goto rulerequirementEx;
-                }
+            } else {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 7;
+              EXCEPTION->state = 1;
+
+              goto rulerequirementEx;
             }
-            switch (alt7)
-            {
-        	case 1:
-        	    // hammer_sema.gt:67:4: simple_requirement
-        	    {
-        	        FOLLOWPUSH(FOLLOW_simple_requirement_in_requirement347);
-        	        simple_requirement9=simple_requirement(ctx);
+          }
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 7;
+          EXCEPTION->state = 0;
 
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulerequirementEx;
-        	        }
-
-        	        {
-        	             result = simple_requirement9;
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:68:4: conditional_requirement
-        	    {
-        	        FOLLOWPUSH(FOLLOW_conditional_requirement_in_requirement355);
-        	        conditional_requirement10=conditional_requirement(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulerequirementEx;
-        	        }
-
-        	        {
-        	             result = conditional_requirement10;
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto rulerequirementEx;
         }
+      }
+      switch (alt7) {
+        case 1:
+          // hammer_sema.gt:67:4: simple_requirement
+          {
+            FOLLOWPUSH(FOLLOW_simple_requirement_in_requirement347);
+            simple_requirement9 = simple_requirement(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulerequirementEx;
+            }
+
+            {
+              result = simple_requirement9;
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:68:4: conditional_requirement
+          {
+            FOLLOWPUSH(FOLLOW_conditional_requirement_in_requirement355);
+            conditional_requirement10 = conditional_requirement(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulerequirementEx;
+            }
+
+            {
+              result = conditional_requirement10;
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulerequirementEx; /* Prevent compiler warnings */
+rulerequirementEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulerequirementEx; /* Prevent compiler warnings */
-    rulerequirementEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end requirement */
 
 /**
  * $ANTLR start conditional_requirement
- * hammer_sema.gt:71:1: conditional_requirement returns [const hammer::ast::requirement* result] : ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION (con= feature )+ COLON ) res= feature ) ;
+ * hammer_sema.gt:71:1: conditional_requirement returns [const
+ * hammer::ast::requirement* result] : ^( REQUIREMENT public_tag[&tag_loc] ^(
+ * CONDITION (con= feature )+ COLON ) res= feature ) ;
  */
 static const hammer::ast::requirement*
 conditional_requirement(phammer_sema ctx)
 {
-    const hammer::ast::requirement* result = NULL;
+  const hammer::ast::requirement* result = NULL;
 
-    const hammer::ast::feature* con;
-    #undef	RETURN_TYPE_con
-    #define	RETURN_TYPE_con const hammer::ast::feature*
+  const hammer::ast::feature* con;
+#undef RETURN_TYPE_con
+#define RETURN_TYPE_con const hammer::ast::feature*
 
-    const hammer::ast::feature* res;
-    #undef	RETURN_TYPE_res
-    #define	RETURN_TYPE_res const hammer::ast::feature*
+  const hammer::ast::feature* res;
+#undef RETURN_TYPE_res
+#define RETURN_TYPE_res const hammer::ast::feature*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  DECLARE_TYPE(hammer::ast::features_t, features);
+  hammer::parscore::source_location tag_loc;
 
+  con = NULL;
+  res = NULL;
 
-       DECLARE_TYPE(hammer::ast::features_t, features);
-       hammer::parscore::source_location tag_loc;
-
-    con = NULL;
-    res = NULL;
-
+  {
+    // hammer_sema.gt:76:2: ( ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION
+    // (con= feature )+ COLON ) res= feature ) )
+    // hammer_sema.gt:76:4: ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION
+    // (con= feature )+ COLON ) res= feature )
     {
-        // hammer_sema.gt:76:2: ( ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION (con= feature )+ COLON ) res= feature ) )
-        // hammer_sema.gt:76:4: ^( REQUIREMENT public_tag[&tag_loc] ^( CONDITION (con= feature )+ COLON ) res= feature )
-        {
-             MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_conditional_requirement378);
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
+      MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_conditional_requirement378);
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      FOLLOWPUSH(FOLLOW_public_tag_in_conditional_requirement380);
+      public_tag(ctx, &tag_loc);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      MATCHT(CONDITION, &FOLLOW_CONDITION_in_conditional_requirement384);
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      // hammer_sema.gt:76:51: (con= feature )+
+      {
+        int cnt8 = 0;
+
+        for (;;) {
+          int alt8 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA8_0 = LA(1);
+            if ((LA8_0 == FEATURE)) {
+              alt8 = 1;
             }
+          }
+          switch (alt8) {
+            case 1:
+              // hammer_sema.gt:76:52: con= feature
+              {
+                FOLLOWPUSH(FOLLOW_feature_in_conditional_requirement389);
+                con = feature(ctx);
 
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-
-            FOLLOWPUSH(FOLLOW_public_tag_in_conditional_requirement380);
-            public_tag(ctx, &tag_loc);
-
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-
-             MATCHT(CONDITION, &FOLLOW_CONDITION_in_conditional_requirement384);
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-
-            // hammer_sema.gt:76:51: (con= feature )+
-            {
-                int cnt8=0;
-
-                for (;;)
-                {
-                    int alt8=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA8_0 = LA(1);
-            	    if ( (LA8_0 == FEATURE) )
-            	    {
-            	        alt8=1;
-            	    }
-
-            	}
-            	switch (alt8)
-            	{
-            	    case 1:
-            	        // hammer_sema.gt:76:52: con= feature
-            	        {
-            	            FOLLOWPUSH(FOLLOW_feature_in_conditional_requirement389);
-            	            con=feature(ctx);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto ruleconditional_requirementEx;
-            	            }
-
-            	            {
-            	                 features.push_back(con);
-            	            }
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt8 >= 1 )
-            		{
-            		    goto loop8;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto ruleconditional_requirementEx;
-            	}
-            	cnt8++;
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto ruleconditional_requirementEx;
                 }
-                loop8: ;	/* Jump to here if this rule does not match */
-            }
-             MATCHT(COLON, &FOLLOW_COLON_in_conditional_requirement395);
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
 
+                {
+                  features.push_back(con);
+                }
+              }
+              break;
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
+            default:
 
-            FOLLOWPUSH(FOLLOW_feature_in_conditional_requirement400);
-            res=feature(ctx);
+              if (cnt8 >= 1) {
+                goto loop8;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruleconditional_requirementEx;
-            }
-
-            {
-                 result = SEMA->on_conditional_requirement(tag_loc, features, res);
-            }
-
+              goto ruleconditional_requirementEx;
+          }
+          cnt8++;
         }
+      loop8:; /* Jump to here if this rule does not match */
+      }
+      MATCHT(COLON, &FOLLOW_COLON_in_conditional_requirement395);
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      FOLLOWPUSH(FOLLOW_feature_in_conditional_requirement400);
+      res = feature(ctx);
+
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruleconditional_requirementEx;
+      }
+
+      {
+        result = SEMA->on_conditional_requirement(tag_loc, features, res);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleconditional_requirementEx; /* Prevent compiler warnings */
+ruleconditional_requirementEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleconditional_requirementEx; /* Prevent compiler warnings */
-    ruleconditional_requirementEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end conditional_requirement */
 
 /**
  * $ANTLR start simple_requirement
- * hammer_sema.gt:79:1: simple_requirement returns [const hammer::ast::requirement* result] : ^( REQUIREMENT public_tag[&tag_loc] feature ) ;
+ * hammer_sema.gt:79:1: simple_requirement returns [const
+ * hammer::ast::requirement* result] : ^( REQUIREMENT public_tag[&tag_loc]
+ * feature ) ;
  */
 static const hammer::ast::requirement*
 simple_requirement(phammer_sema ctx)
 {
-    const hammer::ast::requirement* result = NULL;
+  const hammer::ast::requirement* result = NULL;
 
-    const hammer::ast::feature* feature11;
-    #undef	RETURN_TYPE_feature11
-    #define	RETURN_TYPE_feature11 const hammer::ast::feature*
+  const hammer::ast::feature* feature11;
+#undef RETURN_TYPE_feature11
+#define RETURN_TYPE_feature11 const hammer::ast::feature*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  hammer::parscore::source_location tag_loc;
+  feature11 = NULL;
 
-     hammer::parscore::source_location tag_loc;
-    feature11 = NULL;
-
+  {
+    // hammer_sema.gt:81:2: ( ^( REQUIREMENT public_tag[&tag_loc] feature ) )
+    // hammer_sema.gt:81:4: ^( REQUIREMENT public_tag[&tag_loc] feature )
     {
-        // hammer_sema.gt:81:2: ( ^( REQUIREMENT public_tag[&tag_loc] feature ) )
-        // hammer_sema.gt:81:4: ^( REQUIREMENT public_tag[&tag_loc] feature )
-        {
-             MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_simple_requirement424);
-            if  (HASEXCEPTION())
-            {
-                goto rulesimple_requirementEx;
-            }
+      MATCHT(REQUIREMENT, &FOLLOW_REQUIREMENT_in_simple_requirement424);
+      if (HASEXCEPTION()) {
+        goto rulesimple_requirementEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulesimple_requirementEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulesimple_requirementEx;
-            }
+      FOLLOWPUSH(FOLLOW_public_tag_in_simple_requirement426);
+      public_tag(ctx, &tag_loc);
 
-            FOLLOWPUSH(FOLLOW_public_tag_in_simple_requirement426);
-            public_tag(ctx, &tag_loc);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulesimple_requirementEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulesimple_requirementEx;
-            }
+      FOLLOWPUSH(FOLLOW_feature_in_simple_requirement429);
+      feature11 = feature(ctx);
 
-            FOLLOWPUSH(FOLLOW_feature_in_simple_requirement429);
-            feature11=feature(ctx);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulesimple_requirementEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulesimple_requirementEx;
-            }
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulesimple_requirementEx;
+      }
 
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulesimple_requirementEx;
-            }
-
-            {
-                 result = SEMA->on_simple_requirement(tag_loc, feature11);
-            }
-
-        }
-
+      {
+        result = SEMA->on_simple_requirement(tag_loc, feature11);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulesimple_requirementEx; /* Prevent compiler warnings */
+rulesimple_requirementEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulesimple_requirementEx; /* Prevent compiler warnings */
-    rulesimple_requirementEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end simple_requirement */
 
 /**
  * $ANTLR start feature
- * hammer_sema.gt:84:1: feature returns [const hammer::ast::feature* result] : ^( FEATURE ID feature_value ) ;
+ * hammer_sema.gt:84:1: feature returns [const hammer::ast::feature* result] :
+ * ^( FEATURE ID feature_value ) ;
  */
 static const hammer::ast::feature*
 feature(phammer_sema ctx)
 {
-    const hammer::ast::feature* result = NULL;
+  const hammer::ast::feature* result = NULL;
 
-    pANTLR3_BASE_TREE    ID12;
-    const hammer::ast::expression* feature_value13;
-    #undef	RETURN_TYPE_feature_value13
-    #define	RETURN_TYPE_feature_value13 const hammer::ast::expression*
+  pANTLR3_BASE_TREE ID12;
+  const hammer::ast::expression* feature_value13;
+#undef RETURN_TYPE_feature_value13
+#define RETURN_TYPE_feature_value13 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  ID12 = NULL;
+  feature_value13 = NULL;
 
-    ID12       = NULL;
-    feature_value13 = NULL;
-
+  {
+    // hammer_sema.gt:85:2: ( ^( FEATURE ID feature_value ) )
+    // hammer_sema.gt:85:4: ^( FEATURE ID feature_value )
     {
-        // hammer_sema.gt:85:2: ( ^( FEATURE ID feature_value ) )
-        // hammer_sema.gt:85:4: ^( FEATURE ID feature_value )
-        {
-             MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature447);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
+      MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature447);
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
+      ID12 = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_feature449);
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
 
-            ID12 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature449);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
+      FOLLOWPUSH(FOLLOW_feature_value_in_feature451);
+      feature_value13 = feature_value(ctx);
 
-            FOLLOWPUSH(FOLLOW_feature_value_in_feature451);
-            feature_value13=feature_value(ctx);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulefeatureEx;
+      }
 
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeatureEx;
-            }
-
-            {
-                 result = SEMA->on_feature(ID12->getToken(ID12), feature_value13);
-            }
-
-        }
-
+      {
+        result = SEMA->on_feature(ID12->getToken(ID12), feature_value13);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeatureEx; /* Prevent compiler warnings */
+rulefeatureEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeatureEx; /* Prevent compiler warnings */
-    rulefeatureEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end feature */
 
 /**
  * $ANTLR start feature_value
- * hammer_sema.gt:88:1: feature_value returns [const hammer::ast::expression* result] : ( path_like_seq | target_ref );
+ * hammer_sema.gt:88:1: feature_value returns [const hammer::ast::expression*
+ * result] : ( path_like_seq | target_ref );
  */
 static const hammer::ast::expression*
 feature_value(phammer_sema ctx)
 {
-    const hammer::ast::expression* result = NULL;
+  const hammer::ast::expression* result = NULL;
 
-    const hammer::ast::path_like_seq* path_like_seq14;
-    #undef	RETURN_TYPE_path_like_seq14
-    #define	RETURN_TYPE_path_like_seq14 const hammer::ast::path_like_seq*
+  const hammer::ast::path_like_seq* path_like_seq14;
+#undef RETURN_TYPE_path_like_seq14
+#define RETURN_TYPE_path_like_seq14 const hammer::ast::path_like_seq*
 
-    const hammer::ast::expression* target_ref15;
-    #undef	RETURN_TYPE_target_ref15
-    #define	RETURN_TYPE_target_ref15 const hammer::ast::expression*
+  const hammer::ast::expression* target_ref15;
+#undef RETURN_TYPE_target_ref15
+#define RETURN_TYPE_target_ref15 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  path_like_seq14 = NULL;
+  target_ref15 = NULL;
 
-    path_like_seq14 = NULL;
-    target_ref15 = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:89:2: ( path_like_seq | target_ref )
+      //  hammer_sema.gt:89:2: ( path_like_seq | target_ref )
 
-            ANTLR3_UINT32 alt9;
+      ANTLR3_UINT32 alt9;
 
-            alt9=2;
+      alt9 = 2;
 
+      {
+        int LA9_0 = LA(1);
+        if ((LA9_0 == PATH_LIKE_SEQ)) {
+          alt9 = 1;
+        } else if ((LA9_0 == TARGET_REF)) {
+          alt9 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 9;
+          EXCEPTION->state = 0;
 
-            {
-                int LA9_0 = LA(1);
-                if ( (LA9_0 == PATH_LIKE_SEQ) )
-                {
-                    alt9=1;
-                }
-                else if ( (LA9_0 == TARGET_REF) )
-                {
-                    alt9=2;
-                }
-                else
-                {
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 9;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulefeature_valueEx;
-                }
-            }
-            switch (alt9)
-            {
-        	case 1:
-        	    // hammer_sema.gt:89:4: path_like_seq
-        	    {
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_in_feature_value469);
-        	        path_like_seq14=path_like_seq(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeature_valueEx;
-        	        }
-
-        	        {
-        	             result = path_like_seq14;
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:90:4: target_ref
-        	    {
-        	        FOLLOWPUSH(FOLLOW_target_ref_in_feature_value476);
-        	        target_ref15=target_ref(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeature_valueEx;
-        	        }
-
-        	        {
-        	             result = target_ref15;
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto rulefeature_valueEx;
         }
+      }
+      switch (alt9) {
+        case 1:
+          // hammer_sema.gt:89:4: path_like_seq
+          {
+            FOLLOWPUSH(FOLLOW_path_like_seq_in_feature_value469);
+            path_like_seq14 = path_like_seq(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulefeature_valueEx;
+            }
+
+            {
+              result = path_like_seq14;
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:90:4: target_ref
+          {
+            FOLLOWPUSH(FOLLOW_target_ref_in_feature_value476);
+            target_ref15 = target_ref(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulefeature_valueEx;
+            }
+
+            {
+              result = target_ref15;
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeature_valueEx; /* Prevent compiler warnings */
+rulefeature_valueEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeature_valueEx; /* Prevent compiler warnings */
-    rulefeature_valueEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end feature_value */
 
 /**
  * $ANTLR start list_of
- * hammer_sema.gt:93:1: list_of[hammer::ast::expressions_t* args] : ^( LIST_OF ( list_of_impl )+ ) ;
+ * hammer_sema.gt:93:1: list_of[hammer::ast::expressions_t* args] : ^( LIST_OF (
+ * list_of_impl )+ ) ;
  */
 static void
 list_of(phammer_sema ctx, hammer::ast::expressions_t* args)
 {
-    const hammer::ast::expression* list_of_impl16;
-    #undef	RETURN_TYPE_list_of_impl16
-    #define	RETURN_TYPE_list_of_impl16 const hammer::ast::expression*
+  const hammer::ast::expression* list_of_impl16;
+#undef RETURN_TYPE_list_of_impl16
+#define RETURN_TYPE_list_of_impl16 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  list_of_impl16 = NULL;
 
-    list_of_impl16 = NULL;
-
+  {
+    // hammer_sema.gt:94:2: ( ^( LIST_OF ( list_of_impl )+ ) )
+    // hammer_sema.gt:94:4: ^( LIST_OF ( list_of_impl )+ )
     {
-        // hammer_sema.gt:94:2: ( ^( LIST_OF ( list_of_impl )+ ) )
-        // hammer_sema.gt:94:4: ^( LIST_OF ( list_of_impl )+ )
-        {
-             MATCHT(LIST_OF, &FOLLOW_LIST_OF_in_list_of491);
-            if  (HASEXCEPTION())
-            {
-                goto rulelist_ofEx;
+      MATCHT(LIST_OF, &FOLLOW_LIST_OF_in_list_of491);
+      if (HASEXCEPTION()) {
+        goto rulelist_ofEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulelist_ofEx;
+      }
+
+      // hammer_sema.gt:94:14: ( list_of_impl )+
+      {
+        int cnt10 = 0;
+
+        for (;;) {
+          int alt10 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA10_0 = LA(1);
+            if ((((LA10_0 >= TARGET_DECL_OR_RULE_CALL) &&
+                  (LA10_0 <= TARGET_REF)) ||
+                 LA10_0 == PATH_LIKE_SEQ)) {
+              alt10 = 1;
             }
+          }
+          switch (alt10) {
+            case 1:
+              // hammer_sema.gt:94:15: list_of_impl
+              {
+                FOLLOWPUSH(FOLLOW_list_of_impl_in_list_of494);
+                list_of_impl16 = list_of_impl(ctx);
 
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulelist_ofEx;
-            }
-
-            // hammer_sema.gt:94:14: ( list_of_impl )+
-            {
-                int cnt10=0;
-
-                for (;;)
-                {
-                    int alt10=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA10_0 = LA(1);
-            	    if ( (((LA10_0 >= TARGET_DECL_OR_RULE_CALL) && (LA10_0 <= TARGET_REF)) || LA10_0 == PATH_LIKE_SEQ) )
-            	    {
-            	        alt10=1;
-            	    }
-
-            	}
-            	switch (alt10)
-            	{
-            	    case 1:
-            	        // hammer_sema.gt:94:15: list_of_impl
-            	        {
-            	            FOLLOWPUSH(FOLLOW_list_of_impl_in_list_of494);
-            	            list_of_impl16=list_of_impl(ctx);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto rulelist_ofEx;
-            	            }
-
-            	            {
-            	                 args->push_back(list_of_impl16);
-            	            }
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt10 >= 1 )
-            		{
-            		    goto loop10;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto rulelist_ofEx;
-            	}
-            	cnt10++;
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto rulelist_ofEx;
                 }
-                loop10: ;	/* Jump to here if this rule does not match */
-            }
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulelist_ofEx;
-            }
+                {
+                  args->push_back(list_of_impl16);
+                }
+              }
+              break;
 
+            default:
 
+              if (cnt10 >= 1) {
+                goto loop10;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
+
+              goto rulelist_ofEx;
+          }
+          cnt10++;
         }
+      loop10:; /* Jump to here if this rule does not match */
+      }
 
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulelist_ofEx;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulelist_ofEx; /* Prevent compiler warnings */
+rulelist_ofEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulelist_ofEx; /* Prevent compiler warnings */
-    rulelist_ofEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end list_of */
 
 /**
  * $ANTLR start list_of_impl
- * hammer_sema.gt:97:1: list_of_impl returns [const hammer::ast::expression* result ] : ( path_like_seq | target_def_or_rule_call | target_ref );
+ * hammer_sema.gt:97:1: list_of_impl returns [const hammer::ast::expression*
+ * result ] : ( path_like_seq | target_def_or_rule_call | target_ref );
  */
 static const hammer::ast::expression*
 list_of_impl(phammer_sema ctx)
 {
-    const hammer::ast::expression* result = NULL;
+  const hammer::ast::expression* result = NULL;
 
-    const hammer::ast::path_like_seq* path_like_seq17;
-    #undef	RETURN_TYPE_path_like_seq17
-    #define	RETURN_TYPE_path_like_seq17 const hammer::ast::path_like_seq*
+  const hammer::ast::path_like_seq* path_like_seq17;
+#undef RETURN_TYPE_path_like_seq17
+#define RETURN_TYPE_path_like_seq17 const hammer::ast::path_like_seq*
 
-    const hammer::ast::expression* target_def_or_rule_call18;
-    #undef	RETURN_TYPE_target_def_or_rule_call18
-    #define	RETURN_TYPE_target_def_or_rule_call18 const hammer::ast::expression*
+  const hammer::ast::expression* target_def_or_rule_call18;
+#undef RETURN_TYPE_target_def_or_rule_call18
+#define RETURN_TYPE_target_def_or_rule_call18 const hammer::ast::expression*
 
-    const hammer::ast::expression* target_ref19;
-    #undef	RETURN_TYPE_target_ref19
-    #define	RETURN_TYPE_target_ref19 const hammer::ast::expression*
+  const hammer::ast::expression* target_ref19;
+#undef RETURN_TYPE_target_ref19
+#define RETURN_TYPE_target_ref19 const hammer::ast::expression*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  path_like_seq17 = NULL;
+  target_def_or_rule_call18 = NULL;
+  target_ref19 = NULL;
 
-    path_like_seq17 = NULL;
-    target_def_or_rule_call18 = NULL;
-    target_ref19 = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:98:2: ( path_like_seq | target_def_or_rule_call | target_ref )
+      //  hammer_sema.gt:98:2: ( path_like_seq | target_def_or_rule_call |
+      //  target_ref )
 
-            ANTLR3_UINT32 alt11;
+      ANTLR3_UINT32 alt11;
 
-            alt11=3;
+      alt11 = 3;
 
-            switch ( LA(1) )
-            {
-            case PATH_LIKE_SEQ:
-            	{
-            		alt11=1;
-            	}
-                break;
-            case TARGET_DECL_OR_RULE_CALL:
-            	{
-            		alt11=2;
-            	}
-                break;
-            case TARGET_REF:
-            	{
-            		alt11=3;
-            	}
-                break;
+      switch (LA(1)) {
+        case PATH_LIKE_SEQ: {
+          alt11 = 1;
+        } break;
+        case TARGET_DECL_OR_RULE_CALL: {
+          alt11 = 2;
+        } break;
+        case TARGET_REF: {
+          alt11 = 3;
+        } break;
 
-            default:
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 11;
-                EXCEPTION->state        = 0;
+        default:
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 11;
+          EXCEPTION->state = 0;
 
+          goto rulelist_of_implEx;
+      }
 
-                goto rulelist_of_implEx;
+      switch (alt11) {
+        case 1:
+          // hammer_sema.gt:98:4: path_like_seq
+          {
+            FOLLOWPUSH(FOLLOW_path_like_seq_in_list_of_impl526);
+            path_like_seq17 = path_like_seq(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
             }
 
-            switch (alt11)
             {
-        	case 1:
-        	    // hammer_sema.gt:98:4: path_like_seq
-        	    {
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_in_list_of_impl526);
-        	        path_like_seq17=path_like_seq(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-
-        	        {
-        	             result = path_like_seq17;
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:99:4: target_def_or_rule_call
-        	    {
-        	        FOLLOWPUSH(FOLLOW_target_def_or_rule_call_in_list_of_impl533);
-        	        target_def_or_rule_call18=target_def_or_rule_call(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-
-        	        {
-        	             result = target_def_or_rule_call18;
-        	        }
-
-        	    }
-        	    break;
-        	case 3:
-        	    // hammer_sema.gt:100:4: target_ref
-        	    {
-        	        FOLLOWPUSH(FOLLOW_target_ref_in_list_of_impl540);
-        	        target_ref19=target_ref(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulelist_of_implEx;
-        	        }
-
-        	        {
-        	             result = target_ref19;
-        	        }
-
-        	    }
-        	    break;
-
+              result = path_like_seq17;
             }
-        }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:99:4: target_def_or_rule_call
+          {
+            FOLLOWPUSH(FOLLOW_target_def_or_rule_call_in_list_of_impl533);
+            target_def_or_rule_call18 = target_def_or_rule_call(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
+            }
+
+            {
+              result = target_def_or_rule_call18;
+            }
+          }
+          break;
+        case 3:
+          // hammer_sema.gt:100:4: target_ref
+          {
+            FOLLOWPUSH(FOLLOW_target_ref_in_list_of_impl540);
+            target_ref19 = target_ref(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulelist_of_implEx;
+            }
+
+            {
+              result = target_ref19;
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulelist_of_implEx; /* Prevent compiler warnings */
+rulelist_of_implEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulelist_of_implEx; /* Prevent compiler warnings */
-    rulelist_of_implEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end list_of_impl */
 
 /**
  * $ANTLR start target_ref
- * hammer_sema.gt:103:1: target_ref returns [const hammer::ast::expression* result] : ^( TARGET_REF public_tag[&public_tag_loc] path_like_seq target_ref_name[&name] target_ref_requirements ) ;
+ * hammer_sema.gt:103:1: target_ref returns [const hammer::ast::expression*
+ * result] : ^( TARGET_REF public_tag[&public_tag_loc] path_like_seq
+ * target_ref_name[&name] target_ref_requirements ) ;
  */
 static const hammer::ast::expression*
 target_ref(phammer_sema ctx)
 {
-    const hammer::ast::expression* result = NULL;
+  const hammer::ast::expression* result = NULL;
 
-    const hammer::ast::path_like_seq* path_like_seq20;
-    #undef	RETURN_TYPE_path_like_seq20
-    #define	RETURN_TYPE_path_like_seq20 const hammer::ast::path_like_seq*
+  const hammer::ast::path_like_seq* path_like_seq20;
+#undef RETURN_TYPE_path_like_seq20
+#define RETURN_TYPE_path_like_seq20 const hammer::ast::path_like_seq*
 
-    const hammer::ast::requirement_set* target_ref_requirements21;
-    #undef	RETURN_TYPE_target_ref_requirements21
-    #define	RETURN_TYPE_target_ref_requirements21 const hammer::ast::requirement_set*
+  const hammer::ast::requirement_set* target_ref_requirements21;
+#undef RETURN_TYPE_target_ref_requirements21
+#define RETURN_TYPE_target_ref_requirements21                                  \
+  const hammer::ast::requirement_set*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  hammer::parscore::identifier name;
+  hammer::parscore::source_location public_tag_loc;
 
+  path_like_seq20 = NULL;
+  target_ref_requirements21 = NULL;
 
-       hammer::parscore::identifier name;
-       hammer::parscore::source_location public_tag_loc;
-
-    path_like_seq20 = NULL;
-    target_ref_requirements21 = NULL;
-
+  {
+    // hammer_sema.gt:109:2: ( ^( TARGET_REF public_tag[&public_tag_loc]
+    // path_like_seq target_ref_name[&name] target_ref_requirements ) )
+    // hammer_sema.gt:109:4: ^( TARGET_REF public_tag[&public_tag_loc]
+    // path_like_seq target_ref_name[&name] target_ref_requirements )
     {
-        // hammer_sema.gt:109:2: ( ^( TARGET_REF public_tag[&public_tag_loc] path_like_seq target_ref_name[&name] target_ref_requirements ) )
-        // hammer_sema.gt:109:4: ^( TARGET_REF public_tag[&public_tag_loc] path_like_seq target_ref_name[&name] target_ref_requirements )
-        {
-             MATCHT(TARGET_REF, &FOLLOW_TARGET_REF_in_target_ref564);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_refEx;
-            }
+      MATCHT(TARGET_REF, &FOLLOW_TARGET_REF_in_target_ref564);
+      if (HASEXCEPTION()) {
+        goto ruletarget_refEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletarget_refEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_refEx;
-            }
+      FOLLOWPUSH(FOLLOW_public_tag_in_target_ref566);
+      public_tag(ctx, &public_tag_loc);
 
-            FOLLOWPUSH(FOLLOW_public_tag_in_target_ref566);
-            public_tag(ctx, &public_tag_loc);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruletarget_refEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_refEx;
-            }
+      FOLLOWPUSH(FOLLOW_path_like_seq_in_target_ref569);
+      path_like_seq20 = path_like_seq(ctx);
 
-            FOLLOWPUSH(FOLLOW_path_like_seq_in_target_ref569);
-            path_like_seq20=path_like_seq(ctx);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruletarget_refEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_refEx;
-            }
+      FOLLOWPUSH(FOLLOW_target_ref_name_in_target_ref571);
+      target_ref_name(ctx, &name);
 
-            FOLLOWPUSH(FOLLOW_target_ref_name_in_target_ref571);
-            target_ref_name(ctx, &name);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruletarget_refEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_refEx;
-            }
+      FOLLOWPUSH(FOLLOW_target_ref_requirements_in_target_ref574);
+      target_ref_requirements21 = target_ref_requirements(ctx);
 
-            FOLLOWPUSH(FOLLOW_target_ref_requirements_in_target_ref574);
-            target_ref_requirements21=target_ref_requirements(ctx);
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto ruletarget_refEx;
+      }
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_refEx;
-            }
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletarget_refEx;
+      }
 
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletarget_refEx;
-            }
-
-            {
-                 result = SEMA->on_target_ref(public_tag_loc, path_like_seq20, name, target_ref_requirements21);
-            }
-
-        }
-
+      {
+        result = SEMA->on_target_ref(
+          public_tag_loc, path_like_seq20, name, target_ref_requirements21);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_refEx; /* Prevent compiler warnings */
+ruletarget_refEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_refEx; /* Prevent compiler warnings */
-    ruletarget_refEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end target_ref */
 
 /**
  * $ANTLR start public_tag
- * hammer_sema.gt:113:1: public_tag[hammer::parscore::source_location* tag_loc] : ( PUBLIC_TAG | );
+ * hammer_sema.gt:113:1: public_tag[hammer::parscore::source_location* tag_loc]
+ * : ( PUBLIC_TAG | );
  */
 static void
 public_tag(phammer_sema ctx, hammer::parscore::source_location* tag_loc)
 {
-    pANTLR3_BASE_TREE    PUBLIC_TAG22;
+  pANTLR3_BASE_TREE PUBLIC_TAG22;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  PUBLIC_TAG22 = NULL;
 
-    PUBLIC_TAG22       = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:114:2: ( PUBLIC_TAG | )
+      //  hammer_sema.gt:114:2: ( PUBLIC_TAG | )
 
-            ANTLR3_UINT32 alt12;
+      ANTLR3_UINT32 alt12;
 
-            alt12=2;
+      alt12 = 2;
 
+      {
+        int LA12_0 = LA(1);
+        if ((LA12_0 == PUBLIC_TAG)) {
+          alt12 = 1;
+        } else if ((LA12_0 == PATH_LIKE_SEQ ||
+                    ((LA12_0 >= CONDITION) && (LA12_0 <= FEATURE)))) {
+          alt12 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 12;
+          EXCEPTION->state = 0;
 
-            {
-                int LA12_0 = LA(1);
-                if ( (LA12_0 == PUBLIC_TAG) )
-                {
-                    alt12=1;
-                }
-                else if ( (LA12_0 == PATH_LIKE_SEQ || ((LA12_0 >= CONDITION) && (LA12_0 <= FEATURE))) )
-                {
-                    alt12=2;
-                }
-                else
-                {
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 12;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulepublic_tagEx;
-                }
-            }
-            switch (alt12)
-            {
-        	case 1:
-        	    // hammer_sema.gt:114:4: PUBLIC_TAG
-        	    {
-        	        PUBLIC_TAG22 = (pANTLR3_BASE_TREE) MATCHT(PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_public_tag593);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepublic_tagEx;
-        	        }
-
-        	        {
-        	             *tag_loc = hammer::parscore::source_location(PUBLIC_TAG22->getToken(PUBLIC_TAG22));
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:116:2:
-        	    {
-        	    }
-        	    break;
-
-            }
+          goto rulepublic_tagEx;
         }
+      }
+      switch (alt12) {
+        case 1:
+          // hammer_sema.gt:114:4: PUBLIC_TAG
+          {
+            PUBLIC_TAG22 = (pANTLR3_BASE_TREE)MATCHT(
+              PUBLIC_TAG, &FOLLOW_PUBLIC_TAG_in_public_tag593);
+            if (HASEXCEPTION()) {
+              goto rulepublic_tagEx;
+            }
+
+            {
+              *tag_loc = hammer::parscore::source_location(
+                PUBLIC_TAG22->getToken(PUBLIC_TAG22));
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:116:2:
+          {
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulepublic_tagEx; /* Prevent compiler warnings */
+rulepublic_tagEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulepublic_tagEx; /* Prevent compiler warnings */
-    rulepublic_tagEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end public_tag */
 
 /**
  * $ANTLR start target_ref_name
- * hammer_sema.gt:118:1: target_ref_name[hammer::parscore::identifier* name] : ( ^( TARGET_NAME EMPTY_TARGET_NAME ) | ^( TARGET_NAME ID ) | );
+ * hammer_sema.gt:118:1: target_ref_name[hammer::parscore::identifier* name] : (
+ * ^( TARGET_NAME EMPTY_TARGET_NAME ) | ^( TARGET_NAME ID ) | );
  */
 static void
 target_ref_name(phammer_sema ctx, hammer::parscore::identifier* name)
 {
-    pANTLR3_BASE_TREE    ID23;
+  pANTLR3_BASE_TREE ID23;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  ID23 = NULL;
 
-    ID23       = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:119:2: ( ^( TARGET_NAME EMPTY_TARGET_NAME ) | ^( TARGET_NAME ID ) | )
+      //  hammer_sema.gt:119:2: ( ^( TARGET_NAME EMPTY_TARGET_NAME ) | ^(
+      //  TARGET_NAME ID ) | )
 
-            ANTLR3_UINT32 alt13;
+      ANTLR3_UINT32 alt13;
 
-            alt13=3;
+      alt13 = 3;
 
+      {
+        int LA13_0 = LA(1);
+        if ((LA13_0 == TARGET_NAME)) {
+          {
+            int LA13_1 = LA(2);
+            if ((LA13_1 == DOWN)) {
+              {
+                int LA13_3 = LA(3);
+                if ((LA13_3 == EMPTY_TARGET_NAME)) {
+                  alt13 = 1;
+                } else if ((LA13_3 == ID)) {
+                  alt13 = 2;
+                } else {
+                  CONSTRUCTEX();
+                  EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+                  EXCEPTION->message = (void*)"";
+                  EXCEPTION->decisionNum = 13;
+                  EXCEPTION->state = 3;
 
-            {
-                int LA13_0 = LA(1);
-                if ( (LA13_0 == TARGET_NAME) )
-                {
-
-                    {
-                        int LA13_1 = LA(2);
-                        if ( (LA13_1 == DOWN) )
-                        {
-
-                            {
-                                int LA13_3 = LA(3);
-                                if ( (LA13_3 == EMPTY_TARGET_NAME) )
-                                {
-                                    alt13=1;
-                                }
-                                else if ( (LA13_3 == ID) )
-                                {
-                                    alt13=2;
-                                }
-                                else
-                                {
-
-                                    CONSTRUCTEX();
-                                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                                    EXCEPTION->message      = (void *)"";
-                                    EXCEPTION->decisionNum  = 13;
-                                    EXCEPTION->state        = 3;
-
-
-                                    goto ruletarget_ref_nameEx;
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                            CONSTRUCTEX();
-                            EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                            EXCEPTION->message      = (void *)"";
-                            EXCEPTION->decisionNum  = 13;
-                            EXCEPTION->state        = 1;
-
-
-                            goto ruletarget_ref_nameEx;
-                        }
-                    }
+                  goto ruletarget_ref_nameEx;
                 }
-                else if ( (LA13_0 == UP || LA13_0 == REQUIREMENT_SET) )
-                {
-                    alt13=3;
-                }
-                else
-                {
+              }
+            } else {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 13;
+              EXCEPTION->state = 1;
 
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 13;
-                    EXCEPTION->state        = 0;
-
-
-                    goto ruletarget_ref_nameEx;
-                }
+              goto ruletarget_ref_nameEx;
             }
-            switch (alt13)
-            {
-        	case 1:
-        	    // hammer_sema.gt:119:4: ^( TARGET_NAME EMPTY_TARGET_NAME )
-        	    {
-        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name613);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
+          }
+        } else if ((LA13_0 == UP || LA13_0 == REQUIREMENT_SET)) {
+          alt13 = 3;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 13;
+          EXCEPTION->state = 0;
 
-
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
-
-        	         MATCHT(EMPTY_TARGET_NAME, &FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
-
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:120:4: ^( TARGET_NAME ID )
-        	    {
-        	         MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name622);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
-
-        	        ID23 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target_ref_name624);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_nameEx;
-        	        }
-
-        	        {
-        	             *name = hammer::parscore::identifier(ID23->getToken(ID23));
-        	        }
-
-        	    }
-        	    break;
-        	case 3:
-        	    // hammer_sema.gt:122:2:
-        	    {
-        	    }
-        	    break;
-
-            }
+          goto ruletarget_ref_nameEx;
         }
+      }
+      switch (alt13) {
+        case 1:
+          // hammer_sema.gt:119:4: ^( TARGET_NAME EMPTY_TARGET_NAME )
+          {
+            MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name613);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+
+            MATCHT(EMPTY_TARGET_NAME,
+                   &FOLLOW_EMPTY_TARGET_NAME_in_target_ref_name615);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:120:4: ^( TARGET_NAME ID )
+          {
+            MATCHT(TARGET_NAME, &FOLLOW_TARGET_NAME_in_target_ref_name622);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+
+            ID23 =
+              (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_target_ref_name624);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_nameEx;
+            }
+
+            {
+              *name = hammer::parscore::identifier(ID23->getToken(ID23));
+            }
+          }
+          break;
+        case 3:
+          // hammer_sema.gt:122:2:
+          {
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_ref_nameEx; /* Prevent compiler warnings */
+ruletarget_ref_nameEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_ref_nameEx; /* Prevent compiler warnings */
-    ruletarget_ref_nameEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end target_ref_name */
 
 /**
  * $ANTLR start target_ref_requirements
- * hammer_sema.gt:124:1: target_ref_requirements returns [const hammer::ast::requirement_set* result] : ( requirement_set | );
+ * hammer_sema.gt:124:1: target_ref_requirements returns [const
+ * hammer::ast::requirement_set* result] : ( requirement_set | );
  */
 static const hammer::ast::requirement_set*
 target_ref_requirements(phammer_sema ctx)
 {
-    const hammer::ast::requirement_set* result = NULL;
+  const hammer::ast::requirement_set* result = NULL;
 
-    const hammer::ast::requirement_set* requirement_set24;
-    #undef	RETURN_TYPE_requirement_set24
-    #define	RETURN_TYPE_requirement_set24 const hammer::ast::requirement_set*
+  const hammer::ast::requirement_set* requirement_set24;
+#undef RETURN_TYPE_requirement_set24
+#define RETURN_TYPE_requirement_set24 const hammer::ast::requirement_set*
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  requirement_set24 = NULL;
 
-    requirement_set24 = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:125:2: ( requirement_set | )
+      //  hammer_sema.gt:125:2: ( requirement_set | )
 
-            ANTLR3_UINT32 alt14;
+      ANTLR3_UINT32 alt14;
 
-            alt14=2;
+      alt14 = 2;
 
+      {
+        int LA14_0 = LA(1);
+        if ((LA14_0 == REQUIREMENT_SET)) {
+          alt14 = 1;
+        } else if ((LA14_0 == UP)) {
+          alt14 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 14;
+          EXCEPTION->state = 0;
 
-            {
-                int LA14_0 = LA(1);
-                if ( (LA14_0 == REQUIREMENT_SET) )
-                {
-                    alt14=1;
-                }
-                else if ( (LA14_0 == UP) )
-                {
-                    alt14=2;
-                }
-                else
-                {
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 14;
-                    EXCEPTION->state        = 0;
-
-
-                    goto ruletarget_ref_requirementsEx;
-                }
-            }
-            switch (alt14)
-            {
-        	case 1:
-        	    // hammer_sema.gt:125:4: requirement_set
-        	    {
-        	        FOLLOWPUSH(FOLLOW_requirement_set_in_target_ref_requirements645);
-        	        requirement_set24=requirement_set(ctx);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruletarget_ref_requirementsEx;
-        	        }
-
-        	        {
-        	             result = requirement_set24;
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:126:4:
-        	    {
-        	        {
-        	             result = NULL;
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto ruletarget_ref_requirementsEx;
         }
+      }
+      switch (alt14) {
+        case 1:
+          // hammer_sema.gt:125:4: requirement_set
+          {
+            FOLLOWPUSH(FOLLOW_requirement_set_in_target_ref_requirements645);
+            requirement_set24 = requirement_set(ctx);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruletarget_ref_requirementsEx;
+            }
+
+            {
+              result = requirement_set24;
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:126:4:
+          {
+            {
+              result = NULL;
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletarget_ref_requirementsEx; /* Prevent compiler warnings */
+ruletarget_ref_requirementsEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruletarget_ref_requirementsEx; /* Prevent compiler warnings */
-    ruletarget_ref_requirementsEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end target_ref_requirements */
 
 /**
  * $ANTLR start path_like_seq
- * hammer_sema.gt:129:1: path_like_seq returns [const hammer::ast::path_like_seq* result] : ( ^( PATH_LIKE_SEQ SLASH path_like_seq_impl[&bounds] ) | ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds] ) );
+ * hammer_sema.gt:129:1: path_like_seq returns [const
+ * hammer::ast::path_like_seq* result] : ( ^( PATH_LIKE_SEQ SLASH
+ * path_like_seq_impl[&bounds] ) | ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds]
+ * ) );
  */
 static const hammer::ast::path_like_seq*
 path_like_seq(phammer_sema ctx)
 {
-    const hammer::ast::path_like_seq* result = NULL;
+  const hammer::ast::path_like_seq* result = NULL;
 
-    pANTLR3_BASE_TREE    SLASH25;
+  pANTLR3_BASE_TREE SLASH25;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN> bounds;
+  SLASH25 = NULL;
 
-     std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN> bounds;
-    SLASH25       = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:131:2: ( ^( PATH_LIKE_SEQ SLASH path_like_seq_impl[&bounds] ) | ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds] ) )
+      //  hammer_sema.gt:131:2: ( ^( PATH_LIKE_SEQ SLASH
+      //  path_like_seq_impl[&bounds] ) | ^( PATH_LIKE_SEQ
+      //  path_like_seq_impl[&bounds] ) )
 
-            ANTLR3_UINT32 alt15;
+      ANTLR3_UINT32 alt15;
 
-            alt15=2;
+      alt15 = 2;
 
+      {
+        int LA15_0 = LA(1);
+        if ((LA15_0 == PATH_LIKE_SEQ)) {
+          {
+            int LA15_1 = LA(2);
+            if ((LA15_1 == DOWN)) {
+              {
+                int LA15_2 = LA(3);
+                if ((LA15_2 == SLASH)) {
+                  alt15 = 1;
+                } else if ((LA15_2 == ID)) {
+                  alt15 = 2;
+                } else {
+                  CONSTRUCTEX();
+                  EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+                  EXCEPTION->message = (void*)"";
+                  EXCEPTION->decisionNum = 15;
+                  EXCEPTION->state = 2;
 
-            {
-                int LA15_0 = LA(1);
-                if ( (LA15_0 == PATH_LIKE_SEQ) )
-                {
-
-                    {
-                        int LA15_1 = LA(2);
-                        if ( (LA15_1 == DOWN) )
-                        {
-
-                            {
-                                int LA15_2 = LA(3);
-                                if ( (LA15_2 == SLASH) )
-                                {
-                                    alt15=1;
-                                }
-                                else if ( (LA15_2 == ID) )
-                                {
-                                    alt15=2;
-                                }
-                                else
-                                {
-
-                                    CONSTRUCTEX();
-                                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                                    EXCEPTION->message      = (void *)"";
-                                    EXCEPTION->decisionNum  = 15;
-                                    EXCEPTION->state        = 2;
-
-
-                                    goto rulepath_like_seqEx;
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                            CONSTRUCTEX();
-                            EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                            EXCEPTION->message      = (void *)"";
-                            EXCEPTION->decisionNum  = 15;
-                            EXCEPTION->state        = 1;
-
-
-                            goto rulepath_like_seqEx;
-                        }
-                    }
+                  goto rulepath_like_seqEx;
                 }
-                else
-                {
+              }
+            } else {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 15;
+              EXCEPTION->state = 1;
 
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 15;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulepath_like_seqEx;
-                }
+              goto rulepath_like_seqEx;
             }
-            switch (alt15)
-            {
-        	case 1:
-        	    // hammer_sema.gt:131:4: ^( PATH_LIKE_SEQ SLASH path_like_seq_impl[&bounds] )
-        	    {
-        	         MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
+          }
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 15;
+          EXCEPTION->state = 0;
 
-
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-        	        SLASH25 = (pANTLR3_BASE_TREE) MATCHT(SLASH, &FOLLOW_SLASH_in_path_like_seq675);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq677);
-        	        path_like_seq_impl(ctx, &bounds);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-        	        {
-        	             result = SEMA->on_path_like_seq(SLASH25->getToken(SLASH25), bounds.second);
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:132:4: ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds] )
-        	    {
-        	         MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-        	        FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq689);
-        	        path_like_seq_impl(ctx, &bounds);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seqEx;
-        	        }
-
-        	        {
-        	             result = SEMA->on_path_like_seq(bounds.first, bounds.second);
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto rulepath_like_seqEx;
         }
+      }
+      switch (alt15) {
+        case 1:
+          // hammer_sema.gt:131:4: ^( PATH_LIKE_SEQ SLASH
+          // path_like_seq_impl[&bounds] )
+          {
+            MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq673);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            SLASH25 = (pANTLR3_BASE_TREE)MATCHT(
+              SLASH, &FOLLOW_SLASH_in_path_like_seq675);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq677);
+            path_like_seq_impl(ctx, &bounds);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            {
+              result = SEMA->on_path_like_seq(SLASH25->getToken(SLASH25),
+                                              bounds.second);
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:132:4: ^( PATH_LIKE_SEQ path_like_seq_impl[&bounds]
+          // )
+          {
+            MATCHT(PATH_LIKE_SEQ, &FOLLOW_PATH_LIKE_SEQ_in_path_like_seq687);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            FOLLOWPUSH(FOLLOW_path_like_seq_impl_in_path_like_seq689);
+            path_like_seq_impl(ctx, &bounds);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seqEx;
+            }
+
+            {
+              result = SEMA->on_path_like_seq(bounds.first, bounds.second);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulepath_like_seqEx; /* Prevent compiler warnings */
+rulepath_like_seqEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulepath_like_seqEx; /* Prevent compiler warnings */
-    rulepath_like_seqEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return result;
+  return result;
 }
 /* $ANTLR end path_like_seq */
 
 /**
  * $ANTLR start path_like_seq_impl
- * hammer_sema.gt:135:1: path_like_seq_impl[std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds] : ( ID | first= ID ( ID )* last= ID );
+ * hammer_sema.gt:135:1: path_like_seq_impl[std::pair<pANTLR3_COMMON_TOKEN,
+ * pANTLR3_COMMON_TOKEN>* bounds] : ( ID | first= ID ( ID )* last= ID );
  */
 static void
-path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds)
+path_like_seq_impl(
+  phammer_sema ctx,
+  std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN>* bounds)
 {
-    pANTLR3_BASE_TREE    first;
-    pANTLR3_BASE_TREE    last;
-    pANTLR3_BASE_TREE    ID26;
+  pANTLR3_BASE_TREE first;
+  pANTLR3_BASE_TREE last;
+  pANTLR3_BASE_TREE ID26;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  first = NULL;
+  last = NULL;
+  ID26 = NULL;
 
-    first       = NULL;
-    last       = NULL;
-    ID26       = NULL;
-
+  {
     {
-        {
-            //  hammer_sema.gt:136:2: ( ID | first= ID ( ID )* last= ID )
+      //  hammer_sema.gt:136:2: ( ID | first= ID ( ID )* last= ID )
 
-            ANTLR3_UINT32 alt17;
+      ANTLR3_UINT32 alt17;
 
-            alt17=2;
+      alt17 = 2;
 
+      {
+        int LA17_0 = LA(1);
+        if ((LA17_0 == ID)) {
+          {
+            int LA17_1 = LA(2);
+            if ((LA17_1 == UP)) {
+              alt17 = 1;
+            } else if ((LA17_1 == ID)) {
+              alt17 = 2;
+            } else {
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+              EXCEPTION->message = (void*)"";
+              EXCEPTION->decisionNum = 17;
+              EXCEPTION->state = 1;
 
-            {
-                int LA17_0 = LA(1);
-                if ( (LA17_0 == ID) )
-                {
-
-                    {
-                        int LA17_1 = LA(2);
-                        if ( (LA17_1 == UP) )
-                        {
-                            alt17=1;
-                        }
-                        else if ( (LA17_1 == ID) )
-                        {
-                            alt17=2;
-                        }
-                        else
-                        {
-
-                            CONSTRUCTEX();
-                            EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                            EXCEPTION->message      = (void *)"";
-                            EXCEPTION->decisionNum  = 17;
-                            EXCEPTION->state        = 1;
-
-
-                            goto rulepath_like_seq_implEx;
-                        }
-                    }
-                }
-                else
-                {
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 17;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulepath_like_seq_implEx;
-                }
+              goto rulepath_like_seq_implEx;
             }
-            switch (alt17)
-            {
-        	case 1:
-        	    // hammer_sema.gt:136:4: ID
-        	    {
-        	        ID26 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl713);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seq_implEx;
-        	        }
+          }
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 17;
+          EXCEPTION->state = 0;
 
-        	        {
-        	             bounds->first = bounds->second = ID26->getToken(ID26);
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // hammer_sema.gt:137:4: first= ID ( ID )* last= ID
-        	    {
-        	        first = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl722);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seq_implEx;
-        	        }
-
-
-        	        // hammer_sema.gt:137:13: ( ID )*
-
-        	        for (;;)
-        	        {
-        	            int alt16=2;
-        	            {
-        	               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	                */
-        	                int LA16_0 = LA(1);
-        	                if ( (LA16_0 == ID) )
-        	                {
-        	                    {
-        	                       /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-        	                        */
-        	                        int LA16_1 = LA(2);
-        	                        if ( (LA16_1 == ID) )
-        	                        {
-        	                            alt16=1;
-        	                        }
-
-        	                    }
-        	                }
-
-        	            }
-        	            switch (alt16)
-        	            {
-        	        	case 1:
-        	        	    // hammer_sema.gt:137:13: ID
-        	        	    {
-        	        	         MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl724);
-        	        	        if  (HASEXCEPTION())
-        	        	        {
-        	        	            goto rulepath_like_seq_implEx;
-        	        	        }
-
-
-        	        	    }
-        	        	    break;
-
-        	        	default:
-        	        	    goto loop16;	/* break out of the loop */
-        	        	    break;
-        	            }
-        	        }
-        	        loop16: ; /* Jump out to here if this rule does not match */
-
-        	        last = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl729);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulepath_like_seq_implEx;
-        	        }
-
-        	        {
-        	             bounds->first = first->getToken(first); bounds->second = last->getToken(last);
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto rulepath_like_seq_implEx;
         }
+      }
+      switch (alt17) {
+        case 1:
+          // hammer_sema.gt:136:4: ID
+          {
+            ID26 = (pANTLR3_BASE_TREE)MATCHT(
+              ID, &FOLLOW_ID_in_path_like_seq_impl713);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seq_implEx;
+            }
+
+            {
+              bounds->first = bounds->second = ID26->getToken(ID26);
+            }
+          }
+          break;
+        case 2:
+          // hammer_sema.gt:137:4: first= ID ( ID )* last= ID
+          {
+            first = (pANTLR3_BASE_TREE)MATCHT(
+              ID, &FOLLOW_ID_in_path_like_seq_impl722);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seq_implEx;
+            }
+
+            // hammer_sema.gt:137:13: ( ID )*
+
+            for (;;) {
+              int alt16 = 2;
+              {
+                /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                int LA16_0 = LA(1);
+                if ((LA16_0 == ID)) {
+                  {
+                    /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+     */
+                    int LA16_1 = LA(2);
+                    if ((LA16_1 == ID)) {
+                      alt16 = 1;
+                    }
+                  }
+                }
+              }
+              switch (alt16) {
+                case 1:
+                  // hammer_sema.gt:137:13: ID
+                  {
+                    MATCHT(ID, &FOLLOW_ID_in_path_like_seq_impl724);
+                    if (HASEXCEPTION()) {
+                      goto rulepath_like_seq_implEx;
+                    }
+                  }
+                  break;
+
+                default:
+                  goto loop16; /* break out of the loop */
+                  break;
+              }
+            }
+          loop16:; /* Jump out to here if this rule does not match */
+
+            last = (pANTLR3_BASE_TREE)MATCHT(
+              ID, &FOLLOW_ID_in_path_like_seq_impl729);
+            if (HASEXCEPTION()) {
+              goto rulepath_like_seq_implEx;
+            }
+
+            {
+              bounds->first = first->getToken(first);
+              bounds->second = last->getToken(last);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulepath_like_seq_implEx; /* Prevent compiler warnings */
+rulepath_like_seq_implEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulepath_like_seq_implEx; /* Prevent compiler warnings */
-    rulepath_like_seq_implEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end path_like_seq_impl */
 /* End of parsing rules
@@ -3183,11 +3197,6 @@ path_like_seq_impl(phammer_sema ctx, std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COM
 /* End of syntactic predicates
  * ==============================================
  */
-
-
-
-
-
 
 /* End of code
  * =============================================================================

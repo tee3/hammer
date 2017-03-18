@@ -1,28 +1,33 @@
 #include "stdafx.h"
+#include <hammer/core/build_environment.h>
 #include <hammer/core/generated_target.h>
 #include <hammer/core/main_target.h>
-#include <hammer/core/build_environment.h>
 
-namespace hammer{
+namespace hammer {
 
-generated_target::generated_target(const main_target* mt, const std::string& n,
-                                   const target_type* t, const feature_set* f) : file_target(mt, n, t, f)
+generated_target::generated_target(const main_target* mt,
+                                   const std::string& n,
+                                   const target_type* t,
+                                   const feature_set* f)
+  : file_target(mt, n, t, f)
 {
 }
 
-const location_t& generated_target::location() const
+const location_t&
+generated_target::location() const
 {
-   return get_main_target()->intermediate_dir();
+  return get_main_target()->intermediate_dir();
 }
 
-std::vector<boost::intrusive_ptr<build_node> > generated_target::generate() const
+std::vector<boost::intrusive_ptr<build_node>>
+generated_target::generate() const
 {
-   throw std::logic_error("generated target cannot be generated again.");
+  throw std::logic_error("generated target cannot be generated again.");
 }
 
-void generated_target::clean(const build_environment& environment) const
+void
+generated_target::clean(const build_environment& environment) const
 {
-   environment.remove(location() / name());
+  environment.remove(location() / name());
 }
-
 }

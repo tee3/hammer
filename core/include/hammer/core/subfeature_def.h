@@ -1,43 +1,43 @@
 #if !defined(h_295945d1_c56e_43fa_ad45_659b96d6bd21)
 #define h_295945d1_c56e_43fa_ad45_659b96d6bd21
 
-#include <unordered_map>
-#include <string>
 #include <set>
+#include <string>
+#include <unordered_map>
 
-namespace hammer{
+namespace hammer {
 
 class feature_def;
 
 class subfeature_def
 {
-      friend class feature_def;
-   public:
-      typedef std::set<std::string> legal_values_t;
+  friend class feature_def;
 
-      subfeature_def(const subfeature_def&) = delete;
-      subfeature_def(subfeature_def&&) = delete;
-      subfeature_def& operator = (const subfeature_def&) = delete;
+public:
+  typedef std::set<std::string> legal_values_t;
 
-      const std::string& name() const { return name_; }
-      const legal_values_t& legal_values(const std::string& feature_value) const;
-      bool is_legal_value(const std::string& feature_value,
-                          const std::string& value) const;
-      void extend_legal_values(const std::string& feature_value,
-                               const std::string& new_legal_value);
+  subfeature_def(const subfeature_def&) = delete;
+  subfeature_def(subfeature_def&&) = delete;
+  subfeature_def& operator=(const subfeature_def&) = delete;
 
-   private:
-      typedef std::unordered_map<std::string/*feature value*/, legal_values_t> all_legal_values;
+  const std::string& name() const { return name_; }
+  const legal_values_t& legal_values(const std::string& feature_value) const;
+  bool is_legal_value(const std::string& feature_value,
+                      const std::string& value) const;
+  void extend_legal_values(const std::string& feature_value,
+                           const std::string& new_legal_value);
 
-      // used only by feature_def
-      subfeature_def(const feature_def& owner,
-                     const std::string& name);
+private:
+  typedef std::unordered_map<std::string /*feature value*/, legal_values_t>
+    all_legal_values;
 
-      const feature_def* owner_;
-      const std::string name_;
-      all_legal_values all_legal_values_;
+  // used only by feature_def
+  subfeature_def(const feature_def& owner, const std::string& name);
+
+  const feature_def* owner_;
+  const std::string name_;
+  all_legal_values all_legal_values_;
 };
-
 }
 
 #endif

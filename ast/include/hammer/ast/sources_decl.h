@@ -3,23 +3,28 @@
 
 #include <hammer/ast/expression.h>
 
-namespace hammer{ namespace ast{
+namespace hammer {
+namespace ast {
 
 class sources_decl : public expression
 {
-   public:
-      sources_decl(const expression* sources)
-         : sources_(sources)
-      {}
+public:
+  sources_decl(const expression* sources)
+    : sources_(sources)
+  {
+  }
 
-      const expression* sources() const { return sources_; }
-      parscore::source_location start_loc() const override { return sources_->start_loc(); }
-      bool accept(visitor& v) const override;
+  const expression* sources() const { return sources_; }
+  parscore::source_location start_loc() const override
+  {
+    return sources_->start_loc();
+  }
+  bool accept(visitor& v) const override;
 
-   private:
-      const expression* sources_;
+private:
+  const expression* sources_;
 };
-
-}}
+}
+}
 
 #endif

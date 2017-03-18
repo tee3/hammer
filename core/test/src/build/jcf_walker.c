@@ -6,7 +6,8 @@
  *     -           for the tree parser : jcf_walkerTreeParser *
  * Editing it, at least manually, is not wise.
  *
- * C language generator and runtime by Jim Idle, jimi|hereisanat|idle|dotgoeshere|ws.
+ * C language generator and runtime by Jim Idle,
+ * jimi|hereisanat|idle|dotgoeshere|ws.
  *
  *
 */
@@ -15,7 +16,7 @@
  * This is what the grammar programmer asked us to put at the top of every file.
  */
 
-        #include "../jcf_walker_impl.h"
+#include "../jcf_walker_impl.h"
 
 /* End of Header action.
  * =============================================================================
@@ -23,200 +24,204 @@
 /* -----------------------------------------
  * Include the ANTLR3 generated header file.
  */
-#include    "jcf_walker.h"
+#include "jcf_walker.h"
 /* ----------------------------------------- */
-
-
-
-
 
 /* MACROS that hide the C interface implementations from the
  * generated code, which makes it a little more understandable to the human eye.
- * I am very much against using C pre-processor macros for function calls and bits
+ * I am very much against using C pre-processor macros for function calls and
+ * bits
  * of code as you cannot see what is happening when single stepping in debuggers
- * and so on. The exception (in my book at least) is for generated code, where you are
- * not maintaining it, but may wish to read and understand it. If you single step it, you know that input()
- * hides some indirect calls, but is always referring to the input stream. This is
- * probably more readable than ctx->input->istream->input(snarfle0->blarg) and allows me to rejig
+ * and so on. The exception (in my book at least) is for generated code, where
+ * you are
+ * not maintaining it, but may wish to read and understand it. If you single
+ * step it, you know that input()
+ * hides some indirect calls, but is always referring to the input stream. This
+ * is
+ * probably more readable than ctx->input->istream->input(snarfle0->blarg) and
+ * allows me to rejig
  * the runtime interfaces without changing the generated code too often, without
- * confusing the reader of the generated output, who may not wish to know the gory
+ * confusing the reader of the generated output, who may not wish to know the
+ * gory
  * details of the interface inheritance.
  */
 
-#define		CTX	ctx
+#define CTX ctx
 
 /* Aids in accessing scopes for grammar programmers
  */
-#undef	SCOPE_TYPE
-#undef	SCOPE_STACK
-#undef	SCOPE_TOP
-#define	SCOPE_TYPE(scope)   pjcf_walker_##scope##_SCOPE
-#define SCOPE_STACK(scope)  pjcf_walker_##scope##Stack
-#define	SCOPE_TOP(scope)    ctx->pjcf_walker_##scope##Top
-#define	SCOPE_SIZE(scope)			(ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
-#define SCOPE_INSTANCE(scope, i)	(ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope),i))
+#undef SCOPE_TYPE
+#undef SCOPE_STACK
+#undef SCOPE_TOP
+#define SCOPE_TYPE(scope) pjcf_walker_##scope##_SCOPE
+#define SCOPE_STACK(scope) pjcf_walker_##scope##Stack
+#define SCOPE_TOP(scope) ctx->pjcf_walker_##scope##Top
+#define SCOPE_SIZE(scope)                                                      \
+  (ctx->SCOPE_STACK(scope)->size(ctx->SCOPE_STACK(scope)))
+#define SCOPE_INSTANCE(scope, i)                                               \
+  (ctx->SCOPE_STACK(scope)->get(ctx->SCOPE_STACK(scope), i))
 
 /* Macros for accessing things in the parser
  */
 
-#undef	    PARSER
-#undef	    RECOGNIZER
-#undef	    HAVEPARSEDRULE
-#undef	    INPUT
-#undef	    STRSTREAM
-#undef	    HASEXCEPTION
-#undef	    EXCEPTION
-#undef	    MATCHT
-#undef	    MATCHANYT
-#undef	    FOLLOWSTACK
-#undef	    FOLLOWPUSH
-#undef	    FOLLOWPOP
-#undef	    PRECOVER
-#undef	    PREPORTERROR
-#undef	    LA
-#undef	    LT
-#undef	    CONSTRUCTEX
-#undef	    CONSUME
-#undef	    MARK
-#undef	    REWIND
-#undef	    REWINDLAST
-#undef	    PERRORRECOVERY
-#undef	    HASFAILED
-#undef	    FAILEDFLAG
-#undef	    RECOVERFROMMISMATCHEDSET
-#undef	    RECOVERFROMMISMATCHEDELEMENT
-#undef	    BACKTRACKING
-#undef      ADAPTOR
-#undef	    RULEMEMO
-#undef		SEEK
-#undef		INDEX
-#undef		DBG
+#undef PARSER
+#undef RECOGNIZER
+#undef HAVEPARSEDRULE
+#undef INPUT
+#undef STRSTREAM
+#undef HASEXCEPTION
+#undef EXCEPTION
+#undef MATCHT
+#undef MATCHANYT
+#undef FOLLOWSTACK
+#undef FOLLOWPUSH
+#undef FOLLOWPOP
+#undef PRECOVER
+#undef PREPORTERROR
+#undef LA
+#undef LT
+#undef CONSTRUCTEX
+#undef CONSUME
+#undef MARK
+#undef REWIND
+#undef REWINDLAST
+#undef PERRORRECOVERY
+#undef HASFAILED
+#undef FAILEDFLAG
+#undef RECOVERFROMMISMATCHEDSET
+#undef RECOVERFROMMISMATCHEDELEMENT
+#undef BACKTRACKING
+#undef ADAPTOR
+#undef RULEMEMO
+#undef SEEK
+#undef INDEX
+#undef DBG
 
-#define	    PARSER							ctx->pTreeParser
-#define	    RECOGNIZER						PARSER->rec
-#define		PSRSTATE						RECOGNIZER->state
-#define	    HAVEPARSEDRULE(r)				RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
-#define	    INPUT							PARSER->ctnstream
-#define		ISTREAM							INPUT->tnstream->istream
-#define	    STRSTREAM						INPUT->tnstream
-#define	    HASEXCEPTION()					(PSRSTATE->error == ANTLR3_TRUE)
-#define	    EXCEPTION						PSRSTATE->exception
-#define	    MATCHT(t, fs)					RECOGNIZER->match(RECOGNIZER, t, fs)
-#define	    MATCHANYT()						RECOGNIZER->matchAny(RECOGNIZER)
-#define	    FOLLOWSTACK					    PSRSTATE->following
-#define	    FOLLOWPUSH(x)					FOLLOWSTACK->push(FOLLOWSTACK, ((void *)(&(x))), NULL)
-#define	    FOLLOWPOP()						FOLLOWSTACK->pop(FOLLOWSTACK)
-#define	    PRECOVER()						RECOGNIZER->recover(RECOGNIZER)
-#define	    PREPORTERROR()					RECOGNIZER->reportError(RECOGNIZER)
-#define	    LA(n)							ISTREAM->_LA(ISTREAM, n)
-#define	    LT(n)							INPUT->tnstream->_LT(INPUT->tnstream, n)
-#define	    CONSTRUCTEX()					RECOGNIZER->exConstruct(RECOGNIZER)
-#define	    CONSUME()						ISTREAM->consume(ISTREAM)
-#define	    MARK()							ISTREAM->mark(ISTREAM)
-#define	    REWIND(m)						ISTREAM->rewind(ISTREAM, m)
-#define	    REWINDLAST()					ISTREAM->rewindLast(ISTREAM)
-#define	    PERRORRECOVERY					PSRSTATE->errorRecovery
-#define	    FAILEDFLAG						PSRSTATE->failed
-#define	    HASFAILED()						(FAILEDFLAG == ANTLR3_TRUE)
-#define	    BACKTRACKING					PSRSTATE->backtracking
-#define	    RECOVERFROMMISMATCHEDSET(s)		RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
-#define	    RECOVERFROMMISMATCHEDELEMENT(e)	RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
-#define     ADAPTOR                         INPUT->adaptor
-#define		RULEMEMO						PSRSTATE->ruleMemo
-#define		SEEK(n)							ISTREAM->seek(ISTREAM, n)
-#define		INDEX()							ISTREAM->index(ISTREAM)
-#define		DBG								RECOGNIZER->debugger
+#define PARSER ctx->pTreeParser
+#define RECOGNIZER PARSER->rec
+#define PSRSTATE RECOGNIZER->state
+#define HAVEPARSEDRULE(r) RECOGNIZER->alreadyParsedRule(RECOGNIZER, r)
+#define INPUT PARSER->ctnstream
+#define ISTREAM INPUT->tnstream->istream
+#define STRSTREAM INPUT->tnstream
+#define HASEXCEPTION() (PSRSTATE->error == ANTLR3_TRUE)
+#define EXCEPTION PSRSTATE->exception
+#define MATCHT(t, fs) RECOGNIZER->match(RECOGNIZER, t, fs)
+#define MATCHANYT() RECOGNIZER->matchAny(RECOGNIZER)
+#define FOLLOWSTACK PSRSTATE->following
+#define FOLLOWPUSH(x) FOLLOWSTACK->push(FOLLOWSTACK, ((void*)(&(x))), NULL)
+#define FOLLOWPOP() FOLLOWSTACK->pop(FOLLOWSTACK)
+#define PRECOVER() RECOGNIZER->recover(RECOGNIZER)
+#define PREPORTERROR() RECOGNIZER->reportError(RECOGNIZER)
+#define LA(n) ISTREAM->_LA(ISTREAM, n)
+#define LT(n) INPUT->tnstream->_LT(INPUT->tnstream, n)
+#define CONSTRUCTEX() RECOGNIZER->exConstruct(RECOGNIZER)
+#define CONSUME() ISTREAM->consume(ISTREAM)
+#define MARK() ISTREAM->mark(ISTREAM)
+#define REWIND(m) ISTREAM->rewind(ISTREAM, m)
+#define REWINDLAST() ISTREAM->rewindLast(ISTREAM)
+#define PERRORRECOVERY PSRSTATE->errorRecovery
+#define FAILEDFLAG PSRSTATE->failed
+#define HASFAILED() (FAILEDFLAG == ANTLR3_TRUE)
+#define BACKTRACKING PSRSTATE->backtracking
+#define RECOVERFROMMISMATCHEDSET(s)                                            \
+  RECOGNIZER->recoverFromMismatchedSet(RECOGNIZER, s)
+#define RECOVERFROMMISMATCHEDELEMENT(e)                                        \
+  RECOGNIZER->recoverFromMismatchedElement(RECOGNIZER, s)
+#define ADAPTOR INPUT->adaptor
+#define RULEMEMO PSRSTATE->ruleMemo
+#define SEEK(n) ISTREAM->seek(ISTREAM, n)
+#define INDEX() ISTREAM->index(ISTREAM)
+#define DBG RECOGNIZER->debugger
 
+#define TOKTEXT(tok, txt) tok, (pANTLR3_UINT8)txt
 
-#define		TOKTEXT(tok, txt)				tok, (pANTLR3_UINT8)txt
-
-/* The 4 tokens defined below may well clash with your own #defines or token types. If so
- * then for the present you must use different names for your defines as these are hard coded
- * in the code generator. It would be better not to use such names internally, and maybe
- * we can change this in a forthcoming release. I deliberately do not #undef these
- * here as this will at least give you a redefined error somewhere if they clash.
+/* The 4 tokens defined below may well clash with your own #defines or token
+ * types. If so
+ * then for the present you must use different names for your defines as these
+ * are hard coded
+ * in the code generator. It would be better not to use such names internally,
+ * and maybe
+ * we can change this in a forthcoming release. I deliberately do not #undef
+ * these
+ * here as this will at least give you a redefined error somewhere if they
+ * clash.
  */
-#define	    UP	    ANTLR3_TOKEN_UP
-#define	    DOWN    ANTLR3_TOKEN_DOWN
-#define	    EOR	    ANTLR3_TOKEN_EOR
-#define	    INVALID ANTLR3_TOKEN_INVALID
-
+#define UP ANTLR3_TOKEN_UP
+#define DOWN ANTLR3_TOKEN_DOWN
+#define EOR ANTLR3_TOKEN_EOR
+#define INVALID ANTLR3_TOKEN_INVALID
 
 /* =============================================================================
  * Functions to create and destroy scopes. First come the rule scopes, followed
  * by the global declared scopes.
  */
 
-
-
-/* ============================================================================= */
+/* =============================================================================
+ */
 
 /* =============================================================================
  * Start of recognizer
  */
 
-
-
 /** \brief Table of all token names in symbolic order, mainly used for
  *         error reporting.
  */
-pANTLR3_UINT8   jcf_walkerTokenNames[27+4]
-     = {
-        (pANTLR3_UINT8) "<invalid>",       /* String to print to indicate an invalid token */
-        (pANTLR3_UINT8) "<EOR>",
-        (pANTLR3_UINT8) "<DOWN>",
-        (pANTLR3_UINT8) "<UP>",
-        (pANTLR3_UINT8) "TARGET",
-        (pANTLR3_UINT8) "ATTRIBUTES",
-        (pANTLR3_UINT8) "TARGETS",
-        (pANTLR3_UINT8) "TYPE_ATTR",
-        (pANTLR3_UINT8) "FEATURES_ATTR",
-        (pANTLR3_UINT8) "FEATURE",
-        (pANTLR3_UINT8) "NOT_FEATURE",
-        (pANTLR3_UINT8) "LOCATION",
-        (pANTLR3_UINT8) "NUMBER_OF_SOURCES",
-        (pANTLR3_UINT8) "ID",
-        (pANTLR3_UINT8) "NUMBER",
-        (pANTLR3_UINT8) "STRING",
-        (pANTLR3_UINT8) "COMMENT",
-        (pANTLR3_UINT8) "WS",
-        (pANTLR3_UINT8) "'['",
-        (pANTLR3_UINT8) "']'",
-        (pANTLR3_UINT8) "'{'",
-        (pANTLR3_UINT8) "'}'",
-        (pANTLR3_UINT8) "';'",
-        (pANTLR3_UINT8) "'type'",
-        (pANTLR3_UINT8) "'='",
-        (pANTLR3_UINT8) "'features'",
-        (pANTLR3_UINT8) "'<'",
-        (pANTLR3_UINT8) "'>'",
-        (pANTLR3_UINT8) "'!<'",
-        (pANTLR3_UINT8) "'location'",
-        (pANTLR3_UINT8) "'number_of_sources'"
-       };
-
-
+pANTLR3_UINT8 jcf_walkerTokenNames[27 + 4] = {
+  (pANTLR3_UINT8) "<invalid>", /* String to print to indicate an invalid
+                                token */
+  (pANTLR3_UINT8) "<EOR>",      (pANTLR3_UINT8) "<DOWN>",
+  (pANTLR3_UINT8) "<UP>",       (pANTLR3_UINT8) "TARGET",
+  (pANTLR3_UINT8) "ATTRIBUTES", (pANTLR3_UINT8) "TARGETS",
+  (pANTLR3_UINT8) "TYPE_ATTR",  (pANTLR3_UINT8) "FEATURES_ATTR",
+  (pANTLR3_UINT8) "FEATURE",    (pANTLR3_UINT8) "NOT_FEATURE",
+  (pANTLR3_UINT8) "LOCATION",   (pANTLR3_UINT8) "NUMBER_OF_SOURCES",
+  (pANTLR3_UINT8) "ID",         (pANTLR3_UINT8) "NUMBER",
+  (pANTLR3_UINT8) "STRING",     (pANTLR3_UINT8) "COMMENT",
+  (pANTLR3_UINT8) "WS",         (pANTLR3_UINT8) "'['",
+  (pANTLR3_UINT8) "']'",        (pANTLR3_UINT8) "'{'",
+  (pANTLR3_UINT8) "'}'",        (pANTLR3_UINT8) "';'",
+  (pANTLR3_UINT8) "'type'",     (pANTLR3_UINT8) "'='",
+  (pANTLR3_UINT8) "'features'", (pANTLR3_UINT8) "'<'",
+  (pANTLR3_UINT8) "'>'",        (pANTLR3_UINT8) "'!<'",
+  (pANTLR3_UINT8) "'location'", (pANTLR3_UINT8) "'number_of_sources'"
+};
 
 // Forward declare the locally static matching functions we have generated.
 //
-static void	jcf_file    (pjcf_walker ctx, void * t);
-static void	targets    (pjcf_walker ctx, void* t);
-static void	target    (pjcf_walker ctx, void* t, int is_top);
-static void	attributes    (pjcf_walker ctx, void* t);
-static void	attribute    (pjcf_walker ctx, void* t);
-static void	type    (pjcf_walker ctx, void* t);
-static void	features    (pjcf_walker ctx, void* t, void* f);
-static void	feature    (pjcf_walker ctx, void* t, void* f);
-static void	location    (pjcf_walker ctx, void* t);
-static void	number_of_sources    (pjcf_walker ctx, void* t);
-static void	jcf_walkerFree(pjcf_walker ctx);
-/* For use in tree output where we are accumulating rule labels via label += ruleRef
- * we need a function that knows how to free a return scope when the list is destroyed.
- * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a macro.
+static void
+jcf_file(pjcf_walker ctx, void* t);
+static void
+targets(pjcf_walker ctx, void* t);
+static void
+target(pjcf_walker ctx, void* t, int is_top);
+static void
+attributes(pjcf_walker ctx, void* t);
+static void
+attribute(pjcf_walker ctx, void* t);
+static void
+type(pjcf_walker ctx, void* t);
+static void
+features(pjcf_walker ctx, void* t, void* f);
+static void
+feature(pjcf_walker ctx, void* t, void* f);
+static void
+location(pjcf_walker ctx, void* t);
+static void
+number_of_sources(pjcf_walker ctx, void* t);
+static void
+jcf_walkerFree(pjcf_walker ctx);
+/* For use in tree output where we are accumulating rule labels via label +=
+ * ruleRef
+ * we need a function that knows how to free a return scope when the list is
+ * destroyed.
+ * We cannot just use ANTLR3_FREE because in debug tracking mode, this is a
+ * macro.
  */
-static	void ANTLR3_CDECL freeScope(void * scope)
+static void ANTLR3_CDECL
+freeScope(void* scope)
 {
-    ANTLR3_FREE(scope);
+  ANTLR3_FREE(scope);
 }
 
 /** \brief Name of the grammar file that generated this code
@@ -225,9 +230,10 @@ static const char fileName[] = "jcf_walker.g";
 
 /** \brief Return the name of the grammar file that generated this code.
  */
-static const char * getGrammarFileName()
+static const char*
+getGrammarFileName()
 {
-	return fileName;
+  return fileName;
 }
 /** \brief Create a new jcf_walker parser and return a context for it.
  *
@@ -236,11 +242,11 @@ static const char * getGrammarFileName()
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API pjcf_walker
-jcf_walkerNew   (pANTLR3_COMMON_TREE_NODE_STREAM instream)
+jcf_walkerNew(pANTLR3_COMMON_TREE_NODE_STREAM instream)
 {
-	// See if we can create a new parser with the standard constructor
-	//
-	return jcf_walkerNewSSD(instream, NULL);
+  // See if we can create a new parser with the standard constructor
+  //
+  return jcf_walkerNewSSD(instream, NULL);
 }
 
 /** \brief Create a new jcf_walker parser and return a context for it.
@@ -250,184 +256,322 @@ jcf_walkerNew   (pANTLR3_COMMON_TREE_NODE_STREAM instream)
  * \return Pointer to new parser context upon success.
  */
 ANTLR3_API pjcf_walker
-jcf_walkerNewSSD   (pANTLR3_COMMON_TREE_NODE_STREAM instream, pANTLR3_RECOGNIZER_SHARED_STATE state)
+jcf_walkerNewSSD(pANTLR3_COMMON_TREE_NODE_STREAM instream,
+                 pANTLR3_RECOGNIZER_SHARED_STATE state)
 {
-    pjcf_walker ctx;	    /* Context structure we will build and return   */
+  pjcf_walker ctx; /* Context structure we will build and return   */
 
-    ctx	= (pjcf_walker) ANTLR3_CALLOC(1, sizeof(jcf_walker));
+  ctx = (pjcf_walker)ANTLR3_CALLOC(1, sizeof(jcf_walker));
 
-    if	(ctx == NULL)
-    {
-		// Failed to allocate memory for parser context
-		//
-        return  NULL;
-    }
+  if (ctx == NULL) {
+    // Failed to allocate memory for parser context
+    //
+    return NULL;
+  }
 
-    /* -------------------------------------------------------------------
-     * Memory for basic structure is allocated, now to fill in
-     * the base ANTLR3 structures. We initialize the function pointers
-     * for the standard ANTLR3 parser function set, but upon return
-     * from here, the programmer may set the pointers to provide custom
-     * implementations of each function.
-     *
-     * We don't use the macros defined in jcf_walker.h here, in order that you can get a sense
-     * of what goes where.
-     */
+  /* -------------------------------------------------------------------
+ * Memory for basic structure is allocated, now to fill in
+ * the base ANTLR3 structures. We initialize the function pointers
+ * for the standard ANTLR3 parser function set, but upon return
+ * from here, the programmer may set the pointers to provide custom
+ * implementations of each function.
+ *
+ * We don't use the macros defined in jcf_walker.h here, in order that you can
+ * get a sense
+ * of what goes where.
+ */
 
-    /* Create a base Tree parser/recognizer, using the supplied tree node stream
-     */
-    ctx->pTreeParser		= antlr3TreeParserNewStream(ANTLR3_SIZE_HINT, instream, state);
-    /* Install the implementation of our jcf_walker interface
-     */
-    ctx->jcf_file	= jcf_file;
-    ctx->targets	= targets;
-    ctx->target	= target;
-    ctx->attributes	= attributes;
-    ctx->attribute	= attribute;
-    ctx->type	= type;
-    ctx->features	= features;
-    ctx->feature	= feature;
-    ctx->location	= location;
-    ctx->number_of_sources	= number_of_sources;
-    ctx->free			= jcf_walkerFree;
-    ctx->getGrammarFileName	= getGrammarFileName;
+  /* Create a base Tree parser/recognizer, using the supplied tree node stream
+ */
+  ctx->pTreeParser =
+    antlr3TreeParserNewStream(ANTLR3_SIZE_HINT, instream, state);
+  /* Install the implementation of our jcf_walker interface
+ */
+  ctx->jcf_file = jcf_file;
+  ctx->targets = targets;
+  ctx->target = target;
+  ctx->attributes = attributes;
+  ctx->attribute = attribute;
+  ctx->type = type;
+  ctx->features = features;
+  ctx->feature = feature;
+  ctx->location = location;
+  ctx->number_of_sources = number_of_sources;
+  ctx->free = jcf_walkerFree;
+  ctx->getGrammarFileName = getGrammarFileName;
 
-    /* Install the scope pushing methods.
-     */
+  /* Install the scope pushing methods.
+ */
 
+  /* Install the token table
+ */
+  PSRSTATE->tokenNames = jcf_walkerTokenNames;
 
-
-
-
-    /* Install the token table
-     */
-    PSRSTATE->tokenNames   = jcf_walkerTokenNames;
-
-
-    /* Return the newly built parser to the caller
-     */
-    return  ctx;
+  /* Return the newly built parser to the caller
+ */
+  return ctx;
 }
 
 /** Free the parser resources
  */
- static void
- jcf_walkerFree(pjcf_walker ctx)
- {
-    /* Free any scope memory
-     */
+static void
+jcf_walkerFree(pjcf_walker ctx)
+{
+  /* Free any scope memory
+ */
 
+  // Free this parser
+  //
+  ctx->pTreeParser->free(ctx->pTreeParser);
+  ANTLR3_FREE(ctx);
 
-	// Free this parser
-	//
-    ctx->pTreeParser->free(ctx->pTreeParser);
-    ANTLR3_FREE(ctx);
-
-    /* Everything is released, so we can return
-     */
-    return;
- }
+  /* Everything is released, so we can return
+ */
+  return;
+}
 
 /** Return token names used by this tree parser
  *
- * The returned pointer is used as an index into the token names table (using the token
+ * The returned pointer is used as an index into the token names table (using
+ * the token
  * number as the index).
  *
  * \return Pointer to first char * in the table.
  */
-static pANTLR3_UINT8    *getTokenNames()
+static pANTLR3_UINT8*
+getTokenNames()
 {
-        return jcf_walkerTokenNames;
+  return jcf_walkerTokenNames;
 }
-
 
 /* Declare the bitsets
  */
 
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_targets_in_jcf_file71  */
-static	ANTLR3_BITWORD FOLLOW_targets_in_jcf_file71_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_targets_in_jcf_file71	= { FOLLOW_targets_in_jcf_file71_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_TARGETS_in_targets82  */
-static	ANTLR3_BITWORD FOLLOW_TARGETS_in_targets82_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_TARGETS_in_targets82	= { FOLLOW_TARGETS_in_targets82_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_in_targets84  */
-static	ANTLR3_BITWORD FOLLOW_target_in_targets84_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000018) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_in_targets84	= { FOLLOW_target_in_targets84_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_TARGET_in_target102  */
-static	ANTLR3_BITWORD FOLLOW_TARGET_in_target102_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_TARGET_in_target102	= { FOLLOW_TARGET_in_target102_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_target104  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_target104_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000038) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_target104	= { FOLLOW_ID_in_target104_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_attributes_in_target108  */
-static	ANTLR3_BITWORD FOLLOW_attributes_in_target108_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000038) };
-static  ANTLR3_BITSET_LIST FOLLOW_attributes_in_target108	= { FOLLOW_attributes_in_target108_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_target_in_target112  */
-static	ANTLR3_BITWORD FOLLOW_target_in_target112_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000018) };
-static  ANTLR3_BITSET_LIST FOLLOW_target_in_target112	= { FOLLOW_target_in_target112_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ATTRIBUTES_in_attributes125  */
-static	ANTLR3_BITWORD FOLLOW_ATTRIBUTES_in_attributes125_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_ATTRIBUTES_in_attributes125	= { FOLLOW_ATTRIBUTES_in_attributes125_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_attribute_in_attributes127  */
-static	ANTLR3_BITWORD FOLLOW_attribute_in_attributes127_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000001988) };
-static  ANTLR3_BITSET_LIST FOLLOW_attribute_in_attributes127	= { FOLLOW_attribute_in_attributes127_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_type_in_attribute148  */
-static	ANTLR3_BITWORD FOLLOW_type_in_attribute148_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_type_in_attribute148	= { FOLLOW_type_in_attribute148_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_features_in_attribute162  */
-static	ANTLR3_BITWORD FOLLOW_features_in_attribute162_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_features_in_attribute162	= { FOLLOW_features_in_attribute162_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_location_in_attribute175  */
-static	ANTLR3_BITWORD FOLLOW_location_in_attribute175_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_location_in_attribute175	= { FOLLOW_location_in_attribute175_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_number_of_sources_in_attribute188  */
-static	ANTLR3_BITWORD FOLLOW_number_of_sources_in_attribute188_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000002) };
-static  ANTLR3_BITSET_LIST FOLLOW_number_of_sources_in_attribute188	= { FOLLOW_number_of_sources_in_attribute188_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_TYPE_ATTR_in_type209  */
-static	ANTLR3_BITWORD FOLLOW_TYPE_ATTR_in_type209_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_TYPE_ATTR_in_type209	= { FOLLOW_TYPE_ATTR_in_type209_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_type211  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_type211_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_type211	= { FOLLOW_ID_in_type211_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_FEATURES_ATTR_in_features226  */
-static	ANTLR3_BITWORD FOLLOW_FEATURES_ATTR_in_features226_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_FEATURES_ATTR_in_features226	= { FOLLOW_FEATURES_ATTR_in_features226_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_feature_in_features228  */
-static	ANTLR3_BITWORD FOLLOW_feature_in_features228_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000608) };
-static  ANTLR3_BITSET_LIST FOLLOW_feature_in_features228	= { FOLLOW_feature_in_features228_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_FEATURE_in_feature241  */
-static	ANTLR3_BITWORD FOLLOW_FEATURE_in_feature241_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_FEATURE_in_feature241	= { FOLLOW_FEATURE_in_feature241_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature245  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature245_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature245	= { FOLLOW_ID_in_feature245_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature249  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature249_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature249	= { FOLLOW_ID_in_feature249_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_NOT_FEATURE_in_feature284  */
-static	ANTLR3_BITWORD FOLLOW_NOT_FEATURE_in_feature284_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_NOT_FEATURE_in_feature284	= { FOLLOW_NOT_FEATURE_in_feature284_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature288  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature288_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000002000) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature288	= { FOLLOW_ID_in_feature288_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_feature292  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_feature292_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_feature292	= { FOLLOW_ID_in_feature292_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_LOCATION_in_location304  */
-static	ANTLR3_BITWORD FOLLOW_LOCATION_in_location304_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_LOCATION_in_location304	= { FOLLOW_LOCATION_in_location304_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_ID_in_location306  */
-static	ANTLR3_BITWORD FOLLOW_ID_in_location306_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_ID_in_location306	= { FOLLOW_ID_in_location306_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318  */
-static	ANTLR3_BITWORD FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000004) };
-static  ANTLR3_BITSET_LIST FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318	= { FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318_bits, 1	};
-/** Bitset defining follow set for error recovery in rule state: FOLLOW_NUMBER_in_number_of_sources322  */
-static	ANTLR3_BITWORD FOLLOW_NUMBER_in_number_of_sources322_bits[]	= { ANTLR3_UINT64_LIT(0x0000000000000008) };
-static  ANTLR3_BITSET_LIST FOLLOW_NUMBER_in_number_of_sources322	= { FOLLOW_NUMBER_in_number_of_sources322_bits, 1	};
-
-
-
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_targets_in_jcf_file71  */
+static ANTLR3_BITWORD FOLLOW_targets_in_jcf_file71_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_targets_in_jcf_file71 = {
+  FOLLOW_targets_in_jcf_file71_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_TARGETS_in_targets82  */
+static ANTLR3_BITWORD FOLLOW_TARGETS_in_targets82_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_TARGETS_in_targets82 = {
+  FOLLOW_TARGETS_in_targets82_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_in_targets84  */
+static ANTLR3_BITWORD FOLLOW_target_in_targets84_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000018) };
+static ANTLR3_BITSET_LIST FOLLOW_target_in_targets84 = {
+  FOLLOW_target_in_targets84_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_TARGET_in_target102  */
+static ANTLR3_BITWORD FOLLOW_TARGET_in_target102_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_TARGET_in_target102 = {
+  FOLLOW_TARGET_in_target102_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_target104  */
+static ANTLR3_BITWORD FOLLOW_ID_in_target104_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000038) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_target104 = {
+  FOLLOW_ID_in_target104_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_attributes_in_target108  */
+static ANTLR3_BITWORD FOLLOW_attributes_in_target108_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000038)
+};
+static ANTLR3_BITSET_LIST FOLLOW_attributes_in_target108 = {
+  FOLLOW_attributes_in_target108_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_target_in_target112  */
+static ANTLR3_BITWORD FOLLOW_target_in_target112_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000018) };
+static ANTLR3_BITSET_LIST FOLLOW_target_in_target112 = {
+  FOLLOW_target_in_target112_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ATTRIBUTES_in_attributes125  */
+static ANTLR3_BITWORD FOLLOW_ATTRIBUTES_in_attributes125_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_ATTRIBUTES_in_attributes125 = {
+  FOLLOW_ATTRIBUTES_in_attributes125_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_attribute_in_attributes127  */
+static ANTLR3_BITWORD FOLLOW_attribute_in_attributes127_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000001988)
+};
+static ANTLR3_BITSET_LIST FOLLOW_attribute_in_attributes127 = {
+  FOLLOW_attribute_in_attributes127_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_type_in_attribute148  */
+static ANTLR3_BITWORD FOLLOW_type_in_attribute148_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000002) };
+static ANTLR3_BITSET_LIST FOLLOW_type_in_attribute148 = {
+  FOLLOW_type_in_attribute148_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_features_in_attribute162  */
+static ANTLR3_BITWORD FOLLOW_features_in_attribute162_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_features_in_attribute162 = {
+  FOLLOW_features_in_attribute162_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_location_in_attribute175  */
+static ANTLR3_BITWORD FOLLOW_location_in_attribute175_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_location_in_attribute175 = {
+  FOLLOW_location_in_attribute175_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_number_of_sources_in_attribute188  */
+static ANTLR3_BITWORD FOLLOW_number_of_sources_in_attribute188_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000002)
+};
+static ANTLR3_BITSET_LIST FOLLOW_number_of_sources_in_attribute188 = {
+  FOLLOW_number_of_sources_in_attribute188_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_TYPE_ATTR_in_type209  */
+static ANTLR3_BITWORD FOLLOW_TYPE_ATTR_in_type209_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_TYPE_ATTR_in_type209 = {
+  FOLLOW_TYPE_ATTR_in_type209_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_type211  */
+static ANTLR3_BITWORD FOLLOW_ID_in_type211_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000008) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_type211 = { FOLLOW_ID_in_type211_bits,
+                                                   1 };
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_FEATURES_ATTR_in_features226  */
+static ANTLR3_BITWORD FOLLOW_FEATURES_ATTR_in_features226_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_FEATURES_ATTR_in_features226 = {
+  FOLLOW_FEATURES_ATTR_in_features226_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_feature_in_features228  */
+static ANTLR3_BITWORD FOLLOW_feature_in_features228_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000608)
+};
+static ANTLR3_BITSET_LIST FOLLOW_feature_in_features228 = {
+  FOLLOW_feature_in_features228_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_FEATURE_in_feature241  */
+static ANTLR3_BITWORD FOLLOW_FEATURE_in_feature241_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_FEATURE_in_feature241 = {
+  FOLLOW_FEATURE_in_feature241_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature245  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature245_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature245 = {
+  FOLLOW_ID_in_feature245_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature249  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature249_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000008) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature249 = {
+  FOLLOW_ID_in_feature249_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_NOT_FEATURE_in_feature284  */
+static ANTLR3_BITWORD FOLLOW_NOT_FEATURE_in_feature284_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_NOT_FEATURE_in_feature284 = {
+  FOLLOW_NOT_FEATURE_in_feature284_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature288  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature288_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000002000) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature288 = {
+  FOLLOW_ID_in_feature288_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_feature292  */
+static ANTLR3_BITWORD FOLLOW_ID_in_feature292_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000008) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_feature292 = {
+  FOLLOW_ID_in_feature292_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_LOCATION_in_location304  */
+static ANTLR3_BITWORD FOLLOW_LOCATION_in_location304_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000004)
+};
+static ANTLR3_BITSET_LIST FOLLOW_LOCATION_in_location304 = {
+  FOLLOW_LOCATION_in_location304_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_ID_in_location306  */
+static ANTLR3_BITWORD FOLLOW_ID_in_location306_bits[] = { ANTLR3_UINT64_LIT(
+  0x0000000000000008) };
+static ANTLR3_BITSET_LIST FOLLOW_ID_in_location306 = {
+  FOLLOW_ID_in_location306_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318  */
+static ANTLR3_BITWORD FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318_bits[] =
+  { ANTLR3_UINT64_LIT(0x0000000000000004) };
+static ANTLR3_BITSET_LIST FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318 = {
+  FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318_bits,
+  1
+};
+/** Bitset defining follow set for error recovery in rule state:
+ * FOLLOW_NUMBER_in_number_of_sources322  */
+static ANTLR3_BITWORD FOLLOW_NUMBER_in_number_of_sources322_bits[] = {
+  ANTLR3_UINT64_LIT(0x0000000000000008)
+};
+static ANTLR3_BITSET_LIST FOLLOW_NUMBER_in_number_of_sources322 = {
+  FOLLOW_NUMBER_in_number_of_sources322_bits,
+  1
+};
 
 /* ==============================================
  * Parsing rules
@@ -437,43 +581,36 @@ static  ANTLR3_BITSET_LIST FOLLOW_NUMBER_in_number_of_sources322	= { FOLLOW_NUMB
  * jcf_walker.g:15:1: jcf_file[void * t] : targets[t] ;
  */
 static void
-jcf_file(pjcf_walker ctx, void * t)
+jcf_file(pjcf_walker ctx, void* t)
 {
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
-
+  {
+    // jcf_walker.g:15:20: ( targets[t] )
+    // jcf_walker.g:15:22: targets[t]
     {
-        // jcf_walker.g:15:20: ( targets[t] )
-        // jcf_walker.g:15:22: targets[t]
-        {
-            FOLLOWPUSH(FOLLOW_targets_in_jcf_file71);
-            targets(ctx, t);
+      FOLLOWPUSH(FOLLOW_targets_in_jcf_file71);
+      targets(ctx, t);
 
-            FOLLOWPOP();
-            if  (HASEXCEPTION())
-            {
-                goto rulejcf_fileEx;
-            }
-
-
-        }
-
+      FOLLOWPOP();
+      if (HASEXCEPTION()) {
+        goto rulejcf_fileEx;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulejcf_fileEx; /* Prevent compiler warnings */
+rulejcf_fileEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulejcf_fileEx; /* Prevent compiler warnings */
-    rulejcf_fileEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end jcf_file */
 
@@ -484,258 +621,215 @@ jcf_file(pjcf_walker ctx, void * t)
 static void
 targets(pjcf_walker ctx, void* t)
 {
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
-
+  {
+    // jcf_walker.g:16:18: ( ^( TARGETS ( target[t, 1] )+ ) )
+    // jcf_walker.g:16:20: ^( TARGETS ( target[t, 1] )+ )
     {
-        // jcf_walker.g:16:18: ( ^( TARGETS ( target[t, 1] )+ ) )
-        // jcf_walker.g:16:20: ^( TARGETS ( target[t, 1] )+ )
-        {
-             MATCHT(TARGETS, &FOLLOW_TARGETS_in_targets82);
-            if  (HASEXCEPTION())
-            {
-                goto ruletargetsEx;
+      MATCHT(TARGETS, &FOLLOW_TARGETS_in_targets82);
+      if (HASEXCEPTION()) {
+        goto ruletargetsEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletargetsEx;
+      }
+
+      // jcf_walker.g:16:30: ( target[t, 1] )+
+      {
+        int cnt1 = 0;
+
+        for (;;) {
+          int alt1 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA1_0 = LA(1);
+            if ((LA1_0 == TARGET)) {
+              alt1 = 1;
             }
+          }
+          switch (alt1) {
+            case 1:
+              // jcf_walker.g:16:30: target[t, 1]
+              {
+                FOLLOWPUSH(FOLLOW_target_in_targets84);
+                target(ctx, t, 1);
 
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletargetsEx;
-            }
-
-            // jcf_walker.g:16:30: ( target[t, 1] )+
-            {
-                int cnt1=0;
-
-                for (;;)
-                {
-                    int alt1=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA1_0 = LA(1);
-            	    if ( (LA1_0 == TARGET) )
-            	    {
-            	        alt1=1;
-            	    }
-
-            	}
-            	switch (alt1)
-            	{
-            	    case 1:
-            	        // jcf_walker.g:16:30: target[t, 1]
-            	        {
-            	            FOLLOWPUSH(FOLLOW_target_in_targets84);
-            	            target(ctx, t, 1);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto ruletargetsEx;
-            	            }
-
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt1 >= 1 )
-            		{
-            		    goto loop1;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto ruletargetsEx;
-            	}
-            	cnt1++;
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto ruletargetsEx;
                 }
-                loop1: ;	/* Jump to here if this rule does not match */
-            }
+              }
+              break;
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletargetsEx;
-            }
+            default:
 
+              if (cnt1 >= 1) {
+                goto loop1;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
 
+              goto ruletargetsEx;
+          }
+          cnt1++;
         }
+      loop1:; /* Jump to here if this rule does not match */
+      }
 
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletargetsEx;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletargetsEx; /* Prevent compiler warnings */
+ruletargetsEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruletargetsEx; /* Prevent compiler warnings */
-    ruletargetsEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end targets */
 
 /**
  * $ANTLR start target
- * jcf_walker.g:17:1: target[void* t, int is_top] : ^( TARGET ID ( attributes[tt] )* ( target[tt, 0] )* ) ;
+ * jcf_walker.g:17:1: target[void* t, int is_top] : ^( TARGET ID (
+ * attributes[tt] )* ( target[tt, 0] )* ) ;
  */
 static void
 target(pjcf_walker ctx, void* t, int is_top)
 {
-    pANTLR3_BASE_TREE    ID1;
+  pANTLR3_BASE_TREE ID1;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  void* tt = 0;
+  ID1 = NULL;
 
-    void * tt = 0;
-    ID1       = NULL;
-
+  {
+    // jcf_walker.g:18:25: ( ^( TARGET ID ( attributes[tt] )* ( target[tt, 0] )*
+    // ) )
+    // jcf_walker.g:18:27: ^( TARGET ID ( attributes[tt] )* ( target[tt, 0] )* )
     {
-        // jcf_walker.g:18:25: ( ^( TARGET ID ( attributes[tt] )* ( target[tt, 0] )* ) )
-        // jcf_walker.g:18:27: ^( TARGET ID ( attributes[tt] )* ( target[tt, 0] )* )
+      MATCHT(TARGET, &FOLLOW_TARGET_in_target102);
+      if (HASEXCEPTION()) {
+        goto ruletargetEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletargetEx;
+      }
+
+      ID1 = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_target104);
+      if (HASEXCEPTION()) {
+        goto ruletargetEx;
+      }
+
+      {
+        tt = get_target(
+          (ID1 != NULL ? ID1->getText(ID1) : NULL)->chars, t, is_top);
+      }
+
+      // jcf_walker.g:18:88: ( attributes[tt] )*
+
+      for (;;) {
+        int alt2 = 2;
         {
-             MATCHT(TARGET, &FOLLOW_TARGET_in_target102);
-            if  (HASEXCEPTION())
-            {
-                goto ruletargetEx;
-            }
-
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletargetEx;
-            }
-
-            ID1 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_target104);
-            if  (HASEXCEPTION())
-            {
-                goto ruletargetEx;
-            }
-
-            {
-                 tt = get_target((ID1 != NULL ? ID1->getText(ID1) : NULL)->chars, t, is_top);
-            }
-
-            // jcf_walker.g:18:88: ( attributes[tt] )*
-
-            for (;;)
-            {
-                int alt2=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA2_0 = LA(1);
-                    if ( (LA2_0 == ATTRIBUTES) )
-                    {
-                        alt2=1;
-                    }
-
-                }
-                switch (alt2)
-                {
-            	case 1:
-            	    // jcf_walker.g:18:88: attributes[tt]
-            	    {
-            	        FOLLOWPUSH(FOLLOW_attributes_in_target108);
-            	        attributes(ctx, tt);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletargetEx;
-            	        }
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop2;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop2: ; /* Jump out to here if this rule does not match */
-
-
-            // jcf_walker.g:18:104: ( target[tt, 0] )*
-
-            for (;;)
-            {
-                int alt3=2;
-                {
-                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-                    */
-                    int LA3_0 = LA(1);
-                    if ( (LA3_0 == TARGET) )
-                    {
-                        alt3=1;
-                    }
-
-                }
-                switch (alt3)
-                {
-            	case 1:
-            	    // jcf_walker.g:18:104: target[tt, 0]
-            	    {
-            	        FOLLOWPUSH(FOLLOW_target_in_target112);
-            	        target(ctx, tt, 0);
-
-            	        FOLLOWPOP();
-            	        if  (HASEXCEPTION())
-            	        {
-            	            goto ruletargetEx;
-            	        }
-
-
-            	    }
-            	    break;
-
-            	default:
-            	    goto loop3;	/* break out of the loop */
-            	    break;
-                }
-            }
-            loop3: ; /* Jump out to here if this rule does not match */
-
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletargetEx;
-            }
-
-
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA2_0 = LA(1);
+          if ((LA2_0 == ATTRIBUTES)) {
+            alt2 = 1;
+          }
         }
+        switch (alt2) {
+          case 1:
+            // jcf_walker.g:18:88: attributes[tt]
+            {
+              FOLLOWPUSH(FOLLOW_attributes_in_target108);
+              attributes(ctx, tt);
 
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
+                goto ruletargetEx;
+              }
+            }
+            break;
+
+          default:
+            goto loop2; /* break out of the loop */
+            break;
+        }
+      }
+    loop2:; /* Jump out to here if this rule does not match */
+
+      // jcf_walker.g:18:104: ( target[tt, 0] )*
+
+      for (;;) {
+        int alt3 = 2;
+        {
+          /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+          int LA3_0 = LA(1);
+          if ((LA3_0 == TARGET)) {
+            alt3 = 1;
+          }
+        }
+        switch (alt3) {
+          case 1:
+            // jcf_walker.g:18:104: target[tt, 0]
+            {
+              FOLLOWPUSH(FOLLOW_target_in_target112);
+              target(ctx, tt, 0);
+
+              FOLLOWPOP();
+              if (HASEXCEPTION()) {
+                goto ruletargetEx;
+              }
+            }
+            break;
+
+          default:
+            goto loop3; /* break out of the loop */
+            break;
+        }
+      }
+    loop3:; /* Jump out to here if this rule does not match */
+
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletargetEx;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletargetEx; /* Prevent compiler warnings */
+ruletargetEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruletargetEx; /* Prevent compiler warnings */
-    ruletargetEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end target */
 
@@ -746,242 +840,199 @@ target(pjcf_walker ctx, void* t, int is_top)
 static void
 attributes(pjcf_walker ctx, void* t)
 {
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
-
+  {
+    // jcf_walker.g:20:21: ( ^( ATTRIBUTES ( attribute[t] )+ ) )
+    // jcf_walker.g:20:23: ^( ATTRIBUTES ( attribute[t] )+ )
     {
-        // jcf_walker.g:20:21: ( ^( ATTRIBUTES ( attribute[t] )+ ) )
-        // jcf_walker.g:20:23: ^( ATTRIBUTES ( attribute[t] )+ )
-        {
-             MATCHT(ATTRIBUTES, &FOLLOW_ATTRIBUTES_in_attributes125);
-            if  (HASEXCEPTION())
-            {
-                goto ruleattributesEx;
+      MATCHT(ATTRIBUTES, &FOLLOW_ATTRIBUTES_in_attributes125);
+      if (HASEXCEPTION()) {
+        goto ruleattributesEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruleattributesEx;
+      }
+
+      // jcf_walker.g:20:36: ( attribute[t] )+
+      {
+        int cnt4 = 0;
+
+        for (;;) {
+          int alt4 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA4_0 = LA(1);
+            if ((((LA4_0 >= TYPE_ATTR) && (LA4_0 <= FEATURES_ATTR)) ||
+                 ((LA4_0 >= LOCATION) && (LA4_0 <= NUMBER_OF_SOURCES)))) {
+              alt4 = 1;
             }
+          }
+          switch (alt4) {
+            case 1:
+              // jcf_walker.g:20:36: attribute[t]
+              {
+                FOLLOWPUSH(FOLLOW_attribute_in_attributes127);
+                attribute(ctx, t);
 
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruleattributesEx;
-            }
-
-            // jcf_walker.g:20:36: ( attribute[t] )+
-            {
-                int cnt4=0;
-
-                for (;;)
-                {
-                    int alt4=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA4_0 = LA(1);
-            	    if ( (((LA4_0 >= TYPE_ATTR) && (LA4_0 <= FEATURES_ATTR)) || ((LA4_0 >= LOCATION) && (LA4_0 <= NUMBER_OF_SOURCES))) )
-            	    {
-            	        alt4=1;
-            	    }
-
-            	}
-            	switch (alt4)
-            	{
-            	    case 1:
-            	        // jcf_walker.g:20:36: attribute[t]
-            	        {
-            	            FOLLOWPUSH(FOLLOW_attribute_in_attributes127);
-            	            attribute(ctx, t);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto ruleattributesEx;
-            	            }
-
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt4 >= 1 )
-            		{
-            		    goto loop4;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto ruleattributesEx;
-            	}
-            	cnt4++;
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto ruleattributesEx;
                 }
-                loop4: ;	/* Jump to here if this rule does not match */
-            }
+              }
+              break;
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruleattributesEx;
-            }
+            default:
 
+              if (cnt4 >= 1) {
+                goto loop4;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
 
+              goto ruleattributesEx;
+          }
+          cnt4++;
         }
+      loop4:; /* Jump to here if this rule does not match */
+      }
 
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruleattributesEx;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleattributesEx; /* Prevent compiler warnings */
+ruleattributesEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleattributesEx; /* Prevent compiler warnings */
-    ruleattributesEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end attributes */
 
 /**
  * $ANTLR start attribute
- * jcf_walker.g:21:1: attribute[void* t] : ( type[t] | features[t, get_features(t)] | location[t] | number_of_sources[t] );
+ * jcf_walker.g:21:1: attribute[void* t] : ( type[t] | features[t,
+ * get_features(t)] | location[t] | number_of_sources[t] );
  */
 static void
 attribute(pjcf_walker ctx, void* t)
 {
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
-
+  {
     {
-        {
-            //  jcf_walker.g:22:9: ( type[t] | features[t, get_features(t)] | location[t] | number_of_sources[t] )
+      //  jcf_walker.g:22:9: ( type[t] | features[t, get_features(t)] |
+      //  location[t] | number_of_sources[t] )
 
-            ANTLR3_UINT32 alt5;
+      ANTLR3_UINT32 alt5;
 
-            alt5=4;
+      alt5 = 4;
 
-            switch ( LA(1) )
-            {
-            case TYPE_ATTR:
-            	{
-            		alt5=1;
-            	}
-                break;
-            case FEATURES_ATTR:
-            	{
-            		alt5=2;
-            	}
-                break;
-            case LOCATION:
-            	{
-            		alt5=3;
-            	}
-                break;
-            case NUMBER_OF_SOURCES:
-            	{
-            		alt5=4;
-            	}
-                break;
+      switch (LA(1)) {
+        case TYPE_ATTR: {
+          alt5 = 1;
+        } break;
+        case FEATURES_ATTR: {
+          alt5 = 2;
+        } break;
+        case LOCATION: {
+          alt5 = 3;
+        } break;
+        case NUMBER_OF_SOURCES: {
+          alt5 = 4;
+        } break;
 
-            default:
-                CONSTRUCTEX();
-                EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                EXCEPTION->message      = (void *)"";
-                EXCEPTION->decisionNum  = 5;
-                EXCEPTION->state        = 0;
+        default:
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 5;
+          EXCEPTION->state = 0;
 
+          goto ruleattributeEx;
+      }
 
-                goto ruleattributeEx;
+      switch (alt5) {
+        case 1:
+          // jcf_walker.g:22:11: type[t]
+          {
+            FOLLOWPUSH(FOLLOW_type_in_attribute148);
+            type(ctx, t);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
             }
+          }
+          break;
+        case 2:
+          // jcf_walker.g:23:11: features[t, get_features(t)]
+          {
+            FOLLOWPUSH(FOLLOW_features_in_attribute162);
+            features(ctx, t, get_features(t));
 
-            switch (alt5)
-            {
-        	case 1:
-        	    // jcf_walker.g:22:11: type[t]
-        	    {
-        	        FOLLOWPUSH(FOLLOW_type_in_attribute148);
-        	        type(ctx, t);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-
-        	    }
-        	    break;
-        	case 2:
-        	    // jcf_walker.g:23:11: features[t, get_features(t)]
-        	    {
-        	        FOLLOWPUSH(FOLLOW_features_in_attribute162);
-        	        features(ctx, t, get_features(t));
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-
-        	    }
-        	    break;
-        	case 3:
-        	    // jcf_walker.g:24:11: location[t]
-        	    {
-        	        FOLLOWPUSH(FOLLOW_location_in_attribute175);
-        	        location(ctx, t);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-
-        	    }
-        	    break;
-        	case 4:
-        	    // jcf_walker.g:25:11: number_of_sources[t]
-        	    {
-        	        FOLLOWPUSH(FOLLOW_number_of_sources_in_attribute188);
-        	        number_of_sources(ctx, t);
-
-        	        FOLLOWPOP();
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto ruleattributeEx;
-        	        }
-
-
-        	    }
-        	    break;
-
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
             }
-        }
+          }
+          break;
+        case 3:
+          // jcf_walker.g:24:11: location[t]
+          {
+            FOLLOWPUSH(FOLLOW_location_in_attribute175);
+            location(ctx, t);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
+            }
+          }
+          break;
+        case 4:
+          // jcf_walker.g:25:11: number_of_sources[t]
+          {
+            FOLLOWPUSH(FOLLOW_number_of_sources_in_attribute188);
+            number_of_sources(ctx, t);
+
+            FOLLOWPOP();
+            if (HASEXCEPTION()) {
+              goto ruleattributeEx;
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruleattributeEx; /* Prevent compiler warnings */
+ruleattributeEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruleattributeEx; /* Prevent compiler warnings */
-    ruleattributeEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end attribute */
 
@@ -992,329 +1043,283 @@ attribute(pjcf_walker ctx, void* t)
 static void
 type(pjcf_walker ctx, void* t)
 {
-    pANTLR3_BASE_TREE    ID2;
+  pANTLR3_BASE_TREE ID2;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  ID2 = NULL;
 
-    ID2       = NULL;
-
+  {
+    // jcf_walker.g:27:17: ( ^( TYPE_ATTR ID ) )
+    // jcf_walker.g:27:19: ^( TYPE_ATTR ID )
     {
-        // jcf_walker.g:27:17: ( ^( TYPE_ATTR ID ) )
-        // jcf_walker.g:27:19: ^( TYPE_ATTR ID )
-        {
-             MATCHT(TYPE_ATTR, &FOLLOW_TYPE_ATTR_in_type209);
-            if  (HASEXCEPTION())
-            {
-                goto ruletypeEx;
-            }
+      MATCHT(TYPE_ATTR, &FOLLOW_TYPE_ATTR_in_type209);
+      if (HASEXCEPTION()) {
+        goto ruletypeEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletypeEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletypeEx;
-            }
+      ID2 = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_type211);
+      if (HASEXCEPTION()) {
+        goto ruletypeEx;
+      }
 
-            ID2 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_type211);
-            if  (HASEXCEPTION())
-            {
-                goto ruletypeEx;
-            }
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto ruletypeEx;
+      }
 
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto ruletypeEx;
-            }
-
-            {
-                 check_type(PARSER->super, t, (ID2 != NULL ? ID2->getText(ID2) : NULL)->chars);
-            }
-
-        }
-
+      {
+        check_type(
+          PARSER->super, t, (ID2 != NULL ? ID2->getText(ID2) : NULL)->chars);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto ruletypeEx; /* Prevent compiler warnings */
+ruletypeEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto ruletypeEx; /* Prevent compiler warnings */
-    ruletypeEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end type */
 
 /**
  * $ANTLR start features
- * jcf_walker.g:28:1: features[void* t, void* f] : ^( FEATURES_ATTR ( feature[t, f] )+ ) ;
+ * jcf_walker.g:28:1: features[void* t, void* f] : ^( FEATURES_ATTR ( feature[t,
+ * f] )+ ) ;
  */
 static void
 features(pjcf_walker ctx, void* t, void* f)
 {
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
-
+  {
+    // jcf_walker.g:28:28: ( ^( FEATURES_ATTR ( feature[t, f] )+ ) )
+    // jcf_walker.g:28:30: ^( FEATURES_ATTR ( feature[t, f] )+ )
     {
-        // jcf_walker.g:28:28: ( ^( FEATURES_ATTR ( feature[t, f] )+ ) )
-        // jcf_walker.g:28:30: ^( FEATURES_ATTR ( feature[t, f] )+ )
-        {
-             MATCHT(FEATURES_ATTR, &FOLLOW_FEATURES_ATTR_in_features226);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeaturesEx;
+      MATCHT(FEATURES_ATTR, &FOLLOW_FEATURES_ATTR_in_features226);
+      if (HASEXCEPTION()) {
+        goto rulefeaturesEx;
+      }
+
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulefeaturesEx;
+      }
+
+      // jcf_walker.g:28:46: ( feature[t, f] )+
+      {
+        int cnt6 = 0;
+
+        for (;;) {
+          int alt6 = 2;
+          {
+            /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
+ */
+            int LA6_0 = LA(1);
+            if ((((LA6_0 >= FEATURE) && (LA6_0 <= NOT_FEATURE)))) {
+              alt6 = 1;
             }
+          }
+          switch (alt6) {
+            case 1:
+              // jcf_walker.g:28:46: feature[t, f]
+              {
+                FOLLOWPUSH(FOLLOW_feature_in_features228);
+                feature(ctx, t, f);
 
-
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeaturesEx;
-            }
-
-            // jcf_walker.g:28:46: ( feature[t, f] )+
-            {
-                int cnt6=0;
-
-                for (;;)
-                {
-                    int alt6=2;
-            	{
-            	   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
-            	    */
-            	    int LA6_0 = LA(1);
-            	    if ( (((LA6_0 >= FEATURE) && (LA6_0 <= NOT_FEATURE))) )
-            	    {
-            	        alt6=1;
-            	    }
-
-            	}
-            	switch (alt6)
-            	{
-            	    case 1:
-            	        // jcf_walker.g:28:46: feature[t, f]
-            	        {
-            	            FOLLOWPUSH(FOLLOW_feature_in_features228);
-            	            feature(ctx, t, f);
-
-            	            FOLLOWPOP();
-            	            if  (HASEXCEPTION())
-            	            {
-            	                goto rulefeaturesEx;
-            	            }
-
-
-            	        }
-            	        break;
-
-            	    default:
-
-            		if ( cnt6 >= 1 )
-            		{
-            		    goto loop6;
-            		}
-            		/* mismatchedSetEx()
-            		 */
-            		CONSTRUCTEX();
-            		EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
-            		EXCEPTION->name = (void *)ANTLR3_EARLY_EXIT_NAME;
-
-
-            		goto rulefeaturesEx;
-            	}
-            	cnt6++;
+                FOLLOWPOP();
+                if (HASEXCEPTION()) {
+                  goto rulefeaturesEx;
                 }
-                loop6: ;	/* Jump to here if this rule does not match */
-            }
+              }
+              break;
 
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulefeaturesEx;
-            }
+            default:
 
+              if (cnt6 >= 1) {
+                goto loop6;
+              }
+              /* mismatchedSetEx()
+     */
+              CONSTRUCTEX();
+              EXCEPTION->type = ANTLR3_EARLY_EXIT_EXCEPTION;
+              EXCEPTION->name = (void*)ANTLR3_EARLY_EXIT_NAME;
 
+              goto rulefeaturesEx;
+          }
+          cnt6++;
         }
+      loop6:; /* Jump to here if this rule does not match */
+      }
 
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulefeaturesEx;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeaturesEx; /* Prevent compiler warnings */
+rulefeaturesEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeaturesEx; /* Prevent compiler warnings */
-    rulefeaturesEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end features */
 
 /**
  * $ANTLR start feature
- * jcf_walker.g:29:1: feature[void* t, void* f] : ( ^( FEATURE name= ID value= ID ) | ^( NOT_FEATURE name= ID value= ID ) );
+ * jcf_walker.g:29:1: feature[void* t, void* f] : ( ^( FEATURE name= ID value=
+ * ID ) | ^( NOT_FEATURE name= ID value= ID ) );
  */
 static void
 feature(pjcf_walker ctx, void* t, void* f)
 {
-    pANTLR3_BASE_TREE    name;
-    pANTLR3_BASE_TREE    value;
+  pANTLR3_BASE_TREE name;
+  pANTLR3_BASE_TREE value;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  name = NULL;
+  value = NULL;
 
-    name       = NULL;
-    value       = NULL;
-
+  {
     {
-        {
-            //  jcf_walker.g:29:28: ( ^( FEATURE name= ID value= ID ) | ^( NOT_FEATURE name= ID value= ID ) )
+      //  jcf_walker.g:29:28: ( ^( FEATURE name= ID value= ID ) | ^( NOT_FEATURE
+      //  name= ID value= ID ) )
 
-            ANTLR3_UINT32 alt7;
+      ANTLR3_UINT32 alt7;
 
-            alt7=2;
+      alt7 = 2;
 
+      {
+        int LA7_0 = LA(1);
+        if ((LA7_0 == FEATURE)) {
+          alt7 = 1;
+        } else if ((LA7_0 == NOT_FEATURE)) {
+          alt7 = 2;
+        } else {
+          CONSTRUCTEX();
+          EXCEPTION->type = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
+          EXCEPTION->message = (void*)"";
+          EXCEPTION->decisionNum = 7;
+          EXCEPTION->state = 0;
 
-            {
-                int LA7_0 = LA(1);
-                if ( (LA7_0 == FEATURE) )
-                {
-                    alt7=1;
-                }
-                else if ( (LA7_0 == NOT_FEATURE) )
-                {
-                    alt7=2;
-                }
-                else
-                {
-
-                    CONSTRUCTEX();
-                    EXCEPTION->type         = ANTLR3_NO_VIABLE_ALT_EXCEPTION;
-                    EXCEPTION->message      = (void *)"";
-                    EXCEPTION->decisionNum  = 7;
-                    EXCEPTION->state        = 0;
-
-
-                    goto rulefeatureEx;
-                }
-            }
-            switch (alt7)
-            {
-        	case 1:
-        	    // jcf_walker.g:29:30: ^( FEATURE name= ID value= ID )
-        	    {
-        	         MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature241);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature245);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        value = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature249);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        {
-        	             check_feature(PARSER->super, t, f, name->getToken(name), value->getToken(value));
-        	        }
-
-        	    }
-        	    break;
-        	case 2:
-        	    // jcf_walker.g:30:30: ^( NOT_FEATURE name= ID value= ID )
-        	    {
-        	         MATCHT(NOT_FEATURE, &FOLLOW_NOT_FEATURE_in_feature284);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        name = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature288);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        value = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_feature292);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-
-        	        MATCHT(ANTLR3_TOKEN_UP, NULL);
-        	        if  (HASEXCEPTION())
-        	        {
-        	            goto rulefeatureEx;
-        	        }
-
-        	        {
-        	             check_not_feature(PARSER->super, t, f, (name != NULL ? name->getText(name) : NULL)->chars, (value != NULL ? value->getText(value) : NULL)->chars);
-        	        }
-
-        	    }
-        	    break;
-
-            }
+          goto rulefeatureEx;
         }
+      }
+      switch (alt7) {
+        case 1:
+          // jcf_walker.g:29:30: ^( FEATURE name= ID value= ID )
+          {
+            MATCHT(FEATURE, &FOLLOW_FEATURE_in_feature241);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            name = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_feature245);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            value = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_feature249);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            {
+              check_feature(PARSER->super,
+                            t,
+                            f,
+                            name->getToken(name),
+                            value->getToken(value));
+            }
+          }
+          break;
+        case 2:
+          // jcf_walker.g:30:30: ^( NOT_FEATURE name= ID value= ID )
+          {
+            MATCHT(NOT_FEATURE, &FOLLOW_NOT_FEATURE_in_feature284);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            name = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_feature288);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            value = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_feature292);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            MATCHT(ANTLR3_TOKEN_UP, NULL);
+            if (HASEXCEPTION()) {
+              goto rulefeatureEx;
+            }
+
+            {
+              check_not_feature(
+                PARSER->super,
+                t,
+                f,
+                (name != NULL ? name->getText(name) : NULL)->chars,
+                (value != NULL ? value->getText(value) : NULL)->chars);
+            }
+          }
+          break;
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulefeatureEx; /* Prevent compiler warnings */
+rulefeatureEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulefeatureEx; /* Prevent compiler warnings */
-    rulefeatureEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end feature */
 
@@ -1325,134 +1330,116 @@ feature(pjcf_walker ctx, void* t, void* f)
 static void
 location(pjcf_walker ctx, void* t)
 {
-    pANTLR3_BASE_TREE    ID3;
+  pANTLR3_BASE_TREE ID3;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  ID3 = NULL;
 
-    ID3       = NULL;
-
+  {
+    // jcf_walker.g:31:19: ( ^( LOCATION ID ) )
+    // jcf_walker.g:31:21: ^( LOCATION ID )
     {
-        // jcf_walker.g:31:19: ( ^( LOCATION ID ) )
-        // jcf_walker.g:31:21: ^( LOCATION ID )
-        {
-             MATCHT(LOCATION, &FOLLOW_LOCATION_in_location304);
-            if  (HASEXCEPTION())
-            {
-                goto rulelocationEx;
-            }
+      MATCHT(LOCATION, &FOLLOW_LOCATION_in_location304);
+      if (HASEXCEPTION()) {
+        goto rulelocationEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulelocationEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulelocationEx;
-            }
+      ID3 = (pANTLR3_BASE_TREE)MATCHT(ID, &FOLLOW_ID_in_location306);
+      if (HASEXCEPTION()) {
+        goto rulelocationEx;
+      }
 
-            ID3 = (pANTLR3_BASE_TREE) MATCHT(ID, &FOLLOW_ID_in_location306);
-            if  (HASEXCEPTION())
-            {
-                goto rulelocationEx;
-            }
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulelocationEx;
+      }
 
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulelocationEx;
-            }
-
-            {
-                 check_location(t, (ID3 != NULL ? ID3->getText(ID3) : NULL)->chars);
-            }
-
-        }
-
+      {
+        check_location(t, (ID3 != NULL ? ID3->getText(ID3) : NULL)->chars);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulelocationEx; /* Prevent compiler warnings */
+rulelocationEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulelocationEx; /* Prevent compiler warnings */
-    rulelocationEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end location */
 
 /**
  * $ANTLR start number_of_sources
- * jcf_walker.g:32:1: number_of_sources[void* t] : ^( NUMBER_OF_SOURCES number= NUMBER ) ;
+ * jcf_walker.g:32:1: number_of_sources[void* t] : ^( NUMBER_OF_SOURCES number=
+ * NUMBER ) ;
  */
 static void
 number_of_sources(pjcf_walker ctx, void* t)
 {
-    pANTLR3_BASE_TREE    number;
+  pANTLR3_BASE_TREE number;
 
-    /* Initialize rule variables
-     */
+  /* Initialize rule variables
+ */
 
+  number = NULL;
 
-    number       = NULL;
-
+  {
+    // jcf_walker.g:32:28: ( ^( NUMBER_OF_SOURCES number= NUMBER ) )
+    // jcf_walker.g:32:30: ^( NUMBER_OF_SOURCES number= NUMBER )
     {
-        // jcf_walker.g:32:28: ( ^( NUMBER_OF_SOURCES number= NUMBER ) )
-        // jcf_walker.g:32:30: ^( NUMBER_OF_SOURCES number= NUMBER )
-        {
-             MATCHT(NUMBER_OF_SOURCES, &FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318);
-            if  (HASEXCEPTION())
-            {
-                goto rulenumber_of_sourcesEx;
-            }
+      MATCHT(NUMBER_OF_SOURCES,
+             &FOLLOW_NUMBER_OF_SOURCES_in_number_of_sources318);
+      if (HASEXCEPTION()) {
+        goto rulenumber_of_sourcesEx;
+      }
 
+      MATCHT(ANTLR3_TOKEN_DOWN, NULL);
+      if (HASEXCEPTION()) {
+        goto rulenumber_of_sourcesEx;
+      }
 
-            MATCHT(ANTLR3_TOKEN_DOWN, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulenumber_of_sourcesEx;
-            }
+      number = (pANTLR3_BASE_TREE)MATCHT(
+        NUMBER, &FOLLOW_NUMBER_in_number_of_sources322);
+      if (HASEXCEPTION()) {
+        goto rulenumber_of_sourcesEx;
+      }
 
-            number = (pANTLR3_BASE_TREE) MATCHT(NUMBER, &FOLLOW_NUMBER_in_number_of_sources322);
-            if  (HASEXCEPTION())
-            {
-                goto rulenumber_of_sourcesEx;
-            }
+      MATCHT(ANTLR3_TOKEN_UP, NULL);
+      if (HASEXCEPTION()) {
+        goto rulenumber_of_sourcesEx;
+      }
 
-
-            MATCHT(ANTLR3_TOKEN_UP, NULL);
-            if  (HASEXCEPTION())
-            {
-                goto rulenumber_of_sourcesEx;
-            }
-
-            {
-                 check_number_of_sources(t, (number != NULL ? number->getText(number) : NULL)->chars);
-            }
-
-        }
-
+      {
+        check_number_of_sources(
+          t, (number != NULL ? number->getText(number) : NULL)->chars);
+      }
     }
+  }
 
+  // This is where rules clean up and exit
+  //
+  goto rulenumber_of_sourcesEx; /* Prevent compiler warnings */
+rulenumber_of_sourcesEx:;
 
-    // This is where rules clean up and exit
-    //
-    goto rulenumber_of_sourcesEx; /* Prevent compiler warnings */
-    rulenumber_of_sourcesEx: ;
+  if (HASEXCEPTION()) {
+    PREPORTERROR();
+    PRECOVER();
+  }
 
-    if (HASEXCEPTION())
-    {
-        PREPORTERROR();
-        PRECOVER();
-    }
-
-    return ;
+  return;
 }
 /* $ANTLR end number_of_sources */
 /* End of parsing rules
@@ -1465,11 +1452,6 @@ number_of_sources(pjcf_walker ctx, void* t)
 /* End of syntactic predicates
  * ==============================================
  */
-
-
-
-
-
 
 /* End of code
  * =============================================================================

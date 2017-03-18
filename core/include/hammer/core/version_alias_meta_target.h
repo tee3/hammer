@@ -3,21 +3,21 @@
 
 #include <hammer/core/alias_meta_target.h>
 
-namespace hammer
+namespace hammer {
+class version_alias_meta_target : public alias_meta_target
 {
-   class version_alias_meta_target : public alias_meta_target
-   {
-      public:
-         version_alias_meta_target(hammer::project* p,
-                                   const std::string& name,
-                                   const std::string& version,
-                                   const std::string* target_path);
-      protected:
-         void instantiate_impl(const main_target* owner,
-                               const feature_set& build_request,
-                               std::vector<basic_target*>* result,
-                               feature_set* usage_requirements) const override;
-   };
+public:
+  version_alias_meta_target(hammer::project* p,
+                            const std::string& name,
+                            const std::string& version,
+                            const std::string* target_path);
+
+protected:
+  void instantiate_impl(const main_target* owner,
+                        const feature_set& build_request,
+                        std::vector<basic_target*>* result,
+                        feature_set* usage_requirements) const override;
+};
 }
 
-#endif //h_8c4e66a7_204c_4ef1_b9f9_4decf9327607
+#endif // h_8c4e66a7_204c_4ef1_b9f9_4decf9327607

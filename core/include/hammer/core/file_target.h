@@ -3,21 +3,23 @@
 
 #include "basic_target.h"
 
-namespace hammer
+namespace hammer {
+class file_target : public basic_target
 {
-   class file_target : public basic_target
-   {
-      public:
-         file_target(const main_target* mt, const std::string& name,
-                     const target_type* t, const feature_set* f) : basic_target(mt, name, t, f)
-         {
-         }
+public:
+  file_target(const main_target* mt,
+              const std::string& name,
+              const target_type* t,
+              const feature_set* f)
+    : basic_target(mt, name, t, f)
+  {
+  }
 
-         virtual std::vector<boost::intrusive_ptr<build_node> > generate() const;
+  virtual std::vector<boost::intrusive_ptr<build_node>> generate() const;
 
-      protected:
-         virtual void timestamp_info_impl() const;
-   };
+protected:
+  virtual void timestamp_info_impl() const;
+};
 }
 
-#endif //h_ec3dfa36_40f1_45e9_a457_788faf7eaf27
+#endif // h_ec3dfa36_40f1_45e9_a457_788faf7eaf27

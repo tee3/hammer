@@ -3,22 +3,24 @@
 
 #include <hammer/core/meta_target.h>
 
-namespace hammer
+namespace hammer {
+class file_meta_target : public meta_target
 {
-   class file_meta_target : public meta_target
-   {
-      public:
-         file_meta_target(hammer::project* p,
-                          const std::string& name,
-                          const std::string& filename,
-                          const requirements_decl& req,
-                          const requirements_decl& usage_req);
-      protected:
-         virtual main_target* construct_main_target(const main_target* owner, const feature_set* properties) const;
+public:
+  file_meta_target(hammer::project* p,
+                   const std::string& name,
+                   const std::string& filename,
+                   const requirements_decl& req,
+                   const requirements_decl& usage_req);
 
-      private:
-         const std::string filename_;
-   };
+protected:
+  virtual main_target* construct_main_target(
+    const main_target* owner,
+    const feature_set* properties) const;
+
+private:
+  const std::string filename_;
+};
 }
 
-#endif //h_3bda6362_7fc5_48f7_9791_72655cf48f94
+#endif // h_3bda6362_7fc5_48f7_9791_72655cf48f94
