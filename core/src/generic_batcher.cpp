@@ -18,14 +18,13 @@ generic_batcher::process(const build_node::nodes_t& nodes,
                          unsigned concurency_level)
 {
   generic_batcher batcher(concurency_level);
-  for (build_node::nodes_t::const_iterator i = nodes.begin(),
-                                           last = nodes.end();
-       i != last;
-       ++i)
-    if (batcher.visited_nodes_.find(i->get()) == batcher.visited_nodes_.end() &&
-        (**i).up_to_date() != boost::tribool::true_value) {
-      batcher.process_impl(**i);
+  for (const auto& node : nodes) {
+    if (batcher.visited_nodes_.find(node.get()) ==
+          batcher.visited_nodes_.end() &&
+        (*node).up_to_date() != boost::tribool::true_value) {
+      batcher.process_impl(*node);
     }
+  }
 }
 
 typedef boost::unordered_map<pair<const feature_set*, const build_action*>,
@@ -37,9 +36,8 @@ process_interval(build_node& node,
                  unsigned concurency_level)
 {
   size_t block_size = i->second.size() / concurency_level;
-  build_node::sources_t::const_iterator s_iter = i->second.begin(),
-                                        s_block_last = s_iter + block_size,
-                                        s_last = i->second.end();
+  auto s_iter = i->second.begin(), s_block_last = s_iter + block_size,
+       s_last = i->second.end();
   for (size_t batched_sources_count = 0;
        batched_sources_count < i->second.size();) {
     const build_node& front_node = *s_iter->source_node_;
@@ -69,15 +67,17 @@ process_interval(build_node& node,
            p = new_node->products_.begin(),
            p_last = new_node->products_.end();
          p != p_last;
-         ++p)
-      node.sources_.push_back(build_node::source_t(*p, new_node));
+         ++p) {
+      node.sources_.emplace_back(*p, new_node);
+    }
 
     node.down_.push_back(new_node);
 
-    if (batched_sources_count + block_size <= i->second.size())
+    if (batched_sources_count + block_size <= i->second.size()) {
       s_block_last += block_size;
-    else
+    } else {
       s_block_last = s_last;
+    }
   }
 }
 
@@ -96,14 +96,15 @@ generic_batcher::process_impl(build_node& node) const
     if (!i->source_node_->is_composite() &&
         i->source_node_->sources_.size() == 1 &&
         i->source_node_->products_.size() == 1 &&
-        i->source_node_->action() != NULL &&
-        i->source_node_->action()->batched_action() != NULL &&
+        i->source_node_->action() != nullptr &&
+        i->source_node_->action()->batched_action() != nullptr &&
         i->source_node_->up_to_date() != boost::tribool::true_value) {
       selected_sources[make_pair(&i->source_node_->build_request(),
                                  i->source_node_->action())]
         .push_back(*i);
-    } else
+    } else {
       unbatchable_sources.push_back(*i);
+    }
   }
 
   for (selected_nodes_t::iterator i = selected_sources.begin();
@@ -111,8 +112,9 @@ generic_batcher::process_impl(build_node& node) const
     if (i->second.size() == 1) {
       unbatchable_sources.push_back(i->second.front());
       i = selected_sources.erase(i);
-    } else
+    } else {
       ++i;
+    }
   }
 
   if (!selected_sources.empty()) {
@@ -121,8 +123,9 @@ generic_batcher::process_impl(build_node& node) const
     node.sources_.clear();
     for (selected_nodes_t::const_iterator i = selected_sources.begin();
          i != selected_sources.end();
-         ++i)
+         ++i) {
       process_interval(node, i, concurency_level_);
+    }
 
     for (build_node::sources_t::const_iterator i = unbatchable_sources.begin(),
                                                last = unbatchable_sources.end();
@@ -157,4 +160,4 @@ generic_batcher::process_impl(build_node& node) const
     }
   }
 }
-}
+} // namespace hammer

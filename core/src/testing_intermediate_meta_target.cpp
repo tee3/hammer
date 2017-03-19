@@ -23,9 +23,8 @@ testing_intermediate_meta_target::compute_additional_sources(
   const main_target& owner) const
 {
   sources_decl result;
-  for (feature_set::const_iterator
-         i = owner.properties().find("testing.additional-source"),
-         last = owner.properties().end();
+  for (auto i = owner.properties().find("testing.additional-source"),
+            last = owner.properties().end();
        i != last;) {
     result.push_back((**i).get_dependency_data().source_);
     i = owner.properties().find(i + 1, "testing.additional-source");
@@ -33,4 +32,4 @@ testing_intermediate_meta_target::compute_additional_sources(
 
   return result;
 }
-}
+} // namespace hammer

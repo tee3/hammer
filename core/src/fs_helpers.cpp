@@ -10,8 +10,9 @@ namespace hammer {
 static void
 strip_slesh_dot(boost::filesystem::path& p)
 {
-  if (p.filename() == "." && p.string().size() > 2)
+  if (p.filename() == "." && p.string().size() > 2) {
     p = p.branch_path();
+  }
 }
 
 boost::filesystem::path
@@ -24,12 +25,14 @@ relative_path(boost::filesystem::path p, boost::filesystem::path relative_to)
   path current = relative_to;
 
   // Trivial case
-  if (equivalent(current, p))
+  if (equivalent(current, p)) {
     return path(".");
+  }
 
   // Doesn't share a root
-  if (!equivalent(current.root_path(), p.root_path()))
+  if (!equivalent(current.root_path(), p.root_path())) {
     return p;
+  }
 
   // We don't care about the root anymore
   // (and makes the rest easier)
@@ -40,9 +43,11 @@ relative_path(boost::filesystem::path p, boost::filesystem::path relative_to)
 
   path::iterator pit = p.begin(), cit = current.begin();
   // Find the shared directory
-  for (; pit != p.end() && cit != current.end(); ++pit, ++cit)
-    if (*pit != *cit) // May not be right
+  for (; pit != p.end() && cit != current.end(); ++pit, ++cit) {
+    if (*pit != *cit) { // May not be right
       break;
+    }
+  }
 
   // Put needed parent dirs in
   while (cit != current.end()) {
@@ -51,9 +56,10 @@ relative_path(boost::filesystem::path p, boost::filesystem::path relative_to)
   }
 
   // Add the path from shared
-  while (pit != p.end())
+  while (pit != p.end()) {
     // Gah! Why doesn't *path::iterator return paths?
     final /= path(*pit++);
+  }
 
   // .normalize()?
   return final;
@@ -79,16 +85,16 @@ resolve_symlinks(const boost::filesystem::path& p)
     if (is_symlink(result)) {
       char buff[1024];
       ssize_t s = readlink(result.native().c_str(), buff, sizeof(buff));
-      if (s == -1)
+      if (s == -1) {
         return p;
-      else {
-        fs::path link(buff, buff + s);
-        if (link.has_root_directory())
-          result = link;
-        else
-          result /= link;
-        result.normalize();
       }
+      fs::path link(buff, buff + s);
+      if (link.has_root_directory()) {
+        result = link;
+      } else {
+        result /= link;
+      }
+      result.normalize();
     }
   }
 
@@ -116,10 +122,10 @@ to_wide(const boost::filesystem::path& narrow_path)
 }
 #else
 boost::filesystem::wpath
-to_wide(const boost::filesystem::path& narrow_path)
+to_wide(const boost::filesystem::path& /*narrow_path*/)
 {
   throw std::runtime_error("Non windows platforms should not invoke 'to_wide'. "
                            "Posible broken build of hammer.core");
 }
 #endif
-}
+} // namespace hammer

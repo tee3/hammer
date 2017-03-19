@@ -30,8 +30,8 @@ public:
   engine();
   loaded_projects_t load_project(location_t project_path,
                                  const project& from_project);
-  project& load_project(location_t project_path);
-  loaded_projects_t try_load_project(location_t project_path,
+  project& load_project(const location_t& project_path);
+  loaded_projects_t try_load_project(const location_t& project_path,
                                      const project& from_project);
   void load_hammer_script(location_t filepath);
   void load_hammer_script(const std::string& script_body,
@@ -150,11 +150,11 @@ private:
                              const location_t& project_symlink);
   void resolve_project_alias(resolved_project_symlinks_t& symlinks,
                              location_t::const_iterator first,
-                             location_t::const_iterator last,
+                             const location_t::const_iterator& last,
                              global_project_links_t& symlink_storage);
   void resolve_use_project(location_t& resolved_use_path,
                            location_t& tail_path,
-                           const hammer::project& project,
+                           const hammer::project& p,
                            const location_t& path_to_resolve);
   void project_rule(project* p,
                     std::vector<std::string>& name,
@@ -163,7 +163,7 @@ private:
   void lib_rule(project* p,
                 std::vector<std::string>& name,
                 sources_decl* sources,
-                requirements_decl* fs,
+                requirements_decl* requirements,
                 feature_set* default_build,
                 requirements_decl* usage_requirements);
   void searched_shared_lib_rule(project* p,
@@ -192,31 +192,31 @@ private:
   void header_lib_rule(project* p,
                        std::vector<std::string>& name,
                        sources_decl* sources,
-                       requirements_decl* fs,
+                       requirements_decl* requirements,
                        feature_set* default_build,
                        requirements_decl* usage_requirements);
   void exe_rule(project* p,
                 std::vector<std::string>& name,
                 sources_decl& sources,
-                requirements_decl* fs,
+                requirements_decl* requirements,
                 feature_set* default_build,
                 requirements_decl* usage_requirements);
   void obj_rule(project* p,
                 std::string& name,
                 sources_decl& sources,
-                requirements_decl* fs,
+                requirements_decl* requirements,
                 feature_set* default_build,
                 requirements_decl* usage_requirements);
   void pch_rule(project* p,
                 std::string& name,
                 sources_decl& sources,
-                requirements_decl* fs,
+                requirements_decl* requirements,
                 feature_set* default_build,
                 requirements_decl* usage_requirements);
   void alias_rule(project* p,
                   std::string& name,
                   sources_decl* sources,
-                  requirements_decl* fs,
+                  requirements_decl* requirements,
                   feature_set* default_build,
                   requirements_decl* usage_requirements);
   void version_alias_rule(project* p,
@@ -245,7 +245,7 @@ private:
   void copy_rule(project* p,
                  std::string& name,
                  sources_decl& sources,
-                 requirements_decl* fs,
+                 requirements_decl* requirements,
                  feature_set* default_build,
                  requirements_decl* usage_requirements);
   void import_rule(project* p, std::vector<std::string>& name);
@@ -277,7 +277,7 @@ private:
   void setup_warehouse_rule(project* p,
                             const std::string& name,
                             const std::string& url,
-                            const std::string* storage_dir);
+                            const std::string* storage_dir_);
 };
 
 boost::filesystem::path

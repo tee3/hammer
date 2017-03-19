@@ -34,10 +34,11 @@ public:
 
   void compose(const std::string& value,
                feature_set* c); // FIXME: take ownership of c
-  void expand_composites(const std::string value, feature_set* fs) const;
-  subfeature_def& add_subfeature(const std::string& name);
+  void expand_composites(const std::string& value, feature_set* fs) const;
+  subfeature_def& add_subfeature(const std::string& subfeature_name);
   const subfeature_def* find_subfeature(const std::string& name) const;
-  const subfeature_def& get_subfeature(const std::string& name) const;
+  const subfeature_def& get_subfeature(
+    const std::string& subfeature_name) const;
   subfeature_def& get_subfeature(const std::string& name);
 
   const subfeature_def* find_subfeature_for_value(
@@ -66,8 +67,8 @@ private:
     subfeatures_t;
 
   // only used by feature_registry
-  feature_def(const std::string& name,
-              const legal_values_t& legal_values,
+  feature_def(std::string name,
+              legal_values_t legal_values,
               feature_attributes attributes);
 
   std::string name_;

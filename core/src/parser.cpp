@@ -16,12 +16,12 @@ namespace hammer {
 
 struct parser::impl_t
 {
-  impl_t(engine* e)
+  explicit impl_t(engine* e)
     : engine_(e)
-    , input_(0)
-    , lexer_(0)
-    , tstream_(0)
-    , parser_(0)
+    , input_(nullptr)
+    , lexer_(nullptr)
+    , tstream_(nullptr)
+    , parser_(nullptr)
   {
     memset(&langAST_, 0, sizeof(langAST_));
   }
@@ -32,16 +32,15 @@ struct parser::impl_t
   phammerLexer lexer_;
   pANTLR3_COMMON_TOKEN_STREAM tstream_;
   phammerParser parser_;
-  hammerParser_rules_return langAST_;
+  hammerParser_rules_return langAST_{};
 };
 
 static void
 displayRecognitionError(pANTLR3_BASE_RECOGNIZER recognizer,
                         pANTLR3_UINT8* tokenNames)
 {
-  details::hammer_parser_context* ctx =
-    static_cast<details::hammer_parser_context*>(
-      static_cast<pANTLR3_PARSER>(recognizer->super)->super);
+  auto* ctx = static_cast<details::hammer_parser_context*>(
+    static_cast<pANTLR3_PARSER>(recognizer->super)->super);
   ++ctx->error_count_;
   ctx->base_displayRecognitionError(recognizer, tokenNames);
 }
@@ -60,9 +59,10 @@ parser::~parser()
 bool
 parser::parse(const boost::filesystem::path& file_name)
 {
-  if (!exists(file_name))
+  if (!exists(file_name)) {
     throw std::runtime_error("Path does not exists '" + file_name.string() +
                              "'");
+  }
 
   return parse(file_name.string().c_str());
 }
@@ -83,9 +83,10 @@ parser::parse_raw_script(const std::string& script_body,
 bool
 parser::parse(const char* file_name)
 {
-  if (!exists(boost::filesystem::path(file_name)))
+  if (!exists(boost::filesystem::path(file_name))) {
     throw std::runtime_error("Path does not exists '" + string(file_name) +
                              "'");
+  }
 
   reset();
 
@@ -119,26 +120,31 @@ parser::parse(const char* file_name)
 void
 parser::reset()
 {
-  if (impl_->parser_)
+  if (impl_->parser_ != nullptr) {
     impl_->parser_->free(impl_->parser_);
-  impl_->parser_ = 0;
-  if (impl_->tstream_)
+  }
+  impl_->parser_ = nullptr;
+  if (impl_->tstream_ != nullptr) {
     impl_->tstream_->free(impl_->tstream_);
-  impl_->tstream_ = 0;
-  if (impl_->lexer_)
+  }
+  impl_->tstream_ = nullptr;
+  if (impl_->lexer_ != nullptr) {
     impl_->lexer_->free(impl_->lexer_);
-  impl_->lexer_ = 0;
-  if (impl_->input_)
+  }
+  impl_->lexer_ = nullptr;
+  if (impl_->input_ != nullptr) {
     impl_->input_->close(impl_->input_);
-  impl_->input_ = 0;
+  }
+  impl_->input_ = nullptr;
 }
 
 void
 parser::walk(hammer_walker_context* ctx)
 {
   // if parsed empty file than tree will be null
-  if (!impl_->langAST_.tree)
+  if (impl_->langAST_.tree == nullptr) {
     return;
+  }
 
   pANTLR3_COMMON_TREE_NODE_STREAM nodes;
   phammer_walker hammer_walker;
@@ -178,4 +184,4 @@ parser::impl_t::parse()
   //      pANTLR3_STRING s = langAST_.tree->toStringTree(langAST_.tree);
   return ctx.error_count_ == 0;
 }
-}
+} // namespace hammer

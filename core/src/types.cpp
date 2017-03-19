@@ -92,5 +92,5 @@ register_standart_types(type_registry& tr, feature_registry& fr)
   tr.insert(target_type(TESTING_RUN_PASSED, ".run_passed"));
   tr.insert(target_type(TESTING_COMPILE_FAIL, ""));
 }
-}
-}
+} // namespace types
+} // namespace hammer

@@ -17,6 +17,7 @@ const location_t&
 copy_target::location() const
 {
   assert(dynamic_cast<const copy_main_target*>(get_main_target()));
-  return static_cast<const copy_main_target*>(get_main_target())->destination();
+  return dynamic_cast<const copy_main_target*>(get_main_target())
+    ->destination();
 }
-}
+} // namespace hammer

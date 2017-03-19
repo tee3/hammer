@@ -54,7 +54,7 @@ public:
     }
   };
 
-  feature_base(const feature_def* def, const std::string& value);
+  feature_base(const feature_def* def, std::string value);
   const std::string& name() const { return definition_->name(); }
   const std::string& value() const { return value_; }
   feature_attributes attributes() const { return definition_->attributes(); }
@@ -82,7 +82,7 @@ protected:
   std::string value_;
   path_data path_data_;
   dependency_data dependency_data_;
-  generated_data generated_data_;
+  generated_data generated_data_{};
 };
 }
 

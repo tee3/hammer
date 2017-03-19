@@ -34,15 +34,18 @@ fake_generator::construct(const target_type& type_to_construct,
                                               owner);
 
   build_nodes_t dependencies;
-  for (const build_nodes_t::value_type& n : result)
-    for (const build_node::source_t& s : n->sources_)
+  for (const build_nodes_t::value_type& n : result) {
+    for (const build_node::source_t& s : n->sources_) {
       dependencies.push_back(s.source_node_);
+    }
+  }
 
   remove_dups(dependencies);
 
-  for (const build_nodes_t::value_type& n : result)
+  for (const build_nodes_t::value_type& n : result) {
     n->dependencies_.insert(
       n->dependencies_.end(), dependencies.begin(), dependencies.end());
+  }
 
   return result;
 }
@@ -56,4 +59,4 @@ fake_generator::create_target(const main_target* mt,
 {
   return new fake_target(mt, sources, n, t, f);
 }
-}
+} // namespace hammer

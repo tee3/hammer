@@ -12,11 +12,11 @@ class free_feature_arg_writer : public argument_writer
 public:
   free_feature_arg_writer(const std::string& name,
                           const feature_def& def,
-                          const std::string& prefix = std::string(),
-                          const std::string& suffix = std::string(),
-                          const std::string& delimiter = std::string(" "),
-                          const std::string& global_prefix = std::string(),
-                          const std::string& global_suffix = std::string());
+                          std::string prefix = std::string(),
+                          std::string suffix = std::string(),
+                          std::string delimiter = std::string(" "),
+                          std::string global_prefix = std::string(),
+                          std::string global_suffix = std::string());
   virtual free_feature_arg_writer* clone() const;
 
 private:

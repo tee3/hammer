@@ -32,18 +32,21 @@ project::location(const location_t& l)
   if (!path.empty() && *path.rbegin() != '.') {
     location_ = l / ".";
     location_.normalize();
-  } else
+  } else {
     location_ = l;
+  }
 }
 
 void
-project::add_target(std::auto_ptr<basic_meta_target> t)
+project::add_target(std::unique_ptr<basic_meta_target> t)
 {
-  if (add_targets_as_explicit_)
+  if (add_targets_as_explicit_) {
     t->set_explicit(true);
+  }
 
-  if (add_targets_as_local_)
+  if (add_targets_as_local_) {
     t->set_local(true);
+  }
 
   targets_.insert(t->name(), t.get());
 
@@ -66,10 +69,12 @@ basic_meta_target*
 project::find_target(const std::string& name)
 {
   targets_t::iterator i = targets_.find(name);
-  if (i == targets_.end())
-    return 0;
-  else
+  if (i == targets_.end()) {
+    return nullptr;
+  }
+  {
     return i->second;
+  }
 }
 
 int
@@ -77,20 +82,20 @@ compute_alternative_rank(const feature_set& target_properties,
                          const feature_set& build_request)
 {
   unsigned rank = 0;
-  for (feature_set::const_iterator i = target_properties.begin(),
-                                   last = target_properties.end();
-       i != last;
-       ++i) {
-    if (!((**i).attributes().free || (**i).attributes().incidental ||
-          (**i).attributes().undefined_)) {
-      feature_set::const_iterator f = build_request.find((**i).name());
-      if (f != build_request.end())
-        if ((**i).value() != (**f).value())
+  for (auto target_propertie : target_properties) {
+    if (!(((*target_propertie).attributes().free != 0u) ||
+          ((*target_propertie).attributes().incidental != 0u) ||
+          ((*target_propertie).attributes().undefined_ != 0u))) {
+      auto f = build_request.find((*target_propertie).name());
+      if (f != build_request.end()) {
+        if ((*target_propertie).value() != (**f).value()) {
           return -1;
-        else
+        } else {
           ++rank;
-      else if ((**i).name() == "override")
+        }
+      } else if ((*target_propertie).name() == "override") {
         rank += 10000;
+      }
     }
   }
 
@@ -104,9 +109,10 @@ project::select_best_alternative(const std::string& target_name,
 {
   selected_target result =
     try_select_best_alternative(target_name, build_request, allow_locals);
-  if (result.target_ == NULL)
+  if (result.target_ == nullptr) {
     throw std::runtime_error("Can't select alternative for target '" +
                              target_name + "'.");
+  }
 
   return result;
 }
@@ -145,38 +151,44 @@ project::try_select_best_alternative(const std::string& target_name,
   boost::iterator_range<targets_t::const_iterator> r =
     targets_.equal_range(target_name);
 
-  if (r.empty())
+  if (r.empty()) {
     throw std::runtime_error("Can't find target '" + target_name + "'");
+  }
 
   vector<selected_target> selected_targets;
 
   for (targets_t::const_iterator first = r.begin(), last = r.end();
        first != last;
        ++first) {
-    if (!allow_locals && first->second->is_local())
+    if (!allow_locals && first->second->is_local()) {
       continue;
+    }
 
     feature_set* fs = engine_->feature_registry().make_set();
     first->second->requirements().eval(build_request, fs);
     int rank = compute_alternative_rank(*fs, build_request);
-    if (rank != -1)
-      selected_targets.push_back(
-        selected_target(first->second, &build_request, rank));
+    if (rank != -1) {
+      selected_targets.emplace_back(first->second, &build_request, rank);
+    }
   }
 
   sort(selected_targets.begin(), selected_targets.end(), s_great);
-  if (selected_targets.empty())
+  if (selected_targets.empty()) {
     return selected_target();
+  }
 
-  if (selected_targets.size() == 1)
+  if (selected_targets.size() == 1) {
     return selected_targets.front();
+  }
 
   // selected_targets.size() > 1
   if (selected_targets[0].resolved_build_request_rank_ !=
-      selected_targets[1].resolved_build_request_rank_)
+      selected_targets[1].resolved_build_request_rank_) {
     return selected_targets.front();
-  else
+  }
+  {
     error_cannot_choose_alternative(*this, target_name, build_request_param);
+  }
 }
 
 void
@@ -188,16 +200,16 @@ project::instantiate(const std::string& target_name,
     select_best_alternative(target_name, build_request);
   feature_set* usage_requirements = engine_->feature_registry().make_set();
   best_target.target_->instantiate(
-    0, *best_target.resolved_build_request_, result, usage_requirements);
+    nullptr, *best_target.resolved_build_request_, result, usage_requirements);
 }
 
 void
-project::instantiate_impl(const main_target* owner,
-                          const feature_set& build_request,
-                          std::vector<basic_target*>* result,
-                          feature_set* usage_requirements) const
+project::instantiate_impl(const main_target* /*owner*/,
+                          const feature_set& /*build_request*/,
+                          std::vector<basic_target*>* /*result*/,
+                          feature_set* /*usage_requirements*/) const
 {
-  assert(false && "not implemented.");
+  assert(false);
 }
 
 bool
@@ -215,16 +227,18 @@ project::select_best_alternative(const feature_set& build_request) const
   while (first != last) {
     selected_target t =
       try_select_best_alternative(first->second->name(), build_request);
-    if (t.target_ != NULL)
+    if (t.target_ != nullptr) {
       result.push_back(t);
+    }
 
     // we just processed targets with name equal to 'first->second->name()',
     // lets move to
     // group of targets with different name
     targets_t::const_iterator next = first;
     std::advance(next, 1);
-    while (next != last && first->first == next->first)
+    while (next != last && first->first == next->first) {
       ++first, ++next;
+    }
 
     first = next;
   }
@@ -236,18 +250,19 @@ feature_set*
 project::try_resolve_local_features(const feature_set& fs) const
 {
   feature_set* result = engine_->feature_registry().make_set();
-  for (feature_set::const_iterator i = fs.begin(), last = fs.end(); i != last;
-       ++i) {
-    if ((**i).attributes().undefined_) {
+  for (auto f : fs) {
+    if ((*f).attributes().undefined_ != 0u) {
       const feature_def* def =
-        local_feature_registry_.find_def_from_full_name((**i).name().c_str());
-      if (def != NULL)
+        local_feature_registry_.find_def_from_full_name((*f).name().c_str());
+      if (def != nullptr) {
         result->join(
-          local_feature_registry_.create_feature((**i).name(), (**i).value()));
-      else
-        result->join(*i);
-    } else
-      result->join(*i);
+          local_feature_registry_.create_feature((*f).name(), (*f).value()));
+      } else {
+        result->join(f);
+      }
+    } else {
+      result->join(f);
+    }
   }
 
   return result;
@@ -258,7 +273,8 @@ project::mark_as_explicit(const std::string& name)
 {
   boost::iterator_range<targets_t::iterator> targets =
     targets_.equal_range(name);
-  for (targets_t::iterator i = targets.begin(); i != targets.end(); ++i)
+  for (targets_t::iterator i = targets.begin(); i != targets.end(); ++i) {
     i->second->set_explicit(true);
+  }
 }
-}
+} // namespace hammer

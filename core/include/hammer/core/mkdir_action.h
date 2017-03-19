@@ -8,7 +8,7 @@ namespace hammer {
 class mkdir_action : public build_action
 {
 public:
-  mkdir_action(const location_t& dir_to_create);
+  mkdir_action(location_t dir_to_create);
   virtual std::string target_tag(const build_node& node,
                                  const build_environment& environment) const;
 

@@ -300,7 +300,7 @@ hammerParserNew(pANTLR3_COMMON_TOKEN_STREAM instream)
 {
   // See if we can create a new parser with the standard constructor
   //
-  return hammerParserNewSSD(instream, NULL);
+  return hammerParserNewSSD(instream, nullptr);
 }
 
 /** \brief Create a new hammerParser parser and return a context for it.
@@ -317,10 +317,10 @@ hammerParserNewSSD(pANTLR3_COMMON_TOKEN_STREAM instream,
 
   ctx = (phammerParser)ANTLR3_CALLOC(1, sizeof(hammerParser));
 
-  if (ctx == NULL) {
+  if (ctx == nullptr) {
     // Failed to allocate memory for parser context
     //
-    return NULL;
+    return nullptr;
   }
 
   /* -------------------------------------------------------------------
@@ -405,10 +405,6 @@ hammerParserFree(phammerParser ctx)
   //
   ctx->pParser->free(ctx->pParser);
   ANTLR3_FREE(ctx);
-
-  /* Everything is released, so we can return
- */
-  return;
 }
 
 /** Return token names used by this parser
@@ -1110,9 +1106,9 @@ static const ANTLR3_INT32* const dfa7_transitions[] = {
 
 static ANTLR3_INT32
 dfa7_sst(phammerParser ctx,
-         pANTLR3_BASE_RECOGNIZER recognizer,
-         pANTLR3_INT_STREAM is,
-         pANTLR3_CYCLIC_DFA dfa,
+         pANTLR3_BASE_RECOGNIZER /*recognizer*/,
+         pANTLR3_INT_STREAM /*is*/,
+         pANTLR3_CYCLIC_DFA /*dfa*/,
          ANTLR3_INT32 s)
 {
   ANTLR3_INT32 _s;
@@ -1152,7 +1148,7 @@ dfa7_sst(phammerParser ctx,
         s = 9;
       }
 
-      else if ((ANTLR3_TRUE)) {
+      else if ((ANTLR3_TRUE) != 0) {
         s = 15;
       }
 
@@ -1971,7 +1967,7 @@ dfa7_sst(phammerParser ctx,
       REWINDLAST();
 
       s = -1;
-      if ((LA7_10 == ID)) {
+      if (LA7_10 = ID) {
         s = 11;
       }
 
@@ -2184,7 +2180,7 @@ dfa7_sst(phammerParser ctx,
         s = 1;
       }
 
-      else if ((LA7_0 == 32)) {
+      else if (LA7_0 = 32) {
         s = 2;
       }
 
@@ -3091,9 +3087,9 @@ static const ANTLR3_INT32* const dfa21_transitions[] = {
 
 static ANTLR3_INT32
 dfa21_sst(phammerParser ctx,
-          pANTLR3_BASE_RECOGNIZER recognizer,
-          pANTLR3_INT_STREAM is,
-          pANTLR3_CYCLIC_DFA dfa,
+          pANTLR3_BASE_RECOGNIZER /*recognizer*/,
+          pANTLR3_INT_STREAM /*is*/,
+          pANTLR3_CYCLIC_DFA /*dfa*/,
           ANTLR3_INT32 s)
 {
   ANTLR3_INT32 _s;
@@ -3118,7 +3114,7 @@ dfa21_sst(phammerParser ctx,
         s = 9;
       }
 
-      else if ((ANTLR3_TRUE)) {
+      else if ((ANTLR3_TRUE) != 0) {
         s = 2;
       }
 
@@ -3146,7 +3142,7 @@ dfa21_sst(phammerParser ctx,
         s = 9;
       }
 
-      else if ((ANTLR3_TRUE)) {
+      else if ((ANTLR3_TRUE) != 0) {
         s = 2;
       }
 
@@ -3206,12 +3202,12 @@ static ANTLR3_CYCLIC_DFA cdfa21 = {
 static hammerParser_project_return
 project(phammerParser ctx)
 {
-  hammerParser_project_return retval;
+  hammerParser_project_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN WS1;
-  hammerParser_rules_return rules2;
+  hammerParser_rules_return rules2{};
 #undef RETURN_TYPE_rules2
 #define RETURN_TYPE_rules2 hammerParser_rules_return
 
@@ -3221,19 +3217,19 @@ project(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  WS1 = NULL;
-  rules2.tree = NULL;
+  WS1 = nullptr;
+  rules2.tree = nullptr;
 
   retval.start = LT(1);
 
-  WS1_tree = NULL;
+  WS1_tree = nullptr;
   stream_WS = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token WS");
   stream_rules = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule rules");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:43:9: ( ( WS )* rules -> rules )
     // hammer.g:43:11: ( WS )* rules
@@ -3246,7 +3242,7 @@ project(phammerParser ctx)
           /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
           int LA1_0 = LA(1);
-          if ((LA1_0 == WS)) {
+          if (LA1_0 = WS) {
             alt1 = 1;
           }
         }
@@ -3259,7 +3255,7 @@ project(phammerParser ctx)
                 goto ruleprojectEx;
               }
 
-              stream_WS->add(stream_WS, WS1, NULL);
+              stream_WS->add(stream_WS, WS1, nullptr);
             }
             break;
 
@@ -3278,7 +3274,7 @@ project(phammerParser ctx)
         goto ruleprojectEx;
       }
 
-      stream_rules->add(stream_rules, rules2.tree, NULL);
+      stream_rules->add(stream_rules, rules2.tree, nullptr);
 
       /* AST REWRITE
  * elements          : rules
@@ -3294,7 +3290,7 @@ project(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -3340,24 +3336,24 @@ ruleprojectEx:;
 static hammerParser_rules_return
 rules(phammerParser ctx)
 {
-  hammerParser_rules_return retval;
+  hammerParser_rules_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_rule_return rule3;
+  hammerParser_rule_return rule3{};
 #undef RETURN_TYPE_rule3
 #define RETURN_TYPE_rule3 hammerParser_rule_return
 
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  rule3.tree = NULL;
+  rule3.tree = nullptr;
 
   retval.start = LT(1);
 
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:44:7: ( ( rule )* )
     // hammer.g:44:10: ( rule )*
@@ -3430,12 +3426,12 @@ rulerulesEx:;
 static hammerParser_rule_return
 rule(phammerParser ctx)
 {
-  hammerParser_rule_return retval;
+  hammerParser_rule_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN char_literal5;
-  hammerParser_rule_impl_return rule_impl4;
+  hammerParser_rule_impl_return rule_impl4{};
 #undef RETURN_TYPE_rule_impl4
 #define RETURN_TYPE_rule_impl4 hammerParser_rule_impl_return
 
@@ -3445,19 +3441,19 @@ rule(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  char_literal5 = NULL;
-  rule_impl4.tree = NULL;
+  char_literal5 = nullptr;
+  rule_impl4.tree = nullptr;
 
   retval.start = LT(1);
 
-  char_literal5_tree = NULL;
+  char_literal5_tree = nullptr;
   stream_30 = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 30");
   stream_rule_impl = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule rule_impl");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:45:9: ( rule_impl ';' -> rule_impl )
     // hammer.g:45:11: rule_impl ';'
@@ -3470,13 +3466,13 @@ rule(phammerParser ctx)
         goto ruleruleEx;
       }
 
-      stream_rule_impl->add(stream_rule_impl, rule_impl4.tree, NULL);
+      stream_rule_impl->add(stream_rule_impl, rule_impl4.tree, nullptr);
       char_literal5 = (pANTLR3_COMMON_TOKEN)MATCHT(30, &FOLLOW_30_in_rule155);
       if (HASEXCEPTION()) {
         goto ruleruleEx;
       }
 
-      stream_30->add(stream_30, char_literal5, NULL);
+      stream_30->add(stream_30, char_literal5, nullptr);
 
       /* AST REWRITE
  * elements          : rule_impl
@@ -3492,7 +3488,7 @@ rule(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -3539,13 +3535,13 @@ ruleruleEx:;
 static hammerParser_rule_impl_return
 rule_impl(phammerParser ctx)
 {
-  hammerParser_rule_impl_return retval;
+  hammerParser_rule_impl_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN LOCAL6;
   pANTLR3_COMMON_TOKEN ID7;
-  hammerParser_rule_args_return rule_args8;
+  hammerParser_rule_args_return rule_args8{};
 #undef RETURN_TYPE_rule_args8
 #define RETURN_TYPE_rule_args8 hammerParser_rule_args_return
 
@@ -3557,23 +3553,23 @@ rule_impl(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  LOCAL6 = NULL;
-  ID7 = NULL;
-  rule_args8.tree = NULL;
+  LOCAL6 = nullptr;
+  ID7 = nullptr;
+  rule_args8.tree = nullptr;
 
   retval.start = LT(1);
 
-  LOCAL6_tree = NULL;
-  ID7_tree = NULL;
+  LOCAL6_tree = nullptr;
+  ID7_tree = nullptr;
   stream_LOCAL = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token LOCAL");
   stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
   stream_rule_args = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule rule_args");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:46:11: ( ( LOCAL )? ID rule_args -> ^( RULE_CALL ID ( LOCAL )?
     // rule_args ) )
@@ -3584,7 +3580,7 @@ rule_impl(phammerParser ctx)
         int alt3 = 2;
         {
           int LA3_0 = LA(1);
-          if ((LA3_0 == LOCAL)) {
+          if (LA3_0 = LOCAL) {
             alt3 = 1;
           }
         }
@@ -3598,7 +3594,7 @@ rule_impl(phammerParser ctx)
                 goto rulerule_implEx;
               }
 
-              stream_LOCAL->add(stream_LOCAL, LOCAL6, NULL);
+              stream_LOCAL->add(stream_LOCAL, LOCAL6, nullptr);
             }
             break;
         }
@@ -3608,10 +3604,11 @@ rule_impl(phammerParser ctx)
         goto rulerule_implEx;
       }
 
-      stream_ID->add(stream_ID, ID7, NULL);
+      stream_ID->add(stream_ID, ID7, nullptr);
 
       {
-        on_enter_rule(PARSER, (ID7 != NULL ? ID7->getText(ID7) : NULL)->chars);
+        on_enter_rule(PARSER,
+                      (ID7 != nullptr ? ID7->getText(ID7) : nullptr)->chars);
       }
       FOLLOWPUSH(FOLLOW_rule_args_in_rule_impl173);
       rule_args8 = rule_args(ctx);
@@ -3621,7 +3618,7 @@ rule_impl(phammerParser ctx)
         goto rulerule_implEx;
       }
 
-      stream_rule_args->add(stream_rule_args, rule_args8.tree, NULL);
+      stream_rule_args->add(stream_rule_args, rule_args8.tree, nullptr);
 
       /* AST REWRITE
  * elements          : rule_args, ID, LOCAL
@@ -3637,7 +3634,7 @@ rule_impl(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -3645,8 +3642,7 @@ rule_impl(phammerParser ctx)
         {
           // hammer.g:46:80: ^( RULE_CALL ID ( LOCAL )? rule_args )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -3656,7 +3652,7 @@ rule_impl(phammerParser ctx)
             ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
             // hammer.g:46:95: ( LOCAL )?
             {
-              if (stream_LOCAL->hasNext(stream_LOCAL)) {
+              if (stream_LOCAL->hasNext(stream_LOCAL) != 0u) {
                 ADAPTOR->addChild(
                   ADAPTOR, root_1, stream_LOCAL->nextNode(stream_LOCAL));
               }
@@ -3706,30 +3702,30 @@ rulerule_implEx:;
 static hammerParser_rule_args_return
 rule_args(phammerParser ctx)
 {
-  hammerParser_rule_args_return retval;
+  hammerParser_rule_args_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_rule_posible_args_return rule_posible_args9;
+  hammerParser_rule_posible_args_return rule_posible_args9{};
 #undef RETURN_TYPE_rule_posible_args9
 #define RETURN_TYPE_rule_posible_args9 hammerParser_rule_posible_args_return
 
-  hammerParser_maybe_arg_return maybe_arg10;
+  hammerParser_maybe_arg_return maybe_arg10{};
 #undef RETURN_TYPE_maybe_arg10
 #define RETURN_TYPE_maybe_arg10 hammerParser_maybe_arg_return
 
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  rule_posible_args9.tree = NULL;
+  rule_posible_args9.tree = nullptr;
 
-  maybe_arg10.tree = NULL;
+  maybe_arg10.tree = nullptr;
 
   retval.start = LT(1);
 
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:47:12: ( ( rule_posible_args )? ( maybe_arg )* )
     // hammer.g:47:14: ( rule_posible_args )? ( maybe_arg )*
@@ -3747,7 +3743,7 @@ rule_args(phammerParser ctx)
                 ((argument_is_string_list(PARSER))) ||
                 ((argument_is_project_requirements(PARSER)))))) {
             alt4 = 1;
-          } else if ((LA4_0 == 32)) {
+          } else if (LA4_0 = 32) {
             alt4 = 1;
           } else if ((LA4_0 == 36) &&
                      ((((argument_is_sources(PARSER))) ||
@@ -3787,7 +3783,7 @@ rule_args(phammerParser ctx)
           /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
           int LA5_0 = LA(1);
-          if ((LA5_0 == COLON)) {
+          if (LA5_0 = COLON) {
             alt5 = 1;
           }
         }
@@ -3849,13 +3845,13 @@ rulerule_argsEx:;
 static hammerParser_maybe_arg_return
 maybe_arg(phammerParser ctx)
 {
-  hammerParser_maybe_arg_return retval;
+  hammerParser_maybe_arg_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN char_literal11;
   pANTLR3_COMMON_TOKEN char_literal13;
-  hammerParser_rule_posible_args_return rule_posible_args12;
+  hammerParser_rule_posible_args_return rule_posible_args12{};
 #undef RETURN_TYPE_rule_posible_args12
 #define RETURN_TYPE_rule_posible_args12 hammerParser_rule_posible_args_return
 
@@ -3866,21 +3862,21 @@ maybe_arg(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  char_literal11 = NULL;
-  char_literal13 = NULL;
-  rule_posible_args12.tree = NULL;
+  char_literal11 = nullptr;
+  char_literal13 = nullptr;
+  rule_posible_args12.tree = nullptr;
 
   retval.start = LT(1);
 
-  char_literal11_tree = NULL;
-  char_literal13_tree = NULL;
+  char_literal11_tree = nullptr;
+  char_literal13_tree = nullptr;
   stream_COLON = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token COLON");
   stream_rule_posible_args = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule rule_posible_args");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     {
       //  hammer.g:50:9: ( ':' rule_posible_args -> rule_posible_args | ':' ->
@@ -3892,7 +3888,7 @@ maybe_arg(phammerParser ctx)
 
       {
         int LA6_0 = LA(1);
-        if ((LA6_0 == COLON)) {
+        if (LA6_0 = COLON) {
           {
             int LA6_1 = LA(2);
             if ((LA6_1 == ID || LA6_1 == SLASH || LA6_1 == 32 || LA6_1 == 34 ||
@@ -3930,7 +3926,7 @@ maybe_arg(phammerParser ctx)
               goto rulemaybe_argEx;
             }
 
-            stream_COLON->add(stream_COLON, char_literal11, NULL);
+            stream_COLON->add(stream_COLON, char_literal11, nullptr);
 
             FOLLOWPUSH(FOLLOW_rule_posible_args_in_maybe_arg225);
             rule_posible_args12 = rule_posible_args(ctx);
@@ -3941,7 +3937,7 @@ maybe_arg(phammerParser ctx)
             }
 
             stream_rule_posible_args->add(
-              stream_rule_posible_args, rule_posible_args12.tree, NULL);
+              stream_rule_posible_args, rule_posible_args12.tree, nullptr);
 
             /* AST REWRITE
      * elements          : rule_posible_args
@@ -3957,7 +3953,7 @@ maybe_arg(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -3983,7 +3979,7 @@ maybe_arg(phammerParser ctx)
               goto rulemaybe_argEx;
             }
 
-            stream_COLON->add(stream_COLON, char_literal13, NULL);
+            stream_COLON->add(stream_COLON, char_literal13, nullptr);
 
             /* AST REWRITE
      * elements          :
@@ -3999,7 +3995,7 @@ maybe_arg(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -4007,8 +4003,7 @@ maybe_arg(phammerParser ctx)
               {
                 // hammer.g:51:18: ^( NULL_ARG )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -4061,36 +4056,36 @@ rulemaybe_argEx:;
 static hammerParser_rule_posible_args_return
 rule_posible_args(phammerParser ctx)
 {
-  hammerParser_rule_posible_args_return retval;
+  hammerParser_rule_posible_args_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_string_arg_return string_arg14;
+  hammerParser_string_arg_return string_arg14{};
 #undef RETURN_TYPE_string_arg14
 #define RETURN_TYPE_string_arg14 hammerParser_string_arg_return
 
-  hammerParser_project_requirements_return project_requirements15;
+  hammerParser_project_requirements_return project_requirements15{};
 #undef RETURN_TYPE_project_requirements15
 #define RETURN_TYPE_project_requirements15                                     \
   hammerParser_project_requirements_return
 
-  hammerParser_string_list_return string_list16;
+  hammerParser_string_list_return string_list16{};
 #undef RETURN_TYPE_string_list16
 #define RETURN_TYPE_string_list16 hammerParser_string_list_return
 
-  hammerParser_feature_arg_return feature_arg17;
+  hammerParser_feature_arg_return feature_arg17{};
 #undef RETURN_TYPE_feature_arg17
 #define RETURN_TYPE_feature_arg17 hammerParser_feature_arg_return
 
-  hammerParser_requirements_return requirements18;
+  hammerParser_requirements_return requirements18{};
 #undef RETURN_TYPE_requirements18
 #define RETURN_TYPE_requirements18 hammerParser_requirements_return
 
-  hammerParser_feature_set_arg_return feature_set_arg19;
+  hammerParser_feature_set_arg_return feature_set_arg19{};
 #undef RETURN_TYPE_feature_set_arg19
 #define RETURN_TYPE_feature_set_arg19 hammerParser_feature_set_arg_return
 
-  hammerParser_sources_decl_return sources_decl20;
+  hammerParser_sources_decl_return sources_decl20{};
 #undef RETURN_TYPE_sources_decl20
 #define RETURN_TYPE_sources_decl20 hammerParser_sources_decl_return
 
@@ -4098,27 +4093,27 @@ rule_posible_args(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  string_arg14.tree = NULL;
+  string_arg14.tree = nullptr;
 
-  project_requirements15.tree = NULL;
+  project_requirements15.tree = nullptr;
 
-  string_list16.tree = NULL;
+  string_list16.tree = nullptr;
 
-  feature_arg17.tree = NULL;
+  feature_arg17.tree = nullptr;
 
-  requirements18.tree = NULL;
+  requirements18.tree = nullptr;
 
-  feature_set_arg19.tree = NULL;
+  feature_set_arg19.tree = nullptr;
 
-  sources_decl20.tree = NULL;
+  sources_decl20.tree = nullptr;
 
   retval.start = LT(1);
 
   stream_requirements = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule requirements");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     {
       //  hammer.g:54:19: ({...}? => string_arg | {...}? => project_requirements
@@ -4243,7 +4238,7 @@ rule_posible_args(phammerParser ctx)
             }
 
             stream_requirements->add(
-              stream_requirements, requirements18.tree, NULL);
+              stream_requirements, requirements18.tree, nullptr);
 
             /* AST REWRITE
      * elements          : requirements
@@ -4259,7 +4254,7 @@ rule_posible_args(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -4267,8 +4262,7 @@ rule_posible_args(phammerParser ctx)
               {
                 // hammer.g:58:77: ^( REQUIREMENTS_DECL requirements )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -4363,7 +4357,7 @@ rulerule_posible_argsEx:;
 static hammerParser_string_list_return
 string_list(phammerParser ctx)
 {
-  hammerParser_string_list_return retval;
+  hammerParser_string_list_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
@@ -4375,15 +4369,15 @@ string_list(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  ID21 = NULL;
+  ID21 = nullptr;
   retval.start = LT(1);
 
-  ID21_tree = NULL;
+  ID21_tree = nullptr;
   stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:61:13: ( ( ID )+ -> ^( STRING_LIST ( ID )+ ) )
     // hammer.g:61:15: ( ID )+
@@ -4398,7 +4392,7 @@ string_list(phammerParser ctx)
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA8_0 = LA(1);
-            if ((LA8_0 == ID)) {
+            if (LA8_0 = ID) {
               alt8 = 1;
             }
           }
@@ -4412,11 +4406,12 @@ string_list(phammerParser ctx)
                   goto rulestring_listEx;
                 }
 
-                stream_ID->add(stream_ID, ID21, NULL);
+                stream_ID->add(stream_ID, ID21, nullptr);
 
                 {
                   on_string_list_element(
-                    PARSER, (ID21 != NULL ? ID21->getText(ID21) : NULL)->chars);
+                    PARSER,
+                    (ID21 != nullptr ? ID21->getText(ID21) : nullptr)->chars);
                 }
               }
               break;
@@ -4453,7 +4448,7 @@ string_list(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -4461,20 +4456,19 @@ string_list(phammerParser ctx)
         {
           // hammer.g:61:77: ^( STRING_LIST ( ID )+ )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
                 ADAPTOR, STRING_LIST, (pANTLR3_UINT8) "STRING_LIST"),
               root_1));
 
-            if (!(stream_ID->hasNext(stream_ID))) {
+            if ((stream_ID->hasNext(stream_ID)) == 0u) {
               CONSTRUCTEX();
               EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
               EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
             } else {
-              while (stream_ID->hasNext(stream_ID)) {
+              while (stream_ID->hasNext(stream_ID) != 0u) {
                 ADAPTOR->addChild(
                   ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
               }
@@ -4521,11 +4515,11 @@ rulestring_listEx:;
 static hammerParser_feature_set_arg_return
 feature_set_arg(phammerParser ctx)
 {
-  hammerParser_feature_set_arg_return retval;
+  hammerParser_feature_set_arg_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_feature_set_return feature_set22;
+  hammerParser_feature_set_return feature_set22{};
 #undef RETURN_TYPE_feature_set22
 #define RETURN_TYPE_feature_set22 hammerParser_feature_set_return
 
@@ -4533,15 +4527,15 @@ feature_set_arg(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  feature_set22.tree = NULL;
+  feature_set22.tree = nullptr;
 
   retval.start = LT(1);
 
   stream_feature_set = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature_set");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:62:17: ( feature_set -> ^( FEATURE_SET_ARG feature_set ) )
     // hammer.g:62:19: feature_set
@@ -4554,7 +4548,7 @@ feature_set_arg(phammerParser ctx)
         goto rulefeature_set_argEx;
       }
 
-      stream_feature_set->add(stream_feature_set, feature_set22.tree, NULL);
+      stream_feature_set->add(stream_feature_set, feature_set22.tree, nullptr);
 
       /* AST REWRITE
  * elements          : feature_set
@@ -4570,7 +4564,7 @@ feature_set_arg(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -4578,8 +4572,7 @@ feature_set_arg(phammerParser ctx)
         {
           // hammer.g:62:34: ^( FEATURE_SET_ARG feature_set )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -4630,11 +4623,11 @@ rulefeature_set_argEx:;
 static hammerParser_feature_set_return
 feature_set(phammerParser ctx)
 {
-  hammerParser_feature_set_return retval;
+  hammerParser_feature_set_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_feature_return feature23;
+  hammerParser_feature_return feature23{};
 #undef RETURN_TYPE_feature23
 #define RETURN_TYPE_feature23 hammerParser_feature_return
 
@@ -4642,15 +4635,15 @@ feature_set(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  feature23.tree = NULL;
+  feature23.tree = nullptr;
 
   retval.start = LT(1);
 
   stream_feature = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:63:13: ( ( feature )+ -> ^( FEATURE_SET ( feature )+ ) )
     // hammer.g:63:15: ( feature )+
@@ -4665,7 +4658,7 @@ feature_set(phammerParser ctx)
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA9_0 = LA(1);
-            if ((LA9_0 == 32)) {
+            if (LA9_0 = 32) {
               alt9 = 1;
             }
           }
@@ -4681,7 +4674,7 @@ feature_set(phammerParser ctx)
                   goto rulefeature_setEx;
                 }
 
-                stream_feature->add(stream_feature, feature23.tree, NULL);
+                stream_feature->add(stream_feature, feature23.tree, nullptr);
               }
               break;
 
@@ -4717,7 +4710,7 @@ feature_set(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -4725,20 +4718,19 @@ feature_set(phammerParser ctx)
         {
           // hammer.g:63:27: ^( FEATURE_SET ( feature )+ )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
                 ADAPTOR, FEATURE_SET, (pANTLR3_UINT8) "FEATURE_SET"),
               root_1));
 
-            if (!(stream_feature->hasNext(stream_feature))) {
+            if ((stream_feature->hasNext(stream_feature)) == 0u) {
               CONSTRUCTEX();
               EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
               EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
             } else {
-              while (stream_feature->hasNext(stream_feature)) {
+              while (stream_feature->hasNext(stream_feature) != 0u) {
                 ADAPTOR->addChild(
                   ADAPTOR, root_1, stream_feature->nextTree(stream_feature));
               }
@@ -4785,12 +4777,12 @@ rulefeature_setEx:;
 static hammerParser_project_requirements_return
 project_requirements(phammerParser ctx)
 {
-  hammerParser_project_requirements_return retval;
+  hammerParser_project_requirements_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN ID24;
-  hammerParser_requirements_return requirements25;
+  hammerParser_requirements_return requirements25{};
 #undef RETURN_TYPE_requirements25
 #define RETURN_TYPE_requirements25 hammerParser_requirements_return
 
@@ -4800,19 +4792,19 @@ project_requirements(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  ID24 = NULL;
-  requirements25.tree = NULL;
+  ID24 = nullptr;
+  requirements25.tree = nullptr;
 
   retval.start = LT(1);
 
-  ID24_tree = NULL;
+  ID24_tree = nullptr;
   stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
   stream_requirements = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule requirements");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:65:22: ( ID requirements -> ^( PROJECT_REQUIREMENTS ID ^(
     // REQUIREMENTS_DECL requirements ) ) )
@@ -4824,7 +4816,7 @@ project_requirements(phammerParser ctx)
         goto ruleproject_requirementsEx;
       }
 
-      stream_ID->add(stream_ID, ID24, NULL);
+      stream_ID->add(stream_ID, ID24, nullptr);
 
       FOLLOWPUSH(FOLLOW_requirements_in_project_requirements513);
       requirements25 = requirements(ctx);
@@ -4834,7 +4826,8 @@ project_requirements(phammerParser ctx)
         goto ruleproject_requirementsEx;
       }
 
-      stream_requirements->add(stream_requirements, requirements25.tree, NULL);
+      stream_requirements->add(
+        stream_requirements, requirements25.tree, nullptr);
 
       /* AST REWRITE
  * elements          : ID, requirements
@@ -4850,7 +4843,7 @@ project_requirements(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -4860,8 +4853,7 @@ project_requirements(phammerParser ctx)
           // hammer.g:65:43: ^( PROJECT_REQUIREMENTS ID ^( REQUIREMENTS_DECL
           // requirements ) )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(
               ADAPTOR->becomeRoot(ADAPTOR,
                                   (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -4873,8 +4865,7 @@ project_requirements(phammerParser ctx)
             ADAPTOR->addChild(ADAPTOR, root_1, stream_ID->nextNode(stream_ID));
             // hammer.g:65:69: ^( REQUIREMENTS_DECL requirements )
             {
-              pANTLR3_BASE_TREE root_2 =
-                (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+              auto root_2 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               root_2 = (pANTLR3_BASE_TREE)(
                 ADAPTOR->becomeRoot(ADAPTOR,
                                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -4932,19 +4923,19 @@ ruleproject_requirementsEx:;
 static hammerParser_requirements_return
 requirements(phammerParser ctx)
 {
-  hammerParser_requirements_return retval;
+  hammerParser_requirements_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_public_tag_return public_tag26;
+  hammerParser_public_tag_return public_tag26{};
 #undef RETURN_TYPE_public_tag26
 #define RETURN_TYPE_public_tag26 hammerParser_public_tag_return
 
-  hammerParser_feature_return feature27;
+  hammerParser_feature_return feature27{};
 #undef RETURN_TYPE_feature27
 #define RETURN_TYPE_feature27 hammerParser_feature_return
 
-  hammerParser_conditional_features_return conditional_features28;
+  hammerParser_conditional_features_return conditional_features28{};
 #undef RETURN_TYPE_conditional_features28
 #define RETURN_TYPE_conditional_features28                                     \
   hammerParser_conditional_features_return
@@ -4952,17 +4943,17 @@ requirements(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  public_tag26.tree = NULL;
+  public_tag26.tree = nullptr;
 
-  feature27.tree = NULL;
+  feature27.tree = nullptr;
 
-  conditional_features28.tree = NULL;
+  conditional_features28.tree = nullptr;
 
   retval.start = LT(1);
 
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:66:14: ( ( public_tag ( feature | conditional_features ) )+ )
     // hammer.g:66:16: ( public_tag ( feature | conditional_features ) )+
@@ -5139,7 +5130,7 @@ rulerequirementsEx:;
 static hammerParser_string_arg_return
 string_arg(phammerParser ctx)
 {
-  hammerParser_string_arg_return retval;
+  hammerParser_string_arg_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
@@ -5151,15 +5142,15 @@ string_arg(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  ID29 = NULL;
+  ID29 = nullptr;
   retval.start = LT(1);
 
-  ID29_tree = NULL;
+  ID29_tree = nullptr;
   stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:68:13: ( ID -> ^( STRING_ARG ID ) )
     // hammer.g:68:15: ID
@@ -5169,7 +5160,7 @@ string_arg(phammerParser ctx)
         goto rulestring_argEx;
       }
 
-      stream_ID->add(stream_ID, ID29, NULL);
+      stream_ID->add(stream_ID, ID29, nullptr);
 
       /* AST REWRITE
  * elements          : ID
@@ -5185,7 +5176,7 @@ string_arg(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -5193,8 +5184,7 @@ string_arg(phammerParser ctx)
         {
           // hammer.g:68:21: ^( STRING_ARG ID )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -5243,11 +5233,11 @@ rulestring_argEx:;
 static hammerParser_feature_arg_return
 feature_arg(phammerParser ctx)
 {
-  hammerParser_feature_arg_return retval;
+  hammerParser_feature_arg_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_feature_return feature30;
+  hammerParser_feature_return feature30{};
 #undef RETURN_TYPE_feature30
 #define RETURN_TYPE_feature30 hammerParser_feature_return
 
@@ -5255,15 +5245,15 @@ feature_arg(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  feature30.tree = NULL;
+  feature30.tree = nullptr;
 
   retval.start = LT(1);
 
   stream_feature = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:69:13: ( feature -> ^( FEATURE_ARG feature ) )
     // hammer.g:69:15: feature
@@ -5276,7 +5266,7 @@ feature_arg(phammerParser ctx)
         goto rulefeature_argEx;
       }
 
-      stream_feature->add(stream_feature, feature30.tree, NULL);
+      stream_feature->add(stream_feature, feature30.tree, nullptr);
 
       /* AST REWRITE
  * elements          : feature
@@ -5292,7 +5282,7 @@ feature_arg(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -5300,8 +5290,7 @@ feature_arg(phammerParser ctx)
         {
           // hammer.g:69:26: ^( FEATURE_ARG feature )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -5352,15 +5341,15 @@ rulefeature_argEx:;
 static hammerParser_conditional_features_return
 conditional_features(phammerParser ctx)
 {
-  hammerParser_conditional_features_return retval;
+  hammerParser_conditional_features_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_condition_return condition31;
+  hammerParser_condition_return condition31{};
 #undef RETURN_TYPE_condition31
 #define RETURN_TYPE_condition31 hammerParser_condition_return
 
-  hammerParser_condition_result_return condition_result32;
+  hammerParser_condition_result_return condition_result32{};
 #undef RETURN_TYPE_condition_result32
 #define RETURN_TYPE_condition_result32 hammerParser_condition_result_return
 
@@ -5369,11 +5358,11 @@ conditional_features(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  condition31.tree = NULL;
+  condition31.tree = nullptr;
 
-  condition_result32.tree = NULL;
+  condition_result32.tree = nullptr;
 
   retval.start = LT(1);
 
@@ -5381,7 +5370,7 @@ conditional_features(phammerParser ctx)
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule condition");
   stream_condition_result = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule condition_result");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:72:22: ({...}? => condition condition_result -> ^(
     // CONDITIONAL_FEATURES condition condition_result ) )
@@ -5403,7 +5392,7 @@ conditional_features(phammerParser ctx)
         goto ruleconditional_featuresEx;
       }
 
-      stream_condition->add(stream_condition, condition31.tree, NULL);
+      stream_condition->add(stream_condition, condition31.tree, nullptr);
       FOLLOWPUSH(FOLLOW_condition_result_in_conditional_features591);
       condition_result32 = condition_result(ctx);
 
@@ -5413,7 +5402,7 @@ conditional_features(phammerParser ctx)
       }
 
       stream_condition_result->add(
-        stream_condition_result, condition_result32.tree, NULL);
+        stream_condition_result, condition_result32.tree, nullptr);
 
       /* AST REWRITE
  * elements          : condition_result, condition
@@ -5429,7 +5418,7 @@ conditional_features(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -5438,8 +5427,7 @@ conditional_features(phammerParser ctx)
           // hammer.g:72:126: ^( CONDITIONAL_FEATURES condition condition_result
           // )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(
               ADAPTOR->becomeRoot(ADAPTOR,
                                   (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -5497,16 +5485,16 @@ ruleconditional_featuresEx:;
 static hammerParser_condition_return
 condition(phammerParser ctx)
 {
-  hammerParser_condition_return retval;
+  hammerParser_condition_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN char_literal34;
-  hammerParser_feature_return feature33;
+  hammerParser_feature_return feature33{};
 #undef RETURN_TYPE_feature33
 #define RETURN_TYPE_feature33 hammerParser_feature_return
 
-  hammerParser_feature_return feature35;
+  hammerParser_feature_return feature35{};
 #undef RETURN_TYPE_feature35
 #define RETURN_TYPE_feature35 hammerParser_feature_return
 
@@ -5516,21 +5504,21 @@ condition(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  char_literal34 = NULL;
-  feature33.tree = NULL;
+  char_literal34 = nullptr;
+  feature33.tree = nullptr;
 
-  feature35.tree = NULL;
+  feature35.tree = nullptr;
 
   retval.start = LT(1);
 
-  char_literal34_tree = NULL;
+  char_literal34_tree = nullptr;
   stream_31 = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 31");
   stream_feature = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:73:12: ( feature ( ',' feature )* -> ^( CONDITION ( feature )+ )
     // )
@@ -5544,7 +5532,7 @@ condition(phammerParser ctx)
         goto ruleconditionEx;
       }
 
-      stream_feature->add(stream_feature, feature33.tree, NULL);
+      stream_feature->add(stream_feature, feature33.tree, nullptr);
 
       // hammer.g:73:22: ( ',' feature )*
 
@@ -5554,7 +5542,7 @@ condition(phammerParser ctx)
           /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
           int LA12_0 = LA(1);
-          if ((LA12_0 == 31)) {
+          if (LA12_0 = 31) {
             alt12 = 1;
           }
         }
@@ -5568,7 +5556,7 @@ condition(phammerParser ctx)
                 goto ruleconditionEx;
               }
 
-              stream_31->add(stream_31, char_literal34, NULL);
+              stream_31->add(stream_31, char_literal34, nullptr);
 
               FOLLOWPUSH(FOLLOW_feature_in_condition614);
               feature35 = feature(ctx);
@@ -5578,7 +5566,7 @@ condition(phammerParser ctx)
                 goto ruleconditionEx;
               }
 
-              stream_feature->add(stream_feature, feature35.tree, NULL);
+              stream_feature->add(stream_feature, feature35.tree, nullptr);
             }
             break;
 
@@ -5603,7 +5591,7 @@ condition(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -5611,20 +5599,19 @@ condition(phammerParser ctx)
         {
           // hammer.g:73:40: ^( CONDITION ( feature )+ )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
                 ADAPTOR, CONDITION, (pANTLR3_UINT8) "CONDITION"),
               root_1));
 
-            if (!(stream_feature->hasNext(stream_feature))) {
+            if ((stream_feature->hasNext(stream_feature)) == 0u) {
               CONSTRUCTEX();
               EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
               EXCEPTION->name = (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
             } else {
-              while (stream_feature->hasNext(stream_feature)) {
+              while (stream_feature->hasNext(stream_feature) != 0u) {
                 ADAPTOR->addChild(
                   ADAPTOR, root_1, stream_feature->nextTree(stream_feature));
               }
@@ -5670,12 +5657,12 @@ ruleconditionEx:;
 static hammerParser_condition_result_return
 condition_result(phammerParser ctx)
 {
-  hammerParser_condition_result_return retval;
+  hammerParser_condition_result_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN COLON36;
-  hammerParser_feature_return feature37;
+  hammerParser_feature_return feature37{};
 #undef RETURN_TYPE_feature37
 #define RETURN_TYPE_feature37 hammerParser_feature_return
 
@@ -5684,15 +5671,15 @@ condition_result(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  COLON36 = NULL;
-  feature37.tree = NULL;
+  COLON36 = nullptr;
+  feature37.tree = nullptr;
 
   retval.start = LT(1);
 
-  COLON36_tree = NULL;
-  retval.tree = NULL;
+  COLON36_tree = nullptr;
+  retval.tree = nullptr;
   {
     // hammer.g:75:18: ( COLON feature )
     // hammer.g:75:20: COLON feature
@@ -5750,7 +5737,7 @@ rulecondition_resultEx:;
 static hammerParser_feature_return
 feature(phammerParser ctx)
 {
-  hammerParser_feature_return retval;
+  hammerParser_feature_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
@@ -5761,7 +5748,7 @@ feature(phammerParser ctx)
   pANTLR3_COMMON_TOKEN ID43;
   pANTLR3_COMMON_TOKEN char_literal44;
   pANTLR3_COMMON_TOKEN ID45;
-  hammerParser_source_decl_return source_decl41;
+  hammerParser_source_decl_return source_decl41{};
 #undef RETURN_TYPE_source_decl41
 #define RETURN_TYPE_source_decl41 hammerParser_source_decl_return
 
@@ -5779,26 +5766,26 @@ feature(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  char_literal38 = NULL;
-  ID39 = NULL;
-  char_literal40 = NULL;
-  char_literal42 = NULL;
-  ID43 = NULL;
-  char_literal44 = NULL;
-  ID45 = NULL;
-  source_decl41.tree = NULL;
+  char_literal38 = nullptr;
+  ID39 = nullptr;
+  char_literal40 = nullptr;
+  char_literal42 = nullptr;
+  ID43 = nullptr;
+  char_literal44 = nullptr;
+  ID45 = nullptr;
+  source_decl41.tree = nullptr;
 
   retval.start = LT(1);
 
-  char_literal38_tree = NULL;
-  ID39_tree = NULL;
-  char_literal40_tree = NULL;
-  char_literal42_tree = NULL;
-  ID43_tree = NULL;
-  char_literal44_tree = NULL;
-  ID45_tree = NULL;
+  char_literal38_tree = nullptr;
+  ID39_tree = nullptr;
+  char_literal40_tree = nullptr;
+  char_literal42_tree = nullptr;
+  ID43_tree = nullptr;
+  char_literal44_tree = nullptr;
+  ID45_tree = nullptr;
   stream_33 = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 33");
   stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
@@ -5807,7 +5794,7 @@ feature(phammerParser ctx)
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 32");
   stream_source_decl = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule source_decl");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     {
       //  hammer.g:76:15: ({...}? => '<' ID '>' source_decl -> ^( FEATURE ID
@@ -5819,21 +5806,21 @@ feature(phammerParser ctx)
 
       {
         int LA13_0 = LA(1);
-        if ((LA13_0 == 32)) {
+        if (LA13_0 = 32) {
           {
             int LA13_1 = LA(2);
-            if ((LA13_1 == ID)) {
+            if (LA13_1 = ID) {
               {
                 int LA13_2 = LA(3);
-                if ((LA13_2 == 33)) {
+                if (LA13_2 = 33) {
                   {
                     int LA13_3 = LA(4);
-                    if ((LA13_3 == ID)) {
+                    if (LA13_3 = ID) {
                       {
                         int LA13_4 = LA(5);
                         if (((is_dependency_feature(PARSER)))) {
                           alt13 = 1;
-                        } else if ((ANTLR3_TRUE)) {
+                        } else if ((ANTLR3_TRUE) != 0) {
                           alt13 = 2;
                         } else {
                           CONSTRUCTEX();
@@ -5904,14 +5891,14 @@ feature(phammerParser ctx)
               goto rulefeatureEx;
             }
 
-            stream_32->add(stream_32, char_literal38, NULL);
+            stream_32->add(stream_32, char_literal38, nullptr);
 
             ID39 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature653);
             if (HASEXCEPTION()) {
               goto rulefeatureEx;
             }
 
-            stream_ID->add(stream_ID, ID39, NULL);
+            stream_ID->add(stream_ID, ID39, nullptr);
 
             char_literal40 =
               (pANTLR3_COMMON_TOKEN)MATCHT(33, &FOLLOW_33_in_feature655);
@@ -5919,7 +5906,7 @@ feature(phammerParser ctx)
               goto rulefeatureEx;
             }
 
-            stream_33->add(stream_33, char_literal40, NULL);
+            stream_33->add(stream_33, char_literal40, nullptr);
 
             FOLLOWPUSH(FOLLOW_source_decl_in_feature657);
             source_decl41 = source_decl(ctx);
@@ -5930,7 +5917,7 @@ feature(phammerParser ctx)
             }
 
             stream_source_decl->add(
-              stream_source_decl, source_decl41.tree, NULL);
+              stream_source_decl, source_decl41.tree, nullptr);
 
             /* AST REWRITE
      * elements          : ID, source_decl
@@ -5946,7 +5933,7 @@ feature(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -5954,8 +5941,7 @@ feature(phammerParser ctx)
               {
                 // hammer.g:76:80: ^( FEATURE ID source_decl )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -5987,14 +5973,14 @@ feature(phammerParser ctx)
               goto rulefeatureEx;
             }
 
-            stream_32->add(stream_32, char_literal42, NULL);
+            stream_32->add(stream_32, char_literal42, nullptr);
 
             ID43 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature687);
             if (HASEXCEPTION()) {
               goto rulefeatureEx;
             }
 
-            stream_ID->add(stream_ID, ID43, NULL);
+            stream_ID->add(stream_ID, ID43, nullptr);
 
             char_literal44 =
               (pANTLR3_COMMON_TOKEN)MATCHT(33, &FOLLOW_33_in_feature689);
@@ -6002,14 +5988,14 @@ feature(phammerParser ctx)
               goto rulefeatureEx;
             }
 
-            stream_33->add(stream_33, char_literal44, NULL);
+            stream_33->add(stream_33, char_literal44, nullptr);
 
             ID45 = (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_feature691);
             if (HASEXCEPTION()) {
               goto rulefeatureEx;
             }
 
-            stream_ID->add(stream_ID, ID45, NULL);
+            stream_ID->add(stream_ID, ID45, nullptr);
 
             /* AST REWRITE
      * elements          : ID, ID
@@ -6025,7 +6011,7 @@ feature(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -6033,8 +6019,7 @@ feature(phammerParser ctx)
               {
                 // hammer.g:77:34: ^( FEATURE ID ID )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -6092,11 +6077,11 @@ rulefeatureEx:;
 static hammerParser_sources_decl_return
 sources_decl(phammerParser ctx)
 {
-  hammerParser_sources_decl_return retval;
+  hammerParser_sources_decl_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_sources_decl_impl_return sources_decl_impl46;
+  hammerParser_sources_decl_impl_return sources_decl_impl46{};
 #undef RETURN_TYPE_sources_decl_impl46
 #define RETURN_TYPE_sources_decl_impl46 hammerParser_sources_decl_impl_return
 
@@ -6104,15 +6089,15 @@ sources_decl(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  sources_decl_impl46.tree = NULL;
+  sources_decl_impl46.tree = nullptr;
 
   retval.start = LT(1);
 
   stream_sources_decl_impl = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule sources_decl_impl");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:78:14: ( sources_decl_impl -> ^( SOURCES_DECL sources_decl_impl
     // ) )
@@ -6130,7 +6115,7 @@ sources_decl(phammerParser ctx)
       }
 
       stream_sources_decl_impl->add(
-        stream_sources_decl_impl, sources_decl_impl46.tree, NULL);
+        stream_sources_decl_impl, sources_decl_impl46.tree, nullptr);
       {
         leave_sources_decl(PARSER);
       }
@@ -6149,7 +6134,7 @@ sources_decl(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -6157,8 +6142,7 @@ sources_decl(phammerParser ctx)
         {
           // hammer.g:78:101: ^( SOURCES_DECL sources_decl_impl )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -6210,30 +6194,30 @@ rulesources_declEx:;
 static hammerParser_sources_decl_impl_return
 sources_decl_impl(phammerParser ctx)
 {
-  hammerParser_sources_decl_impl_return retval;
+  hammerParser_sources_decl_impl_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_source_decl_return source_decl47;
+  hammerParser_source_decl_return source_decl47{};
 #undef RETURN_TYPE_source_decl47
 #define RETURN_TYPE_source_decl47 hammerParser_source_decl_return
 
-  hammerParser_rule_invoke_return rule_invoke48;
+  hammerParser_rule_invoke_return rule_invoke48{};
 #undef RETURN_TYPE_rule_invoke48
 #define RETURN_TYPE_rule_invoke48 hammerParser_rule_invoke_return
 
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  source_decl47.tree = NULL;
+  source_decl47.tree = nullptr;
 
-  rule_invoke48.tree = NULL;
+  rule_invoke48.tree = nullptr;
 
   retval.start = LT(1);
 
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:79:20: ( ( source_decl | rule_invoke )+ )
     // hammer.g:79:22: ( source_decl | rule_invoke )+
@@ -6253,7 +6237,7 @@ sources_decl_impl(phammerParser ctx)
             if ((LA14_0 == ID || LA14_0 == SLASH || LA14_0 == 32 ||
                  LA14_0 == 36)) {
               alt14 = 1;
-            } else if ((LA14_0 == 34)) {
+            } else if (LA14_0 = 34) {
               alt14 = 2;
             }
           }
@@ -6336,13 +6320,13 @@ rulesources_decl_implEx:;
 static hammerParser_rule_invoke_return
 rule_invoke(phammerParser ctx)
 {
-  hammerParser_rule_invoke_return retval;
+  hammerParser_rule_invoke_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN char_literal49;
   pANTLR3_COMMON_TOKEN char_literal51;
-  hammerParser_rule_impl_return rule_impl50;
+  hammerParser_rule_impl_return rule_impl50{};
 #undef RETURN_TYPE_rule_impl50
 #define RETURN_TYPE_rule_impl50 hammerParser_rule_impl_return
 
@@ -6354,23 +6338,23 @@ rule_invoke(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  char_literal49 = NULL;
-  char_literal51 = NULL;
-  rule_impl50.tree = NULL;
+  char_literal49 = nullptr;
+  char_literal51 = nullptr;
+  rule_impl50.tree = nullptr;
 
   retval.start = LT(1);
 
-  char_literal49_tree = NULL;
-  char_literal51_tree = NULL;
+  char_literal49_tree = nullptr;
+  char_literal51_tree = nullptr;
   stream_34 = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 34");
   stream_35 = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 35");
   stream_rule_impl = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule rule_impl");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:80:15: ( '[' rule_impl ']' -> rule_impl )
     // hammer.g:80:17: '[' rule_impl ']'
@@ -6384,7 +6368,7 @@ rule_invoke(phammerParser ctx)
         goto rulerule_invokeEx;
       }
 
-      stream_34->add(stream_34, char_literal49, NULL);
+      stream_34->add(stream_34, char_literal49, nullptr);
 
       {
         on_nested_rule_enter(PARSER);
@@ -6397,7 +6381,7 @@ rule_invoke(phammerParser ctx)
         goto rulerule_invokeEx;
       }
 
-      stream_rule_impl->add(stream_rule_impl, rule_impl50.tree, NULL);
+      stream_rule_impl->add(stream_rule_impl, rule_impl50.tree, nullptr);
       {
         on_nested_rule_leave(PARSER);
       }
@@ -6407,7 +6391,7 @@ rule_invoke(phammerParser ctx)
         goto rulerule_invokeEx;
       }
 
-      stream_35->add(stream_35, char_literal51, NULL);
+      stream_35->add(stream_35, char_literal51, nullptr);
 
       {
         leave_rule_invoke(PARSER);
@@ -6427,7 +6411,7 @@ rule_invoke(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -6475,11 +6459,11 @@ rulerule_invokeEx:;
 static hammerParser_source_decl_return
 source_decl(phammerParser ctx)
 {
-  hammerParser_source_decl_return retval;
+  hammerParser_source_decl_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_source_decl_impl_return source_decl_impl52;
+  hammerParser_source_decl_impl_return source_decl_impl52{};
 #undef RETURN_TYPE_source_decl_impl52
 #define RETURN_TYPE_source_decl_impl52 hammerParser_source_decl_impl_return
 
@@ -6487,15 +6471,15 @@ source_decl(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  source_decl_impl52.tree = NULL;
+  source_decl_impl52.tree = nullptr;
 
   retval.start = LT(1);
 
   stream_source_decl_impl = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule source_decl_impl");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:82:13: ( source_decl_impl -> ^( SOURCE_DECL source_decl_impl ) )
     // hammer.g:82:15: source_decl_impl
@@ -6512,7 +6496,7 @@ source_decl(phammerParser ctx)
       }
 
       stream_source_decl_impl->add(
-        stream_source_decl_impl, source_decl_impl52.tree, NULL);
+        stream_source_decl_impl, source_decl_impl52.tree, nullptr);
       {
         leave_sources_decl(PARSER);
       }
@@ -6531,7 +6515,7 @@ source_decl(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -6539,8 +6523,7 @@ source_decl(phammerParser ctx)
         {
           // hammer.g:82:99: ^( SOURCE_DECL source_decl_impl )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -6594,23 +6577,23 @@ rulesource_declEx:;
 static hammerParser_source_decl_impl_return
 source_decl_impl(phammerParser ctx)
 {
-  hammerParser_source_decl_impl_return retval;
+  hammerParser_source_decl_impl_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_public_tag_return public_tag53;
+  hammerParser_public_tag_return public_tag53{};
 #undef RETURN_TYPE_public_tag53
 #define RETURN_TYPE_public_tag53 hammerParser_public_tag_return
 
-  hammerParser_target_path_return target_path54;
+  hammerParser_target_path_return target_path54{};
 #undef RETURN_TYPE_target_path54
 #define RETURN_TYPE_target_path54 hammerParser_target_path_return
 
-  hammerParser_target_name_return target_name55;
+  hammerParser_target_name_return target_name55{};
 #undef RETURN_TYPE_target_name55
 #define RETURN_TYPE_target_name55 hammerParser_target_name_return
 
-  hammerParser_target_features_return target_features56;
+  hammerParser_target_features_return target_features56{};
 #undef RETURN_TYPE_target_features56
 #define RETURN_TYPE_target_features56 hammerParser_target_features_return
 
@@ -6621,15 +6604,15 @@ source_decl_impl(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  public_tag53.tree = NULL;
+  public_tag53.tree = nullptr;
 
-  target_path54.tree = NULL;
+  target_path54.tree = nullptr;
 
-  target_name55.tree = NULL;
+  target_name55.tree = nullptr;
 
-  target_features56.tree = NULL;
+  target_features56.tree = nullptr;
 
   retval.start = LT(1);
 
@@ -6641,7 +6624,7 @@ source_decl_impl(phammerParser ctx)
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule public_tag");
   stream_target_path = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule target_path");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     // hammer.g:83:18: ( public_tag target_path target_name target_features ->
     // public_tag ^( TARGET_PATH target_path ) target_name target_features )
@@ -6655,7 +6638,7 @@ source_decl_impl(phammerParser ctx)
         goto rulesource_decl_implEx;
       }
 
-      stream_public_tag->add(stream_public_tag, public_tag53.tree, NULL);
+      stream_public_tag->add(stream_public_tag, public_tag53.tree, nullptr);
       FOLLOWPUSH(FOLLOW_target_path_in_source_decl_impl790);
       target_path54 = target_path(ctx);
 
@@ -6664,7 +6647,7 @@ source_decl_impl(phammerParser ctx)
         goto rulesource_decl_implEx;
       }
 
-      stream_target_path->add(stream_target_path, target_path54.tree, NULL);
+      stream_target_path->add(stream_target_path, target_path54.tree, nullptr);
       FOLLOWPUSH(FOLLOW_target_name_in_source_decl_impl792);
       target_name55 = target_name(ctx);
 
@@ -6673,7 +6656,7 @@ source_decl_impl(phammerParser ctx)
         goto rulesource_decl_implEx;
       }
 
-      stream_target_name->add(stream_target_name, target_name55.tree, NULL);
+      stream_target_name->add(stream_target_name, target_name55.tree, nullptr);
       FOLLOWPUSH(FOLLOW_target_features_in_source_decl_impl794);
       target_features56 = target_features(ctx);
 
@@ -6683,7 +6666,7 @@ source_decl_impl(phammerParser ctx)
       }
 
       stream_target_features->add(
-        stream_target_features, target_features56.tree, NULL);
+        stream_target_features, target_features56.tree, nullptr);
 
       /* AST REWRITE
  * elements          : target_path, target_name, target_features,
@@ -6700,7 +6683,7 @@ source_decl_impl(phammerParser ctx)
           ADAPTOR,
           RECOGNIZER,
           (pANTLR3_UINT8) "token retval",
-          retval.tree != NULL ? retval.tree : NULL);
+          retval.tree != nullptr ? retval.tree : nullptr);
 
         root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
         retval.tree = root_0;
@@ -6711,8 +6694,7 @@ source_decl_impl(phammerParser ctx)
             ADAPTOR, root_0, stream_public_tag->nextTree(stream_public_tag));
           // hammer.g:83:85: ^( TARGET_PATH target_path )
           {
-            pANTLR3_BASE_TREE root_1 =
-              (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+            auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
             root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
               ADAPTOR,
               (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -6772,7 +6754,7 @@ rulesource_decl_implEx:;
 static hammerParser_public_tag_return
 public_tag(phammerParser ctx)
 {
-  hammerParser_public_tag_return retval;
+  hammerParser_public_tag_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
@@ -6784,15 +6766,15 @@ public_tag(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  char_literal57 = NULL;
+  char_literal57 = nullptr;
   retval.start = LT(1);
 
-  char_literal57_tree = NULL;
+  char_literal57_tree = nullptr;
   stream_36 = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token 36");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     {
       //  hammer.g:84:12: ( '@' -> PUBLIC_TAG | )
@@ -6803,7 +6785,7 @@ public_tag(phammerParser ctx)
 
       {
         int LA15_0 = LA(1);
-        if ((LA15_0 == 36)) {
+        if (LA15_0 = 36) {
           alt15 = 1;
         } else if ((LA15_0 == ID || LA15_0 == SLASH || LA15_0 == 32)) {
           alt15 = 2;
@@ -6827,7 +6809,7 @@ public_tag(phammerParser ctx)
               goto rulepublic_tagEx;
             }
 
-            stream_36->add(stream_36, char_literal57, NULL);
+            stream_36->add(stream_36, char_literal57, nullptr);
 
             /* AST REWRITE
      * elements          :
@@ -6843,7 +6825,7 @@ public_tag(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -6902,20 +6884,20 @@ rulepublic_tagEx:;
 static hammerParser_target_path_return
 target_path(phammerParser ctx)
 {
-  hammerParser_target_path_return retval;
+  hammerParser_target_path_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN ID59;
-  hammerParser_head_slash_return head_slash58;
+  hammerParser_head_slash_return head_slash58{};
 #undef RETURN_TYPE_head_slash58
 #define RETURN_TYPE_head_slash58 hammerParser_head_slash_return
 
-  hammerParser_path_element_return path_element60;
+  hammerParser_path_element_return path_element60{};
 #undef RETURN_TYPE_path_element60
 #define RETURN_TYPE_path_element60 hammerParser_path_element_return
 
-  hammerParser_trail_slash_return trail_slash61;
+  hammerParser_trail_slash_return trail_slash61{};
 #undef RETURN_TYPE_trail_slash61
 #define RETURN_TYPE_trail_slash61 hammerParser_trail_slash_return
 
@@ -6924,19 +6906,19 @@ target_path(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  ID59 = NULL;
-  head_slash58.tree = NULL;
+  ID59 = nullptr;
+  head_slash58.tree = nullptr;
 
-  path_element60.tree = NULL;
+  path_element60.tree = nullptr;
 
-  trail_slash61.tree = NULL;
+  trail_slash61.tree = nullptr;
 
   retval.start = LT(1);
 
-  ID59_tree = NULL;
-  retval.tree = NULL;
+  ID59_tree = nullptr;
+  retval.tree = nullptr;
   {
     // hammer.g:86:13: ( ( head_slash )? ID ( path_element )* ( trail_slash )? )
     // hammer.g:86:15: ( head_slash )? ID ( path_element )* ( trail_slash )?
@@ -6985,12 +6967,12 @@ target_path(phammerParser ctx)
           /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
           int LA17_0 = LA(1);
-          if ((LA17_0 == SLASH)) {
+          if (LA17_0 = SLASH) {
             {
               /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
               int LA17_1 = LA(2);
-              if ((LA17_1 == ID)) {
+              if (LA17_1 = ID) {
                 {
                   /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
@@ -7032,7 +7014,7 @@ target_path(phammerParser ctx)
         int alt18 = 2;
         {
           int LA18_0 = LA(1);
-          if ((LA18_0 == SLASH)) {
+          if (LA18_0 = SLASH) {
             {
               int LA18_1 = LA(2);
               if (((is_trailing_slash(PARSER)))) {
@@ -7091,16 +7073,16 @@ ruletarget_pathEx:;
 static hammerParser_target_name_return
 target_name(phammerParser ctx)
 {
-  hammerParser_target_name_return retval;
+  hammerParser_target_name_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN ID64;
-  hammerParser_path_slash_return path_slash62;
+  hammerParser_path_slash_return path_slash62{};
 #undef RETURN_TYPE_path_slash62
 #define RETURN_TYPE_path_slash62 hammerParser_path_slash_return
 
-  hammerParser_path_slash_return path_slash63;
+  hammerParser_path_slash_return path_slash63{};
 #undef RETURN_TYPE_path_slash63
 #define RETURN_TYPE_path_slash63 hammerParser_path_slash_return
 
@@ -7110,21 +7092,21 @@ target_name(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  ID64 = NULL;
-  path_slash62.tree = NULL;
+  ID64 = nullptr;
+  path_slash62.tree = nullptr;
 
-  path_slash63.tree = NULL;
+  path_slash63.tree = nullptr;
 
   retval.start = LT(1);
 
-  ID64_tree = NULL;
+  ID64_tree = nullptr;
   stream_ID = antlr3RewriteRuleTOKENStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "token ID");
   stream_path_slash = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule path_slash");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     {
       //  hammer.g:87:13: ( path_slash path_slash ID -> ^( TARGET_NAME ID ) | ->
@@ -7136,7 +7118,7 @@ target_name(phammerParser ctx)
 
       {
         int LA19_0 = LA(1);
-        if ((LA19_0 == SLASH)) {
+        if (LA19_0 = SLASH) {
           {
             int LA19_1 = LA(2);
             if ((LA19_1 == ID || LA19_1 == 32)) {
@@ -7179,7 +7161,8 @@ target_name(phammerParser ctx)
               goto ruletarget_nameEx;
             }
 
-            stream_path_slash->add(stream_path_slash, path_slash62.tree, NULL);
+            stream_path_slash->add(
+              stream_path_slash, path_slash62.tree, nullptr);
             FOLLOWPUSH(FOLLOW_path_slash_in_target_name860);
             path_slash63 = path_slash(ctx);
 
@@ -7188,14 +7171,15 @@ target_name(phammerParser ctx)
               goto ruletarget_nameEx;
             }
 
-            stream_path_slash->add(stream_path_slash, path_slash63.tree, NULL);
+            stream_path_slash->add(
+              stream_path_slash, path_slash63.tree, nullptr);
             ID64 =
               (pANTLR3_COMMON_TOKEN)MATCHT(ID, &FOLLOW_ID_in_target_name862);
             if (HASEXCEPTION()) {
               goto ruletarget_nameEx;
             }
 
-            stream_ID->add(stream_ID, ID64, NULL);
+            stream_ID->add(stream_ID, ID64, nullptr);
 
             /* AST REWRITE
      * elements          : ID
@@ -7211,7 +7195,7 @@ target_name(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -7219,8 +7203,7 @@ target_name(phammerParser ctx)
               {
                 // hammer.g:87:43: ^( TARGET_NAME ID )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -7256,7 +7239,7 @@ target_name(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -7264,8 +7247,7 @@ target_name(phammerParser ctx)
               {
                 // hammer.g:88:18: ^( TARGET_NAME NULL_ARG )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -7321,12 +7303,12 @@ ruletarget_nameEx:;
 static hammerParser_path_element_return
 path_element(phammerParser ctx)
 {
-  hammerParser_path_element_return retval;
+  hammerParser_path_element_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
   pANTLR3_COMMON_TOKEN ID66;
-  hammerParser_path_slash_return path_slash65;
+  hammerParser_path_slash_return path_slash65{};
 #undef RETURN_TYPE_path_slash65
 #define RETURN_TYPE_path_slash65 hammerParser_path_slash_return
 
@@ -7335,15 +7317,15 @@ path_element(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  ID66 = NULL;
-  path_slash65.tree = NULL;
+  ID66 = nullptr;
+  path_slash65.tree = nullptr;
 
   retval.start = LT(1);
 
-  ID66_tree = NULL;
-  retval.tree = NULL;
+  ID66_tree = nullptr;
+  retval.tree = nullptr;
   {
     // hammer.g:89:14: ({...}? => path_slash ID )
     // hammer.g:89:16: {...}? => path_slash ID
@@ -7405,23 +7387,23 @@ rulepath_elementEx:;
 static hammerParser_target_features_return
 target_features(phammerParser ctx)
 {
-  hammerParser_target_features_return retval;
+  hammerParser_target_features_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
-  hammerParser_path_slash_return path_slash67;
+  hammerParser_path_slash_return path_slash67{};
 #undef RETURN_TYPE_path_slash67
 #define RETURN_TYPE_path_slash67 hammerParser_path_slash_return
 
-  hammerParser_feature_return feature68;
+  hammerParser_feature_return feature68{};
 #undef RETURN_TYPE_feature68
 #define RETURN_TYPE_feature68 hammerParser_feature_return
 
-  hammerParser_path_slash_return path_slash69;
+  hammerParser_path_slash_return path_slash69{};
 #undef RETURN_TYPE_path_slash69
 #define RETURN_TYPE_path_slash69 hammerParser_path_slash_return
 
-  hammerParser_feature_return feature70;
+  hammerParser_feature_return feature70{};
 #undef RETURN_TYPE_feature70
 #define RETURN_TYPE_feature70 hammerParser_feature_return
 
@@ -7430,15 +7412,15 @@ target_features(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  path_slash67.tree = NULL;
+  path_slash67.tree = nullptr;
 
-  feature68.tree = NULL;
+  feature68.tree = nullptr;
 
-  path_slash69.tree = NULL;
+  path_slash69.tree = nullptr;
 
-  feature70.tree = NULL;
+  feature70.tree = nullptr;
 
   retval.start = LT(1);
 
@@ -7446,7 +7428,7 @@ target_features(phammerParser ctx)
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule path_slash");
   stream_feature = antlr3RewriteRuleSubtreeStreamNewAE(
     ADAPTOR, RECOGNIZER, (pANTLR3_UINT8) "rule feature");
-  retval.tree = NULL;
+  retval.tree = nullptr;
   {
     {
       //  hammer.g:90:17: ( path_slash feature ( path_slash feature )* -> ^(
@@ -7473,7 +7455,8 @@ target_features(phammerParser ctx)
               goto ruletarget_featuresEx;
             }
 
-            stream_path_slash->add(stream_path_slash, path_slash67.tree, NULL);
+            stream_path_slash->add(
+              stream_path_slash, path_slash67.tree, nullptr);
             FOLLOWPUSH(FOLLOW_feature_in_target_features913);
             feature68 = feature(ctx);
 
@@ -7482,7 +7465,7 @@ target_features(phammerParser ctx)
               goto ruletarget_featuresEx;
             }
 
-            stream_feature->add(stream_feature, feature68.tree, NULL);
+            stream_feature->add(stream_feature, feature68.tree, nullptr);
 
             // hammer.g:90:38: ( path_slash feature )*
 
@@ -7492,7 +7475,7 @@ target_features(phammerParser ctx)
                 /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
      */
                 int LA20_0 = LA(1);
-                if ((LA20_0 == SLASH)) {
+                if (LA20_0 = SLASH) {
                   {
                     /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
      */
@@ -7516,7 +7499,7 @@ target_features(phammerParser ctx)
                     }
 
                     stream_path_slash->add(
-                      stream_path_slash, path_slash69.tree, NULL);
+                      stream_path_slash, path_slash69.tree, nullptr);
                     FOLLOWPUSH(FOLLOW_feature_in_target_features918);
                     feature70 = feature(ctx);
 
@@ -7525,7 +7508,8 @@ target_features(phammerParser ctx)
                       goto ruletarget_featuresEx;
                     }
 
-                    stream_feature->add(stream_feature, feature70.tree, NULL);
+                    stream_feature->add(
+                      stream_feature, feature70.tree, nullptr);
                   }
                   break;
 
@@ -7550,7 +7534,7 @@ target_features(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -7558,21 +7542,20 @@ target_features(phammerParser ctx)
               {
                 // hammer.g:90:63: ^( FEATURE_SET ( feature )+ )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
                       ADAPTOR, FEATURE_SET, (pANTLR3_UINT8) "FEATURE_SET"),
                     root_1));
 
-                  if (!(stream_feature->hasNext(stream_feature))) {
+                  if ((stream_feature->hasNext(stream_feature)) == 0u) {
                     CONSTRUCTEX();
                     EXCEPTION->type = ANTLR3_REWRITE_EARLY_EXCEPTION;
                     EXCEPTION->name =
                       (void*)ANTLR3_REWRITE_EARLY_EXCEPTION_NAME;
                   } else {
-                    while (stream_feature->hasNext(stream_feature)) {
+                    while (stream_feature->hasNext(stream_feature) != 0u) {
                       ADAPTOR->addChild(
                         ADAPTOR,
                         root_1,
@@ -7606,7 +7589,7 @@ target_features(phammerParser ctx)
                 ADAPTOR,
                 RECOGNIZER,
                 (pANTLR3_UINT8) "token retval",
-                retval.tree != NULL ? retval.tree : NULL);
+                retval.tree != nullptr ? retval.tree : nullptr);
 
               root_0 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
               retval.tree = root_0;
@@ -7614,8 +7597,7 @@ target_features(phammerParser ctx)
               {
                 // hammer.g:91:22: ^( FEATURE_SET NULL_ARG )
                 {
-                  pANTLR3_BASE_TREE root_1 =
-                    (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
+                  auto root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->nilNode(ADAPTOR));
                   root_1 = (pANTLR3_BASE_TREE)(ADAPTOR->becomeRoot(
                     ADAPTOR,
                     (pANTLR3_BASE_TREE)ADAPTOR->createTypeText(
@@ -7672,7 +7654,7 @@ ruletarget_featuresEx:;
 static hammerParser_path_slash_return
 path_slash(phammerParser ctx)
 {
-  hammerParser_path_slash_return retval;
+  hammerParser_path_slash_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
@@ -7683,13 +7665,13 @@ path_slash(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  SLASH71 = NULL;
+  SLASH71 = nullptr;
   retval.start = LT(1);
 
-  SLASH71_tree = NULL;
-  retval.tree = NULL;
+  SLASH71_tree = nullptr;
+  retval.tree = nullptr;
   {
     // hammer.g:92:12: ({...}? => SLASH )
     // hammer.g:92:14: {...}? => SLASH
@@ -7742,7 +7724,7 @@ rulepath_slashEx:;
 static hammerParser_trail_slash_return
 trail_slash(phammerParser ctx)
 {
-  hammerParser_trail_slash_return retval;
+  hammerParser_trail_slash_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
@@ -7753,13 +7735,13 @@ trail_slash(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  SLASH72 = NULL;
+  SLASH72 = nullptr;
   retval.start = LT(1);
 
-  SLASH72_tree = NULL;
-  retval.tree = NULL;
+  SLASH72_tree = nullptr;
+  retval.tree = nullptr;
   {
     // hammer.g:93:13: ({...}? => SLASH )
     // hammer.g:93:15: {...}? => SLASH
@@ -7812,7 +7794,7 @@ ruletrail_slashEx:;
 static hammerParser_head_slash_return
 head_slash(phammerParser ctx)
 {
-  hammerParser_head_slash_return retval;
+  hammerParser_head_slash_return retval{};
 
   pANTLR3_BASE_TREE root_0;
 
@@ -7823,13 +7805,13 @@ head_slash(phammerParser ctx)
   /* Initialize rule variables
  */
 
-  root_0 = NULL;
+  root_0 = nullptr;
 
-  SLASH73 = NULL;
+  SLASH73 = nullptr;
   retval.start = LT(1);
 
-  SLASH73_tree = NULL;
-  retval.tree = NULL;
+  SLASH73_tree = nullptr;
+  retval.tree = nullptr;
   {
     // hammer.g:94:12: ({...}? => SLASH )
     // hammer.g:94:14: {...}? => SLASH

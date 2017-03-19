@@ -22,7 +22,7 @@ using namespace hammer;
 namespace fs = boost::filesystem;
 
 void*
-hammer_make_args_list(void* context)
+hammer_make_args_list(void* /*context*/)
 {
   return new args_list_t();
 }
@@ -33,19 +33,21 @@ hammer_rule_call(void* context,
                  int local,
                  void* args_list_in)
 {
-  auto_ptr<args_list_t> args_list(static_cast<args_list_t*>(args_list_in));
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
+  unique_ptr<args_list_t> args_list(static_cast<args_list_t*>(args_list_in));
+  auto* ctx = static_cast<hammer_walker_context*>(context);
   args_list->insert(args_list->begin(),
                     new call_resolver_call_arg<project>(ctx->project_, false));
 
-  if (local)
+  if (local != 0) {
     ctx->project_->add_targets_as_local(true);
+  }
 
-  auto_ptr<call_resolver_call_arg_base> result(
+  unique_ptr<call_resolver_call_arg_base> result(
     ctx->call_resolver_->invoke(rule_name, *args_list));
 
-  if (local)
+  if (local != 0) {
     ctx->project_->add_targets_as_local(false);
+  }
 
   return result.release();
 }
@@ -59,7 +61,7 @@ hammer_delete_rule_result(void* result)
 void*
 hammer_make_null_arg()
 {
-  return new call_resolver_call_arg<null_arg>(0, false);
+  return new call_resolver_call_arg<null_arg>(nullptr, false);
 }
 
 void*
@@ -72,7 +74,7 @@ hammer_make_string_list()
 void*
 hammer_make_feature_list(void* context)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
   return new call_resolver_call_arg<feature_set>(
     new feature_set(&ctx->engine_->feature_registry()), false);
 }
@@ -86,30 +88,29 @@ hammer_make_requirements_decl()
 void
 hammer_add_arg_to_args_list(void* args_list, void* arg)
 {
-  args_list_t* args_list_ = static_cast<args_list_t*>(args_list);
-  call_resolver_call_arg_base* arg_ =
-    static_cast<call_resolver_call_arg_base*>(arg);
+  auto* args_list_ = static_cast<args_list_t*>(args_list);
+  auto* arg_ = static_cast<call_resolver_call_arg_base*>(arg);
   args_list_->push_back(arg_);
 }
 
 void
 hammer_add_id_to_string_list(void* context, void* string_list, const char* id)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
-  call_resolver_call_arg<std::vector<string>>* string_list_ =
+  auto* ctx = static_cast<hammer_walker_context*>(context);
+  auto* string_list_ =
     static_cast<call_resolver_call_arg<std::vector<string>>*>(string_list);
   string_list_->value()->push_back(id);
 }
 
 void
-hammer_add_feature_to_list(void* context,
+hammer_add_feature_to_list(void* /*context*/,
                            void* args_list,
                            const char* feature_name,
                            const char* feature_value)
 {
   // hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
   // // unused variable ctx
-  call_resolver_call_arg<feature_set>* args_list_ =
+  auto* args_list_ =
     static_cast<call_resolver_call_arg<feature_set>*>(args_list);
   args_list_->value()->join(feature_name, feature_value);
 }
@@ -120,21 +121,22 @@ hammer_add_feature_argument(void* context,
                             const char* feature_name,
                             const char* feature_value)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
-  args_list_t* args_list_ = static_cast<args_list_t*>(args_list);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
+  auto* args_list_ = static_cast<args_list_t*>(args_list);
   const feature_def* fdef =
     ctx->engine_->feature_registry().find_def_from_full_name(feature_name);
   call_resolver_call_arg<feature>* arg;
-  if (fdef == NULL)
+  if (fdef == nullptr) {
     arg = new call_resolver_call_arg<feature>(
       ctx->project_->local_feature_registry().create_feature(feature_name,
                                                              feature_value),
       false);
-  else
+  } else {
     arg = new call_resolver_call_arg<feature>(
       ctx->engine_->feature_registry().create_feature(feature_name,
                                                       feature_value),
       false);
+  }
 
   args_list_->push_back(arg);
 }
@@ -144,10 +146,9 @@ hammer_add_string_arg_to_args_list(void* context,
                                    void* args_list,
                                    const char* id)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
-  call_resolver_call_arg<string>* arg =
-    new call_resolver_call_arg<string>(new string(id), false);
-  args_list_t* args_list_ = static_cast<args_list_t*>(args_list);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
+  auto* arg = new call_resolver_call_arg<string>(new string(id), false);
+  auto* args_list_ = static_cast<args_list_t*>(args_list);
   args_list_->push_back(arg);
 }
 
@@ -156,15 +157,17 @@ hammer_create_feature(void* context,
                       const char* feature_name,
                       const char* feature_value)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
   const feature_def* fdef =
     ctx->engine_->feature_registry().find_def_from_full_name(feature_name);
-  if (fdef != NULL)
+  if (fdef != nullptr) {
     return ctx->engine_->feature_registry().create_feature(
-      feature_name, feature_value == NULL ? "" : feature_value);
-  else
+      feature_name, feature_value == nullptr ? "" : feature_value);
+  }
+  {
     return ctx->project_->local_feature_registry().create_feature(
-      feature_name, feature_value == NULL ? "" : feature_value);
+      feature_name, feature_value == nullptr ? "" : feature_value);
+  }
 }
 
 void*
@@ -176,7 +179,7 @@ hammer_make_requirements_condition()
 void*
 hammer_make_project_requirements_decl(const char* id, void* rdecl)
 {
-  requirements_decl* r = static_cast<requirements_decl*>(rdecl);
+  auto* r = static_cast<requirements_decl*>(rdecl);
   project_requirements_decl* result = new project_requirements_decl(id, *r);
   delete r;
   return result;
@@ -185,48 +188,48 @@ hammer_make_project_requirements_decl(const char* id, void* rdecl)
 void*
 hammer_make_requirements_decl_arg(void* rdecl)
 {
-  requirements_decl* r = static_cast<requirements_decl*>(rdecl);
+  auto* r = static_cast<requirements_decl*>(rdecl);
   return new call_resolver_call_arg<requirements_decl>(r, true);
 }
 
 void*
 hammer_make_project_requirements_decl_arg(void* pdecl)
 {
-  project_requirements_decl* p = static_cast<project_requirements_decl*>(pdecl);
+  auto* p = static_cast<project_requirements_decl*>(pdecl);
   return new call_resolver_call_arg<project_requirements_decl>(p, true);
 }
 
 void
 hammer_add_conditional_to_rdecl(void* condition, char is_public, void* rdecl)
 {
-  requirements_decl* r = static_cast<requirements_decl*>(rdecl);
-  std::auto_ptr<requirement_base> c(
+  auto* r = static_cast<requirements_decl*>(rdecl);
+  std::unique_ptr<requirement_base> c(
     static_cast<linear_and_condition*>(condition));
-  c->set_public(is_public);
-  r->add(c);
+  c->set_public(is_public != 0);
+  r->add(std::move(c));
 }
 
 void
 hammer_add_feature_to_rdecl(void* feature, char is_public, void* rdecl)
 {
-  requirements_decl* r = static_cast<requirements_decl*>(rdecl);
-  std::auto_ptr<requirement_base> nr(
+  auto* r = static_cast<requirements_decl*>(rdecl);
+  std::unique_ptr<requirement_base> nr(
     new just_feature_requirement(static_cast<hammer::feature*>(feature)));
-  nr->set_public(is_public);
-  r->add(nr);
+  nr->set_public(is_public != 0);
+  r->add(std::move(nr));
 }
 
 void
 hammer_set_condition_result(void* condition, void* feature)
 {
-  linear_and_condition* c = static_cast<linear_and_condition*>(condition);
+  auto* c = static_cast<linear_and_condition*>(condition);
   c->result(static_cast<hammer::feature*>(feature));
 }
 
 void
 hammer_add_feature_to_condition(void* feature, void* condition)
 {
-  linear_and_condition* c = static_cast<linear_and_condition*>(condition);
+  auto* c = static_cast<linear_and_condition*>(condition);
   c->add(static_cast<hammer::feature*>(feature));
 }
 
@@ -239,7 +242,7 @@ hammer_make_sources_decl()
 void
 hammer_add_source_to_sources_decl(void* result, void* sd)
 {
-  source_decl* source_decl = static_cast<hammer::source_decl*>(sd);
+  auto* source_decl = static_cast<hammer::source_decl*>(sd);
   static_cast<sources_decl*>(result)->push_back(*source_decl);
   delete source_decl;
 }
@@ -253,8 +256,7 @@ hammer_make_sources_decl_arg(void* s)
 void
 hammer_add_rule_result_to_source_decl(void* rule_result, void* sources)
 {
-  call_resolver_call_arg<sources_decl>* rr =
-    static_cast<call_resolver_call_arg<sources_decl>*>(rule_result);
+  auto* rr = static_cast<call_resolver_call_arg<sources_decl>*>(rule_result);
   static_cast<sources_decl*>(sources)->transfer_from(*rr->value());
 }
 
@@ -267,14 +269,14 @@ hammer_make_path()
 void
 hammer_add_to_path(void* p, const char* token)
 {
-  fs::path* pd = static_cast<fs::path*>(p);
+  auto* pd = static_cast<fs::path*>(p);
   *pd /= token;
 }
 
 void*
 hammer_make_path_arg(void* p)
 {
-  call_resolver_call_arg<fs::path>* result =
+  auto* result =
     new call_resolver_call_arg<fs::path>(static_cast<fs::path*>(p), true);
   return result;
 }
@@ -302,12 +304,13 @@ typedef std::pair<pANTLR3_COMMON_TOKEN, pANTLR3_COMMON_TOKEN> target_path_t;
 void
 hammer_source_decl_set_target_path(void* context, void* sd, void* tp)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
-  source_decl* source_decl = static_cast<hammer::source_decl*>(sd);
-  target_path_t* target_path_tokens = static_cast<target_path_t*>(tp);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
+  auto* source_decl = static_cast<hammer::source_decl*>(sd);
+  auto* target_path_tokens = static_cast<target_path_t*>(tp);
 
-  if (target_path_tokens->second == NULL)
+  if (target_path_tokens->second == nullptr) {
     target_path_tokens->second = target_path_tokens->first;
+  }
 
   pANTLR3_STRING s =
     target_path_tokens->first->input->substr(target_path_tokens->first->input,
@@ -325,24 +328,25 @@ hammer_source_decl_set_target_path(void* context, void* sd, void* tp)
 void
 hammer_source_decl_set_target_name(void* context, void* sd, const char* id)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
-  source_decl* source_decl = static_cast<hammer::source_decl*>(sd);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
+  auto* source_decl = static_cast<hammer::source_decl*>(sd);
 
-  if (id != NULL)
+  if (id != nullptr) {
     source_decl->target_name(id);
+  }
 }
 
 void
 hammer_source_decl_set_target_properties(void* sd, void* fs)
 {
-  source_decl* source_decl = static_cast<hammer::source_decl*>(sd);
+  auto* source_decl = static_cast<hammer::source_decl*>(sd);
   source_decl->properties(static_cast<hammer::feature_set*>(fs));
 }
 
 void
 hammer_source_decl_set_public(void* sd)
 {
-  source_decl* source_decl = static_cast<hammer::source_decl*>(sd);
+  auto* source_decl = static_cast<hammer::source_decl*>(sd);
   source_decl->set_public(true);
 }
 
@@ -353,22 +357,23 @@ hammer_make_target_path()
 }
 
 void
-hammer_add_to_target_path(void* context, void* tp, pANTLR3_BASE_TREE node)
+hammer_add_to_target_path(void* /*context*/, void* tp, pANTLR3_BASE_TREE node)
 {
   // hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
   // // unused variable ctx
-  target_path_t* target_path = static_cast<target_path_t*>(tp);
+  auto* target_path = static_cast<target_path_t*>(tp);
 
-  if (target_path->first == NULL)
+  if (target_path->first == nullptr) {
     target_path->first = node->getToken(node);
-  else
+  } else {
     target_path->second = node->getToken(node);
+  }
 }
 
 void*
 hammer_make_feature_set(void* context)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
   return ctx->engine_->feature_registry().make_set();
 }
 
@@ -382,7 +387,7 @@ hammer_add_feature_to_feature_set(void* feature_set, void* feature)
 void
 hammer_feature_set_dependency_data(void* f, void* sd_)
 {
-  source_decl* sd = static_cast<source_decl*>(sd_);
+  auto* sd = static_cast<source_decl*>(sd_);
   static_cast<feature*>(f)->set_dependency_data(*sd, nullptr);
   delete sd;
 }
@@ -390,13 +395,13 @@ hammer_feature_set_dependency_data(void* f, void* sd_)
 void
 hammer_on_nested_rule_enter(void* context)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
   ctx->project_->add_targets_as_explicit(true);
 }
 
 void
 hammer_on_nested_rule_leave(void* context)
 {
-  hammer_walker_context* ctx = static_cast<hammer_walker_context*>(context);
+  auto* ctx = static_cast<hammer_walker_context*>(context);
   ctx->project_->add_targets_as_explicit(false);
 }

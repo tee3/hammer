@@ -14,4 +14,4 @@ target_version_alias_meta_target::target_version_alias_meta_target(
   sd.begin()->target_name(name);
   sources(sd);
 }
-}
+} // namespace hammer

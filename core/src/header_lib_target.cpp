@@ -27,4 +27,4 @@ header_lib_target::timestamp_info_impl() const
   timestamp_info_.timestamp_ =
     boost::posix_time::ptime(boost::gregorian::date(1900, 1, 1));
 }
-}
+} // namespace hammer

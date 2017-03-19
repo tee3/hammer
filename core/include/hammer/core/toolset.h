@@ -10,7 +10,7 @@ class engine;
 class toolset
 {
 public:
-  toolset(const std::string& name);
+  toolset(std::string name);
 
   const std::string name() const { return name_; }
 

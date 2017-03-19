@@ -9,4 +9,4 @@ header_lib_main_target::header_lib_main_target(const basic_meta_target* mt,
   : main_target(mt, name, t, props)
 {
 }
-}
+} // namespace hammer

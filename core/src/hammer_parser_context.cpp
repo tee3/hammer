@@ -18,14 +18,15 @@ namespace details {
     *static_cast<hammer_parser_context*>(parser->super)
 
 void
-on_enter_rule(pANTLR3_PARSER parser, pANTLR3_UINT8 rule_name_)
+on_enter_rule(pANTLR3_PARSER parser, const pANTLR3_UINT8 rule_name_)
 {
   MAKE_CTX();
-  const char* rule_name = reinterpret_cast<const char*>(rule_name_);
+  const auto* rule_name = reinterpret_cast<const char*>(rule_name_);
   call_resolver& resolver = ctx.engine_->call_resolver();
-  call_resolver::const_iterator i = resolver.find(rule_name);
-  if (i == resolver.end())
+  auto i = resolver.find(rule_name);
+  if (i == resolver.end()) {
     throw std::runtime_error("Unknown rule '" + string(rule_name) + "'.");
+  }
 
   // this block implement feature creation hook to be able to answer on
   // is_dependency_feature
@@ -34,12 +35,12 @@ on_enter_rule(pANTLR3_PARSER parser, pANTLR3_UINT8 rule_name_)
     pANTLR3_COMMON_TOKEN feature_name_token =
       parser->tstream->_LT(parser->tstream, 1);
     if (feature_name_token != &parser->tstream->tokenSource->eofToken) {
-      const char* feature_name = reinterpret_cast<const char*>(
+      const auto* feature_name = reinterpret_cast<const char*>(
         feature_name_token->getText(feature_name_token)->chars);
-      if (feature_name != NULL) {
+      if (feature_name != nullptr) {
         ctx.rule_context_.in_feature_feature_rule_ = true;
-        typedef hammer_parser_context::new_features_t::iterator iter;
-        iter i =
+        using iter = hammer_parser_context::new_features_t::iterator;
+        auto i =
           ctx.new_features_.insert({ feature_name, { feature_name, false } })
             .first;
         ctx.rule_context_.new_feature_ = &i->second;
@@ -84,12 +85,12 @@ on_rule_argument(pANTLR3_PARSER parser)
 }
 
 void
-on_string_list_element(pANTLR3_PARSER parser, pANTLR3_UINT8 id_)
+on_string_list_element(pANTLR3_PARSER parser, const pANTLR3_UINT8 id_)
 {
   MAKE_CTX();
 
   // this is feature creation hook
-  const char* id = reinterpret_cast<const char*>(id_);
+  const auto* id = reinterpret_cast<const char*>(id_);
   if (ctx.rule_context_.in_feature_feature_rule_ &&
       ctx.rule_context_.arg_ == 3 && strcmp(id, "dependency") == 0) {
     ctx.rule_context_.new_feature_->dependency_ = true;
@@ -230,19 +231,22 @@ is_dependency_feature(pANTLR3_PARSER parser)
   MAKE_CTX();
   pANTLR3_COMMON_TOKEN feature_name_token =
     parser->tstream->_LT(parser->tstream, 2);
-  const char* feature_name = reinterpret_cast<const char*>(
+  const auto* feature_name = reinterpret_cast<const char*>(
     feature_name_token->getText(feature_name_token)->chars);
   const feature_def* fd =
     ctx.engine_->feature_registry().find_def(feature_name);
-  if (fd == NULL) {
+  if (fd == nullptr) {
     hammer_parser_context::new_features_t::const_iterator i =
       ctx.new_features_.find(feature_name);
-    if (i != ctx.new_features_.end())
+    if (i != ctx.new_features_.end()) {
       return i->second.dependency_;
-    else
+    }
+    {
       return false;
-  } else
-    return fd->attributes().dependency;
+    }
+  } else {
+    return fd->attributes().dependency != 0u;
+  }
 }
-}
-}
+} // namespace details
+} // namespace hammer

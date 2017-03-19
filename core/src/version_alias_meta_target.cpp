@@ -11,14 +11,15 @@ static source_decl
 make_default_source(const std::string& version)
 {
   std::string location("./" + version + "/build");
-  return source_decl(location, std::string(), NULL, NULL);
+  return source_decl(location, std::string(), nullptr, nullptr);
 }
 
 static source_decl
 make_non_default_source(const std::string& target_path)
 {
   const location_t source_target_path = location_t("./") / target_path;
-  return source_decl(source_target_path.string(), std::string(), NULL, NULL);
+  return source_decl(
+    source_target_path.string(), std::string(), nullptr, nullptr);
 }
 
 version_alias_meta_target::version_alias_meta_target(
@@ -38,8 +39,8 @@ version_alias_meta_target::version_alias_meta_target(
   requirements(reqs);
 
   sources_decl src;
-  source_decl s(target_path != NULL ? make_non_default_source(*target_path)
-                                    : make_default_source(version));
+  source_decl s(target_path != nullptr ? make_non_default_source(*target_path)
+                                       : make_default_source(version));
 
   src.push_back(s);
   this->sources(src);
@@ -58,4 +59,4 @@ version_alias_meta_target::instantiate_impl(
   alias_meta_target::instantiate_impl(
     owner, adjusted_build_request, result, usage_requirements);
 }
-}
+} // namespace hammer

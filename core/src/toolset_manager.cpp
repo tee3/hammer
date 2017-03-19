@@ -9,8 +9,9 @@ namespace hammer {
 void
 toolset_manager::add_toolset(std::unique_ptr<toolset> t)
 {
-  if (!toolsets_.emplace(t->name(), std::move(t)).second)
+  if (!toolsets_.emplace(t->name(), std::move(t)).second) {
     throw std::runtime_error("Toolset '" + t->name() + "' already registered");
+  }
 }
 
 void
@@ -19,10 +20,11 @@ toolset_manager::init_toolset(engine& e,
                               const std::string& toolset_version,
                               const location_t* toolset_home) const
 {
-  toolsets_t::const_iterator i = toolsets_.find(toolset_name);
-  if (i == toolsets_.end())
+  auto i = toolsets_.find(toolset_name);
+  if (i == toolsets_.end()) {
     throw std::runtime_error("Toolset '" + toolset_name +
                              "' is not registered");
+  }
 
   i->second->init(e, toolset_version, toolset_home);
 }
@@ -30,16 +32,14 @@ toolset_manager::init_toolset(engine& e,
 void
 toolset_manager::autoconfigure(engine& e) const
 {
-  for (toolsets_t::const_iterator i = toolsets_.begin(), last = toolsets_.end();
-       i != last;
-       ++i)
+  for (const auto& toolset : toolsets_) {
     if (const feature_def* fd = e.feature_registry().find_def("toolset")) {
-      if (!fd->is_legal_value(i->first))
-        i->second->autoconfigure(e);
+      if (!fd->is_legal_value(toolset.first)) {
+        toolset.second->autoconfigure(e);
+      }
     }
+  }
 }
 
-toolset_manager::~toolset_manager()
-{
-}
-}
+toolset_manager::~toolset_manager() = default;
+} // namespace hammer

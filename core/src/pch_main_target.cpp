@@ -17,9 +17,9 @@ pch_main_target::pch_main_target(const basic_meta_target* mt,
                                  const feature_set* props)
   : main_target(mt, name, t, props)
   , owner_(owner)
-  , pch_header_(NULL)
-  , pch_source_(NULL)
-  , pch_product_(NULL)
+  , pch_header_(nullptr)
+  , pch_source_(nullptr)
+  , pch_product_(nullptr)
 {
 }
 
@@ -35,7 +35,7 @@ pch_main_target::generate() const
   const hammer::target_type& pch_type =
     get_engine()->get_type_registry().get(types::PCH);
 
-  typedef std::vector<boost::intrusive_ptr<hammer::build_node>> result_t;
+  using result_t = std::vector<boost::intrusive_ptr<hammer::build_node>>;
 
   // PCH generator consume CPP || C + H and produce OBJ + PCH
   result_t result(main_target::generate());
@@ -48,8 +48,9 @@ pch_main_target::generate() const
     if (i->source_target_->type().equal_or_derived_from(c_type) ||
         i->source_target_->type().equal_or_derived_from(cpp_type)) {
       pch_source_ = i->source_target_;
-    } else if (i->source_target_->type().equal_or_derived_from(h_type))
+    } else if (i->source_target_->type().equal_or_derived_from(h_type)) {
       pch_header_ = i->source_target_;
+    }
   }
 
   for (build_node::targets_t::const_iterator
@@ -72,4 +73,4 @@ pch_main_target::intermediate_dir_impl() const
   return get_engine()->output_location_strategy().compute_output_location(
     owner_);
 }
-}
+} // namespace hammer

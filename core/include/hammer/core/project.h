@@ -99,7 +99,7 @@ public:
     const bool allow_locals = false) const;
   selected_target try_select_best_alternative(
     const std::string& target_name,
-    const feature_set& build_request,
+    const feature_set& build_request_param,
     const bool allow_locals = false) const;
   feature_set* try_resolve_local_features(const feature_set& fs) const;
 

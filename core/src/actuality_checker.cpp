@@ -18,8 +18,9 @@ actuality_checker::check(nodes_t& nodes)
   std::size_t result = 0;
   ptime max_node_time(neg_infin);
   for (nodes_t::const_iterator i = nodes.begin(), last = nodes.end(); i != last;
-       ++i)
+       ++i) {
     check(max_node_time, result, **i);
+  }
 
   return result;
 }
@@ -32,8 +33,10 @@ actuality_checker::get_scanner_context(const target_type& t, const scanner& s)
     scanner_contexts_.insert(std::make_pair(
       &t, boost::shared_ptr<scanner_context>(s.create_context(env_))));
     return get_scanner_context(t, s);
-  } else
+  }
+  {
     return *i->second;
+  }
 }
 
 // go deep in down nodes and mark all of they as needed to update, including
@@ -43,36 +46,32 @@ actuality_checker::mark_to_update(build_node& node,
                                   std::size_t& nodes_to_update,
                                   const main_target& products_owner)
 {
-  for (build_node::nodes_t::iterator i = node.down_.begin(),
-                                     last = node.down_.end();
-       i != last;
-       ++i)
-    if (&(**i).products_owner() == &products_owner) {
-      (**i).up_to_date(boost::tribool::false_value);
-      (**i).timestamp(pos_infin);
-      mark_to_update(**i, nodes_to_update, products_owner);
+  for (auto& i : node.down_) {
+    if (&(*i).products_owner() == &products_owner) {
+      (*i).up_to_date(boost::tribool::false_value);
+      (*i).timestamp(pos_infin);
+      mark_to_update(*i, nodes_to_update, products_owner);
       ++nodes_to_update;
     } else {
       ptime max_node_time(neg_infin);
-      check(max_node_time, nodes_to_update, **i);
+      check(max_node_time, nodes_to_update, *i);
     }
+  }
 
   // We should mark dependencies also if they was generated as part of
   // main_target generation process
   // just as direct dependencies. PCH or QT_UIC go to deps not to sources.
-  for (build_node::nodes_t::iterator i = node.dependencies_.begin(),
-                                     last = node.dependencies_.end();
-       i != last;
-       ++i)
-    if (&(**i).products_owner() == &products_owner) {
-      (**i).up_to_date(boost::tribool::false_value);
-      (**i).timestamp(pos_infin);
-      mark_to_update(**i, nodes_to_update, products_owner);
+  for (auto& dependencie : node.dependencies_) {
+    if (&(*dependencie).products_owner() == &products_owner) {
+      (*dependencie).up_to_date(boost::tribool::false_value);
+      (*dependencie).timestamp(pos_infin);
+      mark_to_update(*dependencie, nodes_to_update, products_owner);
       ++nodes_to_update;
     } else {
       ptime max_node_time(neg_infin);
-      check(max_node_time, nodes_to_update, **i);
+      check(max_node_time, nodes_to_update, *dependencie);
     }
+  }
 }
 
 bool
@@ -85,10 +84,11 @@ actuality_checker::check(boost::posix_time::ptime& max_target_time,
   if (node.up_to_date() != boost::tribool::indeterminate_value) {
     max_target_time = (std::max)(node.timestamp(), max_target_time);
     assert(node.timestamp() != not_a_date_time);
-    if (node.up_to_date() == boost::tribool::true_value)
+    if (node.up_to_date() == boost::tribool::true_value) {
       return false;
-    else
+    } else {
       return true;
+    }
   }
 
   // check for dependencies
@@ -97,13 +97,15 @@ actuality_checker::check(boost::posix_time::ptime& max_target_time,
   for (build_node::nodes_t::const_iterator i = node.dependencies_.begin(),
                                            last = node.dependencies_.end();
        i != last;
-       ++i)
+       ++i) {
     dependency_need_to_be_updated =
       check(dependency_max_time, nodes_to_update, **i) ||
       dependency_need_to_be_updated;
+  }
 
-  if (dependency_need_to_be_updated)
+  if (dependency_need_to_be_updated) {
     mark_to_update(node, nodes_to_update, node.products_owner());
+  }
 
   ptime sources_max_time(neg_infin);
   bool some_need_to_be_updated = dependency_need_to_be_updated;
@@ -154,7 +156,7 @@ actuality_checker::check(boost::posix_time::ptime& max_target_time,
     products_max_time = (std::max)(products_max_time, time_info.timestamp_);
 
     const scanner* scanner = engine_.scanner_manager().find((**i).type());
-    if (scanner != NULL) {
+    if (scanner != nullptr) {
       ptime scanner_timestamp =
         scanner->process(**i, get_scanner_context((**i).type(), *scanner));
 
@@ -174,24 +176,21 @@ actuality_checker::check(boost::posix_time::ptime& max_target_time,
     assert(node.timestamp() != not_a_date_time);
     nodes_to_update += node.products_.size();
     return true;
-  } else {
-    ptime this_max_target_time =
-      (std::max)(sources_max_time, products_max_time);
-    node.timestamp(this_max_target_time);
-    assert(node.timestamp() != not_a_date_time);
-    max_target_time = (std::max)(max_target_time, this_max_target_time);
-
-    if (sources_max_time > products_max_time ||
-        some_need_to_be_updated) // if some sources or dependencies not up to
-    // date than result != 0
-    {
-      node.up_to_date(boost::tribool::false_value);
-      nodes_to_update += node.products_.size();
-      return true;
-    } else {
-      node.up_to_date(boost::tribool::true_value);
-      return false;
-    }
   }
+  ptime this_max_target_time = (std::max)(sources_max_time, products_max_time);
+  node.timestamp(this_max_target_time);
+  assert(node.timestamp() != not_a_date_time);
+  max_target_time = (std::max)(max_target_time, this_max_target_time);
+
+  if (sources_max_time > products_max_time ||
+      some_need_to_be_updated) // if some sources or dependencies not up to
+  // date than result != 0
+  {
+    node.up_to_date(boost::tribool::false_value);
+    nodes_to_update += node.products_.size();
+    return true;
+  }
+  node.up_to_date(boost::tribool::true_value);
+  return false;
 }
-}
+} // namespace hammer

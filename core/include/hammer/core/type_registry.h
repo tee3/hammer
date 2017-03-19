@@ -26,7 +26,7 @@ public:
     const std::string& name) const;
   const target_type& get(const type_tag& tag) const;
   const target_type* find(const type_tag& tag) const;
-  const target_type& insert(const target_type& t);
+  const target_type& insert(const target_type& a_t);
   ~type_registry();
 
 private:

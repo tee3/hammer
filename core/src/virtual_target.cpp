@@ -22,4 +22,4 @@ virtual_target::timestamp_info_impl() const
   timestamp_info_.is_unknown_ = false;
   timestamp_info_.timestamp_ = boost::date_time::neg_infin;
 }
-}
+} // namespace hammer

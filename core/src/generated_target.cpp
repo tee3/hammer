@@ -30,4 +30,4 @@ generated_target::clean(const build_environment& environment) const
 {
   environment.remove(location() / name());
 }
-}
+} // namespace hammer

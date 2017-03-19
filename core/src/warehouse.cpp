@@ -16,20 +16,15 @@ using boost::unordered_set;
 
 namespace hammer {
 
-const std::string warehouse::any_version = string();
-
 static void
 walk_over_targets(vector<const warehouse_target*>& result,
                   unordered_set<basic_target*>& visited,
                   const vector<basic_target*>& targets)
 {
-  for (vector<basic_target*>::const_iterator i = targets.begin(),
-                                             last = targets.end();
-       i != last;
-       ++i) {
-    if (warehouse_target* t = dynamic_cast<warehouse_target*>(*i))
+  for (auto target : targets) {
+    if (auto* t = dynamic_cast<warehouse_target*>(target)) {
       result.push_back(t);
-    else if (main_target* m = dynamic_cast<main_target*>(*i)) {
+    } else if (auto* m = dynamic_cast<main_target*>(target)) {
       if (visited.find(m) == visited.end()) {
         visited.insert(m);
         walk_over_targets(result, visited, m->sources());
@@ -61,8 +56,9 @@ collect_installed_versions(const project& p)
     feature_set& requirements = *p.get_engine()->feature_registry().make_set();
     t.second->requirements().eval(build_request, &requirements);
     auto i = requirements.find("version");
-    if (i != requirements.end())
+    if (i != requirements.end()) {
       result.push_back((**i).value());
+    }
   }
 
   sort(result.begin(), result.end());
@@ -118,9 +114,9 @@ add_traps(project& p, const std::string& public_id)
 
   for (const auto& v : not_installed_versions) {
     for (const string& target_name : v.targets_) {
-      auto_ptr<basic_meta_target> trap_target(
+      unique_ptr<basic_meta_target> trap_target(
         new warehouse_meta_target(p, target_name, v.version_));
-      p.add_target(trap_target);
+      p.add_target(std::move(trap_target));
     }
   }
 }
@@ -129,17 +125,18 @@ static void
 warehouse_trap_rule(project* p, string& public_id)
 {
   warehouse& wh = p->get_engine()->warehouse();
-  if (!wh.has_project("/" / location_t(public_id), warehouse::any_version))
+  if (!wh.has_project("/" / location_t(public_id), warehouse::any_version)) {
     throw std::runtime_error("Can't find '" + public_id + "' in warehouse");
+  }
 
   add_traps(*p, public_id);
 }
 
 void
-install_warehouse_rules(call_resolver& resolver, engine& engine)
+install_warehouse_rules(call_resolver& resolver, engine& /*engine*/)
 {
   resolver.insert("warehouse-trap",
                   boost::function<void(project*, string&)>(
                     boost::bind(warehouse_trap_rule, _1, _2)));
 }
-}
+} // namespace hammer

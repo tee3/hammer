@@ -51,9 +51,9 @@ public:
   typedef std::vector<produced_type> producable_types_t;
 
   generator(engine& e,
-            const std::string& name,
-            const consumable_types_t& source_types,
-            const producable_types_t& target_types,
+            std::string name,
+            consumable_types_t source_types,
+            producable_types_t target_types,
             bool composite,
             const feature_set* c = 0);
   virtual ~generator();

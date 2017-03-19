@@ -27,4 +27,4 @@ obj_meta_target::construct_main_target(const main_target* owner,
 {
   return new obj_main_target(this, *owner, name(), &type(), properties);
 }
-}
+} // namespace hammer

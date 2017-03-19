@@ -24,20 +24,20 @@ namespace {
 class copy_action : public build_action
 {
 public:
-  copy_action(const target_type& tag_type)
+  explicit copy_action(const target_type& tag_type)
     : build_action("copy file")
     , tag_writer_("", tag_type)
   {
   }
 
-  virtual std::string target_tag(const build_node& node,
-                                 const build_environment& environment) const;
+  std::string target_tag(const build_node& node,
+                         const build_environment& environment) const override;
 
 protected:
-  virtual bool execute_impl(const build_node& node,
-                            const build_environment& environment) const;
-  virtual void clean_on_fail(const build_node& node,
-                             const build_environment& environment) const;
+  bool execute_impl(const build_node& node,
+                    const build_environment& environment) const override;
+  void clean_on_fail(const build_node& node,
+                     const build_environment& environment) const override;
 
 private:
   product_argument_writer tag_writer_;
@@ -66,8 +66,9 @@ copy_action::execute_impl(const build_node& node,
   destination.normalize();
   source.normalize();
 
-  if (exists(destination))
+  if (exists(destination)) {
     environment.remove(destination);
+  }
 
   environment.copy(source, destination);
 
@@ -75,11 +76,11 @@ copy_action::execute_impl(const build_node& node,
 }
 
 void
-copy_action::clean_on_fail(const build_node& node,
-                           const build_environment& environment) const
+copy_action::clean_on_fail(const build_node& /*node*/,
+                           const build_environment& /*environment*/) const
 {
 }
-}
+} // namespace
 
 copy_generator::copy_generator(hammer::engine& e)
   : generator(
@@ -94,22 +95,21 @@ copy_generator::copy_generator(hammer::engine& e)
   action(std::move(a));
 }
 
-typedef std::vector<boost::intrusive_ptr<build_node>> nodes_t;
-typedef std::set<const build_node*> visited_nodes_t;
+using nodes_t = std::vector<boost::intrusive_ptr<build_node>>;
+using visited_nodes_t = std::set<const build_node*>;
 
 build_nodes_t
 copy_generator::construct(const target_type& type_to_construct,
                           const feature_set& props,
                           const nodes_t& sources,
-                          const basic_target* t,
+                          const basic_target* /*t*/,
                           const std::string* composite_target_name,
                           const main_target& owner) const
 {
   assert(dynamic_cast<const copy_main_target*>(&owner));
   assert(composite_target_name);
 
-  const copy_main_target& true_owner =
-    static_cast<const copy_main_target&>(owner);
+  const auto& true_owner = dynamic_cast<const copy_main_target&>(owner);
 
   nodes_t result;
   build_node::sources_t collected_nodes;
@@ -131,7 +131,7 @@ copy_generator::construct(const target_type& type_to_construct,
     new_node->sources_.push_back(*i);
     new_node->down_.push_back(i->source_node_);
 
-    copy_target* new_target = new copy_target(
+    auto* new_target = new copy_target(
       &owner, i->source_target_->name(), &type_to_construct, &props);
     new_node->products_.push_back(new_target);
 
@@ -140,4 +140,4 @@ copy_generator::construct(const target_type& type_to_construct,
 
   return result;
 }
-}
+} // namespace hammer

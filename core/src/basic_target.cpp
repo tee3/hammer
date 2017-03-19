@@ -79,4 +79,4 @@ basic_target::full_path() const
   l.normalize();
   return l;
 }
-}
+} // namespace hammer

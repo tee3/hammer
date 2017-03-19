@@ -10,7 +10,7 @@ class searched_lib_meta_target : public typed_meta_target
 public:
   searched_lib_meta_target(hammer::project* p,
                            const std::string& name,
-                           const std::string& lib_name,
+                           std::string lib_name,
                            const requirements_decl& props,
                            const requirements_decl& usage_req,
                            const target_type& t);

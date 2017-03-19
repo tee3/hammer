@@ -20,19 +20,20 @@ lib_meta_target::lib_meta_target(hammer::project* p,
 }
 
 main_target*
-lib_meta_target::construct_main_target(const main_target* owner,
+lib_meta_target::construct_main_target(const main_target* /*owner*/,
                                        const feature_set* properties) const
 {
-  main_target* result = 0;
+  main_target* result = nullptr;
   const feature& link = properties->get("link");
-  const target_type* target_type = 0;
-  if (link.value() == "static")
+  const target_type* target_type = nullptr;
+  if (link.value() == "static") {
     target_type = &get_engine()->get_type_registry().get(types::STATIC_LIB);
-  else
+  } else {
     target_type = &get_engine()->get_type_registry().get(types::SHARED_LIB);
+  }
 
   result = new main_target(this, name(), target_type, properties);
 
   return result;
 }
-}
+} // namespace hammer

@@ -8,7 +8,7 @@ class fake_target : public basic_target
 {
 public:
   fake_target(const main_target* mt,
-              const build_node::sources_t& sources,
+              build_node::sources_t sources,
               const std::string& name,
               const target_type* t,
               const feature_set* f);

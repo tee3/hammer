@@ -1,17 +1,19 @@
 #include "stdafx.h"
 #include <hammer/core/fake_target.h>
 
+#include <utility>
+
 namespace hammer {
 
 static location_t empty_location;
 
 fake_target::fake_target(const main_target* mt,
-                         const build_node::sources_t& sources,
+                         build_node::sources_t sources,
                          const std::string& name,
                          const target_type* t,
                          const feature_set* f)
   : basic_target(mt, name, t, f)
-  , sources_(sources)
+  , sources_(std::move(sources))
 {
 }
 
@@ -32,9 +34,10 @@ fake_target::timestamp_info_impl() const
 {
   timestamp_info_.is_unknown_ = false;
   timestamp_info_.timestamp_ = boost::date_time::neg_infin;
-  for (const build_node::source_t& s : sources_)
+  for (const build_node::source_t& s : sources_) {
     timestamp_info_.timestamp_ =
       (std::max)(timestamp_info_.timestamp_,
                  s.source_target_->timestamp_info().timestamp_);
+  }
 }
-}
+} // namespace hammer

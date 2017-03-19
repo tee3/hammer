@@ -32,7 +32,7 @@ private:
     all_legal_values;
 
   // used only by feature_def
-  subfeature_def(const feature_def& owner, const std::string& name);
+  subfeature_def(const feature_def& owner, std::string name);
 
   const feature_def* owner_;
   const std::string name_;

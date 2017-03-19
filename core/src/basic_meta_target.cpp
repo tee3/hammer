@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <stdexcept>
+#include <utility>
 
 #include <hammer/core/basic_meta_target.h>
 #include <hammer/core/engine.h>
@@ -20,11 +21,11 @@ using namespace std;
 namespace hammer {
 
 basic_meta_target::basic_meta_target(hammer::project* p,
-                                     const std::string& name,
+                                     std::string name,
                                      const requirements_decl& req,
                                      const requirements_decl& usage_req)
   : project_(p)
-  , name_(name)
+  , name_(std::move(name))
   , requirements_(req)
   , usage_requirements_(usage_req)
   , is_explicit_(false)
@@ -54,22 +55,21 @@ basic_meta_target::location() const
 void
 basic_meta_target::instantiate_simple_targets(
   const sources_decl& targets,
-  const feature_set& build_request,
+  const feature_set& /*build_request*/,
   const main_target& owner,
   std::vector<basic_target*>* result) const
 {
   // const type_registry& tr = get_engine()->get_type_registry(); // unused
   // variable tr;
-  for (sources_decl::const_iterator i = targets.begin(), last = targets.end();
-       i != last;
-       ++i) {
-    const hammer::target_type* tp = i->type();
-    if (tp == 0)
+  for (const auto& target : targets) {
+    const hammer::target_type* tp = target.type();
+    if (tp == nullptr) {
       throw std::runtime_error("Can't resolve type from source '" +
-                               i->target_path() + "'.");
+                               target.target_path() + "'.");
+    }
 
     location_t source_location =
-      (owner.location() / i->target_path()).normalize();
+      (owner.location() / target.target_path()).normalize();
     const std::string source_filename = source_location.filename().string();
     source_target* st = new source_target(&owner,
                                           source_location.branch_path(),
@@ -89,8 +89,8 @@ instantiate_meta_targets(const meta_targets_t& targets,
 {
   for (auto& t : targets) {
     t.first->instantiate(owner,
-                         t.second == NULL ? build_request
-                                          : *build_request.join(*t.second),
+                         t.second == nullptr ? build_request
+                                             : *build_request.join(*t.second),
                          result,
                          usage_requirments);
   }
@@ -101,13 +101,14 @@ basic_meta_target::split_one_source(sources_decl* simple_targets,
                                     meta_targets_t* meta_targets,
                                     const source_decl& source,
                                     const feature_set& build_request,
-                                    const type_registry& tr) const
+                                    const type_registry& /*tr*/) const
 {
-  if (const target_type* t = source.type())
+  if (const target_type* t = source.type()) {
     simple_targets->push_back(source);
-  else
+  } else {
     resolve_meta_target_source(
       source, build_request, simple_targets, meta_targets);
+  }
 }
 
 void
@@ -117,27 +118,26 @@ basic_meta_target::split_sources(sources_decl* simple_targets,
                                  const feature_set& build_request) const
 {
   const type_registry& tr = get_engine()->get_type_registry();
-  for (sources_decl::const_iterator i = sources.begin(), last = sources.end();
-       i != last;
-       ++i)
-    split_one_source(simple_targets, meta_targets, *i, build_request, tr);
+  for (const auto& source : sources) {
+    split_one_source(simple_targets, meta_targets, source, build_request, tr);
+  }
 }
 
 void
 basic_meta_target::resolve_meta_target_source(
   const source_decl& source,
   const feature_set& build_request,
-  sources_decl* simple_targets,
+  sources_decl* /*simple_targets*/,
   meta_targets_t* meta_targets) const
 {
   const feature_set* build_request_with_source_properties =
-    (source.properties() == NULL ? &build_request
-                                 : build_request.join(*source.properties()));
+    (source.properties() == nullptr ? &build_request
+                                    : build_request.join(*source.properties()));
 
   // check that source is simple one ID. Maybe its source or maybe its target
   // ID.
   if (source.target_name().empty() && !source.target_path().empty()) {
-    if (project_->find_target(source.target_path())) {
+    if (project_->find_target(source.target_path()) != nullptr) {
       project::selected_target selected_target =
         project_->select_best_alternative(source.target_path(),
                                           *build_request_with_source_properties,
@@ -160,8 +160,9 @@ basic_meta_target::resolve_meta_target_source(
              i = selected_targets.begin(),
              last = selected_targets.end();
            i != last;
-           ++i)
+           ++i) {
         meta_targets->push_back({ i->target_, source.properties() });
+      }
     } catch (const std::exception& e) {
       throw std::runtime_error("While resolving meta target '" +
                                source.target_path() + "' at '" +
@@ -175,9 +176,7 @@ basic_meta_target::resolve_meta_target_source(
   }
 }
 
-basic_meta_target::~basic_meta_target()
-{
-}
+basic_meta_target::~basic_meta_target() = default;
 
 const feature_set&
 basic_meta_target::resolve_undefined_features(const feature_set& fs) const
@@ -185,10 +184,11 @@ basic_meta_target::resolve_undefined_features(const feature_set& fs) const
   const feature_set* without_undefined =
     fs.has_undefined_features() ? get_project()->try_resolve_local_features(fs)
                                 : &fs;
-  if (without_undefined->has_undefined_features())
+  if (without_undefined->has_undefined_features()) {
     throw std::runtime_error("Target '" + name() + "' at location '" +
                              location().string() +
                              "' has been instantiated with unknown features");
+  }
 
   return *without_undefined;
 }
@@ -204,7 +204,7 @@ basic_meta_target::instantiate(const main_target* owner,
            i = instantiation_cache_.begin(),
            last = instantiation_cache_.end();
          i != last;
-         ++i)
+         ++i) {
       if (i->build_request_->compatible_with(build_request)) {
         result->insert(result->end(),
                        i->instantiated_targets_.begin(),
@@ -212,6 +212,7 @@ basic_meta_target::instantiate(const main_target* owner,
         usage_requirements->join(*i->computed_usage_requirements_);
         return;
       }
+    }
 
     cached_instantiation_data_t cache_item;
     cache_item.build_request_ = &build_request;
@@ -244,9 +245,11 @@ basic_meta_target::get_engine() const
 static bool
 has_slash(const std::string& s)
 {
-  for (const char c : s)
-    if (c == '/')
+  for (const char c : s) {
+    if (c == '/') {
       return true;
+    }
+  }
 
   return false;
 }
@@ -256,8 +259,9 @@ adjust_dependency_features_sources(feature_set& set_to_adjust,
                                    const basic_meta_target& relative_to_target)
 {
   for (feature* f : set_to_adjust) {
-    if (!f->attributes().dependency)
+    if (f->attributes().dependency == 0u) {
       continue;
+    }
 
     const source_decl& source = f->get_dependency_data().source_;
     if (source.type() == nullptr /*source is meta-target*/ &&
@@ -270,4 +274,4 @@ adjust_dependency_features_sources(feature_set& set_to_adjust,
     }
   }
 }
-}
+} // namespace hammer

@@ -13,7 +13,7 @@ class source_target : public file_target
 {
 public:
   source_target(const main_target* mt,
-                const location_t& l,
+                location_t l,
                 const std::string& name,
                 const target_type* t,
                 const feature_set* f);

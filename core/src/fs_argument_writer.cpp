@@ -9,32 +9,30 @@ namespace hammer {
 void
 fs_argument_writer::write_impl(std::ostream& output,
                                const build_node& node,
-                               const build_environment& environment) const
+                               const build_environment& /*environment*/) const
 {
   const feature_set& build_request = node.build_request();
   bool is_first = true;
-  for (patterns_t::const_iterator i = patterns_.begin(), last = patterns_.end();
-       i != last;
-       ++i) {
-    if (i->first->size() == 1 && (**i->first->begin()).attributes().generated) {
-      feature_set::const_iterator f =
-        build_request.find((**i->first->begin()).name());
+  for (const auto& pattern : patterns_) {
+    if (pattern.first->size() == 1 &&
+        ((**pattern.first->begin()).attributes().generated != 0u)) {
+      auto f = build_request.find((**pattern.first->begin()).name());
       if (f != build_request.end() &&
-          (**f).value() == (**i->first->begin()).value()) {
-        if (is_first)
+          (**f).value() == (**pattern.first->begin()).value()) {
+        if (is_first) {
           is_first = false;
-        else
+        } else {
           output << ' ';
-
-        output << i->second;
+        }
+        output << pattern.second;
       }
-    } else if (build_request.contains(*i->first)) {
-      if (is_first)
+    } else if (build_request.contains(*pattern.first)) {
+      if (is_first) {
         is_first = false;
-      else
+      } else {
         output << ' ';
-
-      output << i->second;
+      }
+      output << pattern.second;
     }
   }
 }
@@ -60,4 +58,4 @@ fs_argument_writer::clone() const
 {
   return new fs_argument_writer(*this);
 }
-}
+} // namespace hammer

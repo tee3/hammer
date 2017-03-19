@@ -16,4 +16,4 @@ default_output_location_strategy::compute_output_location(
   return mt.get_project()->location() / ".hammer/bin" / mt.name() /
          mt.hash_string();
 }
-}
+} // namespace hammer

@@ -139,7 +139,7 @@ static ANTLR3_UCHAR lit_2[] = { 0x5C, 0x22, ANTLR3_STRING_TERMINATOR };
 #define PUSHSTREAM(str) LEXER->pushCharStream(LEXER, str)
 #define POPSTREAM() LEXER->popCharStream(LEXER)
 #define SETTEXT(str) LEXSTATE->text = str
-#define SKIP() LEXSTATE->token = &(TOKSOURCE->skipToken)
+#define SKIP() (LEXSTATE->token = &(TOKSOURCE->skipToken))
 #define USER1 LEXSTATE->user1
 #define USER2 LEXSTATE->user2
 #define USER3 LEXSTATE->user3
@@ -300,7 +300,7 @@ hammerLexerNew(pANTLR3_INPUT_STREAM instream)
 {
   // See if we can create a new lexer with the standard constructor
   //
-  return hammerLexerNewSSD(instream, NULL);
+  return hammerLexerNewSSD(instream, nullptr);
 }
 
 /** \brief Create a new lexer called hammerLexer
@@ -319,9 +319,9 @@ hammerLexerNewSSD(pANTLR3_INPUT_STREAM instream,
 
   ctx = (phammerLexer)ANTLR3_CALLOC(1, sizeof(hammerLexer));
 
-  if (ctx == NULL) {
+  if (ctx == nullptr) {
     // Failed to allocate memory for lexer context
-    return NULL;
+    return nullptr;
   }
 
   /* -------------------------------------------------------------------
@@ -342,9 +342,9 @@ hammerLexerNewSSD(pANTLR3_INPUT_STREAM instream,
 
   /* Check that we allocated the memory correctly
  */
-  if (ctx->pLexer == NULL) {
+  if (ctx->pLexer == nullptr) {
     ANTLR3_FREE(ctx);
-    return NULL;
+    return nullptr;
   }
   /* Install the implementation of our hammerLexer interface
  */
@@ -425,9 +425,9 @@ static const ANTLR3_INT32* const dfa1_transitions[] = {
 
 static ANTLR3_INT32
 dfa1_sst(phammerLexer ctx,
-         pANTLR3_BASE_RECOGNIZER recognizer,
-         pANTLR3_INT_STREAM is,
-         pANTLR3_CYCLIC_DFA dfa,
+         pANTLR3_BASE_RECOGNIZER /*recognizer*/,
+         pANTLR3_INT_STREAM /*is*/,
+         pANTLR3_CYCLIC_DFA /*dfa*/,
          ANTLR3_INT32 s)
 {
   ANTLR3_INT32 _s;
@@ -460,15 +460,15 @@ dfa1_sst(phammerLexer ctx,
         s = 4;
       }
 
-      else if ((LA1_0 == '.')) {
+      else if (LA1_0 = '.') {
         s = 5;
       }
 
-      else if ((LA1_0 == '-')) {
+      else if (LA1_0 = '-') {
         s = 6;
       }
 
-      else if ((LA1_0 == '+')) {
+      else if (LA1_0 = '+') {
         s = 7;
       }
 
@@ -476,20 +476,21 @@ dfa1_sst(phammerLexer ctx,
         s = 8;
       }
 
-      else if ((LA1_0 == '_')) {
+      else if (LA1_0 = '_') {
         s = 9;
       }
 
-      else if ((LA1_0 == '=')) {
+      else if (LA1_0 = '=') {
         s = 10;
       }
 
-      else if ((LA1_0 == '*')) {
+      else if (LA1_0 = '*') {
         s = 11;
       }
 
-      else
+      else {
         s = 1;
+      }
 
       SEEK(index1_0);
 
@@ -613,9 +614,9 @@ static const ANTLR3_INT32* const dfa6_transitions[] = {
 
 static ANTLR3_INT32
 dfa6_sst(phammerLexer ctx,
-         pANTLR3_BASE_RECOGNIZER recognizer,
-         pANTLR3_INT_STREAM is,
-         pANTLR3_CYCLIC_DFA dfa,
+         pANTLR3_BASE_RECOGNIZER /*recognizer*/,
+         pANTLR3_INT_STREAM /*is*/,
+         pANTLR3_CYCLIC_DFA /*dfa*/,
          ANTLR3_INT32 s)
 {
   ANTLR3_INT32 _s;
@@ -636,35 +637,35 @@ dfa6_sst(phammerLexer ctx,
       REWINDLAST();
 
       s = -1;
-      if ((LA6_0 == ';')) {
+      if (LA6_0 = ';') {
         s = 1;
       }
 
-      else if ((LA6_0 == ',')) {
+      else if (LA6_0 = ',') {
         s = 2;
       }
 
-      else if ((LA6_0 == '<')) {
+      else if (LA6_0 = '<') {
         s = 3;
       }
 
-      else if ((LA6_0 == '>')) {
+      else if (LA6_0 = '>') {
         s = 4;
       }
 
-      else if ((LA6_0 == '[')) {
+      else if (LA6_0 = '[') {
         s = 5;
       }
 
-      else if ((LA6_0 == ']')) {
+      else if (LA6_0 = ']') {
         s = 6;
       }
 
-      else if ((LA6_0 == '@')) {
+      else if (LA6_0 = '@') {
         s = 7;
       }
 
-      else if ((LA6_0 == 'l')) {
+      else if (LA6_0 = 'l') {
         s = 8;
       }
 
@@ -682,11 +683,11 @@ dfa6_sst(phammerLexer ctx,
         s = 10;
       }
 
-      else if ((LA6_0 == ':')) {
+      else if (LA6_0 = ':') {
         s = 11;
       }
 
-      else if ((LA6_0 == '#')) {
+      else if (LA6_0 = '#') {
         s = 12;
       }
 
@@ -750,8 +751,9 @@ dfa6_sst(phammerLexer ctx,
         s = 16;
       }
 
-      else
+      else {
         s = 15;
+      }
 
       SEEK(index6_9);
 
@@ -1181,7 +1183,7 @@ mID(phammerLexer ctx)
         alt2 = 1;
       } else if ((LA2_0 == '*' || LA2_0 == '=' || LA2_0 == '_')) {
         alt2 = 1;
-      } else if ((LA2_0 == '"')) {
+      } else if (LA2_0 = '"') {
         alt2 = 2;
       } else {
         CONSTRUCTEX();
@@ -1468,12 +1470,12 @@ mSTRING_ID(phammerLexer ctx)
         /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
         int LA3_0 = LA(1);
-        if ((LA3_0 == '\\')) {
+        if (LA3_0 = '\\') {
           {
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA3_2 = LA(2);
-            if ((LA3_2 == '"')) {
+            if (LA3_2 = '"') {
               alt3 = 1;
             }
 

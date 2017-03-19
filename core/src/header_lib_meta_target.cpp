@@ -35,10 +35,11 @@ header_lib_meta_target::instantiate_impl(const main_target* owner,
   sources_decl simple_targets;
   sources_decl non_simple_targets;
   for (const source_decl& sd : sources()) {
-    if (sd.type())
+    if (sd.type() != nullptr) {
       simple_targets.push_back(sd);
-    else
+    } else {
       non_simple_targets.push_back(sd);
+    }
   }
 
   // and push non-simple as <source> to usage requirements same as alias target
@@ -50,10 +51,11 @@ header_lib_meta_target::instantiate_impl(const main_target* owner,
     source_decl new_sd = sd;
 
     // apply build request to a target
-    if (new_sd.properties())
+    if (new_sd.properties() != nullptr) {
       new_sd.properties()->join(*build_request_for_sourses);
-    else
+    } else {
       new_sd.properties(build_request_for_sourses->clone());
+    }
 
     f->set_dependency_data(new_sd, this);
 
@@ -84,4 +86,4 @@ header_lib_meta_target::instantiate_impl(const main_target* owner,
   // we just transfer downstream usage requirements to upstream + own
   this->usage_requirements().eval(owner->properties(), usage_requirements);
 }
-}
+} // namespace hammer

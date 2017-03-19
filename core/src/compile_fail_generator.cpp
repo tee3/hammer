@@ -15,7 +15,7 @@ namespace hammer {
 class compile_fail_build_environment : public proxied_build_environment
 {
 public:
-  compile_fail_build_environment(const build_environment& env)
+  explicit compile_fail_build_environment(const build_environment& env)
     : proxied_build_environment(env)
   {
   }
@@ -132,9 +132,10 @@ compile_fail_generator::create_target(const main_target* mt,
                                       const target_type* t,
                                       const feature_set* f) const
 {
-  if (get_engine().get_type_registry().get(types::TESTING_COMPILE_FAIL) == *t)
+  if (get_engine().get_type_registry().get(types::TESTING_COMPILE_FAIL) == *t) {
     return new virtual_target(mt, n, t, f);
+  }
 
   return generator::create_target(mt, sources, n, t, f);
 }
-}
+} // namespace hammer

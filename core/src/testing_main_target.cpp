@@ -21,4 +21,4 @@ testing_main_target::intermediate_dir_impl() const
   return get_engine()->output_location_strategy().compute_output_location(
     dynamic_cast<const main_target&>(*sources().front()));
 }
-}
+} // namespace hammer

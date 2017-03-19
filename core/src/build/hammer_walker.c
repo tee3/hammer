@@ -387,10 +387,6 @@ hammer_walkerFree(phammer_walker ctx)
   //
   ctx->pTreeParser->free(ctx->pTreeParser);
   ANTLR3_FREE(ctx);
-
-  /* Everything is released, so we can return
- */
-  return;
 }
 
 /** Return token names used by this tree parser
@@ -1045,8 +1041,6 @@ ruleprojectEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end project */
 
@@ -1078,7 +1072,7 @@ rules(phammer_walker ctx)
           /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
           int LA1_0 = LA(1);
-          if ((LA1_0 == RULE_CALL)) {
+          if (LA1_0 = RULE_CALL) {
             alt1 = 1;
           }
         }
@@ -1118,8 +1112,6 @@ rulerulesEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end rules */
 
@@ -1154,16 +1146,16 @@ rule(phammer_walker ctx)
 
       {
         int LA4_0 = LA(1);
-        if ((LA4_0 == RULE_CALL)) {
+        if (LA4_0 = RULE_CALL) {
           {
             int LA4_1 = LA(2);
-            if ((LA4_1 == DOWN)) {
+            if (LA4_1 = DOWN) {
               {
                 int LA4_2 = LA(3);
-                if ((LA4_2 == ID)) {
+                if (LA4_2 = ID) {
                   {
                     int LA4_3 = LA(4);
-                    if ((LA4_3 == LOCAL)) {
+                    if (LA4_3 = LOCAL) {
                       alt4 = 1;
                     } else if ((LA4_3 == UP || ((LA4_3 >= NULL_ARG) &&
                                                 (LA4_3 <= STRING_LIST)) ||
@@ -1578,8 +1570,6 @@ ruleargsEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end args */
 
@@ -1643,8 +1633,6 @@ rulefeature_set_argEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end feature_set_arg */
 
@@ -1708,8 +1696,6 @@ rulefeature_argEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end feature_arg */
 
@@ -1769,8 +1755,6 @@ rulestring_argEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end string_arg */
 
@@ -1810,7 +1794,7 @@ string_list(phammer_walker ctx, void* args_list)
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA6_0 = LA(1);
-            if ((LA6_0 == ID)) {
+            if (LA6_0 = ID) {
               alt6 = 1;
             }
           }
@@ -1866,8 +1850,6 @@ rulestring_listEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end string_list */
 
@@ -1912,8 +1894,6 @@ rulestring_list_idEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end string_list_id */
 
@@ -1952,8 +1932,6 @@ rulenull_argEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end null_arg */
 
@@ -2114,9 +2092,9 @@ requirements(phammer_walker ctx)
 
                   {
                     int LA7_0 = LA(1);
-                    if ((LA7_0 == CONDITIONAL_FEATURES)) {
+                    if (LA7_0 = CONDITIONAL_FEATURES) {
                       alt7 = 1;
-                    } else if ((LA7_0 == FEATURE)) {
+                    } else if (LA7_0 = FEATURE) {
                       alt7 = 2;
                     } else {
                       CONSTRUCTEX();
@@ -2228,7 +2206,7 @@ requirements_public_tag(phammer_walker ctx, char* flag)
 
       {
         int LA9_0 = LA(1);
-        if ((LA9_0 == PUBLIC_TAG)) {
+        if (LA9_0 = PUBLIC_TAG) {
           alt9 = 1;
         } else if ((LA9_0 == FEATURE || LA9_0 == CONDITIONAL_FEATURES)) {
           alt9 = 2;
@@ -2278,8 +2256,6 @@ rulerequirements_public_tagEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end requirements_public_tag */
 
@@ -2406,7 +2382,7 @@ condition(phammer_walker ctx, void* c)
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA10_0 = LA(1);
-            if ((LA10_0 == FEATURE)) {
+            if (LA10_0 = FEATURE) {
               alt10 = 1;
             }
           }
@@ -2462,8 +2438,6 @@ ruleconditionEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end condition */
 
@@ -2502,18 +2476,18 @@ feature(phammer_walker ctx)
 
       {
         int LA11_0 = LA(1);
-        if ((LA11_0 == FEATURE)) {
+        if (LA11_0 = FEATURE) {
           {
             int LA11_1 = LA(2);
-            if ((LA11_1 == DOWN)) {
+            if (LA11_1 = DOWN) {
               {
                 int LA11_2 = LA(3);
-                if ((LA11_2 == ID)) {
+                if (LA11_2 = ID) {
                   {
                     int LA11_3 = LA(4);
-                    if ((LA11_3 == ID)) {
+                    if (LA11_3 = ID) {
                       alt11 = 1;
-                    } else if ((LA11_3 == SOURCE_DECL)) {
+                    } else if (LA11_3 = SOURCE_DECL) {
                       alt11 = 2;
                     } else {
                       CONSTRUCTEX();
@@ -2708,9 +2682,9 @@ sources_decl(phammer_walker ctx)
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA12_0 = LA(1);
-            if ((LA12_0 == SOURCE_DECL)) {
+            if (LA12_0 = SOURCE_DECL) {
               alt12 = 1;
-            } else if ((LA12_0 == RULE_CALL)) {
+            } else if (LA12_0 = RULE_CALL) {
               alt12 = 2;
             }
           }
@@ -2895,9 +2869,9 @@ source_public_tag(phammer_walker ctx, void* sd)
 
       {
         int LA13_0 = LA(1);
-        if ((LA13_0 == PUBLIC_TAG)) {
+        if (LA13_0 = PUBLIC_TAG) {
           alt13 = 1;
-        } else if ((LA13_0 == TARGET_PATH)) {
+        } else if (LA13_0 = TARGET_PATH) {
           alt13 = 2;
         } else {
           CONSTRUCTEX();
@@ -2941,8 +2915,6 @@ rulesource_public_tagEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end source_public_tag */
 
@@ -2990,9 +2962,9 @@ target_path(phammer_walker ctx)
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA14_0 = LA(1);
-            if ((LA14_0 == ID)) {
+            if (LA14_0 = ID) {
               alt14 = 1;
-            } else if ((LA14_0 == SLASH)) {
+            } else if (LA14_0 = SLASH) {
               alt14 = 2;
             }
           }
@@ -3091,15 +3063,15 @@ target_name(phammer_walker ctx, void* sd)
 
       {
         int LA15_0 = LA(1);
-        if ((LA15_0 == TARGET_NAME)) {
+        if (LA15_0 = TARGET_NAME) {
           {
             int LA15_1 = LA(2);
-            if ((LA15_1 == DOWN)) {
+            if (LA15_1 = DOWN) {
               {
                 int LA15_2 = LA(3);
-                if ((LA15_2 == ID)) {
+                if (LA15_2 = ID) {
                   alt15 = 1;
-                } else if ((LA15_2 == NULL_ARG)) {
+                } else if (LA15_2 = NULL_ARG) {
                   alt15 = 2;
                 } else {
                   CONSTRUCTEX();
@@ -3204,8 +3176,6 @@ ruletarget_nameEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end target_name */
 
@@ -3236,15 +3206,15 @@ target_features(phammer_walker ctx, void* sd)
 
       {
         int LA16_0 = LA(1);
-        if ((LA16_0 == FEATURE_SET)) {
+        if (LA16_0 = FEATURE_SET) {
           {
             int LA16_1 = LA(2);
-            if ((LA16_1 == DOWN)) {
+            if (LA16_1 = DOWN) {
               {
                 int LA16_2 = LA(3);
-                if ((LA16_2 == NULL_ARG)) {
+                if (LA16_2 = NULL_ARG) {
                   alt16 = 2;
-                } else if ((LA16_2 == FEATURE)) {
+                } else if (LA16_2 = FEATURE) {
                   alt16 = 1;
                 } else {
                   CONSTRUCTEX();
@@ -3330,8 +3300,6 @@ ruletarget_featuresEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end target_features */
 
@@ -3379,7 +3347,7 @@ feature_set(phammer_walker ctx)
             /* dfaLoopbackState(k,edges,eotPredictsAlt,description,stateNumber,semPredState)
  */
             int LA17_0 = LA(1);
-            if ((LA17_0 == FEATURE)) {
+            if (LA17_0 = FEATURE) {
               alt17 = 1;
             }
           }
@@ -3488,8 +3456,6 @@ rulesources_decl_rule_invokeEx:;
     PREPORTERROR();
     PRECOVER();
   }
-
-  return;
 }
 /* $ANTLR end sources_decl_rule_invoke */
 /* End of parsing rules

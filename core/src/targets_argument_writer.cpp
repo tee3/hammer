@@ -9,4 +9,4 @@ targets_argument_writer::targets_argument_writer(const std::string& name,
   , source_type_(&t)
 {
 }
-}
+} // namespace hammer

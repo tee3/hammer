@@ -43,20 +43,20 @@ public:
   typedef std::vector<suffix_def> suffixes_t;
   typedef std::vector<prefix_def> prefixes_t;
 
-  target_type(const type_tag& tag,
+  target_type(type_tag tag,
               const suffix_def& suffix,
               const prefix_def& prefix = prefix_def());
-  target_type(const type_tag& tag,
+  target_type(type_tag tag,
               const suffix_def& suffix,
               const target_type& base,
               const prefix_def& prefix = prefix_def());
-  target_type(const type_tag& tag,
-              const suffixes_t& suffixes,
-              const prefixes_t& prefixes = prefixes_t());
-  target_type(const type_tag& tag,
-              const suffixes_t& suffixes,
+  target_type(type_tag tag,
+              suffixes_t suffixes,
+              prefixes_t prefixes = prefixes_t());
+  target_type(type_tag tag,
+              suffixes_t suffixes,
               const target_type& base,
-              const prefixes_t& prefixes = prefixes_t());
+              prefixes_t prefixes = prefixes_t());
 
   const type_tag& tag() const { return tag_; }
   const suffixes_t& suffixes() const { return suffixes_; }
@@ -76,7 +76,7 @@ private:
   type_tag tag_;
   suffixes_t suffixes_;
   prefixes_t prefixes_;
-  const type_registry* owner_;
+  const type_registry* owner_{} {} {} {};
   const target_type* base_;
 
   bool equal(const target_type& rhs) const;

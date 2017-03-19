@@ -11,9 +11,7 @@ public:
   boost::regex m_expression;
 };
 
-dos_wildcard::dos_wildcard()
-{
-}
+dos_wildcard::dos_wildcard() = default;
 
 dos_wildcard::dos_wildcard(const char* wild, bool ignore_case)
 {
@@ -26,13 +24,10 @@ dos_wildcard::dos_wildcard(const std::string& wild, bool ignore_case)
 }
 
 dos_wildcard::dos_wildcard(const dos_wildcard& wild)
-  : m_pimpl(wild.m_pimpl)
-{
-}
 
-dos_wildcard::~dos_wildcard()
-{
-}
+  = default;
+
+dos_wildcard::~dos_wildcard() = default;
 
 // assign:
 dos_wildcard&
@@ -50,11 +45,7 @@ dos_wildcard::operator=(const std::string& wild)
 }
 
 dos_wildcard&
-dos_wildcard::operator=(const dos_wildcard& wild)
-{
-  m_pimpl = wild.m_pimpl;
-  return *this;
-}
+dos_wildcard::operator=(const dos_wildcard& wild) = default;
 
 dos_wildcard&
 dos_wildcard::assign(const char* wild, bool ignore_case)
@@ -113,14 +104,14 @@ void
 dos_wildcard::do_assign(const char* p1, const char* p2, bool ignore_case)
 {
   static const boost::regex transformer(
-    "([+{}()\\[\\]$\\^|])|(\\*)|(\\?)|(\\.)|([\\\\/:])");
+    R"(([+{}()\[\]$\^|])|(\*)|(\?)|(\.)|([\\/:]))");
   static const char* replace_string =
-    "(?1\\\\$1)(?2[^\\\\\\\\/\\:]*)(?3[^\\\\\\\\/"
-    "\\:])(?4\\(\\?\\:\\\\.|$\\))(?5[\\\\\\\\\\\\/\\:])";
+    R"((?1\\$1)(?2[^\\\\/\:]*)(?3[^\\\\/\:])(?4\(\?\:\\.|$\))(?5[\\\\\\/\:]))";
   cow();
   boost::regex::flag_type flags =
-    (ignore_case == 0 ? boost::regex::perl
-                      : boost::regex::perl | boost::regex::icase);
+    (static_cast<int>(ignore_case) == 0
+       ? boost::regex::perl
+       : boost::regex::perl | boost::regex::icase);
   m_pimpl->m_expression.assign(
     regex_replace(
       std::string(p1, p2), transformer, replace_string, boost::format_all),
@@ -137,10 +128,10 @@ void
 dos_wildcard::cow()
 {
   // copy-on-write
-  if (!m_pimpl.get()) {
+  if (m_pimpl.get() == nullptr) {
     m_pimpl.reset(new dos_wildcard_implementation());
   } else if (!m_pimpl.unique()) {
     m_pimpl.reset(new dos_wildcard_implementation(*(m_pimpl.get())));
   }
 }
-}
+} // namespace boost

@@ -9,7 +9,7 @@ class searched_lib_main_target : public main_target
 public:
   searched_lib_main_target(const basic_meta_target* mt,
                            const std::string& name,
-                           const std::string& lib_name,
+                           std::string lib_name,
                            const feature_set* props,
                            const target_type& t);
   virtual std::vector<boost::intrusive_ptr<hammer::build_node>> generate()

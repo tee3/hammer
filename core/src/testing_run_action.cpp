@@ -18,9 +18,10 @@ testing_run_action::run_shell_commands(
   const build_node& node,
   const build_environment& environment) const
 {
-  if (node.products_.empty())
+  if (node.products_.empty()) {
     throw std::runtime_error(
       "[testing_run_action] Can't run command for node without products.");
+  }
 
   ostringstream output_name;
   output_writer_->write(output_name, node, environment);
@@ -32,9 +33,10 @@ testing_run_action::run_shell_commands(
   environment.write_tag_file(output_name.str() + ".output", output);
   std::cerr << output << std::flush;
 
-  if (result)
+  if (result) {
     environment.write_tag_file(run_tag_name, "passed");
+  }
 
   return result;
 }
-}
+} // namespace hammer

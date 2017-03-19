@@ -24,31 +24,25 @@ struct cleaner::impl_t
 void
 cleaner::impl_t::clean_all(result& r, build_node& n)
 {
-  for (build_node::sources_t::iterator i = n.sources_.begin(),
-                                       last = n.sources_.end();
-       i != last;
-       ++i)
-    if (visited_nodes_.find(i->source_node_.get()) == visited_nodes_.end()) {
-      visited_nodes_.insert(i->source_node_.get());
-      clean_all(r, *i->source_node_);
+  for (auto& source : n.sources_) {
+    if (visited_nodes_.find(source.source_node_.get()) ==
+        visited_nodes_.end()) {
+      visited_nodes_.insert(source.source_node_.get());
+      clean_all(r, *source.source_node_);
     }
+  }
 
-  for (build_node::targets_t::iterator i = n.products_.begin(),
-                                       last = n.products_.end();
-       i != last;
-       ++i) {
-    (**i).clean(environment_);
+  for (auto& product : n.products_) {
+    (*product).clean(environment_);
     r.cleaned_target_count_++;
   }
 
-  for (build_node::nodes_t::iterator i = n.dependencies_.begin(),
-                                     last = n.dependencies_.end();
-       i != last;
-       ++i)
-    if (visited_nodes_.find(i->get()) == visited_nodes_.end()) {
-      visited_nodes_.insert(i->get());
-      clean_all(r, **i);
+  for (auto& dependencie : n.dependencies_) {
+    if (visited_nodes_.find(dependencie.get()) == visited_nodes_.end()) {
+      visited_nodes_.insert(dependencie.get());
+      clean_all(r, *dependencie);
     }
+  }
 }
 
 cleaner::cleaner(engine& e, const build_environment& environment)
@@ -62,9 +56,10 @@ cleaner::clean_all(nodes_t& nodes)
   result r;
   impl_->visited_nodes_.clear();
 
-  for (nodes_t::iterator i = nodes.begin(), last = nodes.end(); i != last; ++i)
-    impl_->clean_all(r, **i);
+  for (auto& node : nodes) {
+    impl_->clean_all(r, *node);
+  }
 
   return r;
 }
-}
+} // namespace hammer

@@ -26,9 +26,7 @@ build_environment_impl::build_environment_impl(const location_t& cur_dir,
 {
 }
 
-build_environment_impl::~build_environment_impl()
-{
-}
+build_environment_impl::~build_environment_impl() = default;
 
 static void
 stream_copy_thread(std::istream& source, std::ostream& sink)
@@ -39,10 +37,11 @@ stream_copy_thread(std::istream& source, std::ostream& sink)
 }
 
 bool
-build_environment_impl::run_shell_commands(std::ostream* captured_output_stream,
-                                           std::ostream* captured_error_stream,
-                                           const std::vector<std::string>& cmds,
-                                           const location_t& working_dir) const
+build_environment_impl::run_shell_commands(
+  std::ostream* captured_output_stream,
+  std::ostream* captured_error_stream,
+  const std::vector<std::string>& /*cmds*/,
+  const location_t& working_dir) const
 {
   string tmp_file_name(boost::guid::create().to_string() + ".cmd");
   location_t full_tmp_file_name(working_dir / tmp_file_name);
@@ -72,7 +71,7 @@ build_environment_impl::run_shell_commands(std::ostream* captured_output_stream,
     ctx.stdin_behavior = bp::close_stream();
     ctx.work_directory = working_dir.string();
 
-    if (captured_output_stream != NULL) {
+    if (captured_output_stream != nullptr) {
       ctx.stdout_behavior = bp::capture_stream();
       if (captured_error_stream != NULL)
         ctx.stderr_behavior = bp::capture_stream();
@@ -103,7 +102,7 @@ build_environment_impl::run_shell_commands(std::ostream* captured_output_stream,
     bp::child shell_action_child = bp::launch_shell(cmd_stream.str(), ctx);
 #endif
 
-    if (captured_output_stream != NULL) {
+    if (captured_output_stream != nullptr) {
       boost::thread_group tg;
 
       tg.create_thread(boost::bind(&stream_copy_thread,
@@ -138,7 +137,7 @@ build_environment_impl::run_shell_commands(std::ostream* captured_output_stream,
     (captured_error_stream ? *captured_error_stream : cerr)
       << "Error: " << e.what() << std::endl;
   } catch (...) {
-    (captured_error_stream ? *captured_error_stream : cerr)
+    (captured_error_stream != nullptr ? *captured_error_stream : cerr)
       << "Error: Unknown error\n";
   }
 
@@ -153,16 +152,18 @@ build_environment_impl::run_shell_commands(std::ostream* captured_output_stream,
 }
 
 bool
-build_environment_impl::run_shell_commands(const std::vector<std::string>& cmds,
-                                           const location_t& working_dir) const
+build_environment_impl::run_shell_commands(
+  const std::vector<std::string>& /*cmds*/,
+  const location_t& working_dir) const
 {
   return run_shell_commands(NULL, NULL, cmds, working_dir);
 }
 
 bool
-build_environment_impl::run_shell_commands(std::string& captured_output,
-                                           const std::vector<std::string>& cmds,
-                                           const location_t& working_dir) const
+build_environment_impl::run_shell_commands(
+  std::string& captured_output,
+  const std::vector<std::string>& /*cmds*/,
+  const location_t& working_dir) const
 {
   std::stringstream s;
   bool result = run_shell_commands(&s, NULL, cmds, working_dir);
@@ -171,24 +172,26 @@ build_environment_impl::run_shell_commands(std::string& captured_output,
 }
 
 bool
-build_environment_impl::run_shell_commands(std::ostream& captured_output_stream,
-                                           const std::vector<std::string>& cmds,
-                                           const location_t& working_dir) const
+build_environment_impl::run_shell_commands(
+  std::ostream& captured_output_stream,
+  const std::vector<std::string>& /*cmds*/,
+  const location_t& working_dir) const
 {
   return run_shell_commands(&captured_output_stream, NULL, cmds, working_dir);
 }
 
 bool
-build_environment_impl::run_shell_commands(std::ostream& captured_output_stream,
-                                           std::ostream& captured_error_stream,
-                                           const std::vector<std::string>& cmds,
-                                           const location_t& working_dir) const
+build_environment_impl::run_shell_commands(
+  std::ostream& captured_output_stream,
+  std::ostream& captured_error_stream,
+  const std::vector<std::string>& /*cmds*/,
+  const location_t& working_dir) const
 {
   return run_shell_commands(
     &captured_output_stream, &captured_error_stream, cmds, working_dir);
 }
 
-static std::auto_ptr<std::istream>
+static std::unique_ptr<std::istream>
 open_input_stream(const location_t& full_content_file_name)
 {
 #if defined(_WIN32) && !defined(__MINGW32__)
@@ -198,7 +201,7 @@ open_input_stream(const location_t& full_content_file_name)
   f->open(unc_path.c_str());
   return f;
 #else
-  std::auto_ptr<istream> f(
+  std::unique_ptr<istream> f(
     new ifstream((full_content_file_name).string().c_str()));
   return f;
 #endif
@@ -209,7 +212,7 @@ build_environment_impl::dump_shell_command(
   std::ostream& s,
   const location_t& full_content_file_name) const
 {
-  std::auto_ptr<istream> f(open_input_stream(full_content_file_name));
+  std::unique_ptr<istream> f(open_input_stream(full_content_file_name));
   s << '\n';
   std::copy(istreambuf_iterator<char>(*f),
             istreambuf_iterator<char>(),
@@ -241,7 +244,7 @@ build_environment_impl::remove_file_by_pattern(const location_t& dir,
                                                const std::string& pattern) const
 {
   boost::regex rpattern(pattern);
-  typedef fs::directory_iterator iter;
+  using iter = fs::directory_iterator;
   for (iter i = iter(dir), last = iter(); i != last; ++i) {
     fs::file_status st = i->status();
     if (!is_directory(st) &&
@@ -262,13 +265,7 @@ build_environment_impl::write_tag_file(const std::string& filename,
                                        const std::string& content) const
 {
   ofstream f(filename.c_str(), ios_base::trunc);
-  if (!f)
-    return false;
-
-  f << content;
-  f.close();
-
-  return true;
+  return !;
 }
 
 std::unique_ptr<ostream>
@@ -276,8 +273,9 @@ build_environment_impl::create_output_file(const char* filename,
                                            ios_base::openmode mode) const
 {
   location_t full_filename_path(filename);
-  if (!full_filename_path.has_root_path())
+  if (!full_filename_path.has_root_path()) {
     full_filename_path = current_directory() / full_filename_path;
+  }
 
   full_filename_path.normalize();
   unique_ptr<ofstream> f(new ofstream);
@@ -315,4 +313,4 @@ build_environment_impl::error_stream() const
 {
   return std::cerr;
 }
-}
+} // namespace hammer

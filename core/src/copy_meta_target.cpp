@@ -17,7 +17,7 @@ copy_meta_target::copy_meta_target(hammer::project* p,
 }
 
 main_target*
-copy_meta_target::construct_main_target(const main_target* owner,
+copy_meta_target::construct_main_target(const main_target* /*owner*/,
                                         const feature_set* properties) const
 {
   main_target* mt =
@@ -27,4 +27,4 @@ copy_meta_target::construct_main_target(const main_target* owner,
                          properties);
   return mt;
 }
-}
+} // namespace hammer

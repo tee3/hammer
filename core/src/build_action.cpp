@@ -22,7 +22,7 @@ build_action::execute(const build_node& node,
     environment.output_stream() << "error: " << e.what() << '\n';
   }
 
-  if (execution_result == false) {
+  if (!execution_result) {
     environment.output_stream() << "...failed " << name() << ' ' << tag << '\n';
     environment.output_stream() << "...cleaning " << tag << '\n';
     clean_on_fail(node, environment);
@@ -31,20 +31,15 @@ build_action::execute(const build_node& node,
   return execution_result;
 }
 
-build_action::~build_action()
-{
-}
+build_action::~build_action() = default;
 
 void
 build_action::clean_on_fail(const build_node& node,
                             const build_environment& environment) const
 {
-  for (build_node::targets_t::const_iterator i = node.products_.begin(),
-                                             last = node.products_.end();
-       i != last;
-       ++i) {
-    location_t target_path = (**i).location() / (**i).name();
+  for (auto product : node.products_) {
+    location_t target_path = (*product).location() / (*product).name();
     environment.remove(target_path);
   }
 }
-}
+} // namespace hammer

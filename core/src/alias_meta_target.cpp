@@ -28,7 +28,7 @@ alias_meta_target::instantiate_impl(const main_target* owner,
                                     std::vector<basic_target*>* result,
                                     feature_set* usage_requirements) const
 {
-  if (owner != NULL) {
+  if (owner != nullptr) {
     // compute usage requirements based only on build request
     // our own requirements is just for target selection - that's how alias
     // works
@@ -42,10 +42,11 @@ alias_meta_target::instantiate_impl(const main_target* owner,
       source_decl new_sd = sd;
 
       // apply build request to a target
-      if (new_sd.properties())
+      if (new_sd.properties() != nullptr) {
         new_sd.properties()->join(build_request);
-      else
+      } else {
         new_sd.properties(build_request.clone());
+      }
 
       f->set_dependency_data(new_sd, this);
 
@@ -62,8 +63,8 @@ alias_meta_target::instantiate_impl(const main_target* owner,
     split_sources(
       &simple_targets, &meta_targets, this->sources(), build_request);
     instantiate_meta_targets(
-      meta_targets, build_request, NULL, &sources, usage_requirements);
+      meta_targets, build_request, nullptr, &sources, usage_requirements);
     result->insert(result->end(), sources.begin(), sources.end());
   }
 }
-}
+} // namespace hammer

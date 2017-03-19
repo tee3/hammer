@@ -33,25 +33,29 @@ feature_set::join(const char* name, const char* value)
 feature_set&
 feature_set::join(feature* f)
 {
-  if (f->attributes().undefined_)
+  if (f->attributes().undefined_ != 0u) {
     has_undefined_ = true;
+  }
 
-  if (!f->attributes().free) {
-    iterator i = find(f->name());
+  if (f->attributes().free == 0u) {
+    auto i = find(f->name());
     if (i != end()) {
       if ((**i).value() != f->value()) {
         *i = f;
-        if (f->attributes().composite)
+        if (f->attributes().composite != 0u) {
           f->definition().expand_composites(f->value(), this);
+        }
       }
     } else {
       features_.push_back(f);
-      if (f->attributes().composite)
+      if (f->attributes().composite != 0u) {
         f->definition().expand_composites(f->value(), this);
+      }
     }
   } else {
-    if (find(*f) == end())
+    if (find(*f) == end()) {
       features_.push_back(f);
+    }
   }
 
   return *this;
@@ -60,9 +64,10 @@ feature_set::join(feature* f)
 const feature&
 feature_set::get(const char* name_) const
 {
-  const_iterator f = find(name_);
-  if (f == features_.end())
+  auto f = find(name_);
+  if (f == features_.end()) {
     throw runtime_error("feature '" + string(name_) + "not founded");
+  }
 
   return **f;
 }
@@ -70,7 +75,7 @@ feature_set::get(const char* name_) const
 feature_set::iterator
 feature_set::deconstify(const_iterator i)
 {
-  iterator result = features_.begin();
+  auto result = features_.begin();
   std::advance(
     result, std::distance<feature_set::const_iterator>(features_.begin(), i));
   return result;
@@ -91,10 +96,11 @@ feature_set::find(const char* name) const
 feature_set::const_iterator
 feature_set::find(const_iterator from, const char* name) const
 {
-  for (features_t::const_iterator i = from, last = features_.end(); i != last;
-       ++i)
-    if ((**i).definition().name() == name)
+  for (auto i = from, last = features_.end(); i != last; ++i) {
+    if ((**i).definition().name() == name) {
       return i;
+    }
+  }
 
   return features_.end();
 }
@@ -108,20 +114,21 @@ feature_set::find(iterator from, const char* name)
 const feature*
 feature_set::find(const char* name, const char* value) const
 {
-  for (features_t::const_iterator i = features_.begin(), last = features_.end();
-       i != last;
-       ++i)
-    if ((**i).definition().name() == name && (**i).value() == value)
-      return *i;
+  for (auto feature : features_) {
+    if ((*feature).definition().name() == name && (*feature).value() == value) {
+      return feature;
+    }
+  }
 
-  return 0;
+  return nullptr;
 }
 
 void
 feature_set::join_impl(feature_set* lhs, const feature_set& rhs) const
 {
-  for (const_iterator i = rhs.begin(), last = rhs.end(); i != last; ++i)
-    lhs->join(*i);
+  for (auto rh : rhs) {
+    lhs->join(rh);
+  }
 }
 
 feature_set*
@@ -152,23 +159,26 @@ feature_set::clone() const
 void
 feature_set::copy_propagated(const feature_set& v)
 {
-  for (const_iterator i = v.begin(), last = v.end(); i != last; ++i) {
-    if ((*i)->attributes().propagated)
-      join(*i);
+  for (auto i : v) {
+    if (i->attributes().propagated != 0u) {
+      join(i);
+    }
   }
 }
 
 feature_set::const_iterator
 feature_set::find(const feature& f) const
 {
-  for (const_iterator i = find(f.name()), last = end(); i != last;) {
-    if (**i == f)
+  for (auto i = find(f.name()), last = end(); i != last;) {
+    if (**i == f) {
       return i;
+    }
 
-    if (f.attributes().free)
+    if (f.attributes().free != 0u) {
       i = find(++i, f.name());
-    else
+    } else {
       break;
+    }
   }
 
   return end();
@@ -177,14 +187,16 @@ feature_set::find(const feature& f) const
 feature_set::const_iterator
 feature_set::contains(const feature& f) const
 {
-  for (const_iterator i = find(f.name()), last = end(); i != last;) {
-    if ((**i).contains(f))
+  for (auto i = find(f.name()), last = end(); i != last;) {
+    if ((**i).contains(f)) {
       return i;
+    }
 
-    if (f.attributes().free)
+    if (f.attributes().free != 0u) {
       i = find(++i, f.name());
-    else
+    } else {
       break;
+    }
   }
 
   return end();
@@ -193,10 +205,11 @@ feature_set::contains(const feature& f) const
 void
 set_path_data(feature_set* f, const basic_meta_target* t)
 {
-  typedef feature_set::iterator iter;
-  for (iter i = f->begin(), last = f->end(); i != last; ++i) {
-    if ((**i).attributes().path)
-      (**i).get_path_data().target_ = t;
+  using iter = feature_set::iterator;
+  for (auto& i : *f) {
+    if ((*i).attributes().path != 0u) {
+      (*i).get_path_data().target_ = t;
+    }
   }
 }
 
@@ -206,7 +219,7 @@ extract_dependency_like_sources(sources_decl& result,
                                 const basic_meta_target& relative_to_target,
                                 const char* feature_name)
 {
-  feature_set::const_iterator i = fs.find(feature_name);
+  auto i = fs.find(feature_name);
   while (i != fs.end()) {
     source_decl sd_copy = (**i).get_dependency_data().source_;
 
@@ -257,16 +270,19 @@ extract_uses(sources_decl& result,
 bool
 feature_set::operator==(const feature_set& rhs) const
 {
-  if (this == &rhs)
+  if (this == &rhs) {
     return true;
+  }
 
-  if (size() != rhs.size())
+  if (size() != rhs.size()) {
     return false;
+  }
 
-  for (features_t::const_iterator i = rhs.begin(), last = rhs.end(); i != last;
-       ++i)
-    if (find(**i) == end())
+  for (auto rh : rhs) {
+    if (find(*rh) == end()) {
       return false;
+    }
+  }
 
   return true;
 }
@@ -274,30 +290,34 @@ feature_set::operator==(const feature_set& rhs) const
 bool
 feature_set::compatible_with(const feature_set& rhs) const
 {
-  if (this == &rhs)
+  if (this == &rhs) {
     return true;
+  }
 
   const feature_set* rhs_p = &rhs;
   const feature_set* lhs_p = this;
 
-  if (size() < rhs.size())
+  if (size() < rhs.size()) {
     swap(lhs_p, rhs_p);
+  }
 
-  for (features_t::const_iterator i = lhs_p->begin(), last = lhs_p->end();
-       i != last;
-       ++i)
-    if (rhs_p->find(**i) == rhs_p->end()) {
-      if ((**i).attributes().free || (**i).attributes().generated ||
-          (**i).attributes().undefined_ || (**i).attributes().no_defaults) {
+  for (auto i : *lhs_p) {
+    if (rhs_p->find(*i) == rhs_p->end()) {
+      if (((*i).attributes().free != 0u) ||
+          ((*i).attributes().generated != 0u) ||
+          ((*i).attributes().undefined_ != 0u) ||
+          ((*i).attributes().no_defaults != 0u)) {
         return false;
-      } else {
-        if (rhs_p->find((**i).name()) == rhs_p->end()) {
-          if ((**i).definition().get_default() != (**i).value())
-            return false;
-        } else
+      }
+      if (rhs_p->find((*i).name()) == rhs_p->end()) {
+        if ((*i).definition().get_default() != (*i).value()) {
           return false;
+        }
+      } else {
+        return false;
       }
     }
+  }
 
   return true;
 }
@@ -312,12 +332,15 @@ feature_set::clear()
 bool
 feature_set::contains(const feature_set& rhs) const
 {
-  if (this == &rhs)
+  if (this == &rhs) {
     return true;
+  }
 
-  for (const_iterator i = rhs.begin(), last = rhs.end(); i != last; ++i)
-    if (find(**i) == end())
+  for (auto rh : rhs) {
+    if (find(*rh) == end()) {
       return false;
+    }
+  }
 
   return true;
 }
@@ -339,12 +362,15 @@ parse_simple_set(const std::string& s, feature_registry& r)
                                         v_i = feature_values.begin(),
                                         last = feature_names.end();
          i != last;
-         ++i, ++v_i)
+         ++i, ++v_i) {
       result->join(i->c_str(), v_i->c_str());
+    }
 
     return result;
-  } else
+  }
+  {
     throw std::runtime_error("Can't parse simple feature set from '" + s + "'");
+  }
 }
 
 static bool
@@ -362,7 +388,7 @@ less_by_name(const feature* lhs, const feature* rhs)
 static void
 dump_value(std::ostream& s, const feature& f)
 {
-  if (f.attributes().path) {
+  if (f.attributes().path != 0u) {
     const feature::path_data& pd = f.get_path_data();
     location_t l(f.value());
     if (!l.has_root_name()) {
@@ -371,16 +397,19 @@ dump_value(std::ostream& s, const feature& f)
     }
 
     s << l;
-  } else if (f.attributes().dependency) {
+  } else if (f.attributes().dependency != 0u) {
     const feature::dependency_data& dd = f.get_dependency_data();
     s << dd.source_.target_path();
-    if (!dd.source_.target_name().empty())
+    if (!dd.source_.target_name().empty()) {
       s << "//" << dd.source_.target_name();
+    }
 
-    if (f.get_path_data().target_ != NULL)
+    if (f.get_path_data().target_ != nullptr) {
       s << " " << f.get_path_data().target_->location();
-  } else
+    }
+  } else {
     s << f.value();
+  }
 }
 
 static void
@@ -389,19 +418,19 @@ dump_for_hash(std::ostream& s, const feature& f)
   s << '<' << f.name() << '>';
   dump_value(s, f);
 
-  if (f.subfeatures().empty())
+  if (f.subfeatures().empty()) {
     return;
+  }
 
-  typedef vector<const subfeature*> subfeatures_t;
+  using subfeatures_t = vector<const hammer::subfeature*>;
   subfeatures_t subfeatures;
-  for (feature::subfeatures_t::const_iterator i = f.subfeatures().begin(),
-                                              last = f.subfeatures().end();
-       i != last;
-       ++i)
-    subfeatures.push_back(*i);
+  for (auto i : f.subfeatures()) {
+    subfeatures.push_back(i);
+  }
 
-  if (subfeatures.empty())
+  if (subfeatures.empty()) {
     return;
+  }
 
   std::sort(subfeatures.begin(), subfeatures.end(), &subf_less_by_name);
   bool first = true;
@@ -429,15 +458,17 @@ dump_for_hash(std::ostream& s, const feature_set& fs, bool dump_all)
     return;
   }
 
-  typedef vector<const feature*> features_t;
+  using features_t = vector<const hammer::feature*>;
   features_t features;
-  for (feature_set::const_iterator i = fs.begin(), last = fs.end(); i != last;
-       ++i) {
+  for (auto f : fs) {
     if (dump_all ||
-        !((**i).attributes().free || (**i).attributes().incidental ||
-          (**i).attributes().path || (**i).attributes().dependency ||
-          (**i).attributes().generated || (**i).attributes().composite)) {
-      features.push_back(*i);
+        !(((*f).attributes().free != 0u) ||
+          ((*f).attributes().incidental != 0u) ||
+          ((*f).attributes().path != 0u) ||
+          ((*f).attributes().dependency != 0u) ||
+          ((*f).attributes().generated != 0u) ||
+          ((*f).attributes().composite != 0u))) {
+      features.push_back(f);
     }
   }
 
@@ -447,10 +478,11 @@ dump_for_hash(std::ostream& s, const feature_set& fs, bool dump_all)
   for (features_t::const_iterator i = features.begin(), last = features.end();
        i != last;
        ++i) {
-    if (!first)
+    if (!first) {
       s << (dump_all ? '\n' : ' ');
-    else
+    } else {
       first = false;
+    }
 
     dump_for_hash(s, **i);
   }
@@ -467,42 +499,44 @@ dump_for_hash(const feature_set& fs, bool dump_all)
 void
 feature_set::erase_all(const std::string& feature_name)
 {
-  for (features_t::iterator i = features_.begin(); i != features_.end();) {
-    if ((**i).name() == feature_name)
+  for (auto i = features_.begin(); i != features_.end();) {
+    if ((**i).name() == feature_name) {
       i = features_.erase(i);
-    else
+    } else {
       ++i;
+    }
   }
 
   has_undefined_ = false;
   const feature_def& def = fr_->get_def(feature_name);
-  if (def.attributes().undefined_) {
+  if (def.attributes().undefined_ != 0u) {
     for (features_t::const_iterator i = features_.begin(),
                                     last = features_.end();
          i != last;
-         ++i)
-      if ((**i).attributes().undefined_) {
+         ++i) {
+      if ((**i).attributes().undefined_ != 0u) {
         has_undefined_ = true;
         break;
       }
+    }
   }
 }
 
 void
 apply_build_request(feature_set& dest, const feature_set& build_request)
 {
-  for (feature_set::iterator i = dest.begin(), last = dest.end(); i != last;
-       ++i)
-    if ((**i).name() == "use") {
-      const source_decl old = (**i).get_dependency_data().source_;
+  for (auto& i : dest) {
+    if ((*i).name() == "use") {
+      const source_decl old = (*i).get_dependency_data().source_;
       feature_set& new_props =
-        old.properties() == NULL
+        old.properties() == nullptr
           ? *build_request.clone()
           : old.properties()->clone()->join(build_request);
-      (**i).set_dependency_data(
+      (*i).set_dependency_data(
         source_decl(
           old.target_path(), old.target_name(), old.type(), &new_props),
-        (**i).get_path_data().target_);
+        (*i).get_path_data().target_);
     }
+  }
 }
-}
+} // namespace hammer

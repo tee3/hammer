@@ -9,13 +9,10 @@ struct build_environment::impl_t
 {
   typedef boost::ptr_unordered_map<std::ostream*, std::ostream> streams_t;
 
-  impl_t()
-    : should_buffer_(false)
-  {
-  }
+  impl_t() {}
 
   boost::mutex m_;
-  bool should_buffer_;
+  bool should_buffer_{ false };
   streams_t streams_;
   std::stringstream buffer_;
 };
@@ -38,10 +35,9 @@ build_environment::begin_use_output_stream() const
     std::ostream* s = new std::stringstream;
     impl_->streams_.insert(s, s);
     return *s;
-  } else {
-    impl_->should_buffer_ = true;
-    return output_stream();
   }
+  impl_->should_buffer_ = true;
+  return output_stream();
 }
 
 void
@@ -53,9 +49,9 @@ build_environment::end_use_output_stream(std::ostream& s) const
     output_stream() << impl_->buffer_.str();
     impl_->buffer_.str(std::string());
   } else {
-    impl_->buffer_ << static_cast<std::stringstream&>(s).str();
+    impl_->buffer_ << dynamic_cast<std::stringstream&>(s).str();
     assert(impl_->streams_.find(&s) != impl_->streams_.end());
     impl_->streams_.erase(&s);
   }
 }
-}
+} // namespace hammer

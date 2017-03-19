@@ -39,7 +39,7 @@ private:
   feature(const feature_def* def, const std::string& value);
   feature(const feature_def* def,
           const std::string& value,
-          const subfeatures_t& subfeatures);
+          subfeatures_t subfeatures);
 
   bool equal_without_subfeatures(const feature& rhs) const;
 };

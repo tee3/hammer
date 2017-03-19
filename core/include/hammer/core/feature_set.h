@@ -24,7 +24,7 @@ public:
   const_iterator end() const { return features_.end(); }
   iterator begin() { return features_.begin(); }
   iterator end() { return features_.end(); }
-  const feature& get(const char* name) const; // throw if not found
+  const feature& get(const char* name_) const; // throw if not found
   const feature* find(const char* name, const char* value) const;
   const_iterator find(const char* name) const; // find first occurrence
   const_iterator find(const std::string& name) const
@@ -48,9 +48,9 @@ public:
   feature_set* join(const feature_set& rhs) const;
   feature_set& join(feature* f);
   feature_set& join(const char* name, const char* value);
-  feature_set& join(const feature_set& v);
+  feature_set& join(const feature_set& rhs);
   feature_set* clone() const;
-  void copy_propagated(const feature_set& rhs);
+  void copy_propagated(const feature_set& v);
   void erase_all(const std::string& feature_name);
   size_t size() const { return features_.size(); }
   bool empty() const { return features_.empty(); }

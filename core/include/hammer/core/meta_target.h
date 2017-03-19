@@ -21,7 +21,7 @@ public:
 
 protected:
   virtual void instantiate_impl(const main_target* owner,
-                                const feature_set& build_request,
+                                const feature_set& build_request_param,
                                 std::vector<basic_target*>* result,
                                 feature_set* usage_requirements) const;
 

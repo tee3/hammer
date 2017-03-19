@@ -5,30 +5,33 @@
 #include <hammer/core/feature_def.h>
 #include <hammer/core/feature_set.h>
 #include <stdexcept>
+#include <utility>
 
 using namespace std;
 
 namespace hammer {
 
-feature_def::feature_def(const std::string& name,
-                         const legal_values_t& legal_values,
+feature_def::feature_def(std::string name,
+                         legal_values_t legal_values,
                          feature_attributes attributes)
-  : name_(name)
-  , legal_values_(legal_values)
+  : name_(std::move(name))
+  , legal_values_(std::move(legal_values))
   , attributes_(attributes)
 {
-  if (!legal_values_.empty())
+  if (!legal_values_.empty()) {
     default_ = legal_values_[0];
+  }
 }
 
 void
 feature_def::set_default(const std::string& v)
 {
   if (legal_values_.end() ==
-      std::find(legal_values_.begin(), legal_values_.end(), v))
+      std::find(legal_values_.begin(), legal_values_.end(), v)) {
     throw std::runtime_error("The value '" + v +
                              "' is not in legal values list for feature '" +
                              name_ + "'.");
+  }
 
   default_ = v;
 }
@@ -37,13 +40,15 @@ void
 feature_def::extend_legal_values(const std::string& new_legal_value)
 {
   if (find(legal_values_.begin(), legal_values_.end(), new_legal_value) !=
-      legal_values_.end())
+      legal_values_.end()) {
     throw std::runtime_error("Legal value '" + new_legal_value +
                              "' already registred for feature '" + name_ + "'");
+  }
 
   legal_values_.push_back(new_legal_value);
-  if (legal_values_.size() == 1)
+  if (legal_values_.size() == 1) {
     default_ = legal_values_[0];
+  }
 }
 
 bool
@@ -59,33 +64,36 @@ feature_def::compose(const std::string& value, feature_set* c)
   assert(attributes().composite);
 
   components_t::const_iterator i = components_.find(value);
-  if (i != components_.end())
+  if (i != components_.end()) {
     throw std::runtime_error("Feature components already defined.");
+  }
 
   components_.insert(make_pair(value, component_t(c, 0)));
 }
 
 void
-feature_def::expand_composites(const std::string value, feature_set* fs) const
+feature_def::expand_composites(const std::string& value, feature_set* fs) const
 {
   assert(attributes().composite);
-  components_t::const_iterator i = components_.find(value);
-  if (i == components_.end())
+  auto i = components_.find(value);
+  if (i == components_.end()) {
     throw std::runtime_error("The feature def '" + name() +
                              "' doesn't have composite value '" + value + "'.");
+  }
 
   for (feature_set::const_iterator f = i->second.components_->begin(),
                                    last = i->second.components_->end();
        f != last;
-       ++f)
+       ++f) {
     fs->join(*f);
+  }
 }
 
 subfeature_def&
 feature_def::add_subfeature(const std::string& subfeature_name)
 {
-  if (attributes().free || attributes().dependency || attributes().path ||
-      attributes().generated) {
+  if ((attributes().free != 0u) || (attributes().dependency != 0u) ||
+      (attributes().path != 0u) || (attributes().generated != 0u)) {
     throw std::runtime_error("Feature '" + subfeature_name +
                              "' cannot have subfeatures.");
   }
@@ -93,10 +101,11 @@ feature_def::add_subfeature(const std::string& subfeature_name)
   const auto r = subfeatures_.insert(make_pair(
     subfeature_name,
     unique_ptr<subfeature_def>(new subfeature_def(*this, subfeature_name))));
-  if (!r.second)
+  if (!r.second) {
     throw std::runtime_error("Subfeature '" + subfeature_name +
                              "' already defined in feature_def '" + name() +
                              "'.");
+  }
 
   return *r.first->second;
 }
@@ -104,23 +113,26 @@ feature_def::add_subfeature(const std::string& subfeature_name)
 const subfeature_def*
 feature_def::find_subfeature(const std::string& name) const
 {
-  subfeatures_t::const_iterator i = subfeatures_.find(name);
-  if (i == subfeatures_.end())
-    return NULL;
-  else
+  auto i = subfeatures_.find(name);
+  if (i == subfeatures_.end()) {
+    return nullptr;
+  }
+  {
     return i->second.get();
+  }
 }
 
 const subfeature_def&
 feature_def::get_subfeature(const std::string& subfeature_name) const
 {
   const subfeature_def* sd = find_subfeature(subfeature_name);
-  if (sd == NULL)
+  if (sd == nullptr) {
     throw std::runtime_error("Subfeature '" + subfeature_name +
                              "' not founded in feature definition '" + name() +
                              "'");
-  else
+  } else {
     return *sd;
+  }
 }
 
 subfeature_def&
@@ -134,17 +146,14 @@ const subfeature_def*
 feature_def::find_subfeature_for_value(const std::string& feature_value,
                                        const std::string& value) const
 {
-  for (subfeatures_t::const_iterator i = subfeatures_.begin(),
-                                     last = subfeatures_.end();
-       i != last;
-       ++i)
-    if (i->second->is_legal_value(feature_value, value))
-      return i->second.get();
+  for (const auto& subfeature : subfeatures_) {
+    if (subfeature.second->is_legal_value(feature_value, value)) {
+      return subfeature.second.get();
+    }
+  }
 
-  return NULL;
+  return nullptr;
 }
 
-feature_def::~feature_def()
-{
-}
-}
+feature_def::~feature_def() = default;
+} // namespace hammer

@@ -11,12 +11,13 @@
 #include <hammer/core/type_registry.h>
 #include <hammer/core/types.h>
 #include <stdexcept>
+#include <utility>
 
 namespace hammer {
 
 searched_lib_main_target::searched_lib_main_target(const basic_meta_target* mt,
                                                    const std::string& name,
-                                                   const std::string& lib_name,
+                                                   std::string lib_name,
                                                    const feature_set* props,
                                                    const target_type& t)
   : main_target(mt,
@@ -24,7 +25,7 @@ searched_lib_main_target::searched_lib_main_target(const basic_meta_target* mt,
                 &mt->get_engine()->get_type_registry().get(types::SEARCHED_LIB),
                 props)
   , type_(&t)
-  , lib_name_(lib_name)
+  , lib_name_(std::move(lib_name))
 {
 }
 
@@ -45,4 +46,4 @@ searched_lib_main_target::generate() const
 
   return std::vector<boost::intrusive_ptr<hammer::build_node>>(1, result);
 }
-}
+} // namespace hammer

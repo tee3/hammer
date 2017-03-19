@@ -6,9 +6,10 @@
 namespace hammer {
 
 void
-shared_lib_dirs_writer::write_impl(std::ostream& output,
-                                   const build_node& node,
-                                   const build_environment& environment) const
+shared_lib_dirs_writer::write_impl(
+  std::ostream& output,
+  const build_node& node,
+  const build_environment& /*environment*/) const
 {
   build_node::sources_t collected_nodes;
   std::set<const build_node*> visited_nodes;
@@ -26,15 +27,16 @@ shared_lib_dirs_writer::write_impl(std::ostream& output,
                                              last = collected_nodes.end();
        i != last;
        ++i) {
-    if (is_first)
+    if (is_first) {
       is_first = false;
-    else
+    } else {
 #if defined(_WIN32)
       output << ';';
 #else
       output << ':';
-#endif
+
+}#endif
     output << i->source_target_->location().string();
   }
 }
-}
+} // namespace hammer

@@ -36,33 +36,30 @@ void
 unix_libraries_argument_writer::write_impl(
   std::ostream& output,
   const build_node& node,
-  const build_environment& environment) const
+  const build_environment& /*environment*/) const
 {
   // bool first = true; // unused variable first
   output << "-Wl,--start-group ";
-  for (build_node::sources_t::const_iterator i = node.sources_.begin(),
-                                             last = node.sources_.end();
-       i != last;
-       ++i) {
-    if (i->source_target_->type().equal_or_derived_from(
-          *searched_static_lib_type_))
-      output << " -Wl,-Bstatic -l" << i->source_target_->name();
-    else if (i->source_target_->type().equal_or_derived_from(
-               *searched_shared_lib_type_))
-      output << " -Wl,-Bdynamic -l" << i->source_target_->name();
-    else if (i->source_target_->type().equal_or_derived_from(
-               *static_lib_type_) ||
-             i->source_target_->type().equal_or_derived_from(
-               *shared_lib_type_) ||
-             i->source_target_->type().equal_or_derived_from(
-               *import_lib_type_)) {
+  for (const auto& source : node.sources_) {
+    if (source.source_target_->type().equal_or_derived_from(
+          *searched_static_lib_type_)) {
+      output << " -Wl,-Bstatic -l" << source.source_target_->name();
+    } else if (source.source_target_->type().equal_or_derived_from(
+                 *searched_shared_lib_type_)) {
+      output << " -Wl,-Bdynamic -l" << source.source_target_->name();
+    } else if (source.source_target_->type().equal_or_derived_from(
+                 *static_lib_type_) ||
+               source.source_target_->type().equal_or_derived_from(
+                 *shared_lib_type_) ||
+               source.source_target_->type().equal_or_derived_from(
+                 *import_lib_type_)) {
       location_t source_path =
-        i->source_target_->location() / i->source_target_->name();
+        source.source_target_->location() / source.source_target_->name();
       source_path.normalize();
-      output << " \"" << source_path.string() << '"';
+      output << R"( ")" << source_path.string() << '"';
     }
   }
 
   output << " -Wl,--end-group ";
 }
-}
+} // namespace hammer

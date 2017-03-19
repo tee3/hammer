@@ -24,4 +24,4 @@ batched_cmdline_action::execute_impl(const build_node& node,
   //   target_tag(node, environment));
   return result;
 }
-}
+} // namespace hammer

@@ -46,4 +46,4 @@ testing_compile_fail_meta_target::instantiate_impl(
 
   base::instantiate_impl(owner, *new_build_request, result, usage_requirements);
 }
-}
+} // namespace hammer

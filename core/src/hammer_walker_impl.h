@@ -10,7 +10,7 @@ void*
 hammer_rule_call(void* context,
                  const char* rule_name,
                  int local,
-                 void* args_list);
+                 void* args_list_in);
 void
 hammer_delete_rule_result(void* result);
 void*
@@ -102,7 +102,7 @@ hammer_make_feature_set(void* context);
 void
 hammer_add_feature_to_feature_set(void* feature_set, void* feature);
 void
-hammer_feature_set_dependency_data(void* f, void* sd);
+hammer_feature_set_dependency_data(void* f, void* sd_);
 void
 hammer_on_nested_rule_enter(void* context);
 void

@@ -29,16 +29,14 @@ pch_generator::construct(
   const main_target& owner) const
 {
   // leave only CPP C H targets - discard others
-  typedef std::vector<boost::intrusive_ptr<build_node>> sources_t;
+  using sources_t = std::vector<boost::intrusive_ptr<build_node>>;
   sources_t modified_sources;
-  for (sources_t::const_iterator i = sources.begin(), last = sources.end();
-       i != last;
-       ++i) {
-    const target_type* t = (**i).targeting_type_;
+  for (const auto& source : sources) {
+    const target_type* t = (*source).targeting_type_;
     if (t->equal_or_derived_from(c_type_) ||
         t->equal_or_derived_from(cpp_type_) ||
         t->equal_or_derived_from(h_type_)) {
-      modified_sources.push_back(*i);
+      modified_sources.push_back(source);
     }
   }
 
@@ -49,4 +47,4 @@ pch_generator::construct(
                               composite_target_name,
                               owner);
 }
-}
+} // namespace hammer

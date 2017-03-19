@@ -35,26 +35,24 @@ product_argument_writer::write_impl(std::ostream& output,
                                     const build_node& node,
                                     const build_environment& environment) const
 {
-  for (build_node::targets_t::const_iterator i = node.products_.begin(),
-                                             last = node.products_.end();
-       i != last;
-       ++i) {
-    if (accept(**i)) {
+  for (auto product : node.products_) {
+    if (accept(*product)) {
       switch (output_strategy_) {
         case output_strategy::RELATIVE_TO_MAIN_TARGET: {
           location_t product_path =
-            relative_path((**i).get_main_target()->intermediate_dir(),
-                          (**i).get_main_target()->location()) /
-            (**i).name();
+            relative_path((*product).get_main_target()->intermediate_dir(),
+                          (*product).get_main_target()->location()) /
+            (*product).name();
           output << product_path.string<std::string>();
           break;
         }
 
         case output_strategy::RELATIVE_TO_WORKING_DIR: {
           const location_t full_product_path =
-            (**i).get_main_target()->intermediate_dir() / (**i).name();
+            (*product).get_main_target()->intermediate_dir() /
+            (*product).name();
           const location_t product_path = relative_path(
-            full_product_path, environment.working_directory(**i));
+            full_product_path, environment.working_directory(*product));
 
           output << product_path.string();
           break;
@@ -62,7 +60,8 @@ product_argument_writer::write_impl(std::ostream& output,
 
         case output_strategy::FULL_PATH: {
           const location_t full_product_path =
-            (**i).get_main_target()->intermediate_dir() / (**i).name();
+            (*product).get_main_target()->intermediate_dir() /
+            (*product).name();
           output << full_product_path.string();
 
           break;
@@ -70,9 +69,10 @@ product_argument_writer::write_impl(std::ostream& output,
 
         case output_strategy::FULL_UNC_PATH: {
           location_t product_path =
-            (**i).get_main_target()->intermediate_dir() / (**i).name();
+            (*product).get_main_target()->intermediate_dir() /
+            (*product).name();
           product_path.normalize();
-          output << "\\\\?\\" << product_path.string<std::string>();
+          output << R"(\\?\)" << product_path.string<std::string>();
           break;
         }
 
@@ -84,4 +84,4 @@ product_argument_writer::write_impl(std::ostream& output,
     }
   }
 }
-}
+} // namespace hammer

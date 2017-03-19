@@ -21,8 +21,7 @@ add_testing_generators(engine& e, generator_registry& gr)
 {
   generator::consumable_types_t source;
   generator::producable_types_t target;
-  source.push_back(
-    generator::consumable_type(e.get_type_registry().get(types::EXE), 1, 0));
+  source.emplace_back(e.get_type_registry().get(types::EXE), 1, nullptr);
   // FIXME: I add those here because in case when we specify <library>/foo for
   // testing project to be added to all tests
   //        but this will also add static/shared lib to testing run generator,
@@ -31,15 +30,11 @@ add_testing_generators(engine& e, generator_registry& gr)
   //        testing_run target
   //        I need to find a better way to deal with unimportant sources or with
   //        project features propagation
-  source.push_back(
-    generator::consumable_type(e.get_type_registry().get(types::STATIC_LIB)));
-  source.push_back(
-    generator::consumable_type(e.get_type_registry().get(types::SHARED_LIB)));
+  source.emplace_back(e.get_type_registry().get(types::STATIC_LIB));
+  source.emplace_back(e.get_type_registry().get(types::SHARED_LIB));
 
-  target.push_back(
-    generator::produced_type(e.get_type_registry().get(types::TESTING_OUTPUT)));
-  target.push_back(generator::produced_type(
-    e.get_type_registry().get(types::TESTING_RUN_PASSED)));
+  target.emplace_back(e.get_type_registry().get(types::TESTING_OUTPUT));
+  target.emplace_back(e.get_type_registry().get(types::TESTING_RUN_PASSED));
   unique_ptr<generator> g(
     new generator(e, "testing.run", source, target, true));
   g->include_composite_generators(true);
@@ -85,4 +80,4 @@ add_compile_fail_generator(engine& e,
     e, std::move(compile_generator), std::move(compile_action)));
   e.generators().insert(std::move(g));
 }
-}
+} // namespace hammer

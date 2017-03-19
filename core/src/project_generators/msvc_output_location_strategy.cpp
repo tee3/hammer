@@ -27,4 +27,4 @@ msvc_output_location_strategy::compute_output_location(
   return mt.get_project()->location() / ".hammer/vc80" /
          mt.get_meta_target()->name() / (variant_name + '-' + md5.to_string());
 }
-}
+} // namespace hammer

@@ -53,4 +53,4 @@ mksig_action::execute_impl(const build_node& node,
 
   return true;
 }
-}
+} // namespace hammer

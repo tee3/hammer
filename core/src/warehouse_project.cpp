@@ -10,7 +10,5 @@ warehouse_project::warehouse_project(engine& e,
 {
 }
 
-warehouse_project::~warehouse_project()
-{
-}
-}
+warehouse_project::~warehouse_project() = default;
+} // namespace hammer

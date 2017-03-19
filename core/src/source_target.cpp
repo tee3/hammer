@@ -2,15 +2,17 @@
 #include <hammer/core/engine.h>
 #include <hammer/core/source_target.h>
 
+#include <utility>
+
 namespace hammer {
 
 source_target::source_target(const main_target* mt,
-                             const location_t& l,
+                             location_t l,
                              const std::string& name,
                              const target_type* t,
                              const feature_set* f)
   : file_target(mt, name, t, f)
-  , location_(l)
+  , location_(std::move(l))
 {
 }
 
@@ -23,4 +25,4 @@ source_target::generate() const
   result->targeting_type_ = &this->type();
   return std::vector<boost::intrusive_ptr<build_node>>(1, result);
 }
-}
+} // namespace hammer

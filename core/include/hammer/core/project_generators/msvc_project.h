@@ -54,7 +54,7 @@ public:
                const std::string& solution_configuration_name,
                const boost::guid& uid = boost::guid::create());
 
-  void add_variant(boost::intrusive_ptr<const build_node> node);
+  void add_variant(const boost::intrusive_ptr<const build_node>& node);
   bool has_variant(const main_target* v) const;
   void generate();
   void write() const;
@@ -144,12 +144,12 @@ private:
   typedef std::vector<filter_t> files_t;
 
   engine* engine_;
-  mutable variants_t variants_;
-  files_t files_;
-  boost::guid uid_;
+  mutable variants_t variants_{};
+  files_t files_{};
+  boost::guid uid_{};
   std::string id_;
-  const basic_meta_target* meta_target_;
-  mutable dependencies_t dependencies_;
+  const basic_meta_target* meta_target_{};
+  mutable dependencies_t dependencies_{};
   location_t full_project_name_;
   location_t output_dir_;
   location_t project_output_dir_;

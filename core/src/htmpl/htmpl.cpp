@@ -12,8 +12,8 @@ using namespace std;
 namespace hammer {
 namespace types {
 const type_tag HTMPL("HTMPL");
-}
-}
+} // namespace types
+} // namespace hammer
 
 namespace hammer {
 
@@ -24,8 +24,9 @@ htmpl_rule(project& p, sources_decl& src)
 
   for (const source_decl& sd : src) {
     const string target_name = "#unnamed::htmpl." + sd.target_path();
-    auto_ptr<basic_meta_target> mt(new htmpl_meta_target(&p, target_name, sd));
-    p.add_target(mt);
+    unique_ptr<basic_meta_target> mt(
+      new htmpl_meta_target(&p, target_name, sd));
+    p.add_target(std::move(mt));
 
     result.push_back(source_decl(target_name, std::string(), nullptr, nullptr));
   }
@@ -49,4 +50,4 @@ install_htmpl(engine& e)
     boost::function<sources_decl(project&, sources_decl&)>(
       boost::bind(&htmpl_rule, _1, _2)));
 }
-}
+} // namespace hammer

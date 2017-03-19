@@ -33,8 +33,8 @@ gcc_toolset::gcc_install_data
 gcc_toolset::resolve_install_data(const location_t* toolset_home_,
                                   const std::string& version_id) const
 {
-  location_t toolset_home(toolset_home_ == NULL ? location_t()
-                                                : *toolset_home_);
+  location_t toolset_home(toolset_home_ == nullptr ? location_t()
+                                                   : *toolset_home_);
 
   gcc_install_data install_data;
   install_data.version_ = version_id;
@@ -48,8 +48,9 @@ gcc_toolset::resolve_install_data(const location_t* toolset_home_,
   }
 
   install_data.librarian_ = toolset_home / "ar";
-  if (!exists(install_data.librarian_))
+  if (!exists(install_data.librarian_)) {
     install_data.librarian_ = "ar";
+  }
 
   return install_data;
 }
@@ -60,8 +61,9 @@ gcc_toolset::init_impl(engine& e,
                        const location_t* toolset_home) const
 {
   feature_def& toolset_def = e.feature_registry().get_def("toolset");
-  if (!toolset_def.is_legal_value(name()))
+  if (!toolset_def.is_legal_value(name())) {
     toolset_def.extend_legal_values(name());
+  }
 
   gcc_install_data install_data(resolve_install_data(toolset_home, version_id));
   toolset_def.get_subfeature("version").extend_legal_values(
@@ -94,8 +96,8 @@ gcc_toolset::init_impl(engine& e,
   shared_ptr<free_feature_arg_writer> searched_lib_searched_dirs(
     new free_feature_arg_writer("searched_lib_searched_dirs",
                                 e.feature_registry().get_def("search"),
-                                string("-L \""),
-                                string("\"")));
+                                string(R"(-L ")"),
+                                string(R"(")")));
 
   shared_ptr<fs_argument_writer> cflags(
     new fs_argument_writer("cflags", e.feature_registry()));
@@ -136,7 +138,7 @@ gcc_toolset::init_impl(engine& e,
                                 e.feature_registry().get_def("archiveflags")));
 
   shared_ptr<free_feature_arg_writer> includes(new free_feature_arg_writer(
-    "includes", e.feature_registry().get_def("include"), "-I\"", "\""));
+    "includes", e.feature_registry().get_def("include"), R"(-I")", R"(")"));
   shared_ptr<free_feature_arg_writer> defines(new free_feature_arg_writer(
     "defines", e.feature_registry().get_def("define"), "-D"));
 
@@ -149,9 +151,9 @@ gcc_toolset::init_impl(engine& e,
                                  e.get_type_registry().get(types::C),
                                  /*exact_type=*/false,
                                  source_argument_writer::FULL_PATH));
-    cmdline_builder obj_cmd(install_data.compiler_.string() +
-                            " -x c -c $(cflags) $(user_c_flags) $(includes) "
-                            "$(defines) -o \"$(obj_product)\" $(c_input)");
+    cmdline_builder obj_cmd(
+      install_data.compiler_.string() +
+      R"lit( -x c -c $(cflags) $(user_c_flags) $(includes) $(defines) -o "$(obj_product)" $(c_input))lit");
     obj_cmd += cflags;
     obj_cmd += user_c_flags;
     obj_cmd += c_input;
@@ -163,10 +165,8 @@ gcc_toolset::init_impl(engine& e,
     *obj_action += obj_cmd;
     generator::consumable_types_t source;
     generator::producable_types_t target;
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::C), 1, 0));
-    target.push_back(
-      generator::produced_type(e.get_type_registry().get(types::OBJ)));
+    source.emplace_back(e.get_type_registry().get(types::C), 1, nullptr);
+    target.emplace_back(e.get_type_registry().get(types::OBJ));
     unique_ptr<generator> g(new generator(e,
                                           generator_prefix + ".compiler.c",
                                           source,
@@ -202,10 +202,9 @@ gcc_toolset::init_impl(engine& e,
                                  e.get_type_registry().get(types::CPP),
                                  /*exact_type=*/false,
                                  source_argument_writer::FULL_PATH));
-    cmdline_builder obj_cmd(install_data.compiler_.string() +
-                            " -c -ftemplate-depth-128 $(cflags) $(cxxflags) "
-                            "$(user_cxx_flags) $(includes) $(defines) -o "
-                            "\"$(obj_product)\" $(cpp_input)");
+    cmdline_builder obj_cmd(
+      install_data.compiler_.string() +
+      R"lit( -c -ftemplate-depth-128 $(cflags) $(cxxflags) $(user_cxx_flags) $(includes) $(defines) -o "$(obj_product)" $(cpp_input))lit");
     obj_cmd += cflags;
     obj_cmd += cxxflags;
     obj_cmd += user_cxx_flags;
@@ -218,10 +217,8 @@ gcc_toolset::init_impl(engine& e,
     *obj_action += obj_cmd;
     generator::consumable_types_t source;
     generator::producable_types_t target;
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::CPP), 1, 0));
-    target.push_back(
-      generator::produced_type(e.get_type_registry().get(types::OBJ)));
+    source.emplace_back(e.get_type_registry().get(types::CPP), 1, nullptr);
+    target.emplace_back(e.get_type_registry().get(types::OBJ));
     unique_ptr<generator> g(new generator(e,
                                           generator_prefix + ".compiler.cpp",
                                           source,
@@ -271,22 +268,19 @@ gcc_toolset::init_impl(engine& e,
 
     generator::consumable_types_t source;
     generator::producable_types_t target;
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::OBJ), 0, 0));
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::H), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::STATIC_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SHARED_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::HEADER_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SEARCHED_STATIC_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SEARCHED_SHARED_LIB), 0, 0));
-    target.push_back(generator::produced_type(
-      e.get_type_registry().get(types::SHARED_LIB), true));
+    source.emplace_back(e.get_type_registry().get(types::OBJ), 0, nullptr);
+    source.emplace_back(e.get_type_registry().get(types::H), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::STATIC_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SHARED_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::HEADER_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SEARCHED_STATIC_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SEARCHED_SHARED_LIB), 0, nullptr);
+    target.emplace_back(e.get_type_registry().get(types::SHARED_LIB), true);
 
     unique_ptr<generator> g(
       new exe_and_shared_lib_generator(e,
@@ -332,22 +326,19 @@ gcc_toolset::init_impl(engine& e,
 
     generator::consumable_types_t source;
     generator::producable_types_t target;
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::OBJ), 0, 0));
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::H), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::STATIC_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SHARED_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SEARCHED_STATIC_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SEARCHED_SHARED_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::HEADER_LIB), 0, 0));
-    target.push_back(
-      generator::produced_type(e.get_type_registry().get(types::EXE)));
+    source.emplace_back(e.get_type_registry().get(types::OBJ), 0, nullptr);
+    source.emplace_back(e.get_type_registry().get(types::H), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::STATIC_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SHARED_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SEARCHED_STATIC_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SEARCHED_SHARED_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::HEADER_LIB), 0, nullptr);
+    target.emplace_back(e.get_type_registry().get(types::EXE));
     unique_ptr<generator> g(
       new exe_and_shared_lib_generator(e,
                                        generator_prefix + ".linker.exe",
@@ -379,22 +370,19 @@ gcc_toolset::init_impl(engine& e,
     *static_lib_action += static_lib_cmd;
     generator::consumable_types_t source;
     generator::producable_types_t target;
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::OBJ), 0, 0));
-    source.push_back(
-      generator::consumable_type(e.get_type_registry().get(types::H), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::STATIC_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SHARED_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::HEADER_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SEARCHED_STATIC_LIB), 0, 0));
-    source.push_back(generator::consumable_type(
-      e.get_type_registry().get(types::SEARCHED_SHARED_LIB), 0, 0));
-    target.push_back(generator::produced_type(
-      e.get_type_registry().get(types::STATIC_LIB), true));
+    source.emplace_back(e.get_type_registry().get(types::OBJ), 0, nullptr);
+    source.emplace_back(e.get_type_registry().get(types::H), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::STATIC_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SHARED_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::HEADER_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SEARCHED_STATIC_LIB), 0, nullptr);
+    source.emplace_back(
+      e.get_type_registry().get(types::SEARCHED_SHARED_LIB), 0, nullptr);
+    target.emplace_back(e.get_type_registry().get(types::STATIC_LIB), true);
     unique_ptr<generator> g(
       new static_lib_generator(e,
                                generator_prefix + ".linker.static_lib",
@@ -415,4 +403,4 @@ gcc_toolset::autoconfigure(engine& e) const
     init_impl(e, "system", &l);
   }
 }
-}
+} // namespace hammer

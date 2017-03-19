@@ -19,7 +19,7 @@ protected:
   virtual bool is_cachable(const main_target* owner) const { return false; }
 
 private:
-  mutable main_target* last_constructed_main_target_;
+  mutable main_target* last_constructed_main_target_{};
 };
 }
 #endif // h_f3982538_ce63_4953_bc69_8d1916384544

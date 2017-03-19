@@ -27,15 +27,14 @@ warehouse_meta_target::warehouse_meta_target(project& p,
 {
 }
 
-warehouse_meta_target::~warehouse_meta_target()
-{
-}
+warehouse_meta_target::~warehouse_meta_target() = default;
 
 void
-warehouse_meta_target::instantiate_impl(const main_target* owner,
-                                        const feature_set& build_request,
-                                        std::vector<basic_target*>* result,
-                                        feature_set* usage_requirements) const
+warehouse_meta_target::instantiate_impl(
+  const main_target* /*owner*/,
+  const feature_set& build_request,
+  std::vector<basic_target*>* result,
+  feature_set* /*usage_requirements*/) const
 {
   unique_ptr<basic_target> t(
     new warehouse_target(*this, name(), build_request));
@@ -45,10 +44,10 @@ warehouse_meta_target::instantiate_impl(const main_target* owner,
 
 main_target*
 warehouse_meta_target::construct_main_target(
-  const main_target* owner,
-  const feature_set* properties) const
+  const main_target* /*owner*/,
+  const feature_set* /*properties*/) const
 {
   assert(false);
   return nullptr;
 }
-}
+} // namespace hammer

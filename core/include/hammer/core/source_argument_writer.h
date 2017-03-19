@@ -21,8 +21,8 @@ public:
                          const target_type& t,
                          bool exact_type = true,
                          output_strategy os = RELATIVE_TO_MAIN_TARGET,
-                         const std::string& quoting_string = "\"",
-                         const std::string& prefix = std::string());
+                         std::string quoting_string = "\"",
+                         std::string prefix = std::string());
   virtual argument_writer* clone() const;
 
 protected:

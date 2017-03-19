@@ -49,12 +49,13 @@ protected:
 
 private:
   const basic_meta_target* meta_target_;
-  sources_t sources_;
-  sources_t dependencies_;
+  sources_t sources_{};
+  sources_t dependencies_{};
   // FIXME: should call generate if no build_node_ assigned
   mutable boost::intrusive_ptr<hammer::build_node> build_node_;
   mutable location_t intermediate_dir_;
-  mutable std::vector<boost::intrusive_ptr<hammer::build_node>> generate_cache_;
+  mutable std::vector<boost::intrusive_ptr<hammer::build_node>>
+    generate_cache_{};
   mutable bool generate_cache_filled_;
   static boost::shared_ptr<mksig_action> mksig_action_;
 

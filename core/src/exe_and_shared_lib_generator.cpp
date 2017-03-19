@@ -31,8 +31,8 @@ exe_and_shared_lib_generator::construct(
   const std::string* name,
   const main_target& owner) const
 {
-  feature_set* new_props = 0;
-  typedef std::vector<boost::intrusive_ptr<build_node>> build_sources_t;
+  feature_set* new_props = nullptr;
+  using build_sources_t = std::vector<boost::intrusive_ptr<build_node>>;
   build_sources_t modified_sources(sources);
   remove_dups(modified_sources);
   for (build_sources_t::const_iterator i = modified_sources.begin();
@@ -43,11 +43,11 @@ exe_and_shared_lib_generator::construct(
       // request
       const basic_target& lib_target = *(**i).products_.front();
 
-      feature_set::const_iterator search_location =
-        lib_target.properties().find("search");
+      auto search_location = lib_target.properties().find("search");
       if (search_location != lib_target.properties().end()) {
-        if (!new_props)
+        if (new_props == nullptr) {
           new_props = props.clone();
+        }
 
         new_props->join(*search_location);
       }
@@ -55,10 +55,10 @@ exe_and_shared_lib_generator::construct(
   }
 
   return generator::construct(type_to_construct,
-                              new_props ? *new_props : props,
+                              new_props != nullptr ? *new_props : props,
                               modified_sources,
                               t,
                               name,
                               owner);
 }
-}
+} // namespace hammer

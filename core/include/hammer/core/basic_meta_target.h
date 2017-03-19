@@ -23,7 +23,7 @@ class basic_meta_target
 {
 public:
   basic_meta_target(project* p,
-                    const std::string& name,
+                    std::string name,
                     const requirements_decl& req,
                     const requirements_decl& usage_req);
   basic_meta_target() {}

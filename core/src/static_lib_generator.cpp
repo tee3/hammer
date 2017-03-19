@@ -31,19 +31,19 @@ static_lib_generator::construct(
   const std::string* name,
   const main_target& owner) const
 {
-  typedef std::vector<boost::intrusive_ptr<build_node>> build_sources_t;
+  using build_sources_t = std::vector<boost::intrusive_ptr<build_node>>;
   build_sources_t modified_sources(sources);
   build_sources_t extracted_products;
-  for (build_sources_t::iterator i = modified_sources.begin();
-       i != modified_sources.end();) {
+  for (auto i = modified_sources.begin(); i != modified_sources.end();) {
     if ((**i).targeting_type_->equal_or_derived_from(shared_lib_) ||
         (**i).targeting_type_->equal_or_derived_from(static_lib_) ||
         (**i).targeting_type_->equal_or_derived_from(searched_lib_)) {
       extracted_products.push_back(*i);
 
       i = modified_sources.erase(i);
-    } else
+    } else {
       ++i;
+    }
   }
 
   build_nodes_t result(generator::construct(
@@ -53,4 +53,4 @@ static_lib_generator::construct(
 
   return result;
 }
-}
+} // namespace hammer

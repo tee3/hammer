@@ -20,8 +20,7 @@ using namespace std;
 
 namespace hammer {
 
-boost::shared_ptr<mksig_action> main_target::mksig_action_ =
-  boost::shared_ptr<mksig_action>(new mksig_action);
+= boost::shared_ptr<mksig_action>(new mksig_action);
 
 main_target::main_target(const basic_meta_target* mt,
                          const std::string& name,
@@ -34,7 +33,7 @@ main_target::main_target(const basic_meta_target* mt,
 }
 
 void
-main_target::sources(const std::vector<basic_target*>& srcs)
+main_target::sources(const std::vector<basic_target*>& /*srcs*/)
 {
   sources_ = srcs;
 }
@@ -46,7 +45,7 @@ main_target::dependencies(const dependencies_t& deps)
 }
 
 void
-main_target::generate_and_add_dependencies(hammer::build_node& node) const
+main_target::generate_and_add_dependencies(hammer::build_node& /*node*/) const
 {
   build_nodes_t dependency_nodes;
   for (dependencies_t::const_iterator i = dependencies_.begin(),
@@ -63,9 +62,9 @@ main_target::generate_and_add_dependencies(hammer::build_node& node) const
 std::vector<boost::intrusive_ptr<build_node>>
 main_target::generate() const
 {
-  if (generate_cache_filled_)
+  if (generate_cache_filled_) {
     return generate_cache_;
-  else {
+  } else {
     std::vector<boost::intrusive_ptr<hammer::build_node>> result(
       get_engine()->generators().construct(this));
     build_node_ = result.front();
@@ -84,7 +83,7 @@ main_target::create_intermediate_dir_dependency() const
   int_dir_node->products_.push_back(
     new directory_target(this, intermediate_dir()));
   int_dir_node->action(
-    static_cast<const directory_target*>(int_dir_node->products_.front())
+    dynamic_cast<const directory_target*>(int_dir_node->products_.front())
       ->action());
 
   return int_dir_node;
@@ -148,8 +147,9 @@ main_target::intermediate_dir_impl() const
 const location_t&
 main_target::intermediate_dir() const
 {
-  if (intermediate_dir_.empty())
+  if (intermediate_dir_.empty()) {
     intermediate_dir_ = intermediate_dir_impl();
+  }
 
   return intermediate_dir_;
 }
@@ -177,9 +177,9 @@ main_target::version() const
 }
 
 void
-main_target::additional_hash_string_data(std::ostream& s) const
+main_target::additional_hash_string_data(std::ostream& /*s*/) const
 {
-  typedef set<const main_target*> main_target_sources_t;
+  using main_target_sources_t = int;
 
   main_target_sources_t main_target_sources;
   for (sources_t::const_iterator i = sources_.begin(), last = sources_.end();
@@ -209,4 +209,4 @@ main_target::additional_hash_string_data(std::ostream& s) const
     s << *i;
   }
 }
-}
+} // namespace hammer

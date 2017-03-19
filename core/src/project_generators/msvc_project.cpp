@@ -21,6 +21,7 @@
 #include <hammer/core/type_registry.h>
 #include <hammer/core/types.h>
 #include <iostream>
+#include <utility>
 
 using namespace std;
 
@@ -31,49 +32,45 @@ namespace {
 class fake_environment : public build_environment
 {
 public:
-  fake_environment(const location_t& project_output_dir)
-    : project_output_dir_(project_output_dir)
+  explicit fake_environment(location_t project_output_dir)
+    : project_output_dir_(std::move(project_output_dir))
   {
   }
 
-  virtual ~fake_environment() {}
+  ~fake_environment() override = default;
 
   virtual bool run_shell_commands(const std::vector<std::string>& cmds,
                                   const location_t& working_dir) const
   {
     return true;
   }
-  virtual bool run_shell_commands(std::string& captured_output,
-                                  const std::vector<std::string>& cmds,
+  virtual bool run_shell_commands(const std::vector<std::string>& cmds,
                                   const location_t& working_dir) const
   {
     return true;
   }
-  virtual bool run_shell_commands(std::ostream& captured_output_stream,
-                                  const std::vector<std::string>& cmds,
+  virtual bool run_shell_commands(const std::vector<std::string>& cmds,
                                   const location_t& working_dir) const
   {
     return true;
   }
-  virtual bool run_shell_commands(std::ostream& captured_output_stream,
-                                  std::ostream& captured_error_stream,
-                                  const std::vector<std::string>& cmds,
+  virtual bool run_shell_commands(const std::vector<std::string>& cmds,
                                   const location_t& working_dir) const
   {
     return true;
   }
-  virtual const location_t& current_directory() const
+  const location_t& current_directory() const override
   {
     return project_output_dir_;
   }
-  virtual void create_directories(const location_t& dir_to_create) const {};
-  virtual void remove(const location_t& p) const {};
-  virtual void remove_file_by_pattern(const location_t& dir,
-                                      const std::string& pattern) const {};
-  virtual void copy(const location_t& source,
-                    const location_t& destination) const {};
-  virtual bool write_tag_file(const std::string& filename,
-                              const std::string& content) const
+  void create_directories(const location_t& /*dir_to_create*/) const override{};
+  void remove(const location_t& /*p*/) const override{};
+  void remove_file_by_pattern(const location_t& /*dir*/,
+                              const std::string& /*pattern*/) const override{};
+  void copy(const location_t& /*source*/,
+            const location_t& /*destination*/) const override{};
+  bool write_tag_file(const std::string& /*filename*/,
+                      const std::string& /*content*/) const override
   {
     return true;
   }
@@ -84,19 +81,19 @@ public:
     return std::unique_ptr<std::ostream>(new ostringstream);
   }
 
-  virtual location_t working_directory(const basic_target& t) const
+  location_t working_directory(const basic_target& /*t*/) const override
   {
     return project_output_dir_;
   }
-  virtual std::ostream& output_stream() const { return std::cout; }
-  virtual std::ostream& error_stream() const { return std::cerr; }
+  std::ostream& output_stream() const override { return std::cout; }
+  std::ostream& error_stream() const override { return std::cerr; }
 
-  const location_t* cache_directory() const { return NULL; }
+  const location_t* cache_directory() const override { return nullptr; }
 
 private:
   location_t project_output_dir_;
 };
-}
+} // namespace
 
 static const string configuration_option_format_string(
   "         CharacterSet=\"$(charset)\">\n");
@@ -128,14 +125,14 @@ static const string post_build_step_format_string(
   "$(non_path_args) $(path_args)\"\n");
 
 msvc_project::msvc_project(engine& e,
-                           const location_t& output_dir,
-                           const std::string& solution_configuration_name,
-                           const boost::guid& uid)
+                           location_t output_dir,
+                           std::string solution_configuration_name,
+                           const boost::guid& /*uid*/)
   : engine_(&e)
   , uid_(uid)
-  , output_dir_(output_dir)
+  , output_dir_(std::move(output_dir))
   , project_output_dir_(output_dir_)
-  , solution_configuration_name_(solution_configuration_name)
+  , solution_configuration_name_(std::move(solution_configuration_name))
   , searched_lib_(engine_->get_type_registry().get(types::SEARCHED_LIB))
   , obj_type_(engine_->get_type_registry().get(types::OBJ))
   , pch_type_(engine_->get_type_registry().get(types::PCH))
@@ -304,10 +301,10 @@ make_variant_name(const main_target& mt)
 }
 
 void
-msvc_project::add_variant(boost::intrusive_ptr<const build_node> node)
+msvc_project::add_variant(const boost::intrusive_ptr<const build_node>& node)
 {
   assert(!node->products_.empty());
-  std::auto_ptr<variant> v(new variant);
+  std::unique_ptr<variant> v(new variant);
   variant* naked_variant = v.get();
 
   // if this testing runner than we actually need exe target that we run in post
@@ -315,8 +312,9 @@ msvc_project::add_variant(boost::intrusive_ptr<const build_node> node)
   if (*node->targeting_type_ == testing_run_passed_type_) {
     naked_variant->real_node_ = node;
     node = node->sources_.front().source_node_;
-  } else
+  } else {
     naked_variant->real_node_ = node;
+  }
 
   const basic_target* t = node->products_[0];
   v->properties_ = &t->properties();
@@ -421,17 +419,19 @@ msvc_project::resolve_configuration_type(const variant& v) const
   if (v.target_->type().equal_or_derived_from(exe_type) ||
       v.target_->type().equal_or_derived_from(testing_run_passed_type_)) {
     return configuration_types::exe;
-  } else if (v.target_->type().equal_or_derived_from(static_lib_type))
+  }
+  if (v.target_->type().equal_or_derived_from(static_lib_type)) {
     return configuration_types::static_lib;
-  else if (v.target_->type().equal_or_derived_from(shared_lib_type))
+  } else if (v.target_->type().equal_or_derived_from(shared_lib_type)) {
     return configuration_types::shared_lib;
-  else if (v.target_->type().equal_or_derived_from(header_lib_type) ||
-           v.target_->type().equal_or_derived_from(copied_type_)) {
+  } else if (v.target_->type().equal_or_derived_from(header_lib_type) ||
+             v.target_->type().equal_or_derived_from(copied_type_)) {
     return configuration_types::utility;
-  } else
-    throw std::runtime_error(
-      "[msvc_project] Can't resolve configurations type '" +
-      v.target_->type().tag().name() + "'.");
+  } else {
+    throw
+  }
+  std::runtime_error("[msvc_project] Can't resolve configurations type '" +
+                     v.target_->type().tag().name() + "'.");
 }
 
 static void
@@ -568,7 +568,7 @@ struct less_target
 
 void
 msvc_project::filter_t::write(write_context& ctx,
-                              const std::string& path_prefix) const
+                              const std::string& /*path_prefix*/) const
 {
   if (files_.empty())
     return;
@@ -576,10 +576,11 @@ msvc_project::filter_t::write(write_context& ctx,
   ctx.output_ << "         <Filter\n"
                  "            Name=\""
               << name << "\"";
-  if (!uid.empty())
+  if (!uid.empty()) {
     ctx.output_ << "\n            UniqueIdentifier=\"" << uid << "\">\n";
-  else
+  } else {
     ctx.output_ << ">\n";
+  }
 
   // FIXME: this trick used only for test to stabilize order of sources in
   // project file
@@ -647,7 +648,7 @@ msvc_project::write() const
 }
 
 bool
-msvc_project::filter_t::accept(const target_type* t) const
+msvc_project::filter_t::accept(const target_type* /*t*/) const
 {
   for (types_t::const_iterator i = types_.begin(), last = types_.end();
        i != last;
@@ -673,9 +674,10 @@ msvc_project::filter_t::insert(const boost::intrusive_ptr<build_node>& node,
 }
 
 void
-msvc_project::insert_into_files(const boost::intrusive_ptr<build_node>& node,
-                                const basic_target* t,
-                                const variant& v)
+msvc_project::insert_into_files(
+  const boost::intrusive_ptr<build_node>& /*node*/,
+  const basic_target* t,
+  const variant& /*v*/)
 {
   const target_type* tp = &t->type();
   for (files_t::iterator fi = files_.begin(), flast = files_.end(); fi != flast;
@@ -690,7 +692,7 @@ msvc_project::insert_into_files(const boost::intrusive_ptr<build_node>& node,
 void
 msvc_project::gether_files_impl(const build_node& node, variant& v)
 {
-  typedef build_node::sources_t::const_iterator iter;
+  using iter = build_node::sources_t::const_iterator;
   for (iter mi = node.sources_.begin(), mlast = node.sources_.end();
        mi != mlast;
        ++mi) {
@@ -733,7 +735,7 @@ msvc_project::gether_files()
 }
 
 bool
-msvc_project::has_variant(const main_target* v) const
+msvc_project::has_variant(const main_target* /*v*/) const
 {
   for (variants_t::const_iterator i = variants_.begin(), last = variants_.end();
        i != last;
@@ -744,5 +746,5 @@ msvc_project::has_variant(const main_target* v) const
 
   return false;
 }
-}
-}
+} // namespace project_generators
+} // namespace hammer

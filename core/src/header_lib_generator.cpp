@@ -24,19 +24,19 @@ build_nodes_t
 header_lib_generator::construct(
   const target_type& type_to_construct,
   const feature_set& props,
-  const std::vector<boost::intrusive_ptr<build_node>>& sources,
-  const basic_target* t,
+  const std::vector<boost::intrusive_ptr<build_node>>& /*sources*/,
+  const basic_target* /*t*/,
   const std::string* composite_target_name,
   const main_target& owner) const
 {
-  typedef std::vector<boost::intrusive_ptr<build_node>> build_sources_t;
+  using build_sources_t = std::vector<boost::intrusive_ptr<build_node>>;
   build_sources_t result;
 
   // add HEADER_LIB node to result
   boost::intrusive_ptr<build_node> header_lib_node(new build_node(owner, true));
   header_lib_node->targeting_type_ = &type_to_construct;
   result.push_back(header_lib_node);
-  std::auto_ptr<header_lib_target> header_lib_product(new header_lib_target(
+  std::unique_ptr<header_lib_target> header_lib_product(new header_lib_target(
     &owner, *composite_target_name, &type_to_construct, &props));
   header_lib_node->products_.push_back(header_lib_product.get());
   header_lib_product.release();
@@ -49,12 +49,10 @@ add_header_lib_generator(engine& e, generator_registry& gr)
 {
   generator::consumable_types_t source;
   generator::producable_types_t target;
-  source.push_back(
-    generator::consumable_type(e.get_type_registry().get(types::H), 0, 0));
-  target.push_back(
-    generator::produced_type(e.get_type_registry().get(types::HEADER_LIB), 1));
+  source.emplace_back(e.get_type_registry().get(types::H), 0, nullptr);
+  target.emplace_back(e.get_type_registry().get(types::HEADER_LIB), 1);
   std::unique_ptr<generator> g(
     new header_lib_generator(e, "header_lib.linker", source, target));
   gr.insert(std::move(g));
 }
-}
+} // namespace hammer

@@ -11,6 +11,7 @@
 #include <hammer/core/project_generators/msvc_project.h>
 #include <hammer/core/project_generators/msvc_solution.h>
 #include <set>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -22,22 +23,22 @@ namespace {
 struct solution_t
 {
 };
-}
+} // namespace
 
 struct msvc_solution::impl_t
 {
-  typedef msvc_project::dependencies_t dependencies_t;
+  using dependencies_t = msvc_project::dependencies_t;
   typedef boost::ptr_map<const basic_meta_target*, msvc_project> projects_t;
-  typedef std::vector<std::string> variant_names_t;
+  using variant_names_t = int;
 
   impl_t(msvc_solution* owner,
          const project& source_project,
-         const location_t& output_path,
+         location_t output_path,
          generation_mode::value mode)
     : owner_(owner)
     , source_project_(source_project)
     , engine_(*source_project.get_engine())
-    , output_location_(output_path)
+    , output_location_(std::move(output_path))
     , generation_mode_(mode)
   {
     output_location_.normalize();
@@ -55,12 +56,12 @@ struct msvc_solution::impl_t
   location_t output_location_;
   std::string name_; // solution name;
   generation_mode::value generation_mode_;
-  std::vector<std::string> variant_names_;
+  std::vector<std::string> variant_names_{};
 
-  mutable projects_t projects_;
+  mutable projects_t projects_{};
 };
 
-typedef msvc_solution::impl_t impl_t;
+using impl_t = msvc_solution::impl_t;
 
 static bool
 less_by_location_and_name(const main_target* lhs, const main_target* rhs)
@@ -73,9 +74,9 @@ less_by_location_and_name(const main_target* lhs, const main_target* rhs)
   return lhs_id < rhs_id;
 }
 
-void
-impl_t::generate_dependencies(impl_t::dependencies_t::const_iterator first,
-                              impl_t::dependencies_t::const_iterator last) const
+void impl_t::generate_dependencies(
+  impl_t::dependencies_t::const_iterator /*first*/,
+  impl_t::dependencies_t::const_iterator /*last*/) const
 {
   dependencies_t dependencies;
   for (; first != last; ++first) {
@@ -132,7 +133,7 @@ msvc_solution::impl_t::write_project_section(ostream& os,
             sorted_dependencies.end(),
             &less_by_location_and_name);
 
-  typedef msvc_project::dependencies_t::const_iterator iter;
+  using iter = int;
   for (iter i = sorted_dependencies.begin(), last = sorted_dependencies.end();
        i != last;
        ++i) {
@@ -180,7 +181,7 @@ msvc_solution::~msvc_solution()
 }
 
 void
-msvc_solution::add_target(boost::intrusive_ptr<const build_node> node)
+msvc_solution::add_target(boost::intrusive_ptr<const build_node> /*node*/)
 {
   if (!impl_->projects_.empty())
     throw std::runtime_error(
@@ -188,7 +189,7 @@ msvc_solution::add_target(boost::intrusive_ptr<const build_node> node)
 
   impl_->variant_names_.push_back(
     node->products_[0]->get_main_target()->properties().get("variant").value());
-  std::auto_ptr<msvc_project> p_guarg(
+  std::unique_ptr<msvc_project> p_guarg(
     new msvc_project(impl_->engine_,
                      impl_->project_output_dir(*node),
                      impl_->variant_names_.front(),
@@ -225,8 +226,8 @@ msvc_solution::write() const
   f << "Microsoft Visual Studio Solution File, Format Version 9.00\n"
        "# Visual Studio 2005\n";
 
-  typedef impl_t::projects_t::const_iterator iter;
-  typedef vector<const msvc_project*> sorted_projects_t;
+  using iter = int;
+  using sorted_projects_t = int;
 
   sorted_projects_t sorted_projects;
   for (iter i = impl_->projects_.begin(), last = impl_->projects_.end();
@@ -263,5 +264,5 @@ msvc_solution::generate_id() const
 {
   return impl_->generate_id();
 }
-}
-}
+} // namespace project_generators
+} // namespace hammer

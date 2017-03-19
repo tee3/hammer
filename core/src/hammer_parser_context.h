@@ -54,7 +54,7 @@ struct hammer_parser_context
 };
 
 void
-on_enter_rule(pANTLR3_PARSER parser, pANTLR3_UINT8 rule_name);
+on_enter_rule(pANTLR3_PARSER parser, pANTLR3_UINT8 rule_name_);
 void
 on_rule_argument(pANTLR3_PARSER parser);
 void

@@ -1,6 +1,6 @@
+#include <cstdlib>
 #include <hammer/core/engine.h>
 #include <hammer/core/warehouse_impl.h>
-#include <stdlib.h>
 //#define BOOST_SPIRIT_DEBUG
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/bind.hpp>
@@ -25,6 +25,7 @@
 #include <hammer/core/warehouse_target.h>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 
 using namespace std;
 using namespace boost::spirit::classic;
@@ -38,14 +39,14 @@ namespace hammer {
 
 struct warehouse_impl::gramma : public grammar<warehouse_impl::gramma>
 {
-  gramma() {}
+  gramma() = default;
 
   template<typename ScannerT>
   struct definition
   {
-    typedef rule<ScannerT> rule_t;
+    using rule_t = int;
 
-    definition(const gramma& self)
+    explicit definition(const gramma& self)
     {
       package_name_p = +chset_p("a-zA-Z0-9_.");
 
@@ -114,22 +115,23 @@ struct warehouse_impl::gramma : public grammar<warehouse_impl::gramma>
     }
 
     rule_t const& start() const { return whole; }
-    rule_t whole, value_p, int_value_p, bool_value_p, version_p, filename_p,
-      filesize_p, public_id_p, md5_p, need_update_p, attribute_p, package_p,
-      packages_p, package_name_p, list_of_target_names_p, targets_p,
-      dependencies_p, dependency_p, dependency_attrs_p, dependencies_list_p;
+    rule_t whole{}, value_p{}, int_value_p{}, bool_value_p{}, version_p{},
+      filename_p{}, filesize_p{}, public_id_p{}, md5_p{}, need_update_p{},
+      attribute_p{}, package_p{}, packages_p{}, package_name_p{},
+      list_of_target_names_p{}, targets_p{}, dependencies_p{}, dependency_p{},
+      dependency_attrs_p{}, dependencies_list_p{};
   };
 
   mutable string value_;
-  mutable unsigned int int_value_;
-  mutable bool bool_value_;
-  mutable vector<warehouse_impl::package_t> packages_;
+  mutable unsigned int int_value_{};
+  mutable bool bool_value_{};
+  mutable vector<warehouse_impl::package_t> packages_{};
   mutable warehouse_impl::package_t package_;
-  mutable vector<string> targets_;
+  mutable vector<string> targets_{};
   mutable dependency_t dependency_;
   const warehouse_impl::package_t empty_package_;
   const dependency_t empty_dependency_;
-  const vector<string> empty_targets_;
+  const vector<string> empty_targets_{};
 
   void assign_int_value(unsigned v) const { int_value_ = v; }
   void assign_bool_value(bool v) const { bool_value_ = v; }
@@ -192,22 +194,24 @@ download_file(const fs::path& working_dir,
     throw std::runtime_error("Failed to download '" + url + "'");
 }
 
-warehouse_impl::warehouse_impl(const std::string& name,
-                               const std::string& url,
+warehouse_impl::warehouse_impl(const std::string& /*name*/,
+                               std::string url,
                                const boost::filesystem::path& storage_dir)
   : repository_path_(storage_dir.empty() ? (get_home_path() / ".hammer")
                                          : storage_dir)
-  , repository_url_(url)
+  , repository_url_(std::move(url))
 {
-  if (!repository_path_.has_root_path())
+  if (!repository_path_.has_root_path()) {
     throw std::runtime_error(
       "Warehouse storage directory should be a full path");
+  }
 
   // path should be without trailing '.' to be correctly compared in
   // package_from_warehouse()
   repository_path_.normalize();
-  if (repository_path_.filename() == ".")
+  if (repository_path_.filename() == ".") {
     repository_path_.remove_leaf();
+  }
 
   if (!exists(repository_path_)) {
     if (!create_directory(repository_path_))
@@ -271,15 +275,17 @@ static const string packages_update_filename = "packages.json.new";
 warehouse::package_infos_t
 warehouse_impl::update_impl()
 {
-  if (repository_url_.empty())
+  if (repository_url_.empty()) {
     return package_infos_t();
+  }
 
   const fs::path packages_update_filepath =
     repository_path_ / packages_update_filename;
   const fs::path packages_filepath = repository_path_ / packages_filename;
 
-  if (fs::exists(packages_update_filepath))
+  if (fs::exists(packages_update_filepath)) {
     fs::remove(packages_update_filepath);
+  }
 
   download_file(repository_path_,
                 repository_url_ + "/" + packages_filename.string(),
@@ -354,8 +360,9 @@ bool
 warehouse_impl::has_project(const location_t& project_path,
                             const string& version) const
 {
-  if (!project_path.has_root_path())
+  if (!project_path.has_root_path()) {
     return false;
+  }
 
   const string name = project_path.relative_path().string();
 
@@ -382,9 +389,7 @@ warehouse_impl::load_project(engine& e, const location_t& project_path)
   return wproject;
 }
 
-warehouse_impl::~warehouse_impl()
-{
-}
+warehouse_impl::~warehouse_impl() = default;
 
 bool
 warehouse_impl::project_from_warehouse(const project& p) const
@@ -463,8 +468,8 @@ warehouse_impl::resolve_dependency(unresolved_packages_t& packages,
 
 vector<warehouse::package_info>
 warehouse_impl::get_unresoved_targets_info(
-  engine& e,
-  const std::vector<const warehouse_target*>& targets) const
+  engine& /*e*/,
+  const std::vector<const warehouse_target*>& /*targets*/) const
 {
   unresolved_dependencies_t deps;
   unresolved_packages_t packages;
@@ -551,16 +556,14 @@ insert_line_in_front(const fs::path& filename, const string& line)
 }
 
 static void
-append_line(const fs::path filename, const string& line)
+append_line(const fs::path& filename, const string& line)
 {
   fs::ofstream f(filename, ios_base::app);
   f << line << endl;
 }
 
 static string
-make_package_alias_line(const string& package_public_id,
-                        const string& package_version,
-                        const vector<string>& targets)
+make_package_alias_line(const string& package_version)
 {
   stringstream s;
   for (const string& target : targets) {
@@ -583,16 +586,19 @@ void
 warehouse_impl::install_package(const package_t& p, const fs::path& working_dir)
 {
   const fs::path libs_path = working_dir / "libs";
-  if (!exists(libs_path))
+  if (!exists(libs_path)) {
     create_directory(libs_path);
+  }
 
   const fs::path lib_path = libs_path / p.public_id_;
-  if (!exists(lib_path))
+  if (!exists(lib_path)) {
     create_directories(lib_path);
+  }
 
   const fs::path package_root = lib_path / p.version_;
-  if (!exists(package_root))
+  if (!exists(package_root)) {
     create_directory(package_root);
+  }
 
   bp::context ctx;
   ctx.work_directory = package_root.string();
@@ -623,8 +629,9 @@ warehouse_impl::resolves_to_real_project(engine& e,
 {
   engine::loaded_projects_t loaded_projects =
     e.try_load_project("/" + public_id, repository_project);
-  if (loaded_projects.empty())
+  if (loaded_projects.empty()) {
     return true;
+  }
 
   for (const project* p : loaded_projects) {
     if (project_from_warehouse(*p))
@@ -635,13 +642,15 @@ warehouse_impl::resolves_to_real_project(engine& e,
 }
 
 void
-warehouse_impl::download_and_install(engine& e,
-                                     const std::vector<package_info>& packages,
-                                     iwarehouse_download_and_install& notifier)
+warehouse_impl::download_and_install(
+  engine& e,
+  const std::vector<package_info>& /*packages*/,
+  iwarehouse_download_and_install& /*notifier*/)
 {
   fs::path working_dir = repository_path_ / "downloads";
-  if (!exists(working_dir))
+  if (!exists(working_dir)) {
     create_directory(working_dir);
+  }
 
   const project& repository_project = e.load_project(repository_path_);
 
@@ -748,8 +757,9 @@ warehouse_impl::write_packages(const location_t& packages_db_path,
       fs::copy_file(tmp_packages_path, packages_db_path);
       fs::remove(tmp_packages_path);
     }
-  } else
+  } else {
     throw std::runtime_error("Can't remove old packages db");
+  }
 }
 
 static void
@@ -812,7 +822,7 @@ template<typename Digest>
 class digest_filter
 {
 public:
-  typedef char char_type;
+  using char_type = char;
   struct category : io::output_filter_tag,
                     io::multichar_tag,
                     io::optimally_buffered_tag
@@ -839,7 +849,7 @@ BOOST_IOSTREAMS_PIPABLE(digest_filter, 1)
 static string
 calculate_md5(const fs::path& filename)
 {
-  typedef digest_filter<boost::crypto::md5> md5_filter;
+  using md5_filter = int;
 
   fs::ifstream digest_data(filename);
   io::filtering_ostream output(md5_filter() | io::null_sink());
@@ -909,11 +919,12 @@ warehouse_impl::add_to_packages(const project& p,
     p.get_engine()->feature_registry().make_set();
   p.requirements().eval(*build_request, project_requirements);
   feature_set::const_iterator i_version = project_requirements->find("version");
-  if (i_version == project_requirements->end())
+  if (i_version == project_requirements->end()) {
     throw std::runtime_error("Project doesn't have 'version' feature");
+  }
 
   const string version = (**i_version).value();
-  const string public_id = p.name();
+  const string& public_id = p.name();
 
   package_t package;
   package.public_id_ = public_id;
@@ -953,7 +964,6 @@ warehouse_impl::get_package_versions(const string& public_id) const
 static void
 remove_alias_from_package_hamfile(const string& package_public_id,
                                   const string& package_version,
-                                  const vector<string>& package_targets,
                                   const fs::path& path_to_hamfile)
 {
   if (!package_targets.empty())
@@ -1008,4 +1018,4 @@ warehouse_impl::update_package(engine& e, package_t& package_to_update)
 
   package_to_update.need_update_ = false;
 }
-}
+} // namespace hammer

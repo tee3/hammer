@@ -10,7 +10,7 @@ class subfeature_def;
 class subfeature
 {
 public:
-  subfeature(const subfeature_def& def, const std::string& value);
+  subfeature(const subfeature_def& def, std::string value);
   ~subfeature();
 
   const subfeature_def& definition() const { return *definition_; }

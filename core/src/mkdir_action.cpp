@@ -3,16 +3,18 @@
 #include <hammer/core/fs_helpers.h>
 #include <hammer/core/mkdir_action.h>
 
+#include <utility>
+
 namespace hammer {
 
-mkdir_action::mkdir_action(const location_t& dir_to_create)
+mkdir_action::mkdir_action(location_t dir_to_create)
   : build_action("mkdir")
-  , dir_to_create_(dir_to_create)
+  , dir_to_create_(std::move(dir_to_create))
 {
 }
 
 bool
-mkdir_action::execute_impl(const build_node& node,
+mkdir_action::execute_impl(const build_node& /*node*/,
                            const build_environment& environment) const
 {
   environment.create_directories(
@@ -21,10 +23,10 @@ mkdir_action::execute_impl(const build_node& node,
 }
 
 std::string
-mkdir_action::target_tag(const build_node& node,
+mkdir_action::target_tag(const build_node& /*node*/,
                          const build_environment& environment) const
 {
   location_t t = relative_path(dir_to_create_, environment.current_directory());
   return t.string();
 }
-}
+} // namespace hammer

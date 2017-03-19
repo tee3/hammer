@@ -21,11 +21,12 @@ bool
 cmdline_action::execute_impl(const build_node& node,
                              const build_environment& environment) const
 {
-  if (node.products_.empty())
+  if (node.products_.empty()) {
     throw std::runtime_error(
       "[cmdline_action] Can't run command for node without products.");
+  }
 
-  if (rsp_builder_.get() != NULL) {
+  if (rsp_builder_.get() != nullptr) {
     location_t rsp_file_path(
       node.products_.front()->get_main_target()->location() /
       (target_tag(node, environment) + ".rsp"));
@@ -36,11 +37,9 @@ cmdline_action::execute_impl(const build_node& node,
   }
 
   std::vector<std::string> commands;
-  for (builders_t::const_iterator i = builders_.begin(), last = builders_.end();
-       i != last;
-       ++i) {
+  for (const auto& builder : builders_) {
     std::ostringstream s;
-    i->write(s, node, environment);
+    builder.write(s, node, environment);
     commands.push_back(s.str());
   }
 
@@ -52,9 +51,10 @@ cmdline_action::run_shell_commands(const std::vector<std::string>& commands,
                                    const build_node& node,
                                    const build_environment& environment) const
 {
-  if (node.products_.empty())
+  if (node.products_.empty()) {
     throw std::runtime_error(
       "[cmdline_action] Can't run command for node without products.");
+  }
 
   return environment.run_shell_commands(
     environment.output_stream(),
@@ -71,4 +71,4 @@ cmdline_action::target_tag(const build_node& node,
   target_writer_->write(s, node, environment);
   return s.str();
 }
-}
+} // namespace hammer

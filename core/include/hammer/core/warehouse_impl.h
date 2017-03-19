@@ -17,7 +17,7 @@ class warehouse_impl : public warehouse
 public:
   warehouse_impl(
     const std::string& name,
-    const std::string& url,
+    std::string url,
     const boost::filesystem::path& storage_dir = boost::filesystem::path());
   ~warehouse_impl();
   bool project_from_warehouse(const project& p) const override;
@@ -92,7 +92,7 @@ private:
                           engine& e,
                           const dependency_t& d,
                           const project& repository_project) const;
-  static warehouse::package_info to_package_info(const package_t& p);
+  static warehouse::package_info to_package_info(const package_t& package);
   bool resolves_to_real_project(engine& e,
                                 const std::string& public_id,
                                 const project& repository_project);

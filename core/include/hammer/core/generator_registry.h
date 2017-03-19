@@ -30,14 +30,14 @@ private:
 
   bool transform_to_consumable(const generator& target_generator,
                                const generator& current_generator,
-                               build_node_ptr t,
+                               build_node_ptr source_node,
                                build_nodes_t* result,
                                const feature_set& props,
                                const main_target& owner) const;
   bool transform(const generator& target_generator,
                  const generator& current_generator,
-                 const basic_target* t,
-                 build_node_ptr& target_owner,
+                 const basic_target* source_target,
+                 build_node_ptr& source_node,
                  build_nodes_t* result,
                  const feature_set& props,
                  const main_target& owner) const;

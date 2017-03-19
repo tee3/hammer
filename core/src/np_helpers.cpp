@@ -37,7 +37,7 @@ make_product_name(const basic_target& source_target,
     source_target.type().suffix_for(source_name, source_target.properties());
 
   std::string hash_suffix;
-  if (owner != NULL) {
+  if (owner != nullptr) {
     string version = get_version(product_properties);
     if (!version.empty())
       hash_suffix = '-' + version;
@@ -68,7 +68,7 @@ make_product_name(const std::string& composite_target_name,
     return composite_target_name;
   else {
     std::string hash_suffix;
-    if (owner != NULL) {
+    if (owner != nullptr) {
       string version = get_version(product_properties);
       if (!version.empty())
         hash_suffix = '-' + version;
@@ -80,4 +80,4 @@ make_product_name(const std::string& composite_target_name,
            hash_suffix + product_type.suffix_for(product_properties);
   }
 }
-}
+} // namespace hammer

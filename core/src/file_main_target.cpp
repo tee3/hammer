@@ -2,16 +2,18 @@
 #include <hammer/core/file_main_target.h>
 #include <hammer/core/file_target.h>
 
+#include <utility>
+
 namespace hammer {
 
 file_main_target::file_main_target(const basic_meta_target* mt,
                                    const std::string& name,
-                                   const std::string& filename,
+                                   std::string filename,
                                    const feature_set* props,
                                    const target_type& t)
   : main_target(mt, name, &t, props)
   , type_(&t)
-  , filename_(filename)
+  , filename_(std::move(filename))
 {
 }
 
@@ -27,4 +29,4 @@ file_main_target::generate()
 
   return std::vector<boost::intrusive_ptr<hammer::build_node>>(1, result);
 }
-}
+} // namespace hammer

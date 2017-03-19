@@ -28,7 +28,7 @@ namespace {
 class htmpl_action : public build_action
 {
 public:
-  htmpl_action(const target_type& source_target_type)
+  explicit htmpl_action(const target_type& source_target_type)
     : build_action("htmpl")
     , source_target_type_(source_target_type)
   {
@@ -46,8 +46,8 @@ private:
 };
 
 string
-htmpl_action::target_tag(const build_node& node,
-                         const build_environment& environment) const
+htmpl_action::target_tag(const build_node& /*node*/,
+                         const build_environment& /*environment*/) const
 {
   return "test";
 }
@@ -84,8 +84,9 @@ htmpl_action::execute_impl(const build_node& node,
   const vector<char> content{ istreambuf_iterator<char>(source_stream),
                               istreambuf_iterator<char>() };
 
-  if (content.empty())
+  if (content.empty()) {
     return true;
+  }
 
   const feature_set& props = node.products_owner().properties();
   const char* content_p = &content[0];
@@ -107,7 +108,7 @@ htmpl_action::execute_impl(const build_node& node,
     }
 
     const feature_def& def = (**i).definition();
-    if (def.attributes().free) {
+    if (def.attributes().free != 0u) {
       environment.error_stream()
         << "[htmpl] Free feature not supported. Feature '"
         << "' for instantiated meta target located at '"
@@ -126,7 +127,7 @@ htmpl_action::execute_impl(const build_node& node,
 
   return true;
 }
-}
+} // namespace
 
 htmpl_generator::htmpl_generator(engine& e,
                                  const string& name,
@@ -140,4 +141,4 @@ htmpl_generator::htmpl_generator(engine& e,
   action(std::unique_ptr<build_action>(
     new htmpl_action(*consumable_types().front().type_)));
 }
-}
+} // namespace hammer

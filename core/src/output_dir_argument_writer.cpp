@@ -13,10 +13,11 @@ void
 output_dir_argument_writer::write_impl(
   std::ostream& output,
   const build_node& node,
-  const build_environment& environment) const
+  const build_environment& /*environment*/) const
 {
-  if (node.products_.empty())
+  if (node.products_.empty()) {
     return;
+  }
 
   //   location_t output_dir =
   //   relative_path(node.products_.front()->mtarget()->intermediate_dir(),
@@ -27,4 +28,4 @@ output_dir_argument_writer::write_impl(
   output_dir.normalize();
   output << output_dir.string();
 }
-}
+} // namespace hammer

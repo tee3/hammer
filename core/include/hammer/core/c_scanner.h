@@ -22,8 +22,9 @@ public:
     : scanner("C scanner")
   {
   }
-  virtual boost::posix_time::ptime process(const basic_target& t,
-                                           scanner_context& context) const;
+  virtual boost::posix_time::ptime process(
+    const basic_target& t,
+    scanner_context& context_outer) const;
   virtual boost::shared_ptr<scanner_context> create_context(
     const build_environment& env) const;
 

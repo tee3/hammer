@@ -17,7 +17,7 @@ public:
   typedef std::map<const std::string, boost::shared_ptr<argument_writer>>
     writers_t;
 
-  cmdline_builder(const std::string& cmd);
+  cmdline_builder(std::string cmd);
   template<typename T>
   cmdline_builder& operator+=(boost::shared_ptr<T>& v)
   {

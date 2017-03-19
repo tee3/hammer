@@ -25,7 +25,7 @@ namespace {
 
 struct meta_targets_get_first
 {
-  typedef const basic_meta_target* result_type;
+  using result_type = const hammer::basic_meta_target*;
   const basic_meta_target* operator()(const meta_targets_t::value_type& v) const
   {
     return v.first;
@@ -33,7 +33,7 @@ struct meta_targets_get_first
 };
 
 using namespace boost::multi_index;
-typedef meta_targets_t::value_type one_meta_target_t;
+using one_meta_target_t = meta_targets_t::value_type;
 typedef multi_index_container<
   one_meta_target_t,
   indexed_by<hashed_unique<meta_targets_get_first>, sequenced<>>>
@@ -46,15 +46,18 @@ remove_duplicates(deduplicator_t& deduplicator, meta_targets_t& targets)
   boost::optional<deduplicator_t::nth_index_const_iterator<1>::type>
     last_good_source_iterator;
   // magic construct to take iterator on last element
-  if (!deduplicator.empty())
+  if (!deduplicator.empty()) {
     last_good_source_iterator = (++deduplicator.get<1>().rbegin()).base();
+  }
 
-  for (const auto& t : targets)
+  for (const auto& t : targets) {
     deduplicator.get<1>().push_back(t);
+  }
 
   // if we don't have dups - just return
-  if (old_size + targets.size() == deduplicator.get<1>().size())
+  if (old_size + targets.size() == deduplicator.get<1>().size()) {
     return;
+  }
 
   // else - construct new list without dups and replace existing
   auto from = !last_good_source_iterator ? deduplicator.get<1>().begin()
@@ -62,7 +65,7 @@ remove_duplicates(deduplicator_t& deduplicator, meta_targets_t& targets)
   meta_targets_t targets_without_dups(from, deduplicator.get<1>().end());
   targets.swap(targets_without_dups);
 }
-}
+} // namespace
 
 meta_target::meta_target(hammer::project* p,
                          const std::string& name,
@@ -147,7 +150,7 @@ compute_additional_usage_requirements(
 
   sources_decl sources_from_uses;
   extract_uses(sources_from_uses, *local_usage_requirements, this_);
-  if (!sources_from_uses.empty())
+  if (!sources_from_uses.empty()) {
     compute_additional_usage_requirements(simple_targets,
                                           instantiated_meta_targets,
                                           sources_deduplicator,
@@ -156,6 +159,7 @@ compute_additional_usage_requirements(
                                           sources_from_uses,
                                           build_request,
                                           owner_for_new_targets);
+  }
 
   sources_decl sources_from_usage_requirements;
   extract_sources(
@@ -182,7 +186,7 @@ compute_additional_usage_requirements(
       sources_decl sources_from_usage_requirements;
       extract_uses(
         sources_from_usage_requirements, *local_usage_requirements, this_);
-      if (!sources_from_usage_requirements.empty())
+      if (!sources_from_usage_requirements.empty()) {
         compute_additional_usage_requirements(simple_targets,
                                               instantiated_meta_targets,
                                               sources_deduplicator,
@@ -191,6 +195,7 @@ compute_additional_usage_requirements(
                                               sources_from_usage_requirements,
                                               build_request,
                                               owner_for_new_targets);
+      }
       usage_requirements.join(*local_usage_requirements);
     }
   }
@@ -252,7 +257,7 @@ meta_target::instantiate_impl(const main_target* owner,
   meta_targets_t dependency_meta_targets;
 
   sources_decl additional_sources(
-    owner == NULL ? sources_decl() : compute_additional_sources(*owner));
+    owner == nullptr ? sources_decl() : compute_additional_sources(*owner));
   sources_decl sources_from_requirements;
   sources_decl sources_from_features;
   sources_decl dependencies_from_requierements;
@@ -285,7 +290,7 @@ meta_target::instantiate_impl(const main_target* owner,
   // different properties PCH is example
   mt_fs = mt->properties().clone(); // FIXME ref semantic required
 
-  if (!meta_targets.empty())
+  if (!meta_targets.empty()) {
     instantiate_meta_targets(simple_targets,
                              instantiated_meta_targets,
                              sources_deduplicator,
@@ -295,6 +300,7 @@ meta_target::instantiate_impl(const main_target* owner,
                              meta_targets,
                              *build_request_for_dependencies,
                              *mt);
+  }
 
   sources_decl dependencies_from_instantiations;
   extract_dependencies(
@@ -308,7 +314,7 @@ meta_target::instantiate_impl(const main_target* owner,
   remove_duplicates(dependency_sources_deduplicator, dependency_meta_targets);
   feature_set* ignored_dependencies_usage_requirements =
     get_engine()->feature_registry().make_set();
-  if (!dependency_meta_targets.empty())
+  if (!dependency_meta_targets.empty()) {
     instantiate_meta_targets(simple_targets,
                              instantiated_dependency_meta_targets,
                              dependency_sources_deduplicator,
@@ -318,6 +324,7 @@ meta_target::instantiate_impl(const main_target* owner,
                              dependency_meta_targets,
                              *build_request_for_dependencies,
                              *mt);
+  }
 
   sources_decl sources_from_uses;
   extract_uses(sources_from_uses, *mt_fs, *this);
@@ -367,8 +374,8 @@ meta_target::compute_usage_requirements(
   feature_set& result,
   const main_target& constructed_target,
   const feature_set& build_request,
-  const feature_set& computed_usage_requirements,
-  const main_target* owner) const
+  const feature_set& /*computed_usage_requirements*/,
+  const main_target* /*owner*/) const
 {
   //      this->usage_requirements().eval(constructed_target.properties(),
   //      &result);
@@ -384,8 +391,8 @@ meta_target::compute_usage_requirements(
 }
 
 sources_decl
-meta_target::compute_additional_sources(const main_target& owner) const
+meta_target::compute_additional_sources(const main_target& /*owner*/) const
 {
   return sources_decl();
 }
-}
+} // namespace hammer

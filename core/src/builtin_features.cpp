@@ -2,9 +2,10 @@
 
 namespace hammer {
 
-const char* g_builtin_features = R "(
+const char* g_builtin_features = R;
+"(
 
-                                 feature.feature undef : : free;
+  feature.feature undef : : free;
 feature.feature define : : free;
 feature.feature include : : free path;
 feature.feature toolset : : propagated no - defaults no - checks;
@@ -120,4 +121,4 @@ variant release : : <optimization> speed<debug - symbols> off<inlining>
                           NDEBUG;
 variant profile : release : <profiling> on<debug - symbols> on;
 )";
-}
+} // namespace hammer

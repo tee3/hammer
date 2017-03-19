@@ -22,9 +22,10 @@ void
 scanner_manager::register_scanner(const target_type& t,
                                   const boost::shared_ptr<scanner>& scanner)
 {
-  if (const hammer::scanner* s = find(t))
+  if (const hammer::scanner* s = find(t)) {
     throw std::runtime_error("Scanner '" + s->name() + "' for type '" +
                              t.tag().name() + "' already registered.");
+  }
 
   impl_->scanners_.insert(std::make_pair(&t, scanner));
 }
@@ -33,19 +34,22 @@ const scanner*
 scanner_manager::find(const target_type& t) const
 {
   impl_t::scanners_t::const_iterator i = impl_->scanners_.find(&t);
-  if (i == impl_->scanners_.end())
-    return NULL;
-  else
+  if (i == impl_->scanners_.end()) {
+    return nullptr;
+  }
+  {
     return i->second.get();
+  }
 }
 
 const scanner&
 scanner_manager::get(const target_type& t) const
 {
   const scanner* result = find(t);
-  if (result == NULL)
+  if (result == nullptr) {
     throw std::runtime_error("No scanner for type '" + t.tag().name() + "'.");
-  else
+  } else {
     return *result;
+  }
 }
-}
+} // namespace hammer

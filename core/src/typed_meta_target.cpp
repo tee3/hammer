@@ -7,10 +7,10 @@
 namespace hammer {
 
 main_target*
-typed_meta_target::construct_main_target(const main_target* owner,
+typed_meta_target::construct_main_target(const main_target* /*owner*/,
                                          const feature_set* properties) const
 {
-  main_target* mt = new main_target(this, name(), type_, properties);
+  auto* mt = new main_target(this, name(), type_, properties);
   return mt;
 }
-}
+} // namespace hammer
